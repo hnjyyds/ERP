@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-11-18T00:28:12.706719+08:00",
+  "containers": [
+    {
+      "service": "frontend",
+      "container_id": "8031d608a5330c1e3030ae0a443c20e0d41e76e084af74fb18ab436369bbaed1",
+      "image_id": "sha256:babf7dc56189adae82a39c00ce7a9464b28d95720b06d3606c41fe696b828409",
+      "started_at": "2026-11-17T04:14:16.535666421Z",
+      "same_container_image_start": true
+    },
+    {
+      "service": "backend",
+      "container_id": "7f0e08b7e4750e51f0ed39b213b85e5e1891aceea64a4433c99b2f10fc1fcfdc",
+      "image_id": "sha256:59433fae34acbf09e6e12ddfa41ad8cc836e1ec0c0b098e72320b8881ae09eba",
+      "started_at": "2026-11-17T03:19:06.844247084Z",
+      "same_container_image_start": true
+    },
+    {
+      "service": "worker",
+      "container_id": "a18c0567a92a37bf0952e982e8325192e7274996744f2c91ae22392903fa03e5",
+      "image_id": "sha256:59433fae34acbf09e6e12ddfa41ad8cc836e1ec0c0b098e72320b8881ae09eba",
+      "started_at": "2026-11-17T03:19:12.435345461Z",
+      "same_container_image_start": true
+    }
+  ]
+}

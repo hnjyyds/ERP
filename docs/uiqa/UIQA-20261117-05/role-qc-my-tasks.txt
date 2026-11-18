@@ -1,0 +1,137 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        container "D-DUTCH"
+          text "D-DUTCH"
+        container
+          text "新裴贸易"
+          text "业务管理系统"
+      container "主导航"
+        anchor [ref=6145, loc=href:/, url=http://localhost:8080/]
+          svg_root
+          text "工作台"
+        container "业务模块"
+          container
+            container [ref=6146]
+              svg_root
+              text "基础资料"
+              svg_root
+            anchor [ref=6170, loc=href:/masterdata/products, url=http://localhost:8080/masterdata/products]
+              svg_root
+              text "商品资料"
+          container
+            container [ref=6147]
+              svg_root
+              text "订单流程"
+              svg_root
+            anchor [ref=6171, loc=href:/purchase/contracts, url=http://localhost:8080/purchase/contracts]
+              svg_root
+              text "采购合同"
+          container
+            container [ref=6148]
+              svg_root
+              text "QC / 跟单"
+              svg_root
+            container
+              anchor [ref=6168, loc=href:/quality/inspections, url=http://localhost:8080/quality/inspections]
+                svg_root
+                text "QC 中心"
+              anchor [ref=6169, loc=href:/quality/tasks, url=http://localhost:8080/quality/tasks]
+                svg_root
+                text "我的 QC 任务"
+          container
+            container [ref=6149]
+              svg_root
+              text "仓库"
+              svg_root
+            anchor [ref=6172, loc=href:/warehouse/inbound-plans, url=http://localhost:8080/warehouse/inbound-plans]
+              svg_root
+              text "入库计划"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "我的 QC 任务"
+        container
+          button "通知" [ref=6150, loc=css:button[aria-label="通知"]]
+            svg_root
+          button "系统设置" [ref=6151, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "我的 QC 任务概览"
+          container
+            text "我的任务"
+            text "0"
+          container
+            text "待查验"
+            text "0"
+          container
+            text "查验中"
+            text "0"
+          container
+            text "已完成"
+            text "0"
+          container
+            text "已逾期"
+            text "0"
+        container
+          container
+            svg_root
+            heading
+              text "我的 QC 任务"
+          form
+            container
+              text "任务搜索"
+              textbox [ref=6207, loc=css:input[placeholder="QC 单号 / 合同 / 供应商"]]
+                text "QC 单号 / 合同 / 供应商"
+            container
+              text "任务状态"
+              container
+                container
+                  text "全部状态"
+                  comboboxgrouping [ref=6208]
+                image "down"
+                  svg_root
+            button [ref=6209]
+              svg_root
+              text "查询"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=6210]
+              table
+                table_row
+                  table_cell
+                    text "QC 任务单号"
+                  table_cell
+                    text "采购合同"
+                  table_cell
+                    text "供应商"
+                  table_cell
+                    text "排期时间"
+                  table_cell
+                    text "状态"
+                  table_cell
+                    text "结果"
+                  table_cell
+                    text "操作"
+                table_row
+                  table_cell
+                    paragraph
+                      text "暂无数据"
+                    paragraph
+                      text "完成首次录入后，这里会显示对应记录"
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

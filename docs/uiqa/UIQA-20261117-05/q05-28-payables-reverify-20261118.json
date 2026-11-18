@@ -1,0 +1,22 @@
+{
+  "defect": "Q05-28",
+  "asset": "assets/index-CCfyf6F1.js",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "admin",
+  "path": "/finance/payments",
+  "scenario": "仅阻断GET /finance/payables，保留供应商发票接口",
+  "before": "应付账款查询区显示“加载失败/数据读取失败，请重试；当前筛选条件会保留”与重试按钮，不再显示“暂无数据/完成首次录入后”",
+  "recovery": "解除阻断后点击重试，错误态消失，应付账款4行恢复；同页供应商发票4行未受影响",
+  "screenshots": [
+    "screenshots/Q05-28-payables-fail-CCfyf6F1-1440.png",
+    "screenshots/Q05-28-payables-recovered-CCfyf6F1-1440.png"
+  ],
+  "automation": {
+    "test_case": "应付账款加载失败显示独立错误态并可重试",
+    "vitest": "423 passed / 50 files",
+    "tsc": "passed",
+    "eslint": "passed"
+  },
+  "status": "付款页应付账款区已修复；Q05-28整体仍按部分修复保留，待当前资源重跑P01/P09/P24发票区失败→重试后再评估关闭",
+  "verified_at": "2026-11-18"
+}

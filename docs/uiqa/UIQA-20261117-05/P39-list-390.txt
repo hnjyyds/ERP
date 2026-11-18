@@ -1,0 +1,42 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=3164, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "工作台"
+        container
+          button "通知" [ref=3156, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=3157, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container
+          container
+            svg_root
+            heading
+              text "公司公告"
+          text "1"
+        container
+          text "2026-06-13"
+          container
+            text "外贸业务系统启动"
+            paragraph
+              text "请关注采购跟单、QC 查验和仓库入出库提醒。"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

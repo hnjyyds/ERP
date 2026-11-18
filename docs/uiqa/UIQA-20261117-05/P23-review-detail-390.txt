@@ -1,0 +1,173 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=8730, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "收款管理"
+        container
+          button "通知" [ref=8705, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=8706, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        button [ref=8707]
+          svg_root
+          text "收款管理"
+        container "收款管理"
+          container
+            container
+              svg_root
+              heading
+                text "认领和分摊"
+            unordered_list
+              container
+                list_item
+                  text "当前水单"
+                list_item
+                  text "BR-MWYV53"
+              container
+                list_item
+                  text "状态"
+                list_item
+                  text "已分摊"
+              container
+                list_item
+                  text "已分摊"
+                list_item
+                  text "USD 120.00"
+              container
+                list_item
+                  text "未分摊"
+                list_item
+                  text "USD -20.00"
+                  text "超额分摊"
+            container
+              form
+                text "水单认领"
+                container
+                  container
+                    text "认领日期"
+                    textbox [ref=8708]
+                      spinbutton "年" [ref=8709]
+                        text "2026"
+                      text "/"
+                      spinbutton "月" [ref=8710]
+                        text "11"
+                      text "/"
+                      spinbutton "日" [ref=8711]
+                        text "18"
+                  container
+                    text "业务员标识"
+                    textbox [ref=8712]
+                container
+                  text "业务员姓名"
+                  textbox [ref=8713]
+                container
+                  text "认领说明"
+                  textbox [ref=8714]
+                button [ref=8715]
+                  svg_root
+                  text "确认认领"
+              form
+                text "收款分摊"
+                container
+                  text "分摊类型"
+                  container
+                    text "合同分摊"
+                    comboboxgrouping [ref=8716]
+                    svg_root
+                container
+                  text "分摊日期"
+                  textbox [ref=8717]
+                    spinbutton "年" [ref=8718]
+                      text "2026"
+                    text "/"
+                    spinbutton "月" [ref=8719]
+                      text "11"
+                    text "/"
+                    spinbutton "日" [ref=8720]
+                      text "18"
+                container
+                  text "出口合同标识"
+                  textbox [ref=8721]
+                container
+                  text "出口合同号"
+                  textbox [ref=8722]
+                container
+                  text "发票号"
+                  textbox [ref=8723]
+                container
+                  text "分摊金额"
+                  textbox [ref=8724]
+                container
+                  text "币种"
+                  textbox [ref=8725]
+                    text "USD"
+                container
+                  text "分摊备注"
+                  textbox [ref=8726]
+                button [ref=8727]
+                  svg_root
+                  text "保存分摊"
+            container
+              text "分摊记录"
+              container
+                table
+                  table_row
+                    table_cell
+                container [ref=8728]
+                  table
+                    table_row
+                      table_cell
+                        text "类型"
+                      table_cell
+                        text "合同号"
+                      table_cell
+                        text "发票号"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "日期"
+                    table_row
+                      table_cell
+                        text "合同分摊"
+                      table_cell
+                        text "EC-F8D7RX"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "USD 60.00"
+                      table_cell
+                        text "2026-11-12"
+                    table_row
+                      table_cell
+                        text "合同分摊"
+                      table_cell
+                        text "EC-F8D7RX"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "USD 60.00"
+                      table_cell
+                        text "2026-11-12"
+                table
+                  table_row
+                    table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

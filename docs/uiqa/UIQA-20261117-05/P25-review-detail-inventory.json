@@ -1,0 +1,504 @@
+{
+  "url": "http://localhost:8080/finance/fees/75ef17ef-1a7d-42a9-b16d-3bc0ef341993",
+  "title": "付费管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "付费管理",
+    "付费申请和审批"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "付费申请新增\n付费申请号\n费用发票标识\n申请日期\n申请金额\n币种\n申请备注\n审批人\n选择审批人\n新增付费申请",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "付费申请号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 353.765625,
+            "width": 362,
+            "height": 36,
+            "top": 353.765625,
+            "right": 643,
+            "bottom": 389.765625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "费用发票标识",
+          "text": "",
+          "value": "75ef17ef-1a7d-42a9-b16d-3bc0ef341993",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659,
+            "y": 353.765625,
+            "width": 362,
+            "height": 36,
+            "top": 353.765625,
+            "right": 1021,
+            "bottom": 389.765625,
+            "left": 659
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "申请日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1037,
+            "y": 353.765625,
+            "width": 362,
+            "height": 36,
+            "top": 353.765625,
+            "right": 1399,
+            "bottom": 389.765625,
+            "left": 1037
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "申请金额",
+          "text": "",
+          "value": "0.00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 423.765625,
+            "width": 362,
+            "height": 36,
+            "top": 423.765625,
+            "right": 643,
+            "bottom": 459.765625,
+            "left": 281
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659,
+            "y": 423.765625,
+            "width": 362,
+            "height": 36,
+            "top": 423.765625,
+            "right": 1021,
+            "bottom": 459.765625,
+            "left": 659
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "申请备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1037,
+            "y": 423.765625,
+            "width": 362,
+            "height": 36,
+            "top": 423.765625,
+            "right": 1399,
+            "bottom": 459.765625,
+            "left": 1037
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_4_",
+          "label": "审批人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 292,
+            "y": 498.765625,
+            "width": 322,
+            "height": 26,
+            "top": 498.765625,
+            "right": 614,
+            "bottom": 524.765625,
+            "left": 292
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增付费申请",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 281,
+            "y": 545.765625,
+            "width": 137.5625,
+            "height": 36,
+            "top": 545.765625,
+            "right": 418.5625,
+            "bottom": 581.765625,
+            "left": 281
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "付费审批\n审批金额\n审批日期\n审批人\n付款账号\n审批备注\n审批付费",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "审批金额",
+          "text": "",
+          "value": "20.00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 684.140625,
+            "width": 362,
+            "height": 36,
+            "top": 684.140625,
+            "right": 643,
+            "bottom": 720.140625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "审批日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659,
+            "y": 684.140625,
+            "width": 362,
+            "height": 36,
+            "top": 684.140625,
+            "right": 1021,
+            "bottom": 720.140625,
+            "left": 659
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "审批人",
+          "text": "",
+          "value": "演示财务主管",
+          "checked": false,
+          "disabled": true,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1037,
+            "y": 684.140625,
+            "width": 362,
+            "height": 36,
+            "top": 684.140625,
+            "right": 1399,
+            "bottom": 720.140625,
+            "left": 1037
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "付款账号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 754.140625,
+            "width": 362,
+            "height": 36,
+            "top": 754.140625,
+            "right": 643,
+            "bottom": 790.140625,
+            "left": 281
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "审批备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659,
+            "y": 754.140625,
+            "width": 362,
+            "height": 36,
+            "top": 754.140625,
+            "right": 1021,
+            "bottom": 790.140625,
+            "left": 659
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "审批付费",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 281,
+            "y": 806.140625,
+            "width": 111.046875,
+            "height": 36,
+            "top": 806.140625,
+            "right": 392.046875,
+            "bottom": 842.140625,
+            "left": 281
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "申请号\t状态\t费用类型\t合作伙伴\t出运单\t申请金额\t已付\nFPR-G7WTAX\t已审批\t货代费\tQA261112 测试货代\tSP-DAEPEG\tUSD 20.00\tUSD 20.00",
+      "buttons": [
+        "FPR-G7WTAX"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

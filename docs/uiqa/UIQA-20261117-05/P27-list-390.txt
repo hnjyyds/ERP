@@ -1,0 +1,200 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "杂费管理"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container "杂费管理"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "杂费项目配置"
+            form
+              container
+                text "项目搜索"
+                textbox [ref=2814]
+              container
+                text "项目分类"
+                container
+                  container
+                    text "全部分类"
+                    comboboxgrouping [ref=2815]
+                  image "down"
+                    svg_root
+              container
+                text "启停状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=2816]
+                  image "down"
+                    svg_root
+              container
+                button [ref=2817]
+                  svg_root
+                  text "查询"
+                button [ref=2818]
+                  svg_root
+                  text "新增杂费"
+          container [ref=2837]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=2819]
+                table
+                  table_row
+                    table_cell
+                      text "项目编码"
+                    table_cell
+                      text "项目名称"
+                    table_cell
+                      text "分类"
+                    table_cell
+                      text "默认分摊"
+                    table_cell
+                      text "状态"
+                  table_row
+                    table_cell
+                      button [ref=2820]
+                        text "QA261112-MISC01"
+                    table_cell
+                      text "QA261112 测试杂费"
+                    table_cell
+                      text "其他杂费"
+                    table_cell
+                      text "手工分摊"
+                    table_cell
+                      text "启用"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=2821]
+                    image "left"
+                      svg_root
+                list_item [ref=2822]
+                  anchor [ref=2823]
+                    text "1"
+                list_item
+                  button [ref=2824]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+        container
+          container
+            container
+              svg_root
+              heading
+                text "杂费分摊查询"
+            form
+              container
+                text "分摊搜索"
+                textbox [ref=2826]
+              container
+                text "分类"
+                container
+                  text "全部分类"
+                  comboboxgrouping [ref=2827]
+                  svg_root
+              container
+                text "出运单号"
+                textbox [ref=2828]
+              container
+                text "业务员标识"
+                textbox [ref=2829]
+              button [ref=2830]
+                svg_root
+                text "查询"
+          text "分摊记录 1 条"
+          text "USD 5.00"
+          text "已进入单票利润成本"
+          container [ref=2838]
+            table
+              table_row
+                table_cell
+            container [ref=2831]
+              container [ref=2839]
+                table
+                  table_row
+                    table_cell
+                      text "分摊单号"
+                    table_cell
+                      text "杂费项目"
+                    table_cell
+                      text "分类"
+                    table_cell
+                      text "出运单"
+                    table_cell
+                      text "客户"
+                    table_cell
+                      text "业务员"
+                    table_cell
+                      text "分摊日"
+                    table_cell
+                      text "金额"
+                    table_cell
+                      text "方式"
+                  table_row
+                    table_cell
+                      text "MFA-SN2JDU"
+                    table_cell
+                      text "QA261112 测试杂费"
+                    table_cell
+                      text "其他杂费"
+                    table_cell
+                      text "SP-DAEPEG"
+                    table_cell
+                      text "QA261112 测试客户"
+                    table_cell
+                      text "-"
+                    table_cell
+                      text "2026-11-12"
+                    table_cell
+                      text "USD 5.00"
+                    table_cell
+                      text "手工分摊"
+            unordered_list
+              list_item
+                text "共 1 条"
+              list_item
+                button [ref=2832]
+                  image "left"
+                    svg_root
+              list_item [ref=2833]
+                anchor [ref=2834]
+                  text "1"
+              list_item
+                button [ref=2835]
+                  image "right"
+                    svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

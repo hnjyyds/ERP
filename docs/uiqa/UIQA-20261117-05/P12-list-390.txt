@@ -1,0 +1,164 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "样品登记"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "样品登记概览"
+          container
+            text "样品"
+            text "2"
+          container
+            text "确认样"
+            text "1"
+          container
+            text "图片"
+            text "0"
+          container
+            text "留样"
+            text "3"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "样品列表"
+            form
+              container
+                text "样品搜索"
+                textbox [ref=2228, loc=css:input[placeholder="编号 / 产品 / 客户 / 供应商"]]
+                  text "编号 / 产品 / 客户 / 供应商"
+              container
+                text "样品分类筛选"
+                container
+                  container
+                    text "全部分类"
+                    comboboxgrouping [ref=2229]
+                  image "down"
+                    svg_root
+              container
+                text "样品客户筛选"
+                textbox [ref=2230, loc=css:input[placeholder="输入客户编号或名称"]]
+                  text "输入客户编号或名称"
+              container
+                text "采购合同筛选"
+                textbox [ref=2231, loc=css:input[placeholder="输入采购合同号"]]
+                  text "输入采购合同号"
+              container
+                button [ref=2232]
+                  svg_root
+                  text "查询"
+                button [ref=2233]
+                  text "导出台账"
+                button [ref=2234]
+                  svg_root
+                  text "新增样品"
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=2235]
+                container [ref=2245]
+                  table
+                    table_row
+                      table_cell
+                        text "样品编号"
+                      table_cell
+                        text "分类"
+                      table_cell
+                        text "来源类型"
+                      table_cell
+                        text "来源单号"
+                      table_cell
+                        text "产品"
+                      table_cell
+                        text "客户货号"
+                      table_cell
+                        text "供应商货号"
+                      table_cell
+                        text "数量"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=2236]
+                          text "SM-D45XDB"
+                      table_cell
+                        text "确认样"
+                      table_cell
+                        text "打样单"
+                      table_cell
+                        text "SR-W3C3DV"
+                      table_cell
+                        text "QA261112 验收测试围巾"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "3"
+                      table_cell
+                        button [ref=2237]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        button [ref=2238]
+                          text "SM-ZB334N"
+                      table_cell
+                        text "来样"
+                      table_cell
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "QA261112 验收测试围巾"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "3"
+                      table_cell
+                        button [ref=2239]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 2 条"
+                list_item
+                  button [ref=2240]
+                    image "left"
+                      svg_root
+                list_item [ref=2241]
+                  anchor [ref=2242]
+                    text "1"
+                list_item
+                  button [ref=2243]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

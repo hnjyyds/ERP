@@ -1,0 +1,150 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "结算搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/settlement",
+      "form": "结算搜索\n出运单号\n查询\n新增结算",
+      "inputs": [
+        {
+          "label": "结算搜索",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "财务结算列表\n结算搜索\n出运单号\n查询\n新增结算\n锁定结算 1 单\nUSD 205.00\n毛利 USD 188.00\n结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定\n共 1 条\n1\n50 条/页",
+      "tableText": "结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定"
+    },
+    "positive": "FS-PT3G9T",
+    "hit": {
+      "url": "http://localhost:8080/finance/settlement?settlements_q=FS-PT3G9T",
+      "form": "结算搜索\n出运单号\n查询\n新增结算",
+      "inputs": [
+        {
+          "label": "结算搜索",
+          "value": "FS-PT3G9T"
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "财务结算列表\n结算搜索\n出运单号\n查询\n新增结算\n锁定结算 1 单\nUSD 205.00\n毛利 USD 188.00\n结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定\n共 1 条\n1\n50 条/页",
+      "tableText": "结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/settlement?settlements_q=UIQA-20261117-05-NOMATCH",
+      "form": "结算搜索\n出运单号\n查询\n新增结算",
+      "inputs": [
+        {
+          "label": "结算搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "财务结算列表\n结算搜索\n出运单号\n查询\n新增结算\n锁定结算 0 单\nUSD 0.00\n毛利 USD 0.00\n结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/settlement",
+      "form": "结算搜索\n出运单号\n查询\n新增结算",
+      "inputs": [
+        {
+          "label": "结算搜索",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "财务结算列表\n结算搜索\n出运单号\n查询\n新增结算\n锁定结算 1 单\nUSD 205.00\n毛利 USD 188.00\n结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定\n共 1 条\n1\n50 条/页",
+      "tableText": "结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  },
+  {
+    "i": 1,
+    "input": 2,
+    "button": 2,
+    "label": "核算搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/settlement",
+      "form": "核算搜索\n出运单号\n查询",
+      "inputs": [
+        {
+          "label": "核算搜索",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "利润核算表\n核算搜索\n出运单号\n查询\n核算单票 1 单\nUSD 188.00\n按结算锁定口径展开成本明细\n\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%\n共 1 条\n1\n50 条/页",
+      "tableText": "\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%"
+    },
+    "positive": "FS-PT3G9T",
+    "hit": {
+      "url": "http://localhost:8080/finance/settlement?profits_q=FS-PT3G9T",
+      "form": "核算搜索\n出运单号\n查询",
+      "inputs": [
+        {
+          "label": "核算搜索",
+          "value": "FS-PT3G9T"
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "利润核算表\n核算搜索\n出运单号\n查询\n核算单票 1 单\nUSD 188.00\n按结算锁定口径展开成本明细\n\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%\n共 1 条\n1\n50 条/页",
+      "tableText": "\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/settlement?profits_q=UIQA-20261117-05-NOMATCH",
+      "form": "核算搜索\n出运单号\n查询",
+      "inputs": [
+        {
+          "label": "核算搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "利润核算表\n核算搜索\n出运单号\n查询\n核算单票 0 单\nUSD 0.00\n按结算锁定口径展开成本明细\n\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/settlement",
+      "form": "核算搜索\n出运单号\n查询",
+      "inputs": [
+        {
+          "label": "核算搜索",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        }
+      ],
+      "text": "利润核算表\n核算搜索\n出运单号\n查询\n核算单票 1 单\nUSD 188.00\n按结算锁定口径展开成本明细\n\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%\n共 1 条\n1\n50 条/页",
+      "tableText": "\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

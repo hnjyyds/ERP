@@ -1,0 +1,45 @@
+{
+  "defect": "Q05-06",
+  "asset": "assets/index-Bpsh7zKB.js",
+  "changes": [
+    "ReportingPage: 默认“待审批”计入筛选态；新增 clearApprovalFilters 清空状态为全部并重载",
+    "ReportsView: 水单使用明细接入 ListEmptyState，清空日期/币种/水单号并显式以空条件重载"
+  ],
+  "checks": [
+    {
+      "view": "老板看板 / 审批单据查询",
+      "viewport": "1440x900",
+      "before": { "noMatch": true, "noDataText": false, "clearButtons": 2 },
+      "afterClear": { "hasPurchaseContract": true, "hasExportContract": true, "noMatch": false, "rows": 12 }
+    },
+    {
+      "view": "老板看板 / 审批单据查询",
+      "viewport": "390x844",
+      "before": { "noMatch": true },
+      "afterClear": { "hasExportContract": true, "noMatch": false }
+    },
+    {
+      "view": "财务报表 / 水单使用明细",
+      "viewport": "1440x900",
+      "filter": "2027-01-01 至 2027-01-31",
+      "before": { "emptyText": "没有匹配的结果 / 请调整关键词或筛选条件后再试 / 清空筛选", "rows": 1 },
+      "afterClear": { "rows": 2, "dates": ["", ""], "noMatch": false }
+    },
+    {
+      "view": "财务报表 / 水单使用明细",
+      "viewport": "390x844",
+      "filter": "2027-01-01 至 2027-01-31",
+      "before": { "noMatch": true, "hasClear": true },
+      "afterClear": { "rows": 2, "dates": ["", ""], "noMatch": false }
+    }
+  ],
+  "screenshots": [
+    "screenshots/q05-06-reporting-cleared-BnQq-1440.png",
+    "screenshots/q05-06-finance-date-empty-BRdw-1440.png",
+    "screenshots/q05-06-finance-date-cleared-BnQq-1440.png",
+    "screenshots/q05-06-finance-empty-Bpsh-390.png"
+  ],
+  "note": "清空后曾出现仍按旧日期查询的问题，已通过显式传空筛选修正并复验；当前清空后恢复 2 条记录。",
+  "conclusion": "筛选无结果与全库无数据已区分，均提供清空筛选入口并能恢复列表。Q05-06 关闭。",
+  "captured_at": "2026-11-18T21:20:00+08:00"
+}

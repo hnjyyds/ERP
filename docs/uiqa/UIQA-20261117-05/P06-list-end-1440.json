@@ -1,0 +1,970 @@
+{
+  "time": "2026-11-17T09:01:17.420Z",
+  "url": "http://localhost:8080/sales/quotations",
+  "viewport": [
+    1440,
+    900
+  ],
+  "scripts": [
+    "http://localhost:8080/assets/index-By6s5oGf.js"
+  ],
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai",
+  "scroll": [
+    0,
+    0,
+    1440,
+    900
+  ],
+  "focus": "<a class=\"nav-link active\" href=\"/sales/quotations\" aria-current=\"page\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file-pen-line nav-link-icon\" aria-hidden=\"true\"><path d=\"m18.226 5.226-2.52-2.52A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.351\"></path><path d=\"M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z\"></path><path d=\"M8 18h1\"></path></svg><span>出口报价</span></a>",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "导航",
+      "label": "业务导航",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(239, 239, 239)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "工作台",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        12,
+        76.6953125,
+        211,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        155.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        195.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        235.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        275.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        315.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "出口合同",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        197.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "采购合同",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        237.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "出口报价",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        23,
+        277.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(40, 76, 184)",
+      "background": "rgb(237, 242, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "出货明细",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        317.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        405.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        445.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        485.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        525.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        565.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        605.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        447.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        487.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        527.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        567.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        607.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        527.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        564.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        601.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        638.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        675.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        712.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        749.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        786.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        823.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        860.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        529.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        531.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        571.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        611.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        573.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        613.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "3",
+      "label": "通知",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1340,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1378,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": "单号 / 客户 / 产品 / 条款",
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        281,
+        267.4453125,
+        377.2265625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        681.2265625,
+        272.4453125,
+        197.34375,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        930.5703125,
+        272.4453125,
+        197.34375,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查询",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1168.9140625,
+        267.4453125,
+        84.5234375,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "新增出口报价",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1261.4375,
+        267.4453125,
+        137.5625,
+        36
+      ],
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(49, 91, 214)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "QT-A33KVZ",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        289,
+        380.4453125,
+        76.65625,
+        18.84375
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看详情",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1297,
+        380.4453125,
+        67.015625,
+        28
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1226.9375,
+        439.4453125,
+        24,
+        24
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "1",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        1255.9375,
+        440.4453125,
+        22,
+        22
+      ],
+      "color": "rgb(22, 119, 255)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1282.9375,
+        439.4453125,
+        24,
+        24
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "页码",
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1319.9375,
+        438.4453125,
+        50.0625,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    }
+  ],
+  "tables": [
+    "报价单号\t状态\t客户\t贸易条款\t金额\t合同\t入口\nQT-A33KVZ\t已生成合同\tQA261112 测试客户\tFOB Ningbo\tUSD 50.00\tEC-5FW46R\t\n查看详情"
+  ],
+  "scrollables": []
+}

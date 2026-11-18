@@ -1,0 +1,280 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=7255, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "样品登记"
+          container
+            button "通知" [ref=7238, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=7239, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "样品登记概览"
+            container
+              text "样品"
+              text "2"
+            container
+              text "确认样"
+              text "1"
+            container
+              text "图片"
+              text "0"
+            container
+              text "留样"
+              text "3"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "样品列表"
+              form
+                container
+                  text "样品搜索"
+                  textbox [ref=7260, loc=css:input[placeholder="编号 / 产品 / 客户 / 供应商"]]
+                    text "编号 / 产品 / 客户 / 供应商"
+                container
+                  text "样品分类筛选"
+                  container
+                    container
+                      text "全部分类"
+                      comboboxgrouping [ref=7261]
+                    image "down"
+                      svg_root
+                container
+                  text "样品客户筛选"
+                  textbox [ref=7262, loc=css:input[placeholder="输入客户编号或名称"]]
+                    text "输入客户编号或名称"
+                container
+                  text "采购合同筛选"
+                  textbox [ref=7263, loc=css:input[placeholder="输入采购合同号"]]
+                    text "输入采购合同号"
+                container
+                  button [ref=7264]
+                    svg_root
+                    text "查询"
+                  button [ref=7265]
+                    text "导出台账"
+                  button [ref=7266]
+                    svg_root
+                    text "新增样品"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=7267]
+                  container [ref=7306]
+                    table
+                      table_row
+                        table_cell
+                          text "样品编号"
+                        table_cell
+                          text "分类"
+                        table_cell
+                          text "来源类型"
+                        table_cell
+                          text "来源单号"
+                        table_cell
+                          text "产品"
+                        table_cell
+                          text "客户货号"
+                        table_cell
+                          text "供应商货号"
+                        table_cell
+                          text "数量"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=7268]
+                            text "SM-D45XDB"
+                        table_cell
+                          text "确认样"
+                        table_cell
+                          text "打样单"
+                        table_cell
+                          text "SR-W3C3DV"
+                        table_cell
+                          text "QA261112 验收测试围巾"
+                        table_cell
+                          text "-"
+                        table_cell
+                          text "-"
+                        table_cell
+                          text "3"
+                        table_cell
+                          button [ref=7269]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          button [ref=7270]
+                            text "SM-ZB334N"
+                        table_cell
+                          text "来样"
+                        table_cell
+                        table_cell
+                          text "-"
+                        table_cell
+                          text "QA261112 验收测试围巾"
+                        table_cell
+                          text "-"
+                        table_cell
+                          text "-"
+                        table_cell
+                          text "3"
+                        table_cell
+                          button [ref=7271]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 2 条"
+                  list_item
+                    button [ref=7272]
+                      image "left"
+                        svg_root
+                  list_item [ref=7273]
+                    anchor [ref=7274]
+                      text "1"
+                  list_item
+                    button [ref=7275]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    dialog "新增样品"
+      button "Close" [ref=7277, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增样品"
+      form [ref=7278]
+        container
+          text "样品编号"
+          textbox [ref=7279, loc=css:input[placeholder="系统自动生成"]]
+            text "系统自动生成"
+        container
+          text "样品分类"
+          container
+            container
+              text "确认样"
+              comboboxgrouping [ref=7280]
+            image "down"
+              svg_root
+        container
+          text "样品状态"
+          container
+            container
+              text "已登记"
+              comboboxgrouping [ref=7281]
+            image "down"
+              svg_root
+        container
+          text "收样数量"
+          spinbutton [ref=7282]
+            text "1"
+        container
+          text "收样日期"
+          textbox [ref=7283]
+            spinbutton "年" [ref=7284]
+              text "2026"
+            text "/"
+            spinbutton "月" [ref=7285]
+              text "11"
+            text "/"
+            spinbutton "日" [ref=7286]
+              text "17"
+        container
+          text "提交日期"
+          textbox [ref=7287]
+            spinbutton "年" [ref=7288]
+              text "2026"
+            text "/"
+            spinbutton "月" [ref=7289]
+              text "11"
+            text "/"
+            spinbutton "日" [ref=7290]
+              text "17"
+        container
+          text "产品"
+          container
+            container
+              text "输入关键词搜索"
+              comboboxgrouping "产品" [ref=7291, loc=css:input[aria-label="产品"]]
+            image "down"
+              svg_root
+        container
+          text "客户货号"
+          textbox [ref=7292]
+        container
+          text "供应商货号"
+          textbox [ref=7293]
+        container
+          text "客户"
+          container
+            text "输入关键词搜索"
+            comboboxgrouping "客户" [ref=7294, loc=css:input[aria-label="客户"]]
+            svg_root
+        container
+          text "供应商"
+          container
+            text "输入关键词搜索"
+            comboboxgrouping "供应商" [ref=7295, loc=css:input[aria-label="供应商"]]
+            svg_root
+        container
+          text "采购合同号"
+          textbox [ref=7296]
+        container
+          text "单位"
+          textbox [ref=7297]
+            text "pcs"
+        container
+          text "样品来源"
+          container
+            text "打样单"
+            comboboxgrouping [ref=7298]
+            svg_root
+        container
+          text "来源单号"
+          textbox [ref=7299]
+        container
+          text "样品说明"
+          textbox [ref=7300]
+        text "样品图片"
+        text "样品图片"
+        button [ref=7301]
+          svg_root
+          text "上传图片"
+        paragraph
+          text "尚未上传样品图片"
+        container
+          text "图片说明"
+          textbox [ref=7302]
+        container
+          button [ref=7303]
+            text "取消"
+          button [ref=7304]
+            text "按当前表单导入"
+          button [ref=7305]
+            text "新增样品"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

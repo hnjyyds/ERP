@@ -1,0 +1,407 @@
+{
+  "url": "http://localhost:8080/system/audit-logs",
+  "title": "写操作审计流水",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "写操作审计流水",
+    "审计日志"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "操作人\n模块\n全部模块\n动作\n全部动作\n单号 / 关键字\n日期范围\n查 询\n重 置",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "操作人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 292,
+            "y": 208.6484375,
+            "width": 138.9765625,
+            "height": 36,
+            "top": 208.6484375,
+            "right": 430.9765625,
+            "bottom": 244.6484375,
+            "left": 292
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "操作人",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 434.9765625,
+            "y": 220.6484375,
+            "width": 12,
+            "height": 12,
+            "top": 220.6484375,
+            "right": 446.9765625,
+            "bottom": 232.6484375,
+            "left": 434.9765625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_d_",
+          "label": "模块\n全部模块",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 480.9765625,
+            "y": 213.6484375,
+            "width": 116.984375,
+            "height": 26,
+            "top": 213.6484375,
+            "right": 597.9609375,
+            "bottom": 239.6484375,
+            "left": 480.9765625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_f_",
+          "label": "动作\n全部动作",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 649.9609375,
+            "y": 213.6484375,
+            "width": 101.9765625,
+            "height": 26,
+            "top": 213.6484375,
+            "right": 751.9375,
+            "bottom": 239.6484375,
+            "left": 649.9609375
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单号 / 关键字",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 803.9375,
+            "y": 208.6484375,
+            "width": 163.984375,
+            "height": 36,
+            "top": 208.6484375,
+            "right": 967.921875,
+            "bottom": 244.6484375,
+            "left": 803.9375
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "单号 / 关键字",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 971.921875,
+            "y": 220.6484375,
+            "width": 12,
+            "height": 12,
+            "top": 220.6484375,
+            "right": 983.921875,
+            "bottom": 232.6484375,
+            "left": 971.921875
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "日期范围",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1017.921875,
+            "y": 209.6484375,
+            "width": 86.6875,
+            "height": 34,
+            "top": 209.6484375,
+            "right": 1104.609375,
+            "bottom": 243.6484375,
+            "left": 1017.921875
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "日期范围",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1136.609375,
+            "y": 209.6484375,
+            "width": 86.6875,
+            "height": 34,
+            "top": 209.6484375,
+            "right": 1223.296875,
+            "bottom": 243.6484375,
+            "left": 1136.609375
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查 询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1263.296875,
+            "y": 208.6484375,
+            "width": 63.8515625,
+            "height": 36,
+            "top": 208.6484375,
+            "right": 1327.1484375,
+            "bottom": 244.6484375,
+            "left": 1263.296875
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "重 置",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1335.1484375,
+            "y": 208.6484375,
+            "width": 63.8515625,
+            "height": 36,
+            "top": 208.6484375,
+            "right": 1399,
+            "bottom": 244.6484375,
+            "left": 1335.1484375
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "时间\t操作人\t模块\t动作\t单号\t摘要\n\n时间\n\t\n操作人\n\t\n模块\n\t\n动作\n\t\n单号\n\t\n摘要\n\n2026-11-18 01:36\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t新增\tUIQA-20261117-05-P17\t新增商品\n2026-11-17 19:45\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t修改\tUIQA-20261117-05-P02\t修改商品\n2026-11-17 16:51\t\n系统管理员\nu-baeac30b5127ebdb\n\t合作伙伴\t修改\tUIQA-20261117-05-B01\t修改合作伙伴\n2026-11-17 16:47\t\n系统管理员\nu-baeac30b5127ebdb\n\t合作伙伴\t新增\tUIQA-20261117-05-B01\t新增合作伙伴\n2026-11-17 16:47\t\n系统管理员\nu-baeac30b5127ebdb\n\t客户\t新增\tUIQA-20261117-05-C01\t新增客户\n2026-11-17 16:39\t\n系统管理员\nu-baeac30b5127ebdb\n\t供应商\t新增\tUIQA-20261117-05-S01\t新增供应商\n2026-11-17 15:57\t\n演示财务主管\nu-finance-manager\n\t付款\t通过\tPR-PG3X2P\t审批通过付款申请\n2026-11-17 15:41\t\n系统管理员\nu-baeac30b5127ebdb\n\t付款\t提交\tPR-PG3X2P\t提交付款申请\n2026-11-17 15:14\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t修改\tUIQA-20261117-05-P01\t修改商品\n2026-11-17 15:12\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t修改\tUIQA-20261117-05-P01\t修改商品\n2026-11-17 15:11\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t修改\tUIQA-20261117-05-P01\t修改商品\n2026-11-17 15:10\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t修改\tUIQA-20261117-05-P01\t修改商品\n2026-11-17 15:06\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t新增\tUIQA-20261117-05-P01\t新增商品\n2026-11-14 20:29\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t修改\tUI261114-IMG01\t修改商品\n2026-11-14 20:29\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t修改\tUI261114-IMG01\t修改商品\n2026-11-14 20:05\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t新增\tUI261114-IMG\t新增商品\n2026-11-14 18:58\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t新增\tUI261114-IMG01\t新增商品\n2026-11-14 18:16\t\n系统管理员\nu-baeac30b5127ebdb\n\t商品\t新增\tUI261114-P01\t新增商品\n2026-11-14 18:14\t\n系统管理员\nu-baeac30b5127ebdb\n\t合作伙伴\t新增\tUI261114-B01\t新增合作伙伴\n2026-11-14 18:12\t\n系统管理员\nu-baeac30b5127ebdb\n\t供应商\t新增\tUI261114-S01\t新增供应商",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "一二三四五六日262728293031123456789101112131415161718192021222324252627282930123456",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "一二三四五六日301234567891011121314151617181920212223242526272829303112345678910",
+      "buttons": []
+    }
+  ],
+  "dialogs": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "组织管理",
+      "href": "/organization/users"
+    },
+    {
+      "text": "MCP 接入",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "审计日志",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

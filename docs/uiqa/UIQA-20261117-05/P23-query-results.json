@@ -1,0 +1,182 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "水单搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/receipts",
+      "form": "水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入",
+      "inputs": [
+        {
+          "label": "水单搜索",
+          "value": ""
+        },
+        {
+          "label": "水单状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        }
+      ],
+      "text": "银行水单列表\n水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入\n本次列表 1 条\nUSD 100.00\n未分摊 USD -20.00\n水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD -20.00超额分摊\n共 1 条\n1\n50 条/页",
+      "tableText": "水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD -20.00超额分摊"
+    },
+    "positive": "BR-MWYV53",
+    "hit": {
+      "url": "http://localhost:8080/finance/receipts?receipts_q=BR-MWYV53",
+      "form": "水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入",
+      "inputs": [
+        {
+          "label": "水单搜索",
+          "value": "BR-MWYV53"
+        },
+        {
+          "label": "水单状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        }
+      ],
+      "text": "银行水单列表\n水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入\n本次列表 1 条\nUSD 100.00\n未分摊 USD -20.00\n水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD -20.00超额分摊\n共 1 条\n1\n50 条/页",
+      "tableText": "水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD -20.00超额分摊"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/receipts?receipts_q=UIQA-20261117-05-NOMATCH",
+      "form": "水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入",
+      "inputs": [
+        {
+          "label": "水单搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "水单状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        }
+      ],
+      "text": "银行水单列表\n水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入\n本次列表 0 条\nUSD 0.00\n未分摊 USD 0.00\n水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/receipts",
+      "form": "水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入",
+      "inputs": [
+        {
+          "label": "水单搜索",
+          "value": ""
+        },
+        {
+          "label": "水单状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        }
+      ],
+      "text": "银行水单列表\n水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入\n本次列表 1 条\nUSD 100.00\n未分摊 USD -20.00\n水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD -20.00超额分摊\n共 1 条\n1\n50 条/页",
+      "tableText": "水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD -20.00超额分摊"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  },
+  {
+    "i": 1,
+    "input": 1,
+    "button": 2,
+    "label": "应收搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/receipts",
+      "form": "应收搜索\n出口合同号\n发票号\n查询",
+      "inputs": [
+        {
+          "label": "应收搜索",
+          "value": ""
+        },
+        {
+          "label": "出口合同号",
+          "value": ""
+        },
+        {
+          "label": "发票号",
+          "value": ""
+        }
+      ],
+      "text": "应收账款查询\n应收搜索\n出口合同号\n发票号\n查询\n本次列表 1 条\nUSD 392.50\n出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款\n共 1 条\n1\n50 条/页",
+      "tableText": "出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款"
+    },
+    "positive": "EC-F8D7RX",
+    "hit": {
+      "url": "http://localhost:8080/finance/receipts?receivables_q=EC-F8D7RX",
+      "form": "应收搜索\n出口合同号\n发票号\n查询",
+      "inputs": [
+        {
+          "label": "应收搜索",
+          "value": "EC-F8D7RX"
+        },
+        {
+          "label": "出口合同号",
+          "value": ""
+        },
+        {
+          "label": "发票号",
+          "value": ""
+        }
+      ],
+      "text": "应收账款查询\n应收搜索\n出口合同号\n发票号\n查询\n本次列表 1 条\nUSD 392.50\n出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款\n共 1 条\n1\n50 条/页",
+      "tableText": "出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/receipts?receivables_q=UIQA-20261117-05-NOMATCH",
+      "form": "应收搜索\n出口合同号\n发票号\n查询",
+      "inputs": [
+        {
+          "label": "应收搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "出口合同号",
+          "value": ""
+        },
+        {
+          "label": "发票号",
+          "value": ""
+        }
+      ],
+      "text": "应收账款查询\n应收搜索\n出口合同号\n发票号\n查询\n本次列表 0 条\n0.00\n出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/receipts",
+      "form": "应收搜索\n出口合同号\n发票号\n查询",
+      "inputs": [
+        {
+          "label": "应收搜索",
+          "value": ""
+        },
+        {
+          "label": "出口合同号",
+          "value": ""
+        },
+        {
+          "label": "发票号",
+          "value": ""
+        }
+      ],
+      "text": "应收账款查询\n应收搜索\n出口合同号\n发票号\n查询\n本次列表 1 条\nUSD 392.50\n出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款\n共 1 条\n1\n50 条/页",
+      "tableText": "出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "draftField": "备注",
+  "values": [
+    {
+      "label": "仓库\n请选择",
+      "value": ""
+    },
+    {
+      "label": "库位",
+      "value": ""
+    },
+    {
+      "label": "盘点日期",
+      "value": "2026-11-18"
+    },
+    {
+      "label": "盘点人",
+      "value": ""
+    },
+    {
+      "label": "备注",
+      "value": ""
+    },
+    {
+      "value": ""
+    },
+    {
+      "value": ""
+    },
+    {
+      "value": "pcs"
+    },
+    {
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

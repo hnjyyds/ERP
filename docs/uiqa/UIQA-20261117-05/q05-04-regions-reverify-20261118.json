@@ -1,0 +1,117 @@
+{
+  "defect": "Q05-04",
+  "batch": "第三批：P06/P11子场景补测与P17/P18/P20/P23/P25关联选择",
+  "asset": "assets/index-DJFI-T9o.js",
+  "css": "assets/index-CVMx6kR8.css",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "admin",
+  "changes": {
+    "product_options": "商品检索选项携带单位/规格/型号派生值",
+    "P06": "出口报价商品选择同步派生规格、型号、单位；切换与清空不保留旧值",
+    "P11": "切换或清空供应商时清空旧采购合同与商品关联；商品选择同步单位",
+    "P17": "跟单计划生成与业务来源回写的采购合同改为业务选择器；来源记录ID与来源摘要不再预填演示值",
+    "P18_P20": "入库/出库排库位的仓库、库位改为业务选择器，选择后回填名称，替代必填内部ID文本输入",
+    "P23": "收款认领的业务员改为用户选择器；分摊的出口合同改为合同选择器",
+    "P25": "费用发票登记的合作伙伴、出运单、业务员改为业务选择器"
+  },
+  "P06": {
+    "path": "/sales/quotations",
+    "steps": [
+      "打开新增出口报价，选择商品 QA261112-P01：规格=180×70cm / 含中文与符号，型号=QA-M01，单位=pcs",
+      "切换商品 演示商品｜棉麻收纳袋(UI261114-P01)：规格=32 × 40 cm；米色；棉麻面料，型号=DEMO-BAG-3240，单位=pcs，旧值未残留",
+      "清空商品：商品选择器恢复占位，规格/型号/单位一并清空"
+    ],
+    "screenshots": [
+      "screenshots/P06-product-A-DJFI-1440.png",
+      "screenshots/P06-product-B-DJFI-1440.png",
+      "screenshots/P06-product-cleared-DJFI-1440.png",
+      "screenshots/P06-product-DJFI-390.png"
+    ],
+    "result": "子场景通过；D02整项未通过"
+  },
+  "P11": {
+    "path": "/purchase/invoice-notices",
+    "steps": [
+      "A行选择供应商 QA261112 测试供应商、采购合同 PC-HR36RU、商品 QA261112 验收测试围巾，单位派生 pcs，B行保持空白",
+      "A行切换供应商为 演示供应商｜江南织造：旧采购合同与商品自动清空，恢复占位；B行不受影响",
+      "来源记录ID/来源摘要不再出现演示预填"
+    ],
+    "screenshots": [
+      "screenshots/P11-supplier-contract-product-DJFI-1440.png",
+      "screenshots/P11-supplier-switched-DJFI-1440.png",
+      "screenshots/P11-generate-DJFI-390.png"
+    ],
+    "result": "子场景通过；D02整项未通过"
+  },
+  "P17": {
+    "path": "/purchase/followup",
+    "checks": [
+      "配置/生成弹窗两处采购合同均为选择器，可检索 PC-HR36RU 并回填",
+      "业务来源回写的来源记录ID、来源摘要为空，不再预填 confirm_sample_submitted-source 等演示值"
+    ],
+    "screenshots": [
+      "screenshots/P17-generate-selectors-DJFI-1440.png",
+      "screenshots/P17-generate-DJFI-390.png"
+    ],
+    "result": "子场景通过；D02整项未通过"
+  },
+  "P18": {
+    "path": "/warehouse/inbound-plans",
+    "checks": ["排库位表单仓库/库位为选择器；选择后仓库=QA261112 测试仓库、库位=QA261112-A01，无内部ID手填框"],
+    "screenshots": [
+      "screenshots/P18-warehouse-location-DJFI-1440.png",
+      "screenshots/P18-warehouse-location-DJFI-390.png"
+    ],
+    "result": "子场景通过；D02整项未通过"
+  },
+  "P20": {
+    "path": "/warehouse/outbound-plans",
+    "checks": ["排库位表单仓库/库位为选择器；选择后仓库=QA261112 测试仓库、库位=QA261112-A01"],
+    "screenshots": [
+      "screenshots/P20-warehouse-location-DJFI-1440.png",
+      "screenshots/P20-warehouse-location-DJFI-390.png"
+    ],
+    "result": "子场景通过；D02整项未通过"
+  },
+  "P23": {
+    "path": "/finance/receipts",
+    "checks": [
+      "收款详情认领区业务员为选择器，选择系统管理员后显示姓名",
+      "分摊区出口合同为选择器，选择 EC-F8D7RX 后显示合同号"
+    ],
+    "screenshots": [
+      "screenshots/P23-claim-allocation-DJFI-1440.png",
+      "screenshots/P23-claim-allocation-DJFI-390.png"
+    ],
+    "result": "子场景通过；D02整项未通过"
+  },
+  "P25": {
+    "path": "/finance/fees",
+    "checks": [
+      "费用发票登记合作伙伴选择 QA261112 测试货代 并回填名称",
+      "出运单选择 SP-DAEPEG 并回填单号",
+      "业务员选择 系统管理员 并回填姓名"
+    ],
+    "screenshots": [
+      "screenshots/P25-partner-shipment-sales-DJFI-1440.png",
+      "screenshots/P25-partner-shipment-sales-DJFI-390.png"
+    ],
+    "result": "子场景通过；D02整项未通过"
+  },
+  "viewport": {
+    "1440": "无横向溢出",
+    "1280": "六个弹窗宽度 760-1040，无横向溢出",
+    "390": "七个页面/弹窗 bodyOverflow=false，弹窗宽度 374"
+  },
+  "automation": {
+    "vitest": "423 passed / 50 files",
+    "tsc": "passed",
+    "eslint": "passed"
+  },
+  "boundaries": {
+    "business_writes": "本轮未提交出口报价、开票通知、跟单计划、库位、认领/分摊或费用发票",
+    "new_data": 0
+  },
+  "status": "Q05-04 仍为部分修复：P06/P11 子场景与 P17/P18/P20/P23/P25 关联选择已部署复验；D02 整项不通过，缺陷不关闭",
+  "verified_at": "2026-11-18"
+}

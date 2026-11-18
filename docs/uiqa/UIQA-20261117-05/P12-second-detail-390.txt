@@ -1,0 +1,287 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=7780, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "样品登记"
+        container
+          button "通知" [ref=7762, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=7763, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "样品登记概览"
+          container
+            text "样品"
+            text "2"
+          container
+            text "确认样"
+            text "1"
+          container
+            text "图片"
+            text "1"
+          container
+            text "留样"
+            text "2"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "样品明细"
+            button [ref=7764]
+              svg_root
+              text "返回列表"
+          unordered_list
+            container
+              list_item
+                text "样品编号"
+              list_item
+                text "SM-ZB334N"
+            container
+              list_item
+                text "分类/状态"
+              list_item
+                text "来样"
+                text "/"
+                text "已登记"
+            container
+              list_item
+                text "产品"
+              list_item
+                text "QA261112-P01"
+                text "/"
+                text "QA261112 验收测试围巾"
+            container
+              list_item
+                text "客户/供应商"
+              list_item
+                text "QA261112 测试客户"
+                text "/"
+                text "QA261112 测试供应商"
+            container
+              list_item
+                text "客户货号"
+              list_item
+                text "-"
+            container
+              list_item
+                text "供应商货号"
+              list_item
+                text "-"
+            container
+              list_item
+                text "采购合同"
+              list_item
+                text "-"
+            container
+              list_item
+                text "样品来源"
+              list_item
+                text "-"
+            list_item
+              text "来源单号"
+            list_item
+              text "-"
+            list_item
+              text "收样/提交"
+            list_item
+              text "2026-11-12"
+              text "/"
+              text "-"
+          table
+            table_row
+              table_cell
+          container [ref=7781]
+            table
+              table_row
+                table_cell
+                  text "收样数"
+                table_cell
+                  text "寄样数"
+                table_cell
+                  text "公司留样"
+                table_cell
+                  text "单位"
+              table_row
+                table_cell
+                  text "3"
+                table_cell
+                  text "1"
+                table_cell
+                  text "2"
+                table_cell
+                  text "pcs"
+          table
+            table_row
+              table_cell
+          table
+            table_row
+              table_cell
+          container [ref=7782]
+            table
+              table_row
+                table_cell
+                  text "图片预览"
+                table_cell
+                  text "图片文件"
+                table_cell
+                  text "说明"
+                table_cell
+                  text "主图"
+              table_row
+                table_cell
+                  anchor [ref=7765, loc=href:/uploads/images/b6c7ee8e2bd7403896b42a971e5f7b04-3dd95070b17c5fb4.png, url=http://localhost:8080/uploads/images/b6c7ee8e2bd7403896b42a971e5f7b04-3dd95070b17c5fb4.png]
+                    image
+                    text "查看原图"
+                table_cell
+                  text "demo-bag.png"
+                table_cell
+                  text "-"
+                table_cell
+                  text "否"
+          table
+            table_row
+              table_cell
+          table
+            table_row
+              table_cell
+          container [ref=7783]
+            table
+              table_row
+                table_cell
+                  text "跟单节点"
+                table_cell
+                  text "实际日期"
+                table_cell
+                  text "采购合同"
+                table_cell
+                  text "事件"
+              table_row
+                table_cell
+                  text "暂无跟单节点事件"
+          table
+            table_row
+              table_cell
+          form
+            text "追加图片"
+            text "样品图片"
+            button [ref=7766]
+              svg_root
+              text "上传图片"
+            paragraph
+              text "尚未上传样品图片"
+            container
+              text "图片说明"
+              textbox [ref=7767]
+            button [ref=7768]
+              text "追加样品图片"
+          form
+            text "数量事件"
+            container
+              text "事件类型"
+              container
+                text "寄样"
+                comboboxgrouping [ref=7769]
+                svg_root
+            container
+              text "数量"
+              spinbutton [ref=7770]
+                text "1"
+            container
+              text "日期"
+              textbox [ref=7771]
+                spinbutton "年" [ref=7772]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=7773]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=7774]
+                  text "18"
+            container
+              text "单位"
+              textbox [ref=7775]
+                text "pcs"
+            container
+              text "寄样单号"
+              textbox [ref=7776]
+            container
+              text "接收方"
+              textbox [ref=7777]
+            container
+              text "事件备注"
+              textbox [ref=7778]
+            button [ref=7779]
+              text "登记样品数量"
+          table
+            table_row
+              table_cell
+          container [ref=7784]
+            table
+              table_row
+                table_cell
+                  text "事件类型"
+                table_cell
+                  text "数量"
+                table_cell
+                  text "单位"
+                table_cell
+                  text "日期"
+                table_cell
+                  text "寄样单号"
+                table_cell
+                  text "接收方"
+                table_cell
+                  text "说明"
+              table_row
+                table_cell
+                  text "寄样"
+                table_cell
+                  text "1"
+                table_cell
+                  text "pcs"
+                table_cell
+                  text "2026-11-12"
+                table_cell
+                  text "SD-CXE849"
+                table_cell
+                  text "QA261112 测试客户"
+                table_cell
+                  text "-"
+              table_row
+                table_cell
+                  text "收样"
+                table_cell
+                  text "3"
+                table_cell
+                  text "pcs"
+                table_cell
+                  text "2026-11-12"
+                table_cell
+                  text "-"
+                table_cell
+                  text "QA261112 测试供应商"
+                table_cell
+                  text "-"
+          table
+            table_row
+              table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

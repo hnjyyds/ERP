@@ -1,0 +1,149 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=5999, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "采购合同"
+        container
+          button "通知" [ref=5913, loc=css:button[aria-label="通知"]]
+            svg_root
+          button "系统设置" [ref=5914, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "采购合同概览"
+          container
+            text "采购合同"
+            text "1"
+          container
+            text "待审批"
+            text "0"
+          container
+            text "已审批"
+            text "1"
+          container
+            text "合同金额"
+            text "RMB 250.00"
+          container
+            text "待办提醒"
+            text "2"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "采购合同列表"
+            form
+              container
+                text "合同搜索"
+                textbox [ref=5937, loc=css:input[placeholder="合同号 / 供应商 / 商品 / 备注"]]
+                  text "合同号 / 供应商 / 商品 / 备注"
+              container
+                text "审批状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=5938]
+                  image "down"
+                    svg_root
+              container
+                text "来源类型"
+                container
+                  container
+                    text "全部来源"
+                    comboboxgrouping [ref=5939]
+                  image "down"
+                    svg_root
+              container
+                text "供应商标识"
+                container
+                  container
+                    text "输入供应商编号或名称"
+                    comboboxgrouping "供应商标识" [ref=5940, loc=css:input[aria-label="供应商标识"]]
+                  image "down"
+                    svg_root
+              button [ref=5941]
+                svg_root
+                text "查询"
+              button [ref=5942]
+                svg_root
+                text "新增采购合同"
+              button [ref=5943]
+                svg_root
+                text "从出口合同生成"
+          container [ref=6000]
+            table
+              table_row
+                table_cell
+            container [ref=5944]
+              container [ref=6001]
+                table
+                  table_row
+                    table_cell
+                      text "采购合同"
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "来源"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "QC 负责人"
+                    table_cell
+                      text "交货日"
+                    table_cell
+                      text "金额"
+                    table_cell
+                      text "入口"
+                  table_row
+                    table_cell
+                      button [ref=5945]
+                        text "PC-HR36RU"
+                    table_cell
+                      text "已审批"
+                    table_cell
+                      text "手工采购"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "演示 QC 专员"
+                    table_cell
+                      text "2026-11-12"
+                    table_cell
+                      text "RMB 250.00"
+                    table_cell
+                      button [ref=5946]
+                        text "查看详情"
+            unordered_list
+              list_item
+                text "共 1 条"
+              list_item
+                button [ref=5947]
+                  image "left"
+                    svg_root
+              list_item [ref=5948]
+                anchor [ref=5949]
+                  text "1"
+              list_item
+                button [ref=5950]
+                  image "right"
+                    svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

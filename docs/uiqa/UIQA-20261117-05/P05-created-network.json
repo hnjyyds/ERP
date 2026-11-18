@@ -1,0 +1,100 @@
+[
+  {
+    "requestId": "79503.2359",
+    "url": "http://localhost:8080/api/v1/masterdata/document-parties",
+    "status": 201,
+    "method": "POST",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "id": "5021d7c5-d1aa-4390-8d5e-e918aa1ff13c",
+        "code": "UIQA-20261117-05-D01",
+        "party_type": "notify_party",
+        "display_name": "UIQA全量验收通知人",
+        "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+        "customer_name": "QA261112 测试客户",
+        "country": "CN",
+        "address": "UIQA测试地址，非真实地址",
+        "contact_person": "UIQA单证联系人",
+        "email": "uiqa-d01@example.invalid",
+        "phone": "00000000003",
+        "bank_name": null,
+        "swift_code": null,
+        "account_no": null,
+        "tax_id": null,
+        "remarks": "UIQA全量验收专用，不用于真实业务单证。",
+        "is_default": false,
+        "status": "inactive",
+        "owner_user_id": "u-baeac30b5127ebdb"
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.2360",
+    "url": "http://localhost:8080/api/v1/masterdata/document-parties?limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "5021d7c5-d1aa-4390-8d5e-e918aa1ff13c",
+            "code": "UIQA-20261117-05-D01",
+            "party_type": "notify_party",
+            "display_name": "UIQA全量验收通知人",
+            "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+            "customer_name": "QA261112 测试客户",
+            "country": "CN",
+            "address": "UIQA测试地址，非真实地址",
+            "contact_person": "UIQA单证联系人",
+            "email": "uiqa-d01@example.invalid",
+            "phone": "00000000003",
+            "bank_name": null,
+            "swift_code": null,
+            "account_no": null,
+            "tax_id": null,
+            "remarks": "UIQA全量验收专用，不用于真实业务单证。",
+            "is_default": false,
+            "status": "inactive",
+            "owner_user_id": "u-baeac30b5127ebdb"
+          },
+          {
+            "id": "17c307a3-aa85-4e9b-b896-f44bca130965",
+            "code": "QA261112-D01",
+            "party_type": "consignee",
+            "display_name": "QA261112 测试收货人",
+            "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+            "customer_name": "QA261112 测试客户",
+            "country": "DE",
+            "address": null,
+            "contact_person": null,
+            "email": null,
+            "phone": null,
+            "bank_name": null,
+            "swift_code": null,
+            "account_no": null,
+            "tax_id": null,
+            "remarks": "QA261112 单证引用测试",
+            "is_default": false,
+            "status": "active",
+            "owner_user_id": "u-baeac30b5127ebdb"
+          }
+        ],
+        "total": 2,
+        "summary": {
+          "total": 2,
+          "default_count": 0,
+          "consignee_count": 1,
+          "issuing_bank_count": 0
+        }
+      },
+      "error": null
+    }
+  }
+]

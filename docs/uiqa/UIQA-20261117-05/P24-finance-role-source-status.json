@@ -1,0 +1,14 @@
+[
+  {
+    "url": "http://localhost:8080/api/v1/purchase/contracts?limit=20",
+    "status": 403
+  },
+  {
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers?limit=20",
+    "status": 403
+  },
+  {
+    "url": "http://localhost:8080/api/v1/purchase/invoice-notices?limit=20",
+    "status": 403
+  }
+]

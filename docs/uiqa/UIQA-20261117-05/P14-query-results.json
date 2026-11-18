@@ -1,0 +1,140 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "寄样搜索",
+    "before": {
+      "url": "http://localhost:8080/sample/deliveries",
+      "form": "寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单",
+      "inputs": [
+        {
+          "label": "寄样搜索",
+          "value": ""
+        },
+        {
+          "label": "审核状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "快递公司",
+          "value": ""
+        },
+        {
+          "label": "寄样起始日期",
+          "value": ""
+        },
+        {
+          "label": "寄样截止日期",
+          "value": ""
+        }
+      ],
+      "text": "寄样单列表\n寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单\n寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情"
+    },
+    "positive": "SD-CXE849",
+    "hit": {
+      "url": "http://localhost:8080/sample/deliveries?q=SD-CXE849",
+      "form": "寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单",
+      "inputs": [
+        {
+          "label": "寄样搜索",
+          "value": "SD-CXE849"
+        },
+        {
+          "label": "审核状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "快递公司",
+          "value": ""
+        },
+        {
+          "label": "寄样起始日期",
+          "value": ""
+        },
+        {
+          "label": "寄样截止日期",
+          "value": ""
+        }
+      ],
+      "text": "寄样单列表\n寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单\n寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/sample/deliveries?q=UIQA-20261117-05-NOMATCH",
+      "form": "寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单",
+      "inputs": [
+        {
+          "label": "寄样搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "审核状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "快递公司",
+          "value": ""
+        },
+        {
+          "label": "寄样起始日期",
+          "value": ""
+        },
+        {
+          "label": "寄样截止日期",
+          "value": ""
+        }
+      ],
+      "text": "寄样单列表\n寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单\n寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/sample/deliveries",
+      "form": "寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单",
+      "inputs": [
+        {
+          "label": "寄样搜索",
+          "value": ""
+        },
+        {
+          "label": "审核状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "快递公司",
+          "value": ""
+        },
+        {
+          "label": "寄样起始日期",
+          "value": ""
+        },
+        {
+          "label": "寄样截止日期",
+          "value": ""
+        }
+      ],
+      "text": "寄样单列表\n寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单\n寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

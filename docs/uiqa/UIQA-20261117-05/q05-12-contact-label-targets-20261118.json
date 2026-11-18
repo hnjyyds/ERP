@@ -1,0 +1,20 @@
+{
+  "defect": "Q05-12",
+  "asset": "assets/index-Bpsh7zKB.js",
+  "viewport": "390x844",
+  "threshold": { "height": 44 },
+  "method": "打开“新增联系人”弹窗，取原生 input.labels 中包含“设为主要联系人”的外层 label 测量；点击文字与聚焦后按 Space 验证",
+  "results": {
+    "supplier": { "labelText": "设为主要联系人", "height": 45, "width": 270, "checkbox": "16x16", "clickToChecked": true, "spaceToChecked": true, "spaceToUnchecked": true },
+    "customer": { "labelText": "设为主要联系人", "height": 45, "width": 270, "checkbox": "16x16" },
+    "partner": { "labelText": "设为主要联系人", "height": 45, "width": 270, "checkbox": "16x16" }
+  },
+  "save_action": "均未保存，弹窗以 Escape 关闭",
+  "screenshots": [
+    "screenshots/q05-12-supplier-label-Bpsh-390.png",
+    "screenshots/q05-12-customer-label-Bpsh-390.png",
+    "screenshots/q05-12-partner-label-Bpsh-390.png"
+  ],
+  "conclusion": "三页联系人外层 label 均 45px；点击文字与 Space 均可切换，复选框图形仍为 16×16。Q05-12 关闭。",
+  "captured_at": "2026-11-18T21:00:00+08:00"
+}

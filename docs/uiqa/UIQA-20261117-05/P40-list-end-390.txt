@@ -1,0 +1,185 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=3164, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "组织管理"
+        button "通知" [ref=3156, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=3157, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        svg_root
+        text "用户"
+        text "7"
+        svg_root
+        text "启用"
+        text "7"
+        svg_root
+        text "停用"
+        text "0"
+        svg_root
+        text "部门"
+        text "7"
+        svg_root
+        text "角色"
+        text "6"
+        container
+          svg_root
+          textbox "搜索用户、部门或角色" [ref=3298, loc=css:input[placeholder="搜索用户、部门或角色"]]
+            text "搜索用户、部门或角色"
+        button [ref=3299]
+          svg_root
+          text "新增用户"
+        container "公司信息"
+          container
+            svg_root
+            heading
+              text "公司信息"
+            paragraph
+              text "公司抬头、银行信息用于单证和对外文件。"
+            button [ref=3300]
+              svg_root
+              text "编辑公司信息"
+          text "当前抬头"
+          text "新裴贸易"
+          text "暂无英文名称或单证抬头"
+          text "电话"
+          text "-"
+          text "邮箱"
+          text "-"
+          text "开户行"
+          text "-"
+          text "银行账号"
+          text "-"
+        container
+          tab [ref=3301]
+            text "用户管理"
+          tab [ref=3302]
+            text "部门与角色"
+          tabpanel "用户管理" [ref=3303, loc=role:tabpanel[name="用户管理"]]
+            container "用户列表"
+              button [ref=3304]
+                image "演示 QC 专员 的头像"
+                  svg_root
+                container
+                  text "演示 QC 专员"
+                  container
+                    text "qc"
+                    text "·"
+                    text "品质部"
+                text "启用"
+              button [ref=3305]
+                image "演示仓库专员 的头像"
+                  svg_root
+                container
+                  text "演示仓库专员"
+                  container
+                    text "warehouse"
+                    text "·"
+                    text "仓储部"
+                text "启用"
+              button [ref=3306]
+                image "演示财务主管 的头像"
+                  svg_root
+                container
+                  text "演示财务主管"
+                  container
+                    text "finance_manager"
+                    text "·"
+                    text "财务部"
+                text "启用"
+              button [ref=3307]
+                image "演示财务 的头像"
+                  svg_root
+                container
+                  text "演示财务"
+                  container
+                    text "finance"
+                    text "·"
+                    text "财务部"
+                text "启用"
+              button [ref=3308]
+                image "演示采购专员 的头像"
+                  svg_root
+                container
+                  text "演示采购专员"
+                  container
+                    text "purchase"
+                    text "·"
+                    text "采购部"
+                text "启用"
+              button [ref=3309]
+                image "演示业务主管 的头像"
+                  svg_root
+                container
+                  text "演示业务主管"
+                  container
+                    text "demo"
+                    text "·"
+                    text "业务部"
+                text "启用"
+              button [ref=3310]
+                image "系统管理员 的头像"
+                  svg_root
+                container
+                  text "系统管理员"
+                  container
+                    text "admin"
+                    text "·"
+                    text "管理部"
+                text "启用"
+            container "用户详情"
+              container
+                container
+                  image "演示 QC 专员 的头像"
+                    svg_root
+                  container
+                    paragraph
+                      text "qc"
+                    heading
+                      text "演示 QC 专员"
+                text "启用中"
+              container
+                container
+                  text "部门"
+                  text "品质部"
+                container
+                  text "角色"
+                  text "QC 专员"
+                container
+                  text "密码"
+                  text "******"
+                container
+                  text "创建时间"
+                  text "2026-11-11 08:35"
+              container
+                button [ref=3311]
+                  svg_root
+                  text "编辑资料"
+                button [ref=3312]
+                  svg_root
+                  text "编辑用户权限"
+                button [ref=3313]
+                  svg_root
+                  text "重置密码"
+                button [ref=3314]
+                  svg_root
+                  text "删除用户"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

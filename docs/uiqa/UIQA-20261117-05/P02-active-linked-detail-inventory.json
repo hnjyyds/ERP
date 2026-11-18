@@ -1,0 +1,122 @@
+{
+  "url": "http://localhost:8080/masterdata/suppliers/c6d43566-694f-41d0-85f0-6631c6478d52",
+  "title": "供应商资料",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "供应商资料",
+    "供应商资料",
+    "QA261112 测试供应商",
+    "联系人",
+    "业务记录"
+  ],
+  "forms": [],
+  "tables": [
+    {
+      "i": 0,
+      "text": "来源\t编号\t摘要\t金额\t时间\nsupplier_invoice\tUIQA-20261117-04-INV01\t供应商发票 UIQA-20261117-04-INV01（CNY）\t0.01\t2026-11-17\nsupplier_quotation\tPI-KTPXTU\t供应商报价 PI-KTPXTU（RMB）\t12.50\t2026-11-12\npurchase_contract\tPC-HR36RU\t采购合同 PC-HR36RU（RMB）\t250.00\t2026-11-12\nsupplier_invoice\tQA261112-INV01\t供应商发票 QA261112-INV01（RMB）\t100.00\t2026-11-12",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

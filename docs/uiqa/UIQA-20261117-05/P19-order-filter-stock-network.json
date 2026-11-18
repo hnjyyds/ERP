@@ -1,0 +1,346 @@
+[
+  {
+    "requestId": "79503.3008",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-balances?q=QA261112-P01",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "e518af92-ee15-47cf-9bbe-0499c78bbc08",
+            "warehouse_id": "wh-QA261112",
+            "warehouse_name": "QA261112 测试仓库",
+            "location_id": "loc-QA261112-A01",
+            "location_name": "QA261112-A01",
+            "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+            "product_code": "QA261112-P01",
+            "product_name": "QA261112 验收测试围巾",
+            "available_quantity": "59",
+            "locked_quantity": "0",
+            "pending_inspection_quantity": "0",
+            "unit": "pcs"
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "available_quantity": "59.0000",
+          "pending_inspection_quantity": "0"
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3009",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-ledgers?q=QA261112-P01&source_id=5bf1413c-53e6-466a-805d-199a515a81aa",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "57de05f5-1e5c-44ce-bf77-b63c3b691fd1",
+            "warehouse_id": "wh-QA261112",
+            "warehouse_name": "QA261112 测试仓库",
+            "location_id": "loc-QA261112-A01",
+            "location_name": "QA261112-A01",
+            "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+            "product_code": "QA261112-P01",
+            "product_name": "QA261112 验收测试围巾",
+            "direction": "in",
+            "quantity": "100",
+            "unit": "pcs",
+            "stock_status": "available",
+            "source_type": "inbound_order",
+            "source_id": "5bf1413c-53e6-466a-805d-199a515a81aa",
+            "source_code": "XP-IN-MVU9CU",
+            "occurred_at": "2026-11-12",
+            "remark": "包装: QA261112 临时测试资料\n包装多行说明：12 pcs/carton"
+          }
+        ],
+        "total": 1
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3018",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-balances?q=QA261112-P01&limit=1",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "e518af92-ee15-47cf-9bbe-0499c78bbc08",
+            "warehouse_id": "wh-QA261112",
+            "warehouse_name": "QA261112 测试仓库",
+            "location_id": "loc-QA261112-A01",
+            "location_name": "QA261112-A01",
+            "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+            "product_code": "QA261112-P01",
+            "product_name": "QA261112 验收测试围巾",
+            "available_quantity": "59",
+            "locked_quantity": "0",
+            "pending_inspection_quantity": "0",
+            "unit": "pcs"
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "available_quantity": "59.0000",
+          "pending_inspection_quantity": "0"
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3017",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-plans?status=planned",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0,
+        "summary": {
+          "planned_count": 0,
+          "scheduled_count": 0,
+          "total_quantity": "0",
+          "type_count": 0
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3014",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders?q=XP-IN-MVU9CU&limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "5bf1413c-53e6-466a-805d-199a515a81aa",
+            "code": "XP-IN-MVU9CU",
+            "plan_id": "0f1e8d8b-f7cc-4745-bf89-4062e8153de5",
+            "purchase_contract_id": "56cd6434-f367-4553-8caf-092a96ab097d",
+            "purchase_contract_no": "PC-HR36RU",
+            "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+            "supplier_name": "QA261112 测试供应商",
+            "inbound_type": "purchase_inbound",
+            "inbound_mode": "formal",
+            "inbound_at": "2026-11-12",
+            "warehouse_id": "wh-QA261112",
+            "warehouse_name": "QA261112 测试仓库",
+            "location_id": "loc-QA261112-A01",
+            "location_name": "QA261112-A01",
+            "operator_name": "QA261112 测试经办",
+            "status": "approved",
+            "submitted_at": "2026-11-12",
+            "approved_at": "2026-11-12",
+            "reviewer_id": "u-001",
+            "reviewer_name": "演示业务主管",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "cancelled_at": null,
+            "cancelled_by_id": null,
+            "cancelled_by_name": null,
+            "cancel_reason": null,
+            "lines": [
+              {
+                "id": "d0ad8ad8-d662-45f7-8c27-f55847b61474",
+                "order_id": "5bf1413c-53e6-466a-805d-199a515a81aa",
+                "plan_line_id": "b5774947-6752-4aa3-a095-c8f7a99b1c3a",
+                "purchase_contract_line_id": "c71ccf7b-121f-40d4-8929-5fc1107bcd44",
+                "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                "product_code": "QA261112-P01",
+                "product_name": "QA261112 验收测试围巾",
+                "specification": "180×70cm / 含中文与符号",
+                "model": "QA-M01",
+                "quantity": "100",
+                "unit": "pcs",
+                "stock_status": "available",
+                "remark": "包装: QA261112 临时测试资料\n包装多行说明：12 pcs/carton"
+              }
+            ]
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "draft_count": 0,
+          "submitted_count": 0,
+          "approved_count": 1
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3016",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-plans?status=scheduled",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0,
+        "summary": {
+          "planned_count": 0,
+          "scheduled_count": 0,
+          "total_quantity": "0",
+          "type_count": 0
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3015",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-plans",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "0f1e8d8b-f7cc-4745-bf89-4062e8153de5",
+            "code": "IP-PC-HR36RU",
+            "purchase_contract_id": "56cd6434-f367-4553-8caf-092a96ab097d",
+            "purchase_contract_no": "PC-HR36RU",
+            "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+            "supplier_name": "QA261112 测试供应商",
+            "inbound_type": "purchase_inbound",
+            "planned_date": "2026-11-12",
+            "status": "closed",
+            "warehouse_id": null,
+            "warehouse_name": null,
+            "location_id": null,
+            "location_name": null,
+            "operator_name": null,
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "lines": [
+              {
+                "id": "b5774947-6752-4aa3-a095-c8f7a99b1c3a",
+                "plan_id": "0f1e8d8b-f7cc-4745-bf89-4062e8153de5",
+                "purchase_contract_line_id": "c71ccf7b-121f-40d4-8929-5fc1107bcd44",
+                "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                "product_code": "QA261112-P01",
+                "product_name": "QA261112 验收测试围巾",
+                "specification": "180×70cm / 含中文与符号",
+                "model": "QA-M01",
+                "planned_quantity": "100",
+                "received_quantity": "100",
+                "unit": "pcs",
+                "status": "closed",
+                "remark": "包装: QA261112 临时测试资料\n包装多行说明：12 pcs/carton"
+              }
+            ]
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "planned_count": 0,
+          "scheduled_count": 0,
+          "total_quantity": "0",
+          "type_count": 1
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3020",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-balances?q=QA261112-P01",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "e518af92-ee15-47cf-9bbe-0499c78bbc08",
+            "warehouse_id": "wh-QA261112",
+            "warehouse_name": "QA261112 测试仓库",
+            "location_id": "loc-QA261112-A01",
+            "location_name": "QA261112-A01",
+            "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+            "product_code": "QA261112-P01",
+            "product_name": "QA261112 验收测试围巾",
+            "available_quantity": "59",
+            "locked_quantity": "0",
+            "pending_inspection_quantity": "0",
+            "unit": "pcs"
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "available_quantity": "59.0000",
+          "pending_inspection_quantity": "0"
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3021",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-ledgers?q=QA261112-P01&source_id=5bf1413c-53e6-466a-805d-199a515a81aa",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "57de05f5-1e5c-44ce-bf77-b63c3b691fd1",
+            "warehouse_id": "wh-QA261112",
+            "warehouse_name": "QA261112 测试仓库",
+            "location_id": "loc-QA261112-A01",
+            "location_name": "QA261112-A01",
+            "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+            "product_code": "QA261112-P01",
+            "product_name": "QA261112 验收测试围巾",
+            "direction": "in",
+            "quantity": "100",
+            "unit": "pcs",
+            "stock_status": "available",
+            "source_type": "inbound_order",
+            "source_id": "5bf1413c-53e6-466a-805d-199a515a81aa",
+            "source_code": "XP-IN-MVU9CU",
+            "occurred_at": "2026-11-12",
+            "remark": "包装: QA261112 临时测试资料\n包装多行说明：12 pcs/carton"
+          }
+        ],
+        "total": 1
+      },
+      "error": null
+    }
+  }
+]

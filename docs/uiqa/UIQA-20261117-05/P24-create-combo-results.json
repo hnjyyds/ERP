@@ -1,0 +1,516 @@
+[
+  {
+    "control": {
+      "i": 6,
+      "id": "_r_v_",
+      "label": "供应商\n输入供应商编号或名称",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 0,
+        "label": "UIQA全量验收停用供应商样本\nUIQA-20261117-05-S01",
+        "title": "UIQA全量验收停用供应商样本",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 1,
+        "label": "演示供应商｜江南织造\nUI261114-S01",
+        "title": "演示供应商｜江南织造",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 2,
+        "label": "QA261112 测试供应商\nQA261112-S01",
+        "title": "QA261112 测试供应商",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "UIQA全量验收停用供应商样本\nUIQA-20261117-05-S01",
+        "state": {
+          "selected": "UIQA全量验收停用供应商样本",
+          "fields": [
+            {
+              "label": "供应商发票号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "发票日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "供应商\nUIQA全量验收停用供应商样本",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "开票通知\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "发票金额",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "CNY"
+            },
+            {
+              "label": "到期日",
+              "type": "date",
+              "value": "2026-12-17"
+            },
+            {
+              "label": "备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "演示供应商｜江南织造\nUI261114-S01",
+        "state": {
+          "selected": "演示供应商｜江南织造",
+          "fields": [
+            {
+              "label": "供应商发票号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "发票日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "供应商\n演示供应商｜江南织造",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "开票通知\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "发票金额",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "CNY"
+            },
+            {
+              "label": "到期日",
+              "type": "date",
+              "value": "2026-12-17"
+            },
+            {
+              "label": "备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入供应商编号或名称",
+      "fields": [
+        {
+          "label": "供应商发票号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "发票日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "供应商\n输入供应商编号或名称",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "开票通知\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "采购合同\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "发票金额",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "币种",
+          "type": "text",
+          "value": "CNY"
+        },
+        {
+          "label": "到期日",
+          "type": "date",
+          "value": "2026-12-17"
+        },
+        {
+          "label": "备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 7,
+      "id": "_r_11_",
+      "label": "开票通知\n输入关键词搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 3,
+        "label": "PIN-UIQA-20261117-02-01\nUIQA-20261117-02 测试供应商A",
+        "title": "PIN-UIQA-20261117-02-01",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 4,
+        "label": "PIN-UIQA-20261117-02-02\nUIQA-20261117-02 测试供应商B",
+        "title": "PIN-UIQA-20261117-02-02",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 5,
+        "label": "PIN-UIQA-20261117-04-01\nQA261112 测试供应商",
+        "title": "PIN-UIQA-20261117-04-01",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "PIN-UIQA-20261117-02-01\nUIQA-20261117-02 测试供应商A",
+        "state": {
+          "selected": "PIN-UIQA-20261117-02-01",
+          "fields": [
+            {
+              "label": "供应商发票号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "发票日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "供应商\n输入供应商编号或名称",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "开票通知\nPIN-UIQA-20261117-02-01",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "发票金额",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "CNY"
+            },
+            {
+              "label": "到期日",
+              "type": "date",
+              "value": "2026-12-17"
+            },
+            {
+              "label": "备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "PIN-UIQA-20261117-02-02\nUIQA-20261117-02 测试供应商B",
+        "state": {
+          "selected": "PIN-UIQA-20261117-02-02",
+          "fields": [
+            {
+              "label": "供应商发票号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "发票日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "供应商\n输入供应商编号或名称",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "开票通知\nPIN-UIQA-20261117-02-02",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "发票金额",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "CNY"
+            },
+            {
+              "label": "到期日",
+              "type": "date",
+              "value": "2026-12-17"
+            },
+            {
+              "label": "备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入关键词搜索",
+      "fields": [
+        {
+          "label": "供应商发票号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "发票日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "供应商\n输入供应商编号或名称",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "开票通知\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "采购合同\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "发票金额",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "币种",
+          "type": "text",
+          "value": "CNY"
+        },
+        {
+          "label": "到期日",
+          "type": "date",
+          "value": "2026-12-17"
+        },
+        {
+          "label": "备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 8,
+      "id": "_r_13_",
+      "label": "采购合同\n输入关键词搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 6,
+        "label": "PC-HR36RU\nQA261112 测试供应商",
+        "title": "PC-HR36RU",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "PC-HR36RU\nQA261112 测试供应商",
+        "state": {
+          "selected": "PC-HR36RU",
+          "fields": [
+            {
+              "label": "供应商发票号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "发票日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "供应商\n输入供应商编号或名称",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "开票通知\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同\nPC-HR36RU",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "发票金额",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "CNY"
+            },
+            {
+              "label": "到期日",
+              "type": "date",
+              "value": "2026-12-17"
+            },
+            {
+              "label": "备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入关键词搜索",
+      "fields": [
+        {
+          "label": "供应商发票号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "发票日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "供应商\n输入供应商编号或名称",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "开票通知\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "采购合同\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "发票金额",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "币种",
+          "type": "text",
+          "value": "CNY"
+        },
+        {
+          "label": "到期日",
+          "type": "date",
+          "value": "2026-12-17"
+        },
+        {
+          "label": "备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  }
+]

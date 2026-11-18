@@ -1,0 +1,202 @@
+[
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "checked": false,
+    "ariaLabel": null,
+    "ariaLabelledby": null,
+    "labels": [
+      {
+        "text": "设为主要联系人",
+        "rect": {
+          "x": 392,
+          "y": 498.7265625,
+          "width": 656,
+          "height": 18,
+          "top": 498.7265625,
+          "right": 1048,
+          "bottom": 516.7265625,
+          "left": 392
+        }
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 392,
+          "y": 499.7265625,
+          "width": 16,
+          "height": 16,
+          "top": 499.7265625,
+          "right": 408,
+          "bottom": 515.7265625,
+          "left": 392
+        }
+      }
+    ],
+    "rect": {
+      "x": 392,
+      "y": 499.7265625,
+      "width": 16,
+      "height": 16,
+      "top": 499.7265625,
+      "right": 408,
+      "bottom": 515.7265625,
+      "left": 392
+    },
+    "afterText": true,
+    "afterSpace": true,
+    "ax": [
+      {
+        "name": "  设为主要联系人",
+        "properties": [
+          {
+            "name": "invalid",
+            "value": {
+              "type": "token",
+              "value": "false"
+            }
+          },
+          {
+            "name": "focusable",
+            "value": {
+              "type": "booleanOrUndefined",
+              "value": true
+            }
+          },
+          {
+            "name": "focused",
+            "value": {
+              "type": "booleanOrUndefined",
+              "value": true
+            }
+          },
+          {
+            "name": "checked",
+            "value": {
+              "type": "tristate",
+              "value": "false"
+            }
+          },
+          {
+            "name": "labelledby",
+            "value": {
+              "type": "nodeList",
+              "relatedNodes": [
+                {
+                  "backendDOMNodeId": 62261,
+                  "text": "  设为主要联系人"
+                },
+                {
+                  "backendDOMNodeId": 62262,
+                  "text": ""
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "checked": false,
+    "ariaLabel": null,
+    "ariaLabelledby": null,
+    "labels": [
+      {
+        "text": "设为主要联系人",
+        "rect": {
+          "x": 60,
+          "y": 558.7265625,
+          "width": 270,
+          "height": 18,
+          "top": 558.7265625,
+          "right": 330,
+          "bottom": 576.7265625,
+          "left": 60
+        }
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 60,
+          "y": 559.7265625,
+          "width": 16,
+          "height": 16,
+          "top": 559.7265625,
+          "right": 76,
+          "bottom": 575.7265625,
+          "left": 60
+        }
+      }
+    ],
+    "rect": {
+      "x": 60,
+      "y": 559.7265625,
+      "width": 16,
+      "height": 16,
+      "top": 559.7265625,
+      "right": 76,
+      "bottom": 575.7265625,
+      "left": 60
+    },
+    "afterText": true,
+    "afterSpace": true,
+    "ax": [
+      {
+        "name": "  设为主要联系人",
+        "properties": [
+          {
+            "name": "invalid",
+            "value": {
+              "type": "token",
+              "value": "false"
+            }
+          },
+          {
+            "name": "focusable",
+            "value": {
+              "type": "booleanOrUndefined",
+              "value": true
+            }
+          },
+          {
+            "name": "focused",
+            "value": {
+              "type": "booleanOrUndefined",
+              "value": true
+            }
+          },
+          {
+            "name": "checked",
+            "value": {
+              "type": "tristate",
+              "value": "false"
+            }
+          },
+          {
+            "name": "labelledby",
+            "value": {
+              "type": "nodeList",
+              "relatedNodes": [
+                {
+                  "backendDOMNodeId": 62261,
+                  "text": "  设为主要联系人"
+                },
+                {
+                  "backendDOMNodeId": 62262,
+                  "text": ""
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

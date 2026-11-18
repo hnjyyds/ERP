@@ -1,0 +1,342 @@
+{
+  "url": "http://localhost:8080/masterdata/products",
+  "title": "商品资料",
+  "viewport": [
+    1500,
+    803
+  ],
+  "headings": [
+    "商品资料",
+    "商品资料"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "搜索\n新增商品\n导入\n导出",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 256.640625,
+            "width": 781.90625,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1062.90625,
+            "bottom": 292.640625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "label": "查询商品",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1074.90625,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1110.90625,
+            "bottom": 292.640625,
+            "left": 1074.90625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增商品",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1118.90625,
+            "y": 256.640625,
+            "width": 111.046875,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1229.953125,
+            "bottom": 292.640625,
+            "left": 1118.90625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "导入商品",
+          "text": "导入",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1237.953125,
+            "y": 256.640625,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1322.4765625,
+            "bottom": 292.640625,
+            "left": 1237.953125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "导出全部商品",
+          "text": "导出",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1330.4765625,
+            "y": 256.640625,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1415,
+            "bottom": 292.640625,
+            "left": 1330.4765625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "设置列视图",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1423,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1459,
+            "bottom": 292.640625,
+            "left": 1423
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "\t编号\t中文名称\t英文名称\t海关编码\t单位\t状态\t配件\t入口\n\n\tUIQA-20261117-05-P16\tUIQA分页验收商品16\tUIQA Paging Test Product 16\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P15\tUIQA分页验收商品15\tUIQA Paging Test Product 15\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P14\tUIQA分页验收商品14\tUIQA Paging Test Product 14\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P13\tUIQA分页验收商品13\tUIQA Paging Test Product 13\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P12\tUIQA分页验收商品12\tUIQA Paging Test Product 12\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P11\tUIQA分页验收商品11\tUIQA Paging Test Product 11\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P10\tUIQA分页验收商品10\tUIQA Paging Test Product 10\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P09\tUIQA分页验收商品09\tUIQA Paging Test Product 09\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P08\tUIQA分页验收商品08\tUIQA Paging Test Product 08\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P07\tUIQA分页验收商品07\tUIQA Paging Test Product 07\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P06\tUIQA分页验收商品06\tUIQA Paging Test Product 06\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P05\tUIQA分页验收商品05\tUIQA Paging Test Product 05\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P04\tUIQA分页验收商品04\tUIQA Paging Test Product 04\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P03\tUIQA分页验收商品03\tUIQA Paging Test Product 03\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P02\tUIQA分页验收商品02\tUIQA Paging Test Product 02\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUIQA-20261117-05-P01\tUIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本\tUIQA Full Acceptance Cotton Linen Storage Bag\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUI261114-IMG\t多图验证商品\tMulti Image Product\t8481804090\tpcs\t启用\t0\t\n查看详情\n\n\n\tUI261114-IMG01\t演示商品｜图片上传测试袋\tDemo Image Upload Bag\t0000000000\tpcs\t启用\t0\t\n查看详情\n\n\n\tUI261114-P01\t演示商品｜棉麻收纳袋\tDemo Cotton Linen Storage Bag\t0000000000\tpcs\t启用\t1\t\n查看详情\n\n\n\t\tQA261112 验收测试围巾\tQA261112 Audit Scarf\t6214300000\tpcs\t启用\t0\t\n查看详情\n\n\n\tQA261112-P01\tQA261112 验收测试围巾\tQA261112 Audit Scarf\t6214300000\tpcs\t启用\t1\t\n查看详情",
+      "buttons": [
+        "UIQA-20261117-05-P16",
+        "查看详情",
+        "UIQA-20261117-05-P15",
+        "查看详情",
+        "UIQA-20261117-05-P14",
+        "查看详情",
+        "UIQA-20261117-05-P13",
+        "查看详情",
+        "UIQA-20261117-05-P12",
+        "查看详情",
+        "UIQA-20261117-05-P11",
+        "查看详情",
+        "UIQA-20261117-05-P10",
+        "查看详情",
+        "UIQA-20261117-05-P09",
+        "查看详情",
+        "UIQA-20261117-05-P08",
+        "查看详情",
+        "UIQA-20261117-05-P07",
+        "查看详情",
+        "UIQA-20261117-05-P06",
+        "查看详情",
+        "UIQA-20261117-05-P05",
+        "查看详情",
+        "UIQA-20261117-05-P04",
+        "查看详情",
+        "UIQA-20261117-05-P03",
+        "查看详情",
+        "UIQA-20261117-05-P02",
+        "查看详情",
+        "UIQA-20261117-05-P01",
+        "查看详情",
+        "UI261114-IMG",
+        "查看详情",
+        "UI261114-IMG01",
+        "查看详情",
+        "UI261114-P01",
+        "查看详情",
+        "",
+        "查看详情",
+        "QA261112-P01",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

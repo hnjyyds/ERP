@@ -1,0 +1,647 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=4643, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "商品资料"
+          container
+            button "通知" [ref=4588, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=4589, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "商品资料概览"
+            container
+              text "商品"
+              text "20"
+            container
+              text "配件明细"
+              text "3"
+            container
+              text "有图商品"
+              text "3 件"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "商品资料"
+              form
+                container
+                  text "搜索"
+                  textbox [ref=4647, loc=css:input[placeholder="编号 / 中文 / 英文 / 海关编码"]]
+                    text "编号 / 中文 / 英文 / 海关编码"
+                container
+                  button "查询商品" [ref=4648, loc=css:button[aria-label="查询商品"]]
+                    svg_root
+                  button [ref=4649]
+                    svg_root
+                    text "新增商品"
+                  button "导入商品" [ref=4650, loc=css:button[aria-label="导入商品"]]
+                    svg_root
+                    text "导入"
+                  button "导出全部商品" [ref=4651, loc=css:button[aria-label="导出全部商品"]]
+                    svg_root
+                    text "导出"
+                  button "设置列视图" [ref=4652, loc=css:button[aria-label="设置列视图"]]
+                    svg_root
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=4653]
+                  container [ref=4735]
+                    table
+                      table_row
+                        table_cell
+                          container
+                            checkbox "Select all" [ref=4654, loc=css:input[aria-label="Select all"]]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          text "编号"
+                        table_cell
+                          text "中文名称"
+                        table_cell
+                          text "英文名称"
+                        table_cell
+                          text "海关编码"
+                        table_cell
+                          text "单位"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "配件"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4655]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4656]
+                            text "UIQA-20261117-05-P16"
+                        table_cell
+                          text "UIQA分页验收商品16"
+                        table_cell
+                          text "UIQA Paging Test Product 16"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4657]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4658]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4659]
+                            text "UIQA-20261117-05-P15"
+                        table_cell
+                          text "UIQA分页验收商品15"
+                        table_cell
+                          text "UIQA Paging Test Product 15"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4660]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4661]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4662]
+                            text "UIQA-20261117-05-P14"
+                        table_cell
+                          text "UIQA分页验收商品14"
+                        table_cell
+                          text "UIQA Paging Test Product 14"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4663]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4664]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4665]
+                            text "UIQA-20261117-05-P13"
+                        table_cell
+                          text "UIQA分页验收商品13"
+                        table_cell
+                          text "UIQA Paging Test Product 13"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4666]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4667]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4668]
+                            text "UIQA-20261117-05-P12"
+                        table_cell
+                          text "UIQA分页验收商品12"
+                        table_cell
+                          text "UIQA Paging Test Product 12"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4669]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4670]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4671]
+                            text "UIQA-20261117-05-P11"
+                        table_cell
+                          text "UIQA分页验收商品11"
+                        table_cell
+                          text "UIQA Paging Test Product 11"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4672]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4673]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4674]
+                            text "UIQA-20261117-05-P10"
+                        table_cell
+                          text "UIQA分页验收商品10"
+                        table_cell
+                          text "UIQA Paging Test Product 10"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4675]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4681]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4682]
+                            text "UIQA-20261117-05-P09"
+                        table_cell
+                          text "UIQA分页验收商品09"
+                        table_cell
+                          text "UIQA Paging Test Product 09"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4683]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4684]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4685]
+                            text "UIQA-20261117-05-P08"
+                        table_cell
+                          text "UIQA分页验收商品08"
+                        table_cell
+                          text "UIQA Paging Test Product 08"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4686]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4687]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4688]
+                            text "UIQA-20261117-05-P07"
+                        table_cell
+                          text "UIQA分页验收商品07"
+                        table_cell
+                          text "UIQA Paging Test Product 07"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4689]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4690]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4691]
+                            text "UIQA-20261117-05-P06"
+                        table_cell
+                          text "UIQA分页验收商品06"
+                        table_cell
+                          text "UIQA Paging Test Product 06"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4692]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4693]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4694]
+                            text "UIQA-20261117-05-P05"
+                        table_cell
+                          text "UIQA分页验收商品05"
+                        table_cell
+                          text "UIQA Paging Test Product 05"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4695]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4696]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4697]
+                            text "UIQA-20261117-05-P04"
+                        table_cell
+                          text "UIQA分页验收商品04"
+                        table_cell
+                          text "UIQA Paging Test Product 04"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4698]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4699]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4700]
+                            text "UIQA-20261117-05-P03"
+                        table_cell
+                          text "UIQA分页验收商品03"
+                        table_cell
+                          text "UIQA Paging Test Product 03"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4701]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4702]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4703]
+                            text "UIQA-20261117-05-P01"
+                        table_cell
+                          text "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本"
+                        table_cell
+                          text "UIQA Full Acceptance Cotton Linen Storage Bag"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "1"
+                        table_cell
+                          button [ref=4704]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4705]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4706]
+                            text "UI261114-IMG"
+                        table_cell
+                          text "多图验证商品"
+                        table_cell
+                          text "Multi Image Product"
+                        table_cell
+                          text "8481804090"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4707]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4708]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4709]
+                            text "UI261114-IMG01"
+                        table_cell
+                          text "演示商品｜图片上传测试袋"
+                        table_cell
+                          text "Demo Image Upload Bag"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4710]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4711]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4712]
+                            text "UI261114-P01"
+                        table_cell
+                          text "演示商品｜棉麻收纳袋"
+                        table_cell
+                          text "Demo Cotton Linen Storage Bag"
+                        table_cell
+                          text "0000000000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "1"
+                        table_cell
+                          button [ref=4713]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4714]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4715]
+                        table_cell
+                          text "QA261112 验收测试围巾"
+                        table_cell
+                          text "QA261112 Audit Scarf"
+                        table_cell
+                          text "6214300000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "0"
+                        table_cell
+                          button [ref=4716]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          container
+                            checkbox [ref=4717]
+                            table
+                              table_row
+                                table_cell
+                        table_cell
+                          button [ref=4718]
+                            text "QA261112-P01"
+                        table_cell
+                          text "QA261112 验收测试围巾"
+                        table_cell
+                          text "QA261112 Audit Scarf"
+                        table_cell
+                          text "6214300000"
+                        table_cell
+                          text "pcs"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          text "1"
+                        table_cell
+                          button [ref=4719]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 20 条"
+                  list_item
+                    button [ref=4676]
+                      image "left"
+                        svg_root
+                  list_item [ref=4677]
+                    anchor [ref=4678]
+                      text "1"
+                  list_item
+                    button [ref=4679]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    menu [ref=4720]
+      menuitem
+        text "✓"
+        button [ref=4721]
+          text "编号"
+      menuitem [ref=4722]
+        text "✓"
+        button [ref=4723]
+          text "中文名称"
+      menuitem [ref=4724]
+        text "✓"
+        button [ref=4725]
+          text "英文名称"
+      menuitem [ref=4726]
+        text "✓"
+        button [ref=4727]
+          text "海关编码"
+      menuitem [ref=4728]
+        text "✓"
+        button [ref=4729]
+          text "单位"
+      menuitem [ref=4730]
+        text "✓"
+        button [ref=4731]
+          text "状态"
+      menuitem [ref=4732]
+        text "✓"
+        button [ref=4733]
+          text "配件"
+      splitter
+      menuitem [ref=4734]
+        text "恢复默认"
+    tooltip
+      text "设置列视图"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

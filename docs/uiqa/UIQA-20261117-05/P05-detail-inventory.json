@@ -1,0 +1,167 @@
+{
+  "url": "http://localhost:8080/masterdata/document-parties/17c307a3-aa85-4e9b-b896-f44bca130965",
+  "title": "单证资料",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "单证资料",
+    "单证资料明细",
+    "QA261112 测试收货人",
+    "银行资料"
+  ],
+  "forms": [],
+  "tables": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "identity": {
+    "username": "warehouse",
+    "display_name": "演示仓库专员"
+  },
+  "profile": {
+    "id": "u-warehouse",
+    "username": "warehouse",
+    "display_name": "演示仓库专员",
+    "department_name": "仓储部",
+    "permissions": [
+      "dashboard:view",
+      "masterdata:product:view",
+      "warehouse:inbound_order:approve",
+      "warehouse:inbound_order:edit",
+      "warehouse:inbound_order:view",
+      "warehouse:inbound_order:view_all",
+      "warehouse:inbound_plan:edit",
+      "warehouse:inbound_plan:view",
+      "warehouse:inbound_plan:view_all",
+      "warehouse:outbound_order:approve",
+      "warehouse:outbound_order:edit",
+      "warehouse:outbound_order:view",
+      "warehouse:outbound_order:view_all",
+      "warehouse:outbound_plan:edit",
+      "warehouse:outbound_plan:view",
+      "warehouse:outbound_plan:view_all",
+      "warehouse:stocktake:approve",
+      "warehouse:stocktake:edit",
+      "warehouse:stocktake:view",
+      "warehouse:stocktake:view_all"
+    ]
+  },
+  "menus": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "入仓",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "出库计划",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "货物出库",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "库存盘点",
+      "href": "/warehouse/stocktakes"
+    }
+  ]
+}

@@ -1,0 +1,1104 @@
+{
+  "time": "2026-11-17T08:53:05.144Z",
+  "url": "http://localhost:8080/masterdata/partners/3e4df6ca-23ff-41b4-a522-6afc9f2b8d3e",
+  "viewport": [
+    1280,
+    720
+  ],
+  "scripts": [
+    "http://localhost:8080/assets/index-By6s5oGf.js"
+  ],
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai",
+  "scroll": [
+    0,
+    0,
+    1280,
+    1007
+  ],
+  "focus": "<div role=\"dialog\" aria-labelledby=\"_r_2p_\" aria-modal=\"true\" class=\"ant-modal css-xsuzon\" tabindex=\"-1\" style=\"width: 1040px; transform-origin: 982px 116.719px;\"><div class=\"ant-modal-container\"><button type=\"button\" aria-label=\"Close\" class=\"ant-modal-close\"><span class=\"ant-modal-close-x\" aria-label=\"关闭\"><span role=\"img\" aria-label=\"close\" class=\"anticon anticon-close ant-modal-close-icon\"><svg fill-rule=\"evenodd\" viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"close\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z\"></path></svg></span></span></button><div class=\"ant-modal-header\"><div class=\"ant-modal-title\" id=\"_r_2p_\">编辑合作伙伴</div></div><div class=\"ant-modal-body\"><form class=\"record-form entity-modal-form\"><div class=\"entity-modal-grid\"><label>编号<input disabled=\"\" class=\"ant-input ant-input-disabled css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"UIQA-20261117-05-B01\"></label><label>中文名称<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"UIQA全量验收停用合作伙伴样本\"></label><label>英文名称<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"UIQA Inactive P04 Test Record\"></label><label>合作伙伴类型<div class=\"ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow\"><div class=\"ant-select-content ant-select-content-has-value\" title=\"保险公司\">保险公司<input id=\"_r_2r_\" readonly=\"\" autocomplete=\"off\" class=\"ant-select-input\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-autocomplete=\"list\" type=\"search\" value=\"\"></div><div class=\"ant-select-suffix\"><span role=\"img\" aria-label=\"down\" class=\"anticon anticon-down\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"down\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z\"></path></svg></span></div></div></label><label>国家/地区<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"CN\"></label><label>状态<div class=\"ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow\"><div class=\"ant-select-content ant-select-content-has-value\" title=\"停用\">停用<input id=\"_r_2t_\" readonly=\"\" autocomplete=\"off\" class=\"ant-select-input\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-autocomplete=\"list\" type=\"search\" value=\"\"></div><div class=\"ant-select-suffix\"><span role=\"img\" aria-label=\"down\" class=\"anticon anticon-down\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"down\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z\"></path></svg></span></div></div></label><label>网站<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"\"></label><label class=\"entity-modal-span\">地址<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"UIQA测试资料，非真实地址\"></label></div><div class=\"modal-actions\"><button class=\"secondary-inline\" type=\"button\">取消</button><button class=\"inline-submit\" type=\"submit\">保存合作伙伴</button></div></form></div></div></div>",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "导航",
+      "label": "业务导航",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(239, 239, 239)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "工作台",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        12,
+        76.6953125,
+        211,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "商品资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        155.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "供应商资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        195.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "客户资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        235.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "合作伙伴",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        275.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(40, 76, 184)",
+      "background": "rgb(237, 242, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "单证资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        315.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        403.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        443.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        483.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        523.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        445.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        485.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        525.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        565.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        605.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        645.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        487.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        527.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        567.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        607.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        647.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        567.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        604.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        641.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        678.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        715.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        752.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        789.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        826.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        863.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        900.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        569.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        571.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        611.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        651.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        613.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        653.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "3",
+      "label": "通知",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1180,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1218,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "返回列表",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        784.078125,
+        195.4453125,
+        111.046875,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "新增联系人",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        903.125,
+        195.4453125,
+        124.3046875,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "编辑资料",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1035.4296875,
+        195.4453125,
+        111.046875,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "停用",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1154.4765625,
+        195.4453125,
+        84.5234375,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "编 辑",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        642.828125,
+        597.921875,
+        45.5859375,
+        28
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删 除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        696.4140625,
+        597.921875,
+        45.5859375,
+        28
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Close",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1112,
+        114.28125,
+        28,
+        28
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA-20261117-05-B01",
+      "disabled": true,
+      "rect": [
+        172,
+        220.7265625,
+        298.6640625,
+        36
+      ],
+      "color": "rgb(124, 133, 146)",
+      "background": "rgb(238, 241, 244)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA全量验收停用合作伙伴样本",
+      "disabled": false,
+      "rect": [
+        490.6640625,
+        220.7265625,
+        298.6640625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA Inactive P04 Test Record",
+      "disabled": false,
+      "rect": [
+        809.328125,
+        220.7265625,
+        298.6640625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        183,
+        301.7265625,
+        258.6640625,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "CN",
+      "disabled": false,
+      "rect": [
+        490.6640625,
+        296.7265625,
+        298.6640625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        820.328125,
+        301.7265625,
+        258.6640625,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        172,
+        372.7265625,
+        298.6640625,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "UIQA测试资料，非真实地址",
+      "disabled": false,
+      "rect": [
+        172,
+        448.7265625,
+        935.9921875,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "取消",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        890.0703125,
+        539.7265625,
+        70.5625,
+        36
+      ],
+      "color": "rgb(78, 82, 89)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "保存合作伙伴",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        972.6328125,
+        539.7265625,
+        135.3671875,
+        36
+      ],
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(49, 91, 214)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": true
+    }
+  ],
+  "tables": [
+    "来源\t编号\t摘要\t金额\t时间\n\n\n暂无数据"
+  ],
+  "scrollables": [
+    {
+      "tag": "BODY",
+      "class": "",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "sw": 1280,
+      "sh": 1007,
+      "rect": "{\"x\":0,\"y\":0,\"width\":1280,\"height\":720,\"top\":0,\"right\":1280,\"bottom\":720,\"left\":0}"
+    }
+  ]
+}

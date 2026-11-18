@@ -1,0 +1,233 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "经营总览"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "财务管理概览"
+          container
+            text "出货单"
+            text "1"
+          container
+            text "应收金额"
+            text "USD 205.00"
+          container
+            text "应付成本"
+            text "USD 0.00"
+          container
+            text "预计利润"
+            text "USD 210.00"
+          container
+            text "开票通知"
+            text "3"
+          container
+            text "样品费用"
+            text "0.00"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "出运利润明细"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=2916]
+                container [ref=2921]
+                  table
+                    table_row
+                      table_cell
+                        text "出货单"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "出货日期"
+                      table_cell
+                        text "计划出运"
+                      table_cell
+                        text "应收"
+                      table_cell
+                        text "应付"
+                      table_cell
+                        text "利润"
+                      table_cell
+                        text "利润率"
+                    table_row
+                      table_cell
+                        text "SP-DAEPEG"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "已审批"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "2026-11-25"
+                      table_cell
+                        text "USD 205.00"
+                      table_cell
+                        text "USD 0.00"
+                      table_cell
+                        text "USD 210.00"
+                      table_cell
+                        text "102.4%"
+              table
+                table_row
+                  table_cell
+          container
+            container
+              svg_root
+              heading
+                text "分币种汇总"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=2917]
+                table
+                  table_row
+                    table_cell
+                      text "币种"
+                    table_cell
+                      text "出货"
+                    table_cell
+                      text "应收"
+                    table_cell
+                      text "利润"
+                    table_cell
+                      text "利润率"
+                  table_row
+                    table_cell
+                      text "USD"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "USD 205.00"
+                    table_cell
+                      text "USD 210.00"
+                    table_cell
+                      text "102.4%"
+              table
+                table_row
+                  table_cell
+          container
+            container
+              svg_root
+              heading
+                text "开票和付款状态"
+            text "采购开票通知"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=2918]
+                table
+                  table_row
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "数量"
+                    table_cell
+                      text "金额"
+                  table_row
+                    table_cell
+                      text "草稿"
+                    table_cell
+                      text "2"
+                    table_cell
+                      text "CNY 0.00"
+                  table_row
+                    table_cell
+                      text "已收票"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "CNY 0.01"
+              table
+                table_row
+                  table_cell
+            text "样品费用付款"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=2919]
+                table
+                  table_row
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "数量"
+                    table_cell
+                      text "金额"
+                  table_row
+                    table_cell
+                      svg_root
+                      paragraph
+                        text "暂无数据"
+              table
+                table_row
+                  table_cell
+          container
+            svg_root
+            heading
+              text "合作伙伴费用入口"
+            unordered_list
+              list_item
+                text "合作伙伴"
+              list_item
+                text "3"
+              list_item
+                text "启用伙伴"
+              list_item
+                text "2"
+              list_item
+                text "待收税票金额"
+              list_item
+                text "0.01"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=2920]
+                table
+                  table_row
+                    table_cell
+                      text "伙伴类型"
+                    table_cell
+                      text "数量"
+                  table_row
+                    table_cell
+                      text "货代公司"
+                    table_cell
+                      text "2"
+              table
+                table_row
+                  table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

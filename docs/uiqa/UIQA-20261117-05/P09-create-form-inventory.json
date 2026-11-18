@@ -1,0 +1,703 @@
+{
+  "url": "http://localhost:8080/sales/shipments",
+  "title": "出货明细",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出货明细",
+    "出货计划列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出货搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 267.4453125,
+            "width": 283.71875,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 564.71875,
+            "bottom": 303.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_4_",
+          "label": "审批状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 587.71875,
+            "y": 272.4453125,
+            "width": 145.3984375,
+            "height": 26,
+            "top": 272.4453125,
+            "right": 733.1171875,
+            "bottom": 298.4453125,
+            "left": 587.71875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_6_",
+          "label": "客户编号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 785.1171875,
+            "y": 272.4453125,
+            "width": 145.3984375,
+            "height": 26,
+            "top": 272.4453125,
+            "right": 930.515625,
+            "bottom": 298.4453125,
+            "left": 785.1171875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出口合同编号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 971.515625,
+            "y": 267.4453125,
+            "width": 185.3984375,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1156.9140625,
+            "bottom": 303.4453125,
+            "left": 971.515625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1168.9140625,
+            "y": 267.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1253.4375,
+            "bottom": 303.4453125,
+            "left": 1168.9140625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "生成出货明细",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1261.4375,
+            "y": 267.4453125,
+            "width": 137.5625,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1399,
+            "bottom": 303.4453125,
+            "left": 1261.4375
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "出货单号\n出货日期\n计划出运日\n运输方式\n海运\n出口合同选择\n出口合同 A\n输入合同号或客户搜索\n合同 A 出货数量\n出口合同 B（可选）\n需要合并出货时选择第二份合同\n合同 B 出货数量\n物流单证\n起运港\n目的港\n船名航次\n箱号\n订舱号\n单证负责人\n预计付款成本\n出货备注\n取 消\n生成出货明细",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出货单号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 174,
+            "width": 408,
+            "height": 36,
+            "top": 174,
+            "right": 712,
+            "bottom": 210,
+            "left": 304
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "出货日期",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 174,
+            "width": 408,
+            "height": 36,
+            "top": 174,
+            "right": 1136,
+            "bottom": 210,
+            "left": 728
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "计划出运日",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 244,
+            "width": 408,
+            "height": 36,
+            "top": 244,
+            "right": 712,
+            "bottom": 280,
+            "left": 304
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_d_",
+          "label": "运输方式\n海运",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 739,
+            "y": 249,
+            "width": 368,
+            "height": 26,
+            "top": 249,
+            "right": 1107,
+            "bottom": 275,
+            "left": 739
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "shipment-contract-a",
+          "label": "出口合同 A",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 315,
+            "y": 374.640625,
+            "width": 368,
+            "height": 26,
+            "top": 374.640625,
+            "right": 683,
+            "bottom": 400.640625,
+            "left": 315
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "合同 A 出货数量",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 369.640625,
+            "width": 408,
+            "height": 36,
+            "top": 369.640625,
+            "right": 1136,
+            "bottom": 405.640625,
+            "left": 728
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "shipment-contract-b",
+          "label": "出口合同 B（可选）",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 315,
+            "y": 444.640625,
+            "width": 368,
+            "height": 26,
+            "top": 444.640625,
+            "right": 683,
+            "bottom": 470.640625,
+            "left": 315
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "合同 B 出货数量",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 439.640625,
+            "width": 408,
+            "height": 36,
+            "top": 439.640625,
+            "right": 1136,
+            "bottom": 475.640625,
+            "left": 728
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "起运港",
+          "text": "",
+          "value": "Ningbo",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 565.28125,
+            "width": 408,
+            "height": 36,
+            "top": 565.28125,
+            "right": 712,
+            "bottom": 601.28125,
+            "left": 304
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "目的港",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 565.28125,
+            "width": 408,
+            "height": 36,
+            "top": 565.28125,
+            "right": 1136,
+            "bottom": 601.28125,
+            "left": 728
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "船名航次",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 635.28125,
+            "width": 408,
+            "height": 36,
+            "top": 635.28125,
+            "right": 712,
+            "bottom": 671.28125,
+            "left": 304
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "箱号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 635.28125,
+            "width": 408,
+            "height": 36,
+            "top": 635.28125,
+            "right": 1136,
+            "bottom": 671.28125,
+            "left": 728
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "订舱号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 705.28125,
+            "width": 408,
+            "height": 36,
+            "top": 705.28125,
+            "right": 712,
+            "bottom": 741.28125,
+            "left": 304
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单证负责人",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 705.28125,
+            "width": 408,
+            "height": 36,
+            "top": 705.28125,
+            "right": 1136,
+            "bottom": 741.28125,
+            "left": 728
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "预计付款成本",
+          "text": "",
+          "value": "0.00",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 775.28125,
+            "width": 832,
+            "height": 36,
+            "top": 775.28125,
+            "right": 1136,
+            "bottom": 811.28125,
+            "left": 304
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出货备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 845.28125,
+            "width": 832,
+            "height": 36,
+            "top": 845.28125,
+            "right": 1136,
+            "bottom": 881.28125,
+            "left": 304
+          }
+        },
+        {
+          "j": 16,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取 消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 950.5859375,
+            "y": 897.28125,
+            "width": 63.8515625,
+            "height": 36,
+            "top": 897.28125,
+            "right": 1014.4375,
+            "bottom": 933.28125,
+            "left": 950.5859375
+          }
+        },
+        {
+          "j": 17,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "生成出货明细",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1022.4375,
+            "y": 897.28125,
+            "width": 113.5625,
+            "height": 36,
+            "top": 897.28125,
+            "right": 1136,
+            "bottom": 933.28125,
+            "left": 1022.4375
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情",
+      "buttons": [
+        "SP-DAEPEG",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

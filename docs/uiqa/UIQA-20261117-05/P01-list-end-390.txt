@@ -1,0 +1,260 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=502, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "商品资料"
+        button "通知" [ref=503, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "2"
+        button "系统设置" [ref=504, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        container "商品资料概览"
+          container
+            text "商品"
+            text "6"
+          container
+            text "配件明细"
+            text "2"
+          container
+            text "有图商品"
+            text "3 件"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "商品资料"
+            form
+              container
+                text "搜索"
+                textbox [ref=605, loc=css:input[placeholder="编号 / 中文 / 英文 / 海关编码"]]
+                  text "编号 / 中文 / 英文 / 海关编码"
+              container
+                button "查询商品" [ref=606, loc=css:button[aria-label="查询商品"]]
+                  svg_root
+                button [ref=607]
+                  svg_root
+                  text "新增商品"
+                button "导入商品" [ref=608, loc=css:button[aria-label="导入商品"]]
+                  svg_root
+                  text "导入"
+                button "导出全部商品" [ref=609, loc=css:button[aria-label="导出全部商品"]]
+                  svg_root
+                  text "导出"
+                button "设置列视图" [ref=610, loc=css:button[aria-label="设置列视图"]]
+                  svg_root
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=611]
+                container [ref=660]
+                  table
+                    table_row
+                      table_cell
+                        container
+                          checkbox "Select all" [ref=612, loc=css:input[aria-label="Select all"]]
+                          table
+                            table_row
+                              table_cell
+                      table_cell
+                        text "编号"
+                      table_cell
+                        text "中文名称"
+                      table_cell
+                        text "英文名称"
+                      table_cell
+                        text "海关编码"
+                      table_cell
+                        text "单位"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "配件"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        container
+                          checkbox [ref=637]
+                          table
+                            table_row
+                              table_cell
+                      table_cell
+                        button [ref=638]
+                          text "UIQA-20261117-05-P01"
+                      table_cell
+                        text "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本"
+                      table_cell
+                        text "UIQA Full Acceptance Cotton Linen Storage Bag"
+                      table_cell
+                        text "0000000000"
+                      table_cell
+                        text "pcs"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        text "0"
+                      table_cell
+                        button [ref=639]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        container
+                          checkbox [ref=640]
+                          table
+                            table_row
+                              table_cell
+                      table_cell
+                        button [ref=641]
+                          text "UI261114-IMG"
+                      table_cell
+                        text "多图验证商品"
+                      table_cell
+                        text "Multi Image Product"
+                      table_cell
+                        text "8481804090"
+                      table_cell
+                        text "pcs"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        text "0"
+                      table_cell
+                        button [ref=642]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        container
+                          checkbox [ref=643]
+                          table
+                            table_row
+                              table_cell
+                      table_cell
+                        button [ref=644]
+                          text "UI261114-IMG01"
+                      table_cell
+                        text "演示商品｜图片上传测试袋"
+                      table_cell
+                        text "Demo Image Upload Bag"
+                      table_cell
+                        text "0000000000"
+                      table_cell
+                        text "pcs"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        text "0"
+                      table_cell
+                        button [ref=645]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        container
+                          checkbox [ref=646]
+                          table
+                            table_row
+                              table_cell
+                      table_cell
+                        button [ref=647]
+                          text "UI261114-P01"
+                      table_cell
+                        text "演示商品｜棉麻收纳袋"
+                      table_cell
+                        text "Demo Cotton Linen Storage Bag"
+                      table_cell
+                        text "0000000000"
+                      table_cell
+                        text "pcs"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        text "1"
+                      table_cell
+                        button [ref=648]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        container
+                          checkbox [ref=649]
+                          table
+                            table_row
+                              table_cell
+                      table_cell
+                        button [ref=650]
+                      table_cell
+                        text "QA261112 验收测试围巾"
+                      table_cell
+                        text "QA261112 Audit Scarf"
+                      table_cell
+                        text "6214300000"
+                      table_cell
+                        text "pcs"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        text "0"
+                      table_cell
+                        button [ref=651]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        container
+                          checkbox [ref=652]
+                          table
+                            table_row
+                              table_cell
+                      table_cell
+                        button [ref=653]
+                          text "QA261112-P01"
+                      table_cell
+                        text "QA261112 验收测试围巾"
+                      table_cell
+                        text "QA261112 Audit Scarf"
+                      table_cell
+                        text "6214300000"
+                      table_cell
+                        text "pcs"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        text "1"
+                      table_cell
+                        button [ref=654]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 6 条"
+                list_item
+                  button [ref=655]
+                    image "left"
+                      svg_root
+                list_item [ref=656]
+                  anchor [ref=657]
+                    text "1"
+                list_item
+                  button [ref=658]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

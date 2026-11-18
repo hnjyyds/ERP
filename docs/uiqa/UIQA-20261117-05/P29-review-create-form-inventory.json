@@ -1,0 +1,770 @@
+{
+  "url": "http://localhost:8080/finance/reimbursements",
+  "title": "报销管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "报销管理",
+    "报销单列表",
+    "审批与付款"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "搜索\n状态\n全部状态\n分类\n全部分类\n查询\n新增报销",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 389.78125,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 670.78125,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_10_",
+          "label": "状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 693.78125,
+            "y": 181.6484375,
+            "width": 204.328125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 898.109375,
+            "bottom": 207.6484375,
+            "left": 693.78125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_12_",
+          "label": "分类\n全部分类",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 950.109375,
+            "y": 181.6484375,
+            "width": 204.3203125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 1154.4296875,
+            "bottom": 207.6484375,
+            "left": 950.109375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1195.4296875,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1279.953125,
+            "bottom": 212.6484375,
+            "left": 1195.4296875
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增报销",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 176.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1287.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_19_",
+      "visible": true,
+      "text": "报销单号\n申请人工号\n申请人姓名\n部门\n分类\n差旅\n币种\n金额\n事由\n审批人\n选择审批人\n登记报销单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报销单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 153,
+            "width": 672,
+            "height": 36,
+            "top": 153,
+            "right": 1056,
+            "bottom": 189,
+            "left": 384
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "申请人工号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 223,
+            "width": 672,
+            "height": 36,
+            "top": 223,
+            "right": 1056,
+            "bottom": 259,
+            "left": 384
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "申请人姓名",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 293,
+            "width": 672,
+            "height": 36,
+            "top": 293,
+            "right": 1056,
+            "bottom": 329,
+            "left": 384
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "部门",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 363,
+            "width": 672,
+            "height": 36,
+            "top": 363,
+            "right": 1056,
+            "bottom": 399,
+            "left": 384
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1b_",
+          "label": "分类\n差旅",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 395,
+            "y": 438,
+            "width": 632,
+            "height": 26,
+            "top": 438,
+            "right": 1027,
+            "bottom": 464,
+            "left": 395
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "CNY",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 503,
+            "width": 672,
+            "height": 36,
+            "top": 503,
+            "right": 1056,
+            "bottom": 539,
+            "left": 384
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "金额",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 573,
+            "width": 672,
+            "height": 36,
+            "top": 573,
+            "right": 1056,
+            "bottom": 609,
+            "left": 384
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "事由",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 643,
+            "width": 672,
+            "height": 36,
+            "top": 643,
+            "right": 1056,
+            "bottom": 679,
+            "left": 384
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1d_",
+          "label": "审批人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 395,
+            "y": 718,
+            "width": 632,
+            "height": 26,
+            "top": 718,
+            "right": 1027,
+            "bottom": 744,
+            "left": 395
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "登记报销单",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 384,
+            "y": 765,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 765,
+            "right": 508.3046875,
+            "bottom": 801,
+            "left": 384
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "报销单号\t申请人\t部门\t分类\t金额\t状态\nQA261112-RB01\t系统管理员\t管理部\t差旅\tCNY 10.00\t已付款",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "报销单号\nQA261112-RB01\n\n\n当前状态\n已付款\n\n\n金额\nCNY 10.00\n\n\n审批人\n演示财务主管",
+      "buttons": []
+    }
+  ],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "新增报销单\n报销单号\n申请人工号\n申请人姓名\n部门\n分类\n差旅\n币种\n金额\n事由\n审批人\n选择审批人\n登记报销单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1036,
+            "y": 91,
+            "width": 32,
+            "height": 32,
+            "top": 91,
+            "right": 1068,
+            "bottom": 123,
+            "left": 1036
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "报销单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 153,
+            "width": 672,
+            "height": 36,
+            "top": 153,
+            "right": 1056,
+            "bottom": 189,
+            "left": 384
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "申请人工号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 223,
+            "width": 672,
+            "height": 36,
+            "top": 223,
+            "right": 1056,
+            "bottom": 259,
+            "left": 384
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "申请人姓名",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 293,
+            "width": 672,
+            "height": 36,
+            "top": 293,
+            "right": 1056,
+            "bottom": 329,
+            "left": 384
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "部门",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 363,
+            "width": 672,
+            "height": 36,
+            "top": 363,
+            "right": 1056,
+            "bottom": 399,
+            "left": 384
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "search",
+          "label": "分类\n差旅",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 395,
+            "y": 438,
+            "width": 632,
+            "height": 26,
+            "top": 438,
+            "right": 1027,
+            "bottom": 464,
+            "left": 395
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "币种",
+          "text": "",
+          "value": "CNY",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 503,
+            "width": 672,
+            "height": 36,
+            "top": 503,
+            "right": 1056,
+            "bottom": 539,
+            "left": 384
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "金额",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 384,
+            "y": 573,
+            "width": 672,
+            "height": 36,
+            "top": 573,
+            "right": 1056,
+            "bottom": 609,
+            "left": 384
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "事由",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 643,
+            "width": 672,
+            "height": 36,
+            "top": 643,
+            "right": 1056,
+            "bottom": 679,
+            "left": 384
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "search",
+          "label": "审批人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 395,
+            "y": 718,
+            "width": 632,
+            "height": 26,
+            "top": 718,
+            "right": 1027,
+            "bottom": 744,
+            "left": 395
+          }
+        },
+        {
+          "j": 10,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "登记报销单",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 384,
+            "y": 765,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 765,
+            "right": 508.3046875,
+            "bottom": 801,
+            "left": 384
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

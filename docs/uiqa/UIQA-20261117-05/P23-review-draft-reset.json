@@ -1,0 +1,50 @@
+{
+  "draftField": "备注",
+  "values": [
+    {
+      "label": "银行水单号",
+      "value": ""
+    },
+    {
+      "label": "收款日期",
+      "value": "2026-11-18"
+    },
+    {
+      "label": "付款人",
+      "value": ""
+    },
+    {
+      "label": "客户\n搜索客户编号或名称",
+      "value": ""
+    },
+    {
+      "label": "客户名称",
+      "value": ""
+    },
+    {
+      "label": "收款金额",
+      "value": ""
+    },
+    {
+      "label": "币种",
+      "value": "USD"
+    },
+    {
+      "label": "收款性质\n预收款",
+      "value": ""
+    },
+    {
+      "label": "收款银行账号",
+      "value": ""
+    },
+    {
+      "label": "银行流水号",
+      "value": ""
+    },
+    {
+      "label": "备注",
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

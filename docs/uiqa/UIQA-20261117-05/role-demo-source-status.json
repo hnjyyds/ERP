@@ -1,0 +1,26 @@
+[
+  {
+    "requestId": "79503.2821",
+    "url": "http://localhost:8080/api/v1/sales/contracts?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2822",
+    "url": "http://localhost:8080/api/v1/masterdata/customers?status=active&limit=20",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2823",
+    "url": "http://localhost:8080/api/v1/masterdata/products?status=active&limit=20",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2826",
+    "url": "http://localhost:8080/api/v1/masterdata/products?status=active&limit=20",
+    "status": 200,
+    "method": "GET"
+  }
+]

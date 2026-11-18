@@ -1,0 +1,87 @@
+{
+  "checked_at": "2026-11-18T08:40:00+00:00",
+  "exports": [
+    {
+      "file": "场景实测台账.csv",
+      "rows": 169,
+      "columns": 27,
+      "exact_roundtrip": true,
+      "sha256": "c109c9a15b6bfb9c57387a597c8b8ef315b64ed25eca35d4daf1176912d62fc5"
+    },
+    {
+      "file": "页面与子区域矩阵.csv",
+      "rows": 42,
+      "columns": 14,
+      "exact_roundtrip": true,
+      "sha256": "66cc8281a940c58a7796566b9bc321041f31a157d48bcadc60dba9ea43513f11"
+    },
+    {
+      "file": "控件八态矩阵.csv",
+      "rows": 8360,
+      "columns": 18,
+      "exact_roundtrip": true,
+      "sha256": "f68c23820b0aab2a205c42103ffc25e62f447e1f041c35ad8e1f625e9f0c60b2"
+    },
+    {
+      "file": "42页48项验收矩阵.csv",
+      "rows": 2016,
+      "columns": 18,
+      "exact_roundtrip": true,
+      "sha256": "7f72d2353381b5c4308d158f59dd215b5c385f7aa19ab8eae86206f7efbd84f1"
+    },
+    {
+      "file": "权限与数据台账.csv",
+      "rows": 10,
+      "columns": 17,
+      "exact_roundtrip": true,
+      "sha256": "368c0184336471a7cb2e81ced3498500c2156f8fccf2465c5864d3f0a69585e6"
+    },
+    {
+      "file": "42页48项验收矩阵-index-DTcfpjkq.csv",
+      "rows": 2016,
+      "columns": 24,
+      "exact_roundtrip": true,
+      "sha256": "845635b0ca96f101406a1471b4e0d082372cf2561160125fae0ca666173ed05b"
+    }
+  ],
+  "evidence_refs_checked": 952,
+  "evidence_refs_unique": 952,
+  "evidence_ref_occurrences": 21841,
+  "missing_evidence": [],
+  "missing_evidence_total": 0,
+  "broken_markdown_links": [],
+  "credential_matches": [],
+  "errors": [],
+  "business_tests_run": true,
+  "scope": "第三轮复验后重算：新增Q05-28三页原生重试恢复、Q05-24悬停修复与三档可见性/键盘证据、新资源DTcfpjkq映射",
+  "evidence_scope": "统计五份台账CSV的截图/快照测量/证据/子区域索引/回读路径列；按分号拆分路径计；通配符glob校验；另检查README/口径/采证复核/Q05-28的链接",
+  "first_batch_reverify": {
+    "checked_markdown_files": 9,
+    "relative_links_checked": 146,
+    "missing_relative_links": 0,
+    "note": "file://源码链接不参与相对路径校验",
+    "defects_closed": 11,
+    "defects_open": 18,
+    "pages_signed_off": 0
+  },
+  "second_batch_reverify": {
+    "checked_markdown_files": 5,
+    "relative_links_checked": 52,
+    "missing_relative_links": 0,
+    "defects_closed": 3,
+    "partial_fixes": 1,
+    "pages_signed_off": 0
+  },
+  "third_reverify": {
+    "checked_markdown_files": 3,
+    "relative_links_checked": 120,
+    "missing_relative_links": 0,
+    "note": "按“原生失败→重试恢复”和“聚焦后已选值可见+键盘可用+三档视口”重新取证；Q05-28之前仅失败展示、Q05-24之前仅计算样式，均不计关闭",
+    "defects_reverified": ["Q05-28", "Q05-24"],
+    "defects_closed": 11,
+    "pending_reverify": 0,
+    "defects_open": 18,
+    "pages_signed_off": 0,
+    "matrix_mapping": "42页48项验收矩阵-index-DTcfpjkq.csv"
+  }
+}

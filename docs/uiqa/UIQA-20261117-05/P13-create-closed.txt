@@ -1,0 +1,156 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=7427, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "打样管理"
+        container
+          button "通知" [ref=7388, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=7389, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "打样管理概览"
+          container
+            text "打样单"
+            text "1"
+          container
+            text "进行中"
+            text "0"
+          container
+            text "进度记录"
+            text "2"
+          container
+            text "费用记录"
+            text "0"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "打样单列表"
+            form
+              container
+                text "打样搜索"
+                textbox [ref=7431, loc=css:input[placeholder="编号 / 报价号 / 客户 / 产品 / 供应商"]]
+                  text "编号 / 报价号 / 客户 / 产品 / 供应商"
+              container
+                text "打样状态筛选"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=7432]
+                  image "down"
+                    svg_root
+              container
+                text "打样客户筛选"
+                textbox [ref=7433, loc=css:input[placeholder="输入客户编号或名称"]]
+                  text "输入客户编号或名称"
+              container
+                text "打样起始日期"
+                textbox [ref=7434]
+                  spinbutton "年" [ref=7435]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=7436]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=7437]
+                    text "日"
+              container
+                text "打样截止日期"
+                textbox [ref=7438]
+                  spinbutton "年" [ref=7439]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=7440]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=7441]
+                    text "日"
+              container
+                button [ref=7442]
+                  svg_root
+                  text "查询"
+                button [ref=7443]
+                  svg_root
+                  text "新增打样单"
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=7444]
+                container [ref=7478]
+                  table
+                    table_row
+                      table_cell
+                        text "打样单号"
+                      table_cell
+                        text "报价号"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "产品"
+                      table_cell
+                        text "去向"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "要求完成"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=7445]
+                          text "SR-W3C3DV"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "QA261112 验收测试围巾"
+                      table_cell
+                        text "内部打样"
+                      table_cell
+                        text "已完成"
+                      table_cell
+                        text "2026-11-20"
+                      table_cell
+                        button [ref=7446]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=7447]
+                    image "left"
+                      svg_root
+                list_item [ref=7448]
+                  anchor [ref=7449]
+                    text "1"
+                list_item
+                  button [ref=7450]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

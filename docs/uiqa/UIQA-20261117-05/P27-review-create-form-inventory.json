@@ -1,0 +1,793 @@
+{
+  "url": "http://localhost:8080/finance/misc",
+  "title": "杂费管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "杂费管理",
+    "杂费项目配置",
+    "杂费分摊查询"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "项目搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 389.78125,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 670.78125,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_6_",
+          "label": "项目分类\n全部分类",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 693.78125,
+            "y": 181.6484375,
+            "width": 204.328125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 898.109375,
+            "bottom": 207.6484375,
+            "left": 693.78125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_8_",
+          "label": "启停状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 950.109375,
+            "y": 181.6484375,
+            "width": 204.3203125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 1154.4296875,
+            "bottom": 207.6484375,
+            "left": 950.109375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1195.4296875,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1279.953125,
+            "bottom": 212.6484375,
+            "left": 1195.4296875
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增杂费",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 176.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1287.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "分摊搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 515.6484375,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 637.6640625,
+            "bottom": 551.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_d_",
+          "label": "分类\n全部分类",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 660.6640625,
+            "y": 520.6484375,
+            "width": 138.328125,
+            "height": 26,
+            "top": 520.6484375,
+            "right": 798.9921875,
+            "bottom": 546.6484375,
+            "left": 660.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 839.9921875,
+            "y": 515.6484375,
+            "width": 178.3359375,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1018.328125,
+            "bottom": 551.6484375,
+            "left": 839.9921875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "业务员标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1030.328125,
+            "y": 515.6484375,
+            "width": 178.3359375,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1208.6640625,
+            "bottom": 551.6484375,
+            "left": 1030.328125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1314.46875,
+            "y": 515.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1398.9921875,
+            "bottom": 551.6484375,
+            "left": 1314.46875
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": "_r_h_",
+      "visible": true,
+      "text": "项目编码\n项目名称\n分类\n办公费用\n默认分摊方式\n手工分摊\n启用项目\n备注\n取消\n保存项目",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "项目编码",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 348,
+            "width": 288,
+            "height": 36,
+            "top": 348,
+            "right": 712,
+            "bottom": 384,
+            "left": 424
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "项目名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 348,
+            "width": 288,
+            "height": 36,
+            "top": 348,
+            "right": 1016,
+            "bottom": 384,
+            "left": 728
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_j_",
+          "label": "分类\n办公费用",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 435,
+            "y": 423,
+            "width": 248,
+            "height": 26,
+            "top": 423,
+            "right": 683,
+            "bottom": 449,
+            "left": 435
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_l_",
+          "label": "默认分摊方式\n手工分摊",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 739,
+            "y": 423,
+            "width": 248,
+            "height": 26,
+            "top": 423,
+            "right": 987,
+            "bottom": 449,
+            "left": 739
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "",
+          "label": "启用项目",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 467,
+            "width": 16,
+            "height": 16,
+            "top": 467,
+            "right": 440,
+            "bottom": 483,
+            "left": 424
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 518,
+            "width": 592,
+            "height": 36,
+            "top": 518,
+            "right": 1016,
+            "bottom": 554,
+            "left": 424
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 848.3125,
+            "y": 570,
+            "width": 62.5625,
+            "height": 36,
+            "top": 570,
+            "right": 910.875,
+            "bottom": 606,
+            "left": 848.3125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存项目",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 918.875,
+            "y": 570,
+            "width": 97.125,
+            "height": 36,
+            "top": 570,
+            "right": 1016,
+            "bottom": 606,
+            "left": 918.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用",
+      "buttons": [
+        "QA261112-MISC01"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊",
+      "buttons": []
+    }
+  ],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "新增杂费项目\n项目编码\n项目名称\n分类\n办公费用\n默认分摊方式\n手工分摊\n启用项目\n备注\n取消\n保存项目",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 996,
+            "y": 286,
+            "width": 32,
+            "height": 32,
+            "top": 286,
+            "right": 1028,
+            "bottom": 318,
+            "left": 996
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "项目编码",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 348,
+            "width": 288,
+            "height": 36,
+            "top": 348,
+            "right": 712,
+            "bottom": 384,
+            "left": 424
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "项目名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 348,
+            "width": 288,
+            "height": 36,
+            "top": 348,
+            "right": 1016,
+            "bottom": 384,
+            "left": 728
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "label": "分类\n办公费用",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 435,
+            "y": 423,
+            "width": 248,
+            "height": 26,
+            "top": 423,
+            "right": 683,
+            "bottom": 449,
+            "left": 435
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "label": "默认分摊方式\n手工分摊",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 739,
+            "y": 423,
+            "width": 248,
+            "height": 26,
+            "top": 423,
+            "right": 987,
+            "bottom": 449,
+            "left": 739
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "启用项目",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 467,
+            "width": 16,
+            "height": 16,
+            "top": 467,
+            "right": 440,
+            "bottom": 483,
+            "left": 424
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 518,
+            "width": 592,
+            "height": 36,
+            "top": 518,
+            "right": 1016,
+            "bottom": 554,
+            "left": 424
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 848.3125,
+            "y": 570,
+            "width": 62.5625,
+            "height": 36,
+            "top": 570,
+            "right": 910.875,
+            "bottom": 606,
+            "left": 848.3125
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "保存项目",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 918.875,
+            "y": 570,
+            "width": 97.125,
+            "height": 36,
+            "top": 570,
+            "right": 1016,
+            "bottom": 606,
+            "left": 918.875
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

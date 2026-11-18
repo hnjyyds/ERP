@@ -1,0 +1,41 @@
+[
+  {
+    "control": {
+      "i": 6,
+      "id": "_r_o_",
+      "label": "供应商\n输入供应商编号或名称",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [],
+    "steps": []
+  },
+  {
+    "control": {
+      "i": 7,
+      "id": "_r_q_",
+      "label": "开票通知\n输入关键词搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [],
+    "steps": []
+  },
+  {
+    "control": {
+      "i": 8,
+      "id": "_r_s_",
+      "label": "采购合同\n输入关键词搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [],
+    "steps": []
+  }
+]

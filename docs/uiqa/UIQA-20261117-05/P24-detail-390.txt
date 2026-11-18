@@ -1,0 +1,221 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=3838, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "付款管理"
+        container
+          button "通知" [ref=3809, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=3810, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        button [ref=3811]
+          svg_root
+          text "付款管理"
+        container "付款管理"
+          container
+            container
+              svg_root
+              heading
+                text "付款申请和审批"
+            unordered_list
+              container
+                list_item
+                  text "当前发票"
+                list_item
+                  text "UIQA-20261117-04-INV01"
+              container
+                list_item
+                  text "状态"
+                list_item
+                  text "已付清"
+              container
+                list_item
+                  text "已付"
+                list_item
+                  text "CNY 0.01"
+              container
+                list_item
+                  text "未付"
+                list_item
+                  text "CNY 0.00"
+              container
+                list_item
+                  text "超付"
+                list_item
+                  text "CNY 0.00"
+            container
+              form
+                text "付款申请新增"
+                container
+                  container
+                    text "付款申请号"
+                    textbox [ref=3812, loc=css:input[placeholder="保存后自动生成"]]
+                      text "保存后自动生成"
+                  container
+                    text "供应商发票标识"
+                    textbox [ref=3813]
+                      text "489f9619-6f86-433c-a412-47236257892a"
+                  container
+                    text "付款类别"
+                    container
+                      container
+                        text "货款"
+                        comboboxgrouping [ref=3814]
+                      image "down"
+                        svg_root
+                  container
+                    text "申请日期"
+                    textbox [ref=3815]
+                      spinbutton "年" [ref=3816]
+                        text "2026"
+                      text "/"
+                      spinbutton "月" [ref=3817]
+                        text "11"
+                      text "/"
+                      spinbutton "日" [ref=3818]
+                        text "17"
+                  container
+                    text "申请金额"
+                    textbox [ref=3819]
+                      text "0.00"
+                  container
+                    text "币种"
+                    textbox [ref=3820]
+                      text "CNY"
+                  container
+                    text "申请备注"
+                    textbox [ref=3821]
+                  container
+                    text "审批人"
+                    container
+                      text "选择审批人"
+                      comboboxgrouping "审批人" [ref=3822, loc=css:input[aria-label="审批人"]]
+                      svg_root
+                button [ref=3823]
+                  svg_root
+                  text "新增付款申请"
+              form
+                text "付款审批"
+                container
+                  text "审批金额"
+                  textbox [ref=3824]
+                    text "0.01"
+                container
+                  text "审批日期"
+                  textbox [ref=3825]
+                    spinbutton "年" [ref=3826]
+                      text "2026"
+                    text "/"
+                    spinbutton "月" [ref=3827]
+                      text "11"
+                    text "/"
+                    spinbutton "日" [ref=3828]
+                      text "17"
+                container
+                  text "审批人"
+                  textbox [ref=3829]
+                    text "演示财务主管"
+                container
+                  text "付款账号"
+                  textbox [ref=3830]
+                container
+                  text "审批备注"
+                  textbox [ref=3831]
+                button [ref=3832]
+                  svg_root
+                  text "审批付款"
+            container
+              text "付款申请列表"
+              container
+                table
+                  table_row
+                    table_cell
+                container [ref=3833]
+                  container [ref=3839]
+                    table
+                      table_row
+                        table_cell
+                          text "申请号"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "类别"
+                        table_cell
+                          text "供应商"
+                        table_cell
+                          text "发票号"
+                        table_cell
+                          text "申请金额"
+                        table_cell
+                          text "已付"
+                      table_row
+                        table_cell
+                          button [ref=3834]
+                            text "PR-PG3X2P"
+                        table_cell
+                          text "已审批"
+                        table_cell
+                          text "货款"
+                        table_cell
+                          text "QA261112 测试供应商"
+                        table_cell
+                          text "UIQA-20261117-04-INV01"
+                        table_cell
+                          text "CNY 0.01"
+                        table_cell
+                          text "CNY 0.01"
+                      table_row
+                        table_cell
+                          button [ref=3835]
+                            text "PR-GZN8H6"
+                        table_cell
+                          text "已审批"
+                        table_cell
+                          text "货款"
+                        table_cell
+                          text "QA261112 测试供应商"
+                        table_cell
+                          text "QA261112-INV01"
+                        table_cell
+                          text "RMB 60.00"
+                        table_cell
+                          text "RMB 60.00"
+                      table_row
+                        table_cell
+                          button [ref=3836]
+                            text "PR-ZAWWF6"
+                        table_cell
+                          text "已审批"
+                        table_cell
+                          text "货款"
+                        table_cell
+                          text "QA261112 测试供应商"
+                        table_cell
+                          text "QA261112-INV01"
+                        table_cell
+                          text "RMB 60.00"
+                        table_cell
+                          text "RMB 60.00"
+                table
+                  table_row
+                    table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

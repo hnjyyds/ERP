@@ -1,0 +1,37 @@
+{
+  "createdAt": "2026-11-18T11:16:00+08:00",
+  "authoring": "python csv rebuild (UIQA-20261117-05 续测回填)；UTF-8 BOM + CRLF 保留",
+  "format": "CSV UTF-8 BOM CRLF; DictWriter 全列回写",
+  "checks": [
+    {
+      "file": "场景实测台账.csv",
+      "rows": 140,
+      "columns": 27,
+      "exactValues": true
+    },
+    {
+      "file": "页面与子区域矩阵.csv",
+      "rows": 42,
+      "columns": 14,
+      "exactValues": true
+    },
+    {
+      "file": "控件八态矩阵.csv",
+      "rows": 8360,
+      "columns": 18,
+      "exactValues": true
+    },
+    {
+      "file": "42页48项验收矩阵.csv",
+      "rows": 2016,
+      "columns": 18,
+      "exactValues": true
+    },
+    {
+      "file": "权限与数据台账.csv",
+      "rows": 9,
+      "columns": 17,
+      "exactValues": true
+    }
+  ]
+}

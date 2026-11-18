@@ -1,0 +1,453 @@
+{
+  "url": "http://localhost:8080/workspace/schedules",
+  "title": "工作台",
+  "viewport": [
+    390,
+    844
+  ],
+  "headings": [
+    "工作台",
+    "我的日程"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_3a_",
+      "visible": true,
+      "text": "标题\n开始\n结束\n备注\n取消\n保存修改",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "标题",
+          "text": "",
+          "value": "QA261112 测试日程",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 277.859375,
+            "width": 326,
+            "height": 36.421875,
+            "top": 277.859375,
+            "right": 358,
+            "bottom": 314.28125,
+            "left": 32
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "id": "",
+          "label": "开始",
+          "text": "",
+          "value": "2026-11-12T19:00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 348.15625,
+            "width": 326,
+            "height": 38.421875,
+            "top": 348.15625,
+            "right": 358,
+            "bottom": 386.578125,
+            "left": 32
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "id": "",
+          "label": "结束",
+          "text": "",
+          "value": "2026-11-12T19:30",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 420.453125,
+            "width": 326,
+            "height": 38.421875,
+            "top": 420.453125,
+            "right": 358,
+            "bottom": 458.875,
+            "left": 32
+          }
+        },
+        {
+          "j": 3,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "备注",
+          "text": "",
+          "value": "QA261112",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 492.75,
+            "width": 326,
+            "height": 77.265625,
+            "top": 492.75,
+            "right": 358,
+            "bottom": 570.015625,
+            "left": 32
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 190.3125,
+            "y": 584.015625,
+            "width": 62.5625,
+            "height": 44,
+            "top": 584.015625,
+            "right": 252.875,
+            "bottom": 628.015625,
+            "left": 190.3125
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存修改",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 260.875,
+            "y": 584.015625,
+            "width": 97.125,
+            "height": 44,
+            "top": 584.015625,
+            "right": 358,
+            "bottom": 628.015625,
+            "left": 260.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "编辑日程\n标题\n开始\n结束\n备注\n取消\n保存修改",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 326,
+            "y": 207.984375,
+            "width": 44,
+            "height": 44,
+            "top": 207.984375,
+            "right": 370,
+            "bottom": 251.984375,
+            "left": 326
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "标题",
+          "text": "",
+          "value": "QA261112 测试日程",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 277.859375,
+            "width": 326,
+            "height": 36.421875,
+            "top": 277.859375,
+            "right": 358,
+            "bottom": 314.28125,
+            "left": 32
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "开始",
+          "text": "",
+          "value": "2026-11-12T19:00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 348.15625,
+            "width": 326,
+            "height": 38.421875,
+            "top": 348.15625,
+            "right": 358,
+            "bottom": 386.578125,
+            "left": 32
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "结束",
+          "text": "",
+          "value": "2026-11-12T19:30",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 420.453125,
+            "width": 326,
+            "height": 38.421875,
+            "top": 420.453125,
+            "right": 358,
+            "bottom": 458.875,
+            "left": 32
+          }
+        },
+        {
+          "j": 4,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "label": "备注",
+          "text": "",
+          "value": "QA261112",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 32,
+            "y": 492.75,
+            "width": 326,
+            "height": 77.265625,
+            "top": 492.75,
+            "right": 358,
+            "bottom": 570.015625,
+            "left": 32
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 190.3125,
+            "y": 584.015625,
+            "width": 62.5625,
+            "height": 44,
+            "top": 584.015625,
+            "right": 252.875,
+            "bottom": 628.015625,
+            "left": 190.3125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "保存修改",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 260.875,
+            "y": 584.015625,
+            "width": 97.125,
+            "height": 44,
+            "top": 584.015625,
+            "right": 358,
+            "bottom": 628.015625,
+            "left": 260.875
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "入仓",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "出库计划",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "货物出库",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "库存盘点",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "组织管理",
+      "href": "/organization/users"
+    },
+    {
+      "text": "MCP 接入",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "审计日志",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "采购询价",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "开票通知",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,301 @@
+[
+  {
+    "label": "供应商",
+    "options": [
+      "演示供应商｜江南织造\nUI261114-S01 · 中国",
+      "QA261112 测试供应商\nQA261112-S01 · CN"
+    ],
+    "steps": [
+      {
+        "expected": "演示供应商｜江南织造\nUI261114-S01 · 中国",
+        "selected": "演示供应商｜江南织造",
+        "fields": [
+          {
+            "label": "打样单号",
+            "value": ""
+          },
+          {
+            "label": "打样状态\n草稿",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "打样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "要求完成日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "打样客户",
+            "value": ""
+          },
+          {
+            "label": "打样产品",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "打样去向\n内部打样\n内部打样",
+            "value": ""
+          },
+          {
+            "label": "客户打样要求",
+            "value": ""
+          },
+          {
+            "label": "明细产品编号",
+            "value": ""
+          },
+          {
+            "label": "明细产品名称",
+            "value": ""
+          },
+          {
+            "label": "明细规格",
+            "value": ""
+          },
+          {
+            "label": "明细数量",
+            "value": "1"
+          },
+          {
+            "label": "明细单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细要求",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "expected": "QA261112 测试供应商\nQA261112-S01 · CN",
+        "selected": "QA261112 测试供应商",
+        "fields": [
+          {
+            "label": "打样单号",
+            "value": ""
+          },
+          {
+            "label": "打样状态\n草稿",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "打样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "要求完成日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "打样客户",
+            "value": ""
+          },
+          {
+            "label": "打样产品",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "打样去向\n内部打样\n内部打样",
+            "value": ""
+          },
+          {
+            "label": "客户打样要求",
+            "value": ""
+          },
+          {
+            "label": "明细产品编号",
+            "value": ""
+          },
+          {
+            "label": "明细产品名称",
+            "value": ""
+          },
+          {
+            "label": "明细规格",
+            "value": ""
+          },
+          {
+            "label": "明细数量",
+            "value": "1"
+          },
+          {
+            "label": "明细单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细要求",
+            "value": ""
+          }
+        ]
+      }
+    ],
+    "cleared": "输入关键词搜索"
+  },
+  {
+    "label": "打样去向",
+    "options": [
+      "内部打样",
+      "外发工厂"
+    ],
+    "steps": [
+      {
+        "expected": "内部打样",
+        "selected": "内部打样",
+        "fields": [
+          {
+            "label": "打样单号",
+            "value": ""
+          },
+          {
+            "label": "打样状态\n草稿",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "打样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "要求完成日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "打样客户",
+            "value": ""
+          },
+          {
+            "label": "打样产品",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "打样去向\n内部打样",
+            "value": ""
+          },
+          {
+            "label": "客户打样要求",
+            "value": ""
+          },
+          {
+            "label": "明细产品编号",
+            "value": ""
+          },
+          {
+            "label": "明细产品名称",
+            "value": ""
+          },
+          {
+            "label": "明细规格",
+            "value": ""
+          },
+          {
+            "label": "明细数量",
+            "value": "1"
+          },
+          {
+            "label": "明细单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细要求",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "expected": "外发工厂",
+        "selected": "外发工厂",
+        "fields": [
+          {
+            "label": "打样单号",
+            "value": ""
+          },
+          {
+            "label": "打样状态\n草稿",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "打样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "要求完成日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "打样客户",
+            "value": ""
+          },
+          {
+            "label": "打样产品",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "打样去向\n外发工厂",
+            "value": ""
+          },
+          {
+            "label": "客户打样要求",
+            "value": ""
+          },
+          {
+            "label": "明细产品编号",
+            "value": ""
+          },
+          {
+            "label": "明细产品名称",
+            "value": ""
+          },
+          {
+            "label": "明细规格",
+            "value": ""
+          },
+          {
+            "label": "明细数量",
+            "value": "1"
+          },
+          {
+            "label": "明细单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细要求",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  }
+]

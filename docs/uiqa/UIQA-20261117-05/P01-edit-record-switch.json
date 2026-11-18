@@ -1,0 +1,178 @@
+[
+  {
+    "url": "http://localhost:8080/masterdata/products/2fded9d3-11cd-4bb7-a6b5-b25d9d77dbed",
+    "forms": [
+      {
+        "text": "产品编号\n*\n商品单位\n*\n中文名称\n*\n英文名称\n规格\n型号\n海关编码\n*\n税率\n%\n按百分比填写，例如 13 表示 13%\n退税率\n%\n按百分比填写，例如 13 表示 13%\n状态\n停用\n商品图片\n共 0 张\n添加图片\n\n支持 PNG、JPG，图片需小于 2MB；第一张为主图，点击缩略图可更换。\n\n包装资料\n取消\n保存商品",
+        "fields": [
+          {
+            "label": "产品编号\n*",
+            "value": "UIQA-20261117-05-P02",
+            "type": "text"
+          },
+          {
+            "label": "商品单位\n*",
+            "value": "pcs",
+            "type": "text"
+          },
+          {
+            "label": "中文名称\n*",
+            "value": "UIQA分页验收商品02",
+            "type": "text"
+          },
+          {
+            "label": "英文名称",
+            "value": "UIQA Paging Test Product 02",
+            "type": "text"
+          },
+          {
+            "label": "规格",
+            "value": "UIQA-SPEC-02",
+            "type": "text"
+          },
+          {
+            "label": "型号",
+            "value": "UIQA-M02",
+            "type": "text"
+          },
+          {
+            "label": "海关编码\n*",
+            "value": "0000000000",
+            "type": "text"
+          },
+          {
+            "label": "税率\n%\n按百分比填写，例如 13 表示 13%",
+            "value": "0.00",
+            "type": "text"
+          },
+          {
+            "label": "退税率\n%\n按百分比填写，例如 13 表示 13%",
+            "value": "0.00",
+            "type": "text"
+          },
+          {
+            "label": "状态\n停用",
+            "value": "",
+            "type": "search"
+          },
+          {
+            "label": "添加图片",
+            "value": "",
+            "type": "file"
+          },
+          {
+            "label": "包装资料",
+            "value": "UIQA分页测试资料，不用于真实交易。",
+            "type": "textarea"
+          },
+          {
+            "value": "",
+            "type": "button"
+          },
+          {
+            "value": "",
+            "type": "submit"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+    "forms": [
+      {
+        "text": "产品编号\n*\n商品单位\n*\n中文名称\n*\n英文名称\n规格\n型号\n海关编码\n*\n税率\n%\n按百分比填写，例如 13 表示 13%\n退税率\n%\n按百分比填写，例如 13 表示 13%\n状态\n启用\n商品图片\n共 2 张\n更换图片\n主图\n更换图片\n添加图片\n\n支持 PNG、JPG，图片需小于 2MB；第一张为主图，点击缩略图可更换。\n\n包装资料\n取消\n保存商品",
+        "fields": [
+          {
+            "label": "产品编号\n*",
+            "value": "UIQA-20261117-05-P01",
+            "type": "text"
+          },
+          {
+            "label": "商品单位\n*",
+            "value": "pcs",
+            "type": "text"
+          },
+          {
+            "label": "中文名称\n*",
+            "value": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本",
+            "type": "text"
+          },
+          {
+            "label": "英文名称",
+            "value": "UIQA Full Acceptance Cotton Linen Storage Bag",
+            "type": "text"
+          },
+          {
+            "label": "规格",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "label": "型号",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "label": "海关编码\n*",
+            "value": "0000000000",
+            "type": "text"
+          },
+          {
+            "label": "税率\n%\n按百分比填写，例如 13 表示 13%",
+            "value": "13.00",
+            "type": "text"
+          },
+          {
+            "label": "退税率\n%\n按百分比填写，例如 13 表示 13%",
+            "value": "9.00",
+            "type": "text"
+          },
+          {
+            "label": "状态\n启用",
+            "value": "",
+            "type": "search"
+          },
+          {
+            "label": "更换商品图片",
+            "value": "",
+            "type": "file"
+          },
+          {
+            "label": "移除图片",
+            "value": "",
+            "type": "button"
+          },
+          {
+            "label": "更换商品图片",
+            "value": "",
+            "type": "file"
+          },
+          {
+            "label": "移除图片",
+            "value": "",
+            "type": "button"
+          },
+          {
+            "label": "添加图片",
+            "value": "",
+            "type": "file"
+          },
+          {
+            "label": "包装资料",
+            "value": "UIQA测试样本：1件/袋，不用于真实交易。",
+            "type": "textarea"
+          },
+          {
+            "value": "",
+            "type": "button"
+          },
+          {
+            "value": "",
+            "type": "submit"
+          }
+        ]
+      }
+    ]
+  }
+]

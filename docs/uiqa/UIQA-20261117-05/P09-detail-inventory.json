@@ -1,0 +1,261 @@
+{
+  "url": "http://localhost:8080/sales/shipments/d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+  "title": "出货明细",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出货明细",
+    "出货明细"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "出货审批\n审批人\n审批日期\n审批通过",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "审批人",
+          "text": "",
+          "value": "演示业务主管",
+          "disabled": true,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 282,
+            "y": 645.046875,
+            "width": 550,
+            "height": 36,
+            "top": 645.046875,
+            "right": 832,
+            "bottom": 681.046875,
+            "left": 282
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "审批日期",
+          "text": "",
+          "value": "2026-11-12",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 645.046875,
+            "width": 550,
+            "height": 36,
+            "top": 645.046875,
+            "right": 1398,
+            "bottom": 681.046875,
+            "left": 848
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "审批通过",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 282,
+            "y": 695.046875,
+            "width": 87.046875,
+            "height": 36,
+            "top": 695.046875,
+            "right": 369.046875,
+            "bottom": 731.046875,
+            "left": 282
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "提醒日期\t出货单\t状态\t提醒内容\n2026-11-18\tSP-DAEPEG\t已处理\tSP-DAEPEG 计划于 2026-11-25 出运",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "合同号\t商品编号\t商品名称\t规格\t型号\t出货数量\t金额\t计划出运日\nEC-F8D7RX\tQA261112-P01\tQA261112 验收测试围巾\t-\t-\t20 pcs\tUSD 205.00\t2026-11-25",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "合同号\t商品编号\t商品名称\t合同数量\t已出货\t未出货\t未出货金额\t状态\nEC-F8D7RX\tQA261112-P01\tQA261112 验收测试围巾\t50\t20\t30\tUSD 307.50\t部分完成",
+      "buttons": []
+    },
+    {
+      "i": 3,
+      "text": "合同号\t商品编号\t商品名称\t合同数量\t已采购\t未采购\t状态\nEC-F8D7RX\tQA261112-P01\tQA261112 验收测试围巾\t50\t0\t50\t未开始",
+      "buttons": []
+    },
+    {
+      "i": 4,
+      "text": "提醒日期\t出货单\t状态\t提醒内容\n2026-11-18\tSP-DAEPEG\t已处理\tSP-DAEPEG 计划于 2026-11-25 出运",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

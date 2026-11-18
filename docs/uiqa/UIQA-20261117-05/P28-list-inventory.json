@@ -1,0 +1,337 @@
+{
+  "url": "http://localhost:8080/finance/settlement",
+  "title": "结算核算",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "结算核算",
+    "财务结算列表",
+    "利润核算表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "结算搜索\n出运单号\n查询\n新增结算",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "结算搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 178.6484375,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 637.6640625,
+            "bottom": 214.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 649.6640625,
+            "y": 178.6484375,
+            "width": 178.328125,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 827.9921875,
+            "bottom": 214.6484375,
+            "left": 649.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 933.8046875,
+            "y": 178.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 1018.328125,
+            "bottom": 214.6484375,
+            "left": 933.8046875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增结算",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1097.6171875,
+            "y": 178.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 1208.6640625,
+            "bottom": 214.6484375,
+            "left": 1097.6171875
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "核算搜索\n出运单号\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "核算搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 560.046875,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 560.046875,
+            "right": 637.6640625,
+            "bottom": 596.046875,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 649.6640625,
+            "y": 560.046875,
+            "width": 178.328125,
+            "height": 36,
+            "top": 560.046875,
+            "right": 827.9921875,
+            "bottom": 596.046875,
+            "left": 649.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 933.8046875,
+            "y": 560.046875,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 560.046875,
+            "right": 1018.328125,
+            "bottom": 596.046875,
+            "left": 933.8046875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%",
+      "buttons": [
+        ""
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

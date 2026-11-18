@@ -1,0 +1,212 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=3164, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "商品资料"
+          container
+            button "通知" [ref=3156, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=3157, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container
+            container
+              svg_root
+              heading
+                text "商品明细"
+            container
+              button [ref=3524]
+                svg_root
+                text "返回列表"
+              button [ref=3525]
+                svg_root
+                text "编辑商品"
+              button [ref=3526]
+                svg_root
+                text "停用"
+          container
+            container
+              container
+                text "商品图片"
+                text "共 2 张"
+              container
+                container
+                  button "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 商品图片" [ref=3527]
+                    image
+                  text "主图"
+                button "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 商品图片" [ref=3528]
+                  image
+            unordered_list
+              container
+                list_item
+                  text "中文名称"
+                list_item
+                  text "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本"
+              container
+                list_item
+                  text "英文名称"
+                list_item
+                  text "UIQA Full Acceptance Cotton Linen Storage Bag"
+              container
+                list_item
+                  text "规格/型号"
+                list_item
+                  text "未填"
+                  text "/"
+                  text "未填"
+              container
+                list_item
+                  text "海关编码"
+                list_item
+                  text "0000000000"
+              container
+                list_item
+                  text "税率/退税率"
+                list_item
+                  text "13%"
+                  text "/"
+                  text "9%"
+              container
+                list_item
+                  text "状态"
+                list_item
+                  text "启用"
+              list_item
+                text "包装资料"
+              list_item
+                text "UIQA测试样本：1件/袋，不用于真实交易。"
+          button [ref=3529]
+            svg_root
+            text "追加配件"
+          table
+            table_row
+              table_cell
+          container [ref=3550]
+            table
+              table_row
+                table_cell
+                  text "配件名称"
+                table_cell
+                  text "单耗"
+                table_cell
+                  text "单位"
+                table_cell
+                  text "默认供应商"
+                table_cell
+                  text "采购拆分"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  svg_root
+                  paragraph
+                    text "暂无数据"
+          table
+            table_row
+              table_cell
+          svg_root
+          heading
+            text "相关客户与交易"
+          table
+            table_row
+              table_cell
+          container [ref=3551]
+            table
+              table_row
+                table_cell
+                  text "客户"
+                table_cell
+                  text "合同数"
+                table_cell
+                  text "累计数量"
+                table_cell
+                  text "累计金额"
+                table_cell
+                  text "最近合同"
+              table_row
+                table_cell
+                  text "暂无关联客户，出口合同生成后自动汇总"
+          table
+            table_row
+              table_cell
+          svg_root
+          heading
+            text "业务记录"
+          table
+            table_row
+              table_cell
+          container [ref=3552]
+            table
+              table_row
+                table_cell
+                  text "来源"
+                table_cell
+                  text "单号"
+                table_cell
+                  text "日期"
+                table_cell
+                  text "往来方"
+                table_cell
+                  text "数量"
+                table_cell
+                  text "金额"
+                table_cell
+                  text "摘要"
+              table_row
+                table_cell
+                  text "暂无业务记录，报价/合同/出货/采购引用该商品后自动汇总"
+          table
+            table_row
+              table_cell
+    dialog [ref=3553]
+      image
+      button [ref=3554]
+        image "close"
+          svg_root
+      button [ref=3555]
+        image "left"
+          svg_root
+      button [ref=3556]
+        image "right"
+          svg_root
+      container
+        text "2 / 2"
+        container
+          button "flipY" [ref=3557, loc=css:button[aria-label="flipY"]]
+            image "swap"
+              svg_root
+          button "flipX" [ref=3558, loc=css:button[aria-label="flipX"]]
+            image "swap"
+              svg_root
+          button "rotateLeft" [ref=3559, loc=css:button[aria-label="rotateLeft"]]
+            image "rotate-left"
+              svg_root
+          button "rotateRight" [ref=3560, loc=css:button[aria-label="rotateRight"]]
+            image "rotate-right"
+              svg_root
+          button "zoomOut" [ref=3561, loc=css:button[aria-label="zoomOut"]]
+            image "zoom-out"
+              svg_root
+          button "zoomIn" [ref=3562, loc=css:button[aria-label="zoomIn"]]
+            image "zoom-in"
+              svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

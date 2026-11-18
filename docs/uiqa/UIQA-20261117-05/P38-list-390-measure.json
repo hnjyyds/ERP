@@ -1,0 +1,3089 @@
+{
+  "url": "http://localhost:8080/workspace/notifications",
+  "viewport": [
+    390,
+    844
+  ],
+  "scale": 1,
+  "controls": [
+    {
+      "label": "业务导航",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "frame": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "16.1px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "通知",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "frame": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "系统设置",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "frame": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "全部已读",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 286.515625,
+        "y": 164.6953125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 164.6953125,
+        "right": 359,
+        "bottom": 208.6953125,
+        "left": 286.515625
+      },
+      "frame": {
+        "x": 286.515625,
+        "y": 164.6953125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 164.6953125,
+        "right": 359,
+        "bottom": 208.6953125,
+        "left": 286.515625
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "处理",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 107.8671875,
+        "y": 310.234375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 310.234375,
+        "right": 157.109375,
+        "bottom": 354.234375,
+        "left": 107.8671875
+      },
+      "frame": {
+        "x": 107.8671875,
+        "y": 310.234375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 310.234375,
+        "right": 157.109375,
+        "bottom": 354.234375,
+        "left": 107.8671875
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 164.109375,
+        "y": 310.234375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 310.234375,
+        "right": 236.59375,
+        "bottom": 354.234375,
+        "left": 164.109375
+      },
+      "frame": {
+        "x": 164.109375,
+        "y": 310.234375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 310.234375,
+        "right": 236.59375,
+        "bottom": 354.234375,
+        "left": 164.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 243.59375,
+        "y": 310.234375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 310.234375,
+        "right": 292.8359375,
+        "bottom": 354.234375,
+        "left": 243.59375
+      },
+      "frame": {
+        "x": 243.59375,
+        "y": 310.234375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 310.234375,
+        "right": 292.8359375,
+        "bottom": 354.234375,
+        "left": 243.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "处理",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 119.484375,
+        "y": 479.5703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 168.7265625,
+        "bottom": 523.5703125,
+        "left": 119.484375
+      },
+      "frame": {
+        "x": 119.484375,
+        "y": 479.5703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 168.7265625,
+        "bottom": 523.5703125,
+        "left": 119.484375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 175.7265625,
+        "y": 479.5703125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 248.2109375,
+        "bottom": 523.5703125,
+        "left": 175.7265625
+      },
+      "frame": {
+        "x": 175.7265625,
+        "y": 479.5703125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 248.2109375,
+        "bottom": 523.5703125,
+        "left": 175.7265625
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 255.2109375,
+        "y": 479.5703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 304.453125,
+        "bottom": 523.5703125,
+        "left": 255.2109375
+      },
+      "frame": {
+        "x": 255.2109375,
+        "y": 479.5703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 304.453125,
+        "bottom": 523.5703125,
+        "left": 255.2109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "处理",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 119.484375,
+        "y": 648.90625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 648.90625,
+        "right": 168.7265625,
+        "bottom": 692.90625,
+        "left": 119.484375
+      },
+      "frame": {
+        "x": 119.484375,
+        "y": 648.90625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 648.90625,
+        "right": 168.7265625,
+        "bottom": 692.90625,
+        "left": 119.484375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 175.7265625,
+        "y": 648.90625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 648.90625,
+        "right": 248.2109375,
+        "bottom": 692.90625,
+        "left": 175.7265625
+      },
+      "frame": {
+        "x": 175.7265625,
+        "y": 648.90625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 648.90625,
+        "right": 248.2109375,
+        "bottom": 692.90625,
+        "left": 175.7265625
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 255.2109375,
+        "y": 648.90625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 648.90625,
+        "right": 304.453125,
+        "bottom": 692.90625,
+        "left": 255.2109375
+      },
+      "frame": {
+        "x": 255.2109375,
+        "y": 648.90625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 648.90625,
+        "right": 304.453125,
+        "bottom": 692.90625,
+        "left": 255.2109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 797.4453125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 797.4453125,
+        "right": 226.59375,
+        "bottom": 841.4453125,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 797.4453125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 797.4453125,
+        "right": 226.59375,
+        "bottom": 841.4453125,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 797.4453125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 797.4453125,
+        "right": 282.8359375,
+        "bottom": 841.4453125,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 797.4453125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 797.4453125,
+        "right": 282.8359375,
+        "bottom": 841.4453125,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 142.484375,
+        "y": 966.78125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 966.78125,
+        "right": 214.96875,
+        "bottom": 1010.78125,
+        "left": 142.484375
+      },
+      "frame": {
+        "x": 142.484375,
+        "y": 966.78125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 966.78125,
+        "right": 214.96875,
+        "bottom": 1010.78125,
+        "left": 142.484375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 221.96875,
+        "y": 966.78125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 966.78125,
+        "right": 271.2109375,
+        "bottom": 1010.78125,
+        "left": 221.96875
+      },
+      "frame": {
+        "x": 221.96875,
+        "y": 966.78125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 966.78125,
+        "right": 271.2109375,
+        "bottom": 1010.78125,
+        "left": 221.96875
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 1136.1171875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1136.1171875,
+        "right": 226.59375,
+        "bottom": 1180.1171875,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 1136.1171875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1136.1171875,
+        "right": 226.59375,
+        "bottom": 1180.1171875,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 1136.1171875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1136.1171875,
+        "right": 282.8359375,
+        "bottom": 1180.1171875,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 1136.1171875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1136.1171875,
+        "right": 282.8359375,
+        "bottom": 1180.1171875,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 1305.453125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1305.453125,
+        "right": 226.59375,
+        "bottom": 1349.453125,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 1305.453125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1305.453125,
+        "right": 226.59375,
+        "bottom": 1349.453125,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 1305.453125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1305.453125,
+        "right": 282.8359375,
+        "bottom": 1349.453125,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 1305.453125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1305.453125,
+        "right": 282.8359375,
+        "bottom": 1349.453125,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 1453.9921875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1453.9921875,
+        "right": 226.59375,
+        "bottom": 1497.9921875,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 1453.9921875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1453.9921875,
+        "right": 226.59375,
+        "bottom": 1497.9921875,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 1453.9921875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1453.9921875,
+        "right": 282.8359375,
+        "bottom": 1497.9921875,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 1453.9921875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1453.9921875,
+        "right": 282.8359375,
+        "bottom": 1497.9921875,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 1602.53125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1602.53125,
+        "right": 226.59375,
+        "bottom": 1646.53125,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 1602.53125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1602.53125,
+        "right": 226.59375,
+        "bottom": 1646.53125,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 1602.53125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1602.53125,
+        "right": 282.8359375,
+        "bottom": 1646.53125,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 1602.53125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1602.53125,
+        "right": 282.8359375,
+        "bottom": 1646.53125,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 1751.0703125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1751.0703125,
+        "right": 226.59375,
+        "bottom": 1795.0703125,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 1751.0703125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1751.0703125,
+        "right": 226.59375,
+        "bottom": 1795.0703125,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 1751.0703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1751.0703125,
+        "right": 282.8359375,
+        "bottom": 1795.0703125,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 1751.0703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1751.0703125,
+        "right": 282.8359375,
+        "bottom": 1795.0703125,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 1899.609375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1899.609375,
+        "right": 226.59375,
+        "bottom": 1943.609375,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 1899.609375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1899.609375,
+        "right": 226.59375,
+        "bottom": 1943.609375,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 1899.609375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1899.609375,
+        "right": 282.8359375,
+        "bottom": 1943.609375,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 1899.609375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1899.609375,
+        "right": 282.8359375,
+        "bottom": 1943.609375,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 2048.1484375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2048.1484375,
+        "right": 226.59375,
+        "bottom": 2092.1484375,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 2048.1484375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2048.1484375,
+        "right": 226.59375,
+        "bottom": 2092.1484375,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 2048.1484375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2048.1484375,
+        "right": 282.8359375,
+        "bottom": 2092.1484375,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 2048.1484375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2048.1484375,
+        "right": 282.8359375,
+        "bottom": 2092.1484375,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 2196.6875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2196.6875,
+        "right": 226.59375,
+        "bottom": 2240.6875,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 2196.6875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2196.6875,
+        "right": 226.59375,
+        "bottom": 2240.6875,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 2196.6875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2196.6875,
+        "right": 282.8359375,
+        "bottom": 2240.6875,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 2196.6875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2196.6875,
+        "right": 282.8359375,
+        "bottom": 2240.6875,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 2345.2265625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2345.2265625,
+        "right": 226.59375,
+        "bottom": 2389.2265625,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 2345.2265625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2345.2265625,
+        "right": 226.59375,
+        "bottom": 2389.2265625,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 2345.2265625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2345.2265625,
+        "right": 282.8359375,
+        "bottom": 2389.2265625,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 2345.2265625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2345.2265625,
+        "right": 282.8359375,
+        "bottom": 2389.2265625,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "查看单据",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 154.109375,
+        "y": 2493.765625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2493.765625,
+        "right": 226.59375,
+        "bottom": 2537.765625,
+        "left": 154.109375
+      },
+      "frame": {
+        "x": 154.109375,
+        "y": 2493.765625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2493.765625,
+        "right": 226.59375,
+        "bottom": 2537.765625,
+        "left": 154.109375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "label": "删除",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 233.59375,
+        "y": 2493.765625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2493.765625,
+        "right": 282.8359375,
+        "bottom": 2537.765625,
+        "left": 233.59375
+      },
+      "frame": {
+        "x": 233.59375,
+        "y": 2493.765625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2493.765625,
+        "right": 282.8359375,
+        "bottom": 2537.765625,
+        "left": 233.59375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "13.0813px",
+      "fontSize": "11.375px",
+      "hit": false
+    }
+  ],
+  "texts": [
+    {
+      "text": "业务管理系统",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.511976173162169,
+      "rect": {
+        "x": 16,
+        "y": 29.5,
+        "width": 73.515625,
+        "height": 16.1953125,
+        "top": 29.5,
+        "right": 89.515625,
+        "bottom": 45.6953125,
+        "left": 16
+      }
+    },
+    {
+      "text": "导航",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "14px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 332.21875,
+        "y": 25.796875,
+        "width": 28.5625,
+        "height": 16.09375,
+        "top": 25.796875,
+        "right": 360.78125,
+        "bottom": 41.890625,
+        "left": 332.21875
+      }
+    },
+    {
+      "text": "业务模块",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        244,
+        246,
+        248
+      ],
+      "opacity": "1",
+      "fontSize": "11px",
+      "ratio": 3.444831529412615,
+      "rect": {
+        "x": 14,
+        "y": 79.3671875,
+        "width": 61.140625,
+        "height": 12.6484375,
+        "top": 79.3671875,
+        "right": 75.140625,
+        "bottom": 92.015625,
+        "left": 14
+      }
+    },
+    {
+      "text": "3",
+      "color": "rgb(255, 255, 255)",
+      "bg": [
+        255,
+        77,
+        79
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.267743233071127,
+      "rect": {
+        "x": 315.234375,
+        "y": 84.6953125,
+        "width": 7.5234375,
+        "height": 14,
+        "top": 84.6953125,
+        "right": 322.7578125,
+        "bottom": 98.6953125,
+        "left": 315.234375
+      }
+    },
+    {
+      "text": "15",
+      "color": "rgb(123, 110, 55)",
+      "bg": [
+        243.5,
+        243.8,
+        245.1
+      ],
+      "opacity": "1",
+      "fontSize": "14.625px",
+      "ratio": 4.618689795745298,
+      "rect": {
+        "x": 241.515625,
+        "y": 169.6953125,
+        "width": 38,
+        "height": 34,
+        "top": 169.6953125,
+        "right": 279.515625,
+        "bottom": 203.6953125,
+        "left": 241.515625
+      }
+    },
+    {
+      "text": "全部已读",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.183476358939483,
+      "rect": {
+        "x": 286.515625,
+        "y": 164.6953125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 164.6953125,
+        "right": 359,
+        "bottom": 208.6953125,
+        "left": 286.515625
+      }
+    },
+    {
+      "text": "演示财务主管 已审批通过付款 PR-PG3X2P",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 277.4375,
+        "width": 293,
+        "height": 20.796875,
+        "top": 277.4375,
+        "right": 343,
+        "bottom": 298.234375,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 326.40625,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 326.40625,
+        "right": 100.8671875,
+        "bottom": 346.0546875,
+        "left": 50
+      }
+    },
+    {
+      "text": "处理",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 107.8671875,
+        "y": 310.234375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 310.234375,
+        "right": 157.109375,
+        "bottom": 354.234375,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 164.109375,
+        "y": 310.234375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 310.234375,
+        "right": 236.59375,
+        "bottom": 354.234375,
+        "left": 164.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 243.59375,
+        "y": 310.234375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 310.234375,
+        "right": 292.8359375,
+        "bottom": 354.234375,
+        "left": 243.59375
+      }
+    },
+    {
+      "text": "采购合同 PC-HR36RU 的跟单节点「确认样提交日期」已逾期 2 天，请尽快更新进度",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 425.9765625,
+        "width": 293,
+        "height": 41.59375,
+        "top": 425.9765625,
+        "right": 343,
+        "bottom": 467.5703125,
+        "left": 50
+      }
+    },
+    {
+      "text": "高优先级",
+      "color": "rgb(207, 19, 34)",
+      "bg": [
+        255,
+        241,
+        240
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 5.065193859511936,
+      "rect": {
+        "x": 50,
+        "y": 495.7421875,
+        "width": 62.484375,
+        "height": 19.6484375,
+        "top": 495.7421875,
+        "right": 112.484375,
+        "bottom": 515.390625,
+        "left": 50
+      }
+    },
+    {
+      "text": "处理",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 119.484375,
+        "y": 479.5703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 168.7265625,
+        "bottom": 523.5703125,
+        "left": 119.484375
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 175.7265625,
+        "y": 479.5703125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 248.2109375,
+        "bottom": 523.5703125,
+        "left": 175.7265625
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 255.2109375,
+        "y": 479.5703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 479.5703125,
+        "right": 304.453125,
+        "bottom": 523.5703125,
+        "left": 255.2109375
+      }
+    },
+    {
+      "text": "采购合同 PC-HR36RU 的跟单节点「确认样提交日期」已逾期 1 天，请尽快更新进度",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 595.3125,
+        "width": 293,
+        "height": 41.59375,
+        "top": 595.3125,
+        "right": 343,
+        "bottom": 636.90625,
+        "left": 50
+      }
+    },
+    {
+      "text": "高优先级",
+      "color": "rgb(207, 19, 34)",
+      "bg": [
+        255,
+        241,
+        240
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 5.065193859511936,
+      "rect": {
+        "x": 50,
+        "y": 665.078125,
+        "width": 62.484375,
+        "height": 19.6484375,
+        "top": 665.078125,
+        "right": 112.484375,
+        "bottom": 684.7265625,
+        "left": 50
+      }
+    },
+    {
+      "text": "处理",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 119.484375,
+        "y": 648.90625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 648.90625,
+        "right": 168.7265625,
+        "bottom": 692.90625,
+        "left": 119.484375
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 175.7265625,
+        "y": 648.90625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 648.90625,
+        "right": 248.2109375,
+        "bottom": 692.90625,
+        "left": 175.7265625
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 255.2109375,
+        "y": 648.90625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 648.90625,
+        "right": 304.453125,
+        "bottom": 692.90625,
+        "left": 255.2109375
+      }
+    },
+    {
+      "text": "演示业务主管 已审批通过出口报价 QT-A33KVZ",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 764.6484375,
+        "width": 293,
+        "height": 20.796875,
+        "top": 764.6484375,
+        "right": 343,
+        "bottom": 785.4453125,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 813.6171875,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 813.6171875,
+        "right": 100.8671875,
+        "bottom": 833.265625,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 813.6171875,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 813.6171875,
+        "right": 147.109375,
+        "bottom": 833.265625,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 797.4453125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 797.4453125,
+        "right": 226.59375,
+        "bottom": 841.4453125,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 797.4453125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 797.4453125,
+        "right": 282.8359375,
+        "bottom": 841.4453125,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示业务主管 驳回了出口报价 QT-A33KVZ，原因：QA261112 驳回测试",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 913.1875,
+        "width": 293,
+        "height": 41.59375,
+        "top": 913.1875,
+        "right": 343,
+        "bottom": 954.78125,
+        "left": 50
+      }
+    },
+    {
+      "text": "提醒",
+      "color": "rgb(212, 136, 6)",
+      "bg": [
+        255,
+        251,
+        230
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 2.7572807914391984,
+      "rect": {
+        "x": 50,
+        "y": 982.953125,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 982.953125,
+        "right": 89.2421875,
+        "bottom": 1002.6015625,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 96.2421875,
+        "y": 982.953125,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 982.953125,
+        "right": 135.484375,
+        "bottom": 1002.6015625,
+        "left": 96.2421875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 142.484375,
+        "y": 966.78125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 966.78125,
+        "right": 214.96875,
+        "bottom": 1010.78125,
+        "left": 142.484375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 221.96875,
+        "y": 966.78125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 966.78125,
+        "right": 271.2109375,
+        "bottom": 1010.78125,
+        "left": 221.96875
+      }
+    },
+    {
+      "text": "演示财务主管 已审批通过报销单 QA261112-RB01",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 1082.5234375,
+        "width": 293,
+        "height": 41.59375,
+        "top": 1082.5234375,
+        "right": 343,
+        "bottom": 1124.1171875,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 1152.2890625,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 1152.2890625,
+        "right": 100.8671875,
+        "bottom": 1171.9375,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 1152.2890625,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 1152.2890625,
+        "right": 147.109375,
+        "bottom": 1171.9375,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 1136.1171875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1136.1171875,
+        "right": 226.59375,
+        "bottom": 1180.1171875,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 1136.1171875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1136.1171875,
+        "right": 282.8359375,
+        "bottom": 1180.1171875,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示财务主管 已审批通过合作方费用付款 FPR-G7WTAX",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 1251.859375,
+        "width": 293,
+        "height": 41.59375,
+        "top": 1251.859375,
+        "right": 343,
+        "bottom": 1293.453125,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 1321.625,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 1321.625,
+        "right": 100.8671875,
+        "bottom": 1341.2734375,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 1321.625,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 1321.625,
+        "right": 147.109375,
+        "bottom": 1341.2734375,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 1305.453125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1305.453125,
+        "right": 226.59375,
+        "bottom": 1349.453125,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 1305.453125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1305.453125,
+        "right": 282.8359375,
+        "bottom": 1349.453125,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示业务主管 已审批通过寄样单 SD-CXE849",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 1421.1953125,
+        "width": 293,
+        "height": 20.796875,
+        "top": 1421.1953125,
+        "right": 343,
+        "bottom": 1441.9921875,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 1470.1640625,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 1470.1640625,
+        "right": 100.8671875,
+        "bottom": 1489.8125,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 1470.1640625,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 1470.1640625,
+        "right": 147.109375,
+        "bottom": 1489.8125,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 1453.9921875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1453.9921875,
+        "right": 226.59375,
+        "bottom": 1497.9921875,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 1453.9921875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1453.9921875,
+        "right": 282.8359375,
+        "bottom": 1497.9921875,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示财务主管 已审批通过付款 PR-ZAWWF6",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 1569.734375,
+        "width": 293,
+        "height": 20.796875,
+        "top": 1569.734375,
+        "right": 343,
+        "bottom": 1590.53125,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 1618.703125,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 1618.703125,
+        "right": 100.8671875,
+        "bottom": 1638.3515625,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 1618.703125,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 1618.703125,
+        "right": 147.109375,
+        "bottom": 1638.3515625,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 1602.53125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1602.53125,
+        "right": 226.59375,
+        "bottom": 1646.53125,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 1602.53125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1602.53125,
+        "right": 282.8359375,
+        "bottom": 1646.53125,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示财务主管 已审批通过付款 PR-GZN8H6",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 1718.2734375,
+        "width": 293,
+        "height": 20.796875,
+        "top": 1718.2734375,
+        "right": 343,
+        "bottom": 1739.0703125,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 1767.2421875,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 1767.2421875,
+        "right": 100.8671875,
+        "bottom": 1786.890625,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 1767.2421875,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 1767.2421875,
+        "right": 147.109375,
+        "bottom": 1786.890625,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 1751.0703125,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1751.0703125,
+        "right": 226.59375,
+        "bottom": 1795.0703125,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 1751.0703125,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1751.0703125,
+        "right": 282.8359375,
+        "bottom": 1795.0703125,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示业务主管 已审批通过出库单 XP-OUT-33A95C",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 1866.8125,
+        "width": 293,
+        "height": 20.796875,
+        "top": 1866.8125,
+        "right": 343,
+        "bottom": 1887.609375,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 1915.78125,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 1915.78125,
+        "right": 100.8671875,
+        "bottom": 1935.4296875,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 1915.78125,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 1915.78125,
+        "right": 147.109375,
+        "bottom": 1935.4296875,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 1899.609375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 1899.609375,
+        "right": 226.59375,
+        "bottom": 1943.609375,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 1899.609375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 1899.609375,
+        "right": 282.8359375,
+        "bottom": 1943.609375,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示业务主管 已审批通过出运计划 SP-DAEPEG",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 2015.3515625,
+        "width": 293,
+        "height": 20.796875,
+        "top": 2015.3515625,
+        "right": 343,
+        "bottom": 2036.1484375,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 2064.3203125,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 2064.3203125,
+        "right": 100.8671875,
+        "bottom": 2083.96875,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 2064.3203125,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 2064.3203125,
+        "right": 147.109375,
+        "bottom": 2083.96875,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 2048.1484375,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2048.1484375,
+        "right": 226.59375,
+        "bottom": 2092.1484375,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 2048.1484375,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2048.1484375,
+        "right": 282.8359375,
+        "bottom": 2092.1484375,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示业务主管 已审批通过入库单 XP-IN-MVU9CU",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 2163.890625,
+        "width": 293,
+        "height": 20.796875,
+        "top": 2163.890625,
+        "right": 343,
+        "bottom": 2184.6875,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 2212.859375,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 2212.859375,
+        "right": 100.8671875,
+        "bottom": 2232.5078125,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 2212.859375,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 2212.859375,
+        "right": 147.109375,
+        "bottom": 2232.5078125,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 2196.6875,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2196.6875,
+        "right": 226.59375,
+        "bottom": 2240.6875,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 2196.6875,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2196.6875,
+        "right": 282.8359375,
+        "bottom": 2240.6875,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示业务主管 已审批通过采购合同 PC-HR36RU",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 2312.4296875,
+        "width": 293,
+        "height": 20.796875,
+        "top": 2312.4296875,
+        "right": 343,
+        "bottom": 2333.2265625,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 2361.3984375,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 2361.3984375,
+        "right": 100.8671875,
+        "bottom": 2381.046875,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 2361.3984375,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 2361.3984375,
+        "right": 147.109375,
+        "bottom": 2381.046875,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 2345.2265625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2345.2265625,
+        "right": 226.59375,
+        "bottom": 2389.2265625,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 2345.2265625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2345.2265625,
+        "right": 282.8359375,
+        "bottom": 2389.2265625,
+        "left": 233.59375
+      }
+    },
+    {
+      "text": "演示业务主管 已审批通过出口合同 EC-F8D7RX",
+      "color": "rgb(140, 143, 156)",
+      "bg": [
+        250.83999999999997,
+        249.8,
+        246.68
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 3.0784825761298196,
+      "rect": {
+        "x": 50,
+        "y": 2460.96875,
+        "width": 293,
+        "height": 20.796875,
+        "top": 2460.96875,
+        "right": 343,
+        "bottom": 2481.765625,
+        "left": 50
+      }
+    },
+    {
+      "text": "已通过",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 50,
+        "y": 2509.9375,
+        "width": 50.8671875,
+        "height": 19.6484375,
+        "top": 2509.9375,
+        "right": 100.8671875,
+        "bottom": 2529.5859375,
+        "left": 50
+      }
+    },
+    {
+      "text": "已读",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 107.8671875,
+        "y": 2509.9375,
+        "width": 39.2421875,
+        "height": 19.6484375,
+        "top": 2509.9375,
+        "right": 147.109375,
+        "bottom": 2529.5859375,
+        "left": 107.8671875
+      }
+    },
+    {
+      "text": "查看单据",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 154.109375,
+        "y": 2493.765625,
+        "width": 72.484375,
+        "height": 44,
+        "top": 2493.765625,
+        "right": 226.59375,
+        "bottom": 2537.765625,
+        "left": 154.109375
+      }
+    },
+    {
+      "text": "删除",
+      "color": "rgb(123, 92, 34)",
+      "bg": [
+        254.584,
+        254.48,
+        254.168
+      ],
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "ratio": 6.156173756092323,
+      "rect": {
+        "x": 233.59375,
+        "y": 2493.765625,
+        "width": 49.2421875,
+        "height": 44,
+        "top": 2493.765625,
+        "right": 282.8359375,
+        "bottom": 2537.765625,
+        "left": 233.59375
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "key": "P03",
+    "code": "UIQA-20261117-05-C01",
+    "url": "http://localhost:8080/masterdata/customers/451c5b86-de27-4970-8219-5bdd0573e126"
+  },
+  {
+    "key": "P04",
+    "code": "UIQA-20261117-05-B01",
+    "url": "http://localhost:8080/masterdata/partners/3e4df6ca-23ff-41b4-a522-6afc9f2b8d3e"
+  }
+]

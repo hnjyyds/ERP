@@ -1,0 +1,20 @@
+{
+  "initial": [
+    "http://localhost:8080/uploads/images/b56e7859ef5b4c3c9f2ae5d35e71c620-39245e8609e4b0b9.png",
+    "http://localhost:8080/uploads/images/fd132594164a4c2098df0cfbd5fdf3cb-b1d10b7f82aad09e.png"
+  ],
+  "replacement": [
+    "http://localhost:8080/uploads/images/ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+    "http://localhost:8080/uploads/images/fd132594164a4c2098df0cfbd5fdf3cb-b1d10b7f82aad09e.png"
+  ],
+  "append": [
+    "http://localhost:8080/uploads/images/ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+    "http://localhost:8080/uploads/images/fd132594164a4c2098df0cfbd5fdf3cb-b1d10b7f82aad09e.png",
+    "http://localhost:8080/uploads/images/be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png"
+  ],
+  "final": [
+    "http://localhost:8080/uploads/images/ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+    "http://localhost:8080/uploads/images/be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png"
+  ],
+  "negative_unchanged": true
+}

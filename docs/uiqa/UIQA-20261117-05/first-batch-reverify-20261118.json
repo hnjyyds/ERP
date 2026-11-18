@@ -1,0 +1,140 @@
+{
+  "captured_at": "2026-11-18",
+  "deployed": {
+    "frontend_commit": "03277d38",
+    "backend_commit": "b370c0fe",
+    "frontend_asset": "assets/index-BqOksAD7.js",
+    "base_url": "http://127.0.0.1:8080"
+  },
+  "Q05_29": {
+    "invoice_b_url": "http://127.0.0.1:8080/finance/payments/015bcc0d-58cf-47cb-a10d-a0747860fd18",
+    "invoice_b_rows": [
+      "PR-GZN8H6",
+      "PR-ZAWWF6"
+    ],
+    "invoice_b_cross_invoice_rows": [],
+    "invoice_b_approval": {
+      "amount": "60.00",
+      "approved_at": "2026-11-12",
+      "account": "",
+      "remark": "QA261112 并发60测试",
+      "disabled": true
+    },
+    "invoice_a_url": "http://127.0.0.1:8080/finance/payments/489f9619-6f86-433c-a412-47236257892a",
+    "invoice_a_rows": [
+      "PR-PG3X2P"
+    ],
+    "invoice_a_approval": {
+      "amount": "0.01",
+      "approved_at": "2026-11-17",
+      "account": "UIQA-TEST-ACCOUNT",
+      "remark": "UIQA-20261117-05 已授权CNY0.01付款闭环测试，仅此申请",
+      "disabled": true
+    },
+    "result": "通过：跨发票申请不再出现于当前发票列表，审批字段与所选申请一致且只读"
+  },
+  "Q05_19": {
+    "invoice_a_history_echo": true,
+    "invoice_b_history_echo": true,
+    "null_account_still_blank": true,
+    "result": "通过：批准日期/账号/备注回显保存值；原null账号保持空白"
+  },
+  "Q05_26": {
+    "default_stock": "59.00",
+    "keyword_known": {
+      "q": "XP-IN-MVU9CU",
+      "stock": "59.00",
+      "total": "1"
+    },
+    "keyword_partial": {
+      "q": "XP-IN",
+      "stock": "59.00",
+      "total": "1"
+    },
+    "keyword_no_match": {
+      "q": "ZZZ-NO-MATCH",
+      "stock": "59.00"
+    },
+    "detail_from_filter": {
+      "url": "http://127.0.0.1:8080/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa?q=XP-IN-MVU9CU&status=approved&supplier=c6d43566-694f-41d0-85f0-6631c6478d52&contract=56cd6434-f367-4553-8caf-092a96ab097d",
+      "inventory_balance_rows": 1,
+      "balance": "59 pcs"
+    },
+    "result": "通过：单据关键词不影响库存统计，详情库存余额正常加载"
+  },
+  "Q05_27": {
+    "url_after_query": "http://127.0.0.1:8080/warehouse/inbound-orders?q=XP-IN-MVU9CU&status=approved&mode=pending_inspection&supplier=c6d43566-694f-41d0-85f0-6631c6478d52&contract=56cd6434-f367-4553-8caf-092a96ab097d",
+    "reload_retained_labels": [
+      "入库搜索",
+      "单据状态 已审批",
+      "入库模式 待检入库",
+      "供应商 QA261112 测试供应商",
+      "采购合同 PC-HR36RU"
+    ],
+    "back_to_list_url": "http://127.0.0.1:8080/warehouse/inbound-orders?q=XP-IN-MVU9CU&status=approved&supplier=c6d43566-694f-41d0-85f0-6631c6478d52&contract=56cd6434-f367-4553-8caf-092a96ab097d",
+    "result": "通过：模式/供应商/合同入URL，刷新与详情返回均保留条件"
+  },
+  "Q05_25": {
+    "product": "UIQA-20261117-05-P17",
+    "unit_after_select": "box",
+    "result": "通过"
+  },
+  "Q05_08": {
+    "page_size": 50,
+    "total_products": 51,
+    "export_from_page": 2,
+    "csv_rows": 51,
+    "csv_unique_codes": 51,
+    "file": "downloads/P01-firstbatch-export-all-page2.csv",
+    "result": "通过：第2页点击导出全部得到当前范围全部51条，而非当前页1条"
+  },
+  "Q05_05": {
+    "pending_invoice_amount": "0.00",
+    "received_notice_amount": "CNY 0.01",
+    "result": "通过"
+  },
+  "Q05_02": {
+    "finance": {
+      "menus": [
+        "工作台",
+        "财务摘要",
+        "经营总览",
+        "收款管理",
+        "付款管理",
+        "付费管理",
+        "核销退税",
+        "杂费管理",
+        "结算核算",
+        "报销管理",
+        "口岸数据",
+        "财务报表"
+      ],
+      "supplier_options": "QA261112 测试供应商",
+      "notice_options": "PIN-UIQA-20261117-04-01",
+      "contract_options": "PC-HR36RU",
+      "printing_template": 403
+    },
+    "warehouse": {
+      "menus": [
+        "工作台",
+        "基础资料",
+        "仓库",
+        "入仓",
+        "入库计划",
+        "出库计划",
+        "货物出库",
+        "库存盘点"
+      ],
+      "supplier_options": "QA261112 测试供应商",
+      "contract_options": "PC-HR36RU",
+      "invoice_notices": 403,
+      "printing_template": 403
+    },
+    "result": "通过：关联选项可读，菜单未扩大，开票通知不扩散到仓库"
+  },
+  "screenshots": [
+    "screenshots/P24-firstbatch-invoiceA-history-1440.png",
+    "screenshots/P19-firstbatch-detail-from-filter-1440.png",
+    "screenshots/P12-firstbatch-unit-box-1440.png"
+  ]
+}

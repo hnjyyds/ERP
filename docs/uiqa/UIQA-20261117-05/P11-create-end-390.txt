@@ -1,0 +1,324 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "开票通知"
+          container
+            button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "开票通知概览"
+            container
+              text "开票通知"
+              text "3"
+            container
+              text "已发送"
+              text "0"
+            container
+              text "已收票"
+              text "1"
+            container
+              text "通知金额"
+              text "CNY 0.01"
+            container
+              text "待催收"
+              text "0"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "开票通知列表"
+              form
+                container
+                  text "通知搜索"
+                  textbox [ref=2524, loc=css:input[placeholder="通知号 / 供应商 / 品名"]]
+                    text "通知号 / 供应商 / 品名"
+                container
+                  text "通知状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=2525]
+                    image "down"
+                      svg_root
+                container
+                  text "供应商标识"
+                  textbox [ref=2526, loc=css:input[placeholder="输入供应商编号或名称"]]
+                    text "输入供应商编号或名称"
+                container
+                  text "报关单证 ID"
+                  textbox [ref=2527, loc=css:input[placeholder="输入报关单证编号"]]
+                    text "输入报关单证编号"
+                container
+                  button [ref=2528]
+                    svg_root
+                    text "查询"
+                  button [ref=2529]
+                    svg_root
+                    text "生成开票通知"
+            container [ref=2583]
+              table
+                table_row
+                  table_cell
+              container [ref=2530]
+                container [ref=2584]
+                  table
+                    table_row
+                      table_cell
+                        text "开票通知"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "供应商"
+                      table_cell
+                        text "报关单"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "提醒"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=2531]
+                          text "PIN-UIQA-20261117-02-01"
+                      table_cell
+                        text "草稿"
+                      table_cell
+                        text "UIQA-20261117-02 测试供应商A"
+                      table_cell
+                        text "UIQA-20261117-02"
+                      table_cell
+                        text "CNY 0.00"
+                      table_cell
+                        text "0 个"
+                      table_cell
+                        button [ref=2532]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        button [ref=2533]
+                          text "PIN-UIQA-20261117-02-02"
+                      table_cell
+                        text "草稿"
+                      table_cell
+                        text "UIQA-20261117-02 测试供应商B"
+                      table_cell
+                        text "UIQA-20261117-02"
+                      table_cell
+                        text "CNY 0.00"
+                      table_cell
+                        text "0 个"
+                      table_cell
+                        button [ref=2534]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        button [ref=2535]
+                          text "PIN-UIQA-20261117-04-01"
+                      table_cell
+                        text "已收票"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "UIQA-20261117-04"
+                      table_cell
+                        text "CNY 0.01"
+                      table_cell
+                        text "0 个"
+                      table_cell
+                        button [ref=2536]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 3 条"
+                list_item
+                  button [ref=2537]
+                    image "left"
+                      svg_root
+                list_item [ref=2538]
+                  anchor [ref=2539]
+                    text "1"
+                list_item
+                  button [ref=2540]
+                    image "right"
+                      svg_root
+              table
+                table_row
+                  table_cell
+    dialog "从报关单证生成开票通知"
+      button "Close" [ref=2542, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "从报关单证生成开票通知"
+      container [ref=2543]
+        svg_root
+        heading
+          text "从报关单证生成"
+        form
+          container
+            text "报关单证 ID"
+            textbox [ref=2544]
+              text "e4170877-f1ff-45b6-bdc7-e46c6e82be0f"
+          container
+            text "报关单号"
+            textbox [ref=2545]
+          container
+            text "报关日期"
+            textbox [ref=2546]
+              spinbutton "年" [ref=2547]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=2548]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=2549]
+                text "17"
+          container
+            text "通知日期"
+            textbox [ref=2550]
+              spinbutton "年" [ref=2551]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=2552]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=2553]
+                text "17"
+          container
+            text "币种"
+            textbox [ref=2554]
+              text "CNY"
+          container
+            text "生成备注"
+            textbox [ref=2555]
+          text "供应商 A 开票要求"
+          container
+            text "供应商标识"
+            textbox [ref=2556]
+              text "supplier-pack-a"
+          container
+            text "供应商"
+            textbox [ref=2557]
+          container
+            text "采购合同号"
+            textbox [ref=2558]
+              text "PC-2026-PACK-A"
+          container
+            text "商品编号"
+            textbox [ref=2559]
+              text "BAG-40"
+          container
+            container
+              text "采购合同 ID"
+              textbox [ref=2560]
+                text "pc-pack-a"
+            container
+              text "商品 ID"
+              textbox [ref=2561]
+                text "product-bag"
+          container
+            text "商品名称"
+            textbox [ref=2562]
+              text "Eco Shopping Bag"
+          container
+            text "报关品名"
+            textbox [ref=2563]
+          container
+            text "开票品名"
+            textbox [ref=2564]
+          container
+            text "开票数量"
+            spinbutton [ref=2565]
+              text "1000"
+          container
+            text "单位"
+            textbox [ref=2566]
+              text "pcs"
+          container
+            text "金额"
+            spinbutton [ref=2567]
+              text "5200.00"
+          container
+            text "行备注"
+            textbox [ref=2568]
+          text "供应商 B 开票要求"
+          container
+            container
+              text "供应商标识"
+              textbox [ref=2569]
+                text "supplier-label-a"
+            container
+              text "供应商"
+              textbox [ref=2570]
+          container
+            container
+              text "采购合同号"
+              textbox [ref=2571]
+                text "PC-2026-LABEL-A"
+            container
+              text "商品编号"
+              textbox [ref=2572]
+                text "LABEL-01"
+          container
+            container
+              text "采购合同 ID"
+              textbox [ref=2573]
+                text "pc-label-a"
+            container
+              text "商品 ID"
+              textbox [ref=2574]
+                text "product-label"
+          container
+            container
+              text "商品名称"
+              textbox [ref=2575]
+                text "Hang Tag"
+            container
+              text "报关品名"
+              textbox [ref=2576]
+            container
+              text "开票品名"
+              textbox [ref=2577]
+          container
+            container
+              text "开票数量"
+              spinbutton [ref=2578]
+                text "450"
+            container
+              text "单位"
+              textbox [ref=2579]
+                text "pcs"
+            container
+              text "金额"
+              spinbutton [ref=2580]
+                text "360.00"
+          container
+            text "行备注"
+            textbox [ref=2581]
+          button [ref=2582]
+            text "生成开票通知"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

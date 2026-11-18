@@ -1,0 +1,615 @@
+[
+  {
+    "control": {
+      "i": 3,
+      "id": "_r_m_",
+      "label": "运输方式\n海运",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 0,
+        "label": "海运",
+        "title": "海运",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 1,
+        "label": "空运",
+        "title": "空运",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 2,
+        "label": "快递",
+        "title": "快递",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 3,
+        "label": "铁路",
+        "title": "铁路",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "海运",
+        "state": {
+          "selected": "海运",
+          "fields": [
+            {
+              "label": "出货单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "出货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "运输方式\n海运",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "出口合同 A\n输入合同号或客户搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 A 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "出口合同 B（可选）\n需要合并出货时选择第二份合同",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 B 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "起运港",
+              "type": "text",
+              "value": "Ningbo"
+            },
+            {
+              "label": "目的港",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "船名航次",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "箱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "订舱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单证负责人",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "预计付款成本",
+              "type": "number",
+              "value": "0.00"
+            },
+            {
+              "label": "出货备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "空运",
+        "state": {
+          "selected": "空运",
+          "fields": [
+            {
+              "label": "出货单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "出货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "运输方式\n空运",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "出口合同 A\n输入合同号或客户搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 A 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "出口合同 B（可选）\n需要合并出货时选择第二份合同",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 B 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "起运港",
+              "type": "text",
+              "value": "Ningbo"
+            },
+            {
+              "label": "目的港",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "船名航次",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "箱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "订舱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单证负责人",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "预计付款成本",
+              "type": "number",
+              "value": "0.00"
+            },
+            {
+              "label": "出货备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  },
+  {
+    "control": {
+      "i": 4,
+      "id": "shipment-contract-a",
+      "label": "出口合同 A\n输入合同号或客户搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 4,
+        "label": "EC-F8D7RX / QA261112 测试客户\n出运 2026-11-25 USD 512.50",
+        "title": "EC-F8D7RX / QA261112 测试客户",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "EC-F8D7RX / QA261112 测试客户\n出运 2026-11-25 USD 512.50",
+        "state": {
+          "selected": "EC-F8D7RX / QA261112 测试客户",
+          "fields": [
+            {
+              "label": "出货单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "出货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "运输方式\n空运",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "出口合同 A\nEC-F8D7RX / QA261112 测试客户",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 A 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "出口合同 B（可选）\n需要合并出货时选择第二份合同",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 B 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "起运港",
+              "type": "text",
+              "value": "Ningbo"
+            },
+            {
+              "label": "目的港",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "船名航次",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "箱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "订舱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单证负责人",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "预计付款成本",
+              "type": "number",
+              "value": "0.00"
+            },
+            {
+              "label": "出货备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入合同号或客户搜索",
+      "fields": [
+        {
+          "label": "出货单号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "出货日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "计划出运日",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "运输方式\n空运",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "出口合同 A\n输入合同号或客户搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "合同 A 出货数量",
+          "type": "number",
+          "value": ""
+        },
+        {
+          "label": "出口合同 B（可选）\n需要合并出货时选择第二份合同",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "合同 B 出货数量",
+          "type": "number",
+          "value": ""
+        },
+        {
+          "label": "起运港",
+          "type": "text",
+          "value": "Ningbo"
+        },
+        {
+          "label": "目的港",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "船名航次",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "箱号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "订舱号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "单证负责人",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "预计付款成本",
+          "type": "number",
+          "value": "0.00"
+        },
+        {
+          "label": "出货备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 5,
+      "id": "shipment-contract-b",
+      "label": "出口合同 B（可选）\n需要合并出货时选择第二份合同",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 5,
+        "label": "EC-F8D7RX / QA261112 测试客户\n出运 2026-11-25 USD 512.50",
+        "title": "EC-F8D7RX / QA261112 测试客户",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "EC-F8D7RX / QA261112 测试客户\n出运 2026-11-25 USD 512.50",
+        "state": {
+          "selected": "EC-F8D7RX / QA261112 测试客户",
+          "fields": [
+            {
+              "label": "出货单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "出货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "运输方式\n空运",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "出口合同 A\n输入合同号或客户搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 A 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "出口合同 B（可选）\nEC-F8D7RX / QA261112 测试客户",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "合同 B 出货数量",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "起运港",
+              "type": "text",
+              "value": "Ningbo"
+            },
+            {
+              "label": "目的港",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "船名航次",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "箱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "订舱号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单证负责人",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "预计付款成本",
+              "type": "number",
+              "value": "0.00"
+            },
+            {
+              "label": "出货备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "需要合并出货时选择第二份合同",
+      "fields": [
+        {
+          "label": "出货单号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "出货日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "计划出运日",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "运输方式\n空运",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "出口合同 A\n输入合同号或客户搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "合同 A 出货数量",
+          "type": "number",
+          "value": ""
+        },
+        {
+          "label": "出口合同 B（可选）\n需要合并出货时选择第二份合同",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "合同 B 出货数量",
+          "type": "number",
+          "value": ""
+        },
+        {
+          "label": "起运港",
+          "type": "text",
+          "value": "Ningbo"
+        },
+        {
+          "label": "目的港",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "船名航次",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "箱号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "订舱号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "单证负责人",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "预计付款成本",
+          "type": "number",
+          "value": "0.00"
+        },
+        {
+          "label": "出货备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  }
+]

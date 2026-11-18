@@ -1,0 +1,1171 @@
+{
+  "time": "2026-11-17T10:28:55.438Z",
+  "url": "http://localhost:8080/finance/misc",
+  "viewport": [
+    390,
+    844
+  ],
+  "scripts": [
+    "http://localhost:8080/assets/index-By6s5oGf.js"
+  ],
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai",
+  "scroll": [
+    0,
+    711,
+    390,
+    1555
+  ],
+  "focus": {
+    "tag": "BODY",
+    "id": "",
+    "label": null,
+    "text": "",
+    "outline": "rgb(32, 36, 44) none 3px",
+    "shadow": "none",
+    "border": "rgb(32, 36, 44)"
+  },
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "导航",
+      "label": "业务导航",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        292,
+        11.84375,
+        84,
+        44
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "工作台",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "商品资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "供应商资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "客户资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "合作伙伴",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "单证资料",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "出口合同",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "采购合同",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "出口报价",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "出货明细",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "QC 中心",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "我的 QC 任务",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "跟单中心",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "样品登记",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "打样管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "寄样管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "入仓",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "入库计划",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "出库计划",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "货物出库",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "库存盘点",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "经营总览",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "收款管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "付款管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "付费管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "核销退税",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "杂费管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(79, 110, 247, 0.08)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "结算核算",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "报销管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "口岸数据",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "财务报表",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "老板看板",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "组织管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "MCP 接入",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "审计日志",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "采购询价",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "开票通知",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "3",
+      "label": "通知",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        288,
+        -632.3046875,
+        44,
+        44
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        332,
+        -632.3046875,
+        44,
+        44
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        31,
+        -472.3046875,
+        328,
+        44
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        42,
+        -389.3046875,
+        288,
+        34
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        42,
+        -311.3046875,
+        288,
+        34
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查询",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        31,
+        -260.3046875,
+        160,
+        44
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "10.5625px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "新增杂费",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        199,
+        -260.3046875,
+        160,
+        44
+      ],
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(49, 91, 214)",
+      "opacity": "1",
+      "fontSize": "10.5625px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "QA261112-MISC01",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        39,
+        -91.8984375,
+        118.6328125,
+        44
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        279,
+        9.4765625,
+        24,
+        44
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "1",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        308,
+        10.4765625,
+        22,
+        22
+      ],
+      "color": "rgb(22, 119, 255)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        335,
+        9.4765625,
+        24,
+        44
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "页码",
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        31,
+        175.4765625,
+        328,
+        44
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        42,
+        258.4765625,
+        288,
+        34
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        31,
+        331.4765625,
+        328,
+        44
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        31,
+        409.4765625,
+        328,
+        44
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查询",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        274.4765625,
+        465.4765625,
+        84.5234375,
+        44
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        279,
+        768.8046875,
+        24,
+        44
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "1",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        308,
+        769.8046875,
+        22,
+        22
+      ],
+      "color": "rgb(22, 119, 255)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        335,
+        768.8046875,
+        24,
+        44
+      ],
+      "color": "rgba(0, 0, 0, 0.25)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "12px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "页码",
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    }
+  ],
+  "tables": [
+    "项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用",
+    "分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊"
+  ],
+  "scrollables": [
+    {
+      "tag": "DIV",
+      "class": "css-var-root ant-table-css-var ant-table-wrapper css-xsuzon",
+      "x": 0,
+      "y": 4,
+      "w": 328,
+      "h": 242,
+      "sw": 328,
+      "sh": 246,
+      "rect": "{\"x\":31,\"y\":-188.3046875,\"width\":328,\"height\":241.78125,\"top\":-188.3046875,\"right\":359,\"bottom\":53.4765625,\"left\":31}"
+    },
+    {
+      "tag": "DIV",
+      "class": "css-var-root ant-table-css-var ant-table-wrapper css-xsuzon",
+      "x": 0,
+      "y": 4,
+      "w": 328,
+      "h": 223,
+      "sw": 328,
+      "sh": 227,
+      "rect": "{\"x\":31,\"y\":589.875,\"width\":328,\"height\":222.9296875,\"top\":589.875,\"right\":359,\"bottom\":812.8046875,\"left\":31}"
+    },
+    {
+      "tag": "DIV",
+      "class": "ant-table-content",
+      "x": 144,
+      "y": 0,
+      "w": 328,
+      "h": 166,
+      "sw": 472,
+      "sh": 166,
+      "rect": "{\"x\":31,\"y\":585.875,\"width\":328,\"height\":165.9296875,\"top\":585.875,\"right\":359,\"bottom\":751.8046875,\"left\":31}"
+    }
+  ]
+}

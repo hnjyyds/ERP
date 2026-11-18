@@ -1,0 +1,289 @@
+[
+  {
+    "control": {
+      "i": 5,
+      "id": "inbound-order-plan-id",
+      "label": "采购订单号\nPC-HR36RU",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [],
+    "steps": [],
+    "cleared": {
+      "selected": "输入采购订单号或供应商",
+      "fields": [
+        {
+          "label": "采购订单号\n输入采购订单号或供应商",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "入库单",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "入库模式\n正式入库",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "入库日期",
+          "type": "date",
+          "value": "2026-11-12"
+        },
+        {
+          "label": "仓库\n公司仓库",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "库位",
+          "type": "text",
+          "value": "QA261112-A01"
+        },
+        {
+          "label": "经办人",
+          "type": "text",
+          "value": "QA261112 测试经办"
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 6,
+      "id": "inbound-order-mode",
+      "label": "入库模式\n正式入库",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 1,
+        "label": "正式入库",
+        "title": "正式入库",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 2,
+        "label": "待检入库",
+        "title": "待检入库",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "正式入库",
+        "state": {
+          "selected": "正式入库",
+          "fields": [
+            {
+              "label": "采购订单号\n输入采购订单号或供应商",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库单",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "入库模式\n正式入库",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库日期",
+              "type": "date",
+              "value": "2026-11-12"
+            },
+            {
+              "label": "仓库\n公司仓库",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "库位",
+              "type": "text",
+              "value": "QA261112-A01"
+            },
+            {
+              "label": "经办人",
+              "type": "text",
+              "value": "QA261112 测试经办"
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "待检入库",
+        "state": {
+          "selected": "待检入库",
+          "fields": [
+            {
+              "label": "采购订单号\n输入采购订单号或供应商",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库单",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "入库模式\n待检入库",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库日期",
+              "type": "date",
+              "value": "2026-11-12"
+            },
+            {
+              "label": "仓库\n公司仓库",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "库位",
+              "type": "text",
+              "value": "QA261112-A01"
+            },
+            {
+              "label": "经办人",
+              "type": "text",
+              "value": "QA261112 测试经办"
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  },
+  {
+    "control": {
+      "i": 7,
+      "id": "inbound-order-warehouse-name",
+      "label": "仓库\n公司仓库",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 3,
+        "label": "工厂",
+        "title": "工厂",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 4,
+        "label": "公司仓库",
+        "title": "公司仓库",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "工厂",
+        "state": {
+          "selected": "工厂",
+          "fields": [
+            {
+              "label": "采购订单号\n输入采购订单号或供应商",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库单",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "入库模式\n待检入库",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库日期",
+              "type": "date",
+              "value": "2026-11-12"
+            },
+            {
+              "label": "仓库\n工厂",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "库位",
+              "type": "text",
+              "value": "QA261112-A01"
+            },
+            {
+              "label": "经办人",
+              "type": "text",
+              "value": "QA261112 测试经办"
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "公司仓库",
+        "state": {
+          "selected": "公司仓库",
+          "fields": [
+            {
+              "label": "采购订单号\n输入采购订单号或供应商",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库单",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "入库模式\n待检入库",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "入库日期",
+              "type": "date",
+              "value": "2026-11-12"
+            },
+            {
+              "label": "仓库\n公司仓库",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "库位",
+              "type": "text",
+              "value": "QA261112-A01"
+            },
+            {
+              "label": "经办人",
+              "type": "text",
+              "value": "QA261112 测试经办"
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  }
+]

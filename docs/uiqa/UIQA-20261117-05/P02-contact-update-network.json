@@ -1,0 +1,23 @@
+[
+  {
+    "requestId": "79503.2217",
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers/3a96df3a-848e-41be-b08a-6460a458024d/contacts/955e03a9-7292-4130-b492-10620f1d9f84",
+    "status": 200,
+    "method": "PUT",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "id": "955e03a9-7292-4130-b492-10620f1d9f84",
+        "supplier_id": "3a96df3a-848e-41be-b08a-6460a458024d",
+        "name": "UIQA-20261117-05-S01 联系人二",
+        "title": "UIQA S01 职务已更新",
+        "email": "uiqa-s01-02@example.invalid",
+        "phone": "00000000002",
+        "is_primary": false
+      },
+      "error": null
+    }
+  }
+]

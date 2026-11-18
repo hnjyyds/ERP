@@ -1,0 +1,35 @@
+[
+  {
+    "tag": "hit",
+    "url": "http://localhost:8080/sample/requests",
+    "values": [
+      "2026-11-01",
+      "2026-11-30"
+    ],
+    "tables": [
+      "打样单号\t报价号\t客户\t产品\t去向\t状态\t要求完成\t入口\nSR-W3C3DV\t-\tQA261112 测试客户\tQA261112 验收测试围巾\t内部打样\t已完成\t2026-11-20\t\n查看详情"
+    ]
+  },
+  {
+    "tag": "empty",
+    "url": "http://localhost:8080/sample/requests",
+    "values": [
+      "2027-01-01",
+      "2027-01-31"
+    ],
+    "tables": [
+      "打样单号\t报价号\t客户\t产品\t去向\t状态\t要求完成\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    ]
+  },
+  {
+    "tag": "reset",
+    "url": "http://localhost:8080/sample/requests",
+    "values": [
+      "",
+      ""
+    ],
+    "tables": [
+      "打样单号\t报价号\t客户\t产品\t去向\t状态\t要求完成\t入口\nSR-W3C3DV\t-\tQA261112 测试客户\tQA261112 验收测试围巾\t内部打样\t已完成\t2026-11-20\t\n查看详情"
+    ]
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "viewport": "390×844",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P23–P27财务列表：手机档table0滚轮定位。垂直滚轮与横向滚轮均在table0中心实际触发，核对页面与各表格滚动容器。",
+  "vertical_wheel": [
+    {"page": "PAGE-23", "docMoved": 160, "table_top_changes": [0, 0]},
+    {"page": "PAGE-24", "docMoved": 160, "table_top_changes": [0, 0]},
+    {"page": "PAGE-25", "docMoved": 160, "table_top_changes": [0, 0]},
+    {"page": "PAGE-26", "docMoved": 160, "table_top_changes": [0, 0]},
+    {"page": "PAGE-27", "docMoved": 160, "table_top_changes": [0, 0]}
+  ],
+  "horizontal_wheel": [
+    {"page": "PAGE-23", "table0_max": 217, "table0_left_after": 217.5, "table1_left": 0, "table1_max": 97},
+    {"page": "PAGE-24", "table0_max": 275, "table0_left_after": 260, "table1_left": 0, "table1_max": 178},
+    {"page": "PAGE-25", "table0_max": 129, "table0_left_after": 129, "table1_left": 0, "table1_max": 142},
+    {"page": "PAGE-26", "table0_max": 124, "table0_left_after": 124, "table1_left": 0, "table1_max": 226},
+    {"page": "PAGE-27", "table0_no_horizontal_overflow": true, "table1_left": 0, "table1_max": 144}
+  ],
+  "conclusion": "table0中心滚轮只作用于table0或页面自身：横向滚动仅table0变化，table1保持0；垂直滚动全部为页面滚动，表格内部scrollTop不变；未观察到滚动冒泡到其他表格。P27 table0无横向溢出，按实际为空处理。",
+  "business_writes": "无；仅滚动与测量"
+}

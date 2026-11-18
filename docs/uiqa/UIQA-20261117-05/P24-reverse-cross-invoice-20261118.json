@@ -1,0 +1,35 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 12,
+  "role": "admin",
+  "viewport": "1440×900",
+  "executed_at": "2026-11-18，空间12反向路径复核；未提交审批",
+  "scope": "P24：进入发票B，选择属于发票A的0.01申请，核对selected-row与付款审批区；只读",
+  "invoice_B": {"id": "015bcc0d-58cf-47cb-a10d-a0747860fd18", "no": "QA261112-INV01", "unpaid": "0.00", "currency": "RMB"},
+  "invoice_A": {"id": "489f9619-6f86-433c-a412-47236257892a", "no": "UIQA-20261117-04-INV01", "unpaid": "0.00", "currency": "CNY"},
+  "sequence": [
+    {"step": "B默认", "selected_index": 0, "selected_request": "PR-PG3X2P", "request_invoice": "UIQA-20261117-04-INV01", "request_amount": "0.01", "approval_amount": "0.00", "approval_date": "2026-11-18", "apply_form_amount": "0.00", "apply_form_currency": "RMB"},
+    {"step": "B选B的PR-GZN8H6", "selected_index": 1, "selected_request": "PR-GZN8H6", "request_invoice": "QA261112-INV01", "request_amount": "60.00", "approval_amount": "60.00"},
+    {"step": "B选A的PR-PG3X2P", "selected_index": 0, "selected_request": "PR-PG3X2P", "request_invoice": "UIQA-20261117-04-INV01", "request_amount": "0.01", "approval_amount": "0.00"},
+    {"step": "再次选B的PR-GZN8H6", "selected_index": 1, "approval_amount": "60.00"},
+    {"step": "再次选A的PR-PG3X2P", "selected_index": 0, "approval_amount": "0.00"}
+  ],
+  "transient": "在A申请已被默认选中的状态下直接点击该行，审批金额曾瞬时变为0.01；切换行后稳定回0.00，说明行点击与发票守卫两条赋值路径不一致",
+  "interface_evidence": {
+    "source": "P24-approved-metadata-network.json",
+    "PR-PG3X2P": {"requested": "0.01", "approved": "0.01", "paid": "0.01", "approved_at": "2026-11-17", "payment_account": "UIQA-TEST-ACCOUNT", "remark": "UIQA-20261117-05 已授权CNY0.01付款闭环测试，仅此申请", "currency": "CNY"},
+    "PR-GZN8H6": {"requested": "60.00", "approved": "60.00", "paid": "60.00", "approved_at": "2026-11-12", "payment_account": null, "remark": "QA261112 并发60测试", "currency": "RMB"},
+    "PR-ZAWWF6": {"requested": "60.00", "approved": "60.00", "paid": "60.00", "approved_at": "2026-11-12", "payment_account": null, "remark": "QA261112 并发60测试", "currency": "RMB"}
+  },
+  "source_reference": "frontend/src/app/pages/finance/hooks/usePaymentsModule.ts#L148-L171",
+  "findings": [
+    "当前发票B与选中发票A的0.01申请混用：审批金额取B未付0.00",
+    "申请表单金额/币种取B，选中行属于A，同屏出现两套对象",
+    "两条60.00申请确有审批金额，不是数据缺失；0.00来自发票守卫回退",
+    "payment_account为null的界面空白不算Q05-19；日期/备注不回显仍是Q05-19"
+  ],
+  "conclusion": "跨发票选择申请时审批区混用对象，已登记Q05-29（P2），与Q05-19区分；不得提交审批或付款",
+  "business_writes": "无；未审批、未付款、未修改字段",
+  "screenshot": "screenshots/P24-reverse-cross-invoice-1440.png"
+}

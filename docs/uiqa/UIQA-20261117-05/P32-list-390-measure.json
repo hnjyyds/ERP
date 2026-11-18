@@ -1,0 +1,1403 @@
+{
+  "url": "http://localhost:8080/finance/reports",
+  "viewport": [
+    390,
+    844
+  ],
+  "scale": 1,
+  "controls": [
+    {
+      "label": "业务导航",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "frame": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "16.1px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "通知",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "frame": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "系统设置",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "frame": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "起始日期",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 31,
+        "y": 236.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 236.6953125,
+        "right": 359,
+        "bottom": 280.6953125,
+        "left": 31
+      },
+      "frame": {
+        "x": 31,
+        "y": 236.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 236.6953125,
+        "right": 359,
+        "bottom": 280.6953125,
+        "left": 31
+      },
+      "placeholderColor": null,
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "结束日期",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 31,
+        "y": 314.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 314.6953125,
+        "right": 359,
+        "bottom": 358.6953125,
+        "left": 31
+      },
+      "frame": {
+        "x": 31,
+        "y": 314.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 314.6953125,
+        "right": 359,
+        "bottom": 358.6953125,
+        "left": 31
+      },
+      "placeholderColor": null,
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "币种",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 31,
+        "y": 392.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 392.6953125,
+        "right": 359,
+        "bottom": 436.6953125,
+        "left": 31
+      },
+      "frame": {
+        "x": 31,
+        "y": 392.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 392.6953125,
+        "right": 359,
+        "bottom": 436.6953125,
+        "left": 31
+      },
+      "placeholderColor": "rgb(107, 114, 128)",
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "水单号",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 31,
+        "y": 470.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 470.6953125,
+        "right": 359,
+        "bottom": 514.6953125,
+        "left": 31
+      },
+      "frame": {
+        "x": 31,
+        "y": 470.6953125,
+        "width": 328,
+        "height": 44,
+        "top": 470.6953125,
+        "right": 359,
+        "bottom": 514.6953125,
+        "left": 31
+      },
+      "placeholderColor": null,
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "查询",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 274.4765625,
+        "y": 526.6953125,
+        "width": 84.5234375,
+        "height": 44,
+        "top": 526.6953125,
+        "right": 359,
+        "bottom": 570.6953125,
+        "left": 274.4765625
+      },
+      "frame": {
+        "x": 274.4765625,
+        "y": 526.6953125,
+        "width": 84.5234375,
+        "height": 44,
+        "top": 526.6953125,
+        "right": 359,
+        "bottom": 570.6953125,
+        "left": 274.4765625
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "导出 CSV",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 243.984375,
+        "y": 582.6953125,
+        "width": 115.015625,
+        "height": 44,
+        "top": 582.6953125,
+        "right": 359,
+        "bottom": 626.6953125,
+        "left": 243.984375
+      },
+      "frame": {
+        "x": 243.984375,
+        "y": 582.6953125,
+        "width": 115.015625,
+        "height": 44,
+        "top": 582.6953125,
+        "right": 359,
+        "bottom": 626.6953125,
+        "left": 243.984375
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "水单使用明细",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 36,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 145.5625,
+        "bottom": 703.6953125,
+        "left": 36
+      },
+      "frame": {
+        "x": 36,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 145.5625,
+        "bottom": 703.6953125,
+        "left": 36
+      },
+      "placeholderColor": null,
+      "padding": [
+        "6px",
+        "6px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "银行水单汇总",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 151.5625,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 261.125,
+        "bottom": 703.6953125,
+        "left": 151.5625
+      },
+      "frame": {
+        "x": 151.5625,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 261.125,
+        "bottom": 703.6953125,
+        "left": 151.5625
+      },
+      "placeholderColor": null,
+      "padding": [
+        "6px",
+        "6px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "货款支付情况",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 267.125,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 376.6875,
+        "bottom": 703.6953125,
+        "left": 267.125
+      },
+      "frame": {
+        "x": 267.125,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 376.6875,
+        "bottom": 703.6953125,
+        "left": 267.125
+      },
+      "placeholderColor": null,
+      "padding": [
+        "6px",
+        "6px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "费用支付情况",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 382.6875,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 492.25,
+        "bottom": 703.6953125,
+        "left": 382.6875
+      },
+      "frame": {
+        "x": 382.6875,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 492.25,
+        "bottom": 703.6953125,
+        "left": 382.6875
+      },
+      "placeholderColor": null,
+      "padding": [
+        "6px",
+        "6px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "label": "报关回单催收",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 498.25,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 607.8125,
+        "bottom": 703.6953125,
+        "left": 498.25
+      },
+      "frame": {
+        "x": 498.25,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 607.8125,
+        "bottom": 703.6953125,
+        "left": 498.25
+      },
+      "placeholderColor": null,
+      "padding": [
+        "6px",
+        "6px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "label": "申报退税统计",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 613.8125,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 723.375,
+        "bottom": 703.6953125,
+        "left": 613.8125
+      },
+      "frame": {
+        "x": 613.8125,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 723.375,
+        "bottom": 703.6953125,
+        "left": 613.8125
+      },
+      "placeholderColor": null,
+      "padding": [
+        "6px",
+        "6px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "label": "来 源",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 415.625,
+        "y": 810.1015625,
+        "width": 45.6484375,
+        "height": 44,
+        "top": 810.1015625,
+        "right": 461.2734375,
+        "bottom": 854.1015625,
+        "left": 415.625
+      },
+      "frame": {
+        "x": 415.625,
+        "y": 810.1015625,
+        "width": 45.6484375,
+        "height": 44,
+        "top": 810.1015625,
+        "right": 461.2734375,
+        "bottom": 854.1015625,
+        "left": 415.625
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "来 源",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 415.625,
+        "y": 902.4765625,
+        "width": 45.6484375,
+        "height": 44,
+        "top": 902.4765625,
+        "right": 461.2734375,
+        "bottom": 946.4765625,
+        "left": 415.625
+      },
+      "frame": {
+        "x": 415.625,
+        "y": 902.4765625,
+        "width": 45.6484375,
+        "height": 44,
+        "top": 902.4765625,
+        "right": 461.2734375,
+        "bottom": 946.4765625,
+        "left": 415.625
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    }
+  ],
+  "texts": [
+    {
+      "text": "业务管理系统",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.511976173162169,
+      "rect": {
+        "x": 16,
+        "y": 29.5,
+        "width": 73.515625,
+        "height": 16.1953125,
+        "top": 29.5,
+        "right": 89.515625,
+        "bottom": 45.6953125,
+        "left": 16
+      }
+    },
+    {
+      "text": "导航",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "14px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 332.21875,
+        "y": 25.796875,
+        "width": 28.5625,
+        "height": 16.09375,
+        "top": 25.796875,
+        "right": 360.78125,
+        "bottom": 41.890625,
+        "left": 332.21875
+      }
+    },
+    {
+      "text": "业务模块",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        244,
+        246,
+        248
+      ],
+      "opacity": "1",
+      "fontSize": "11px",
+      "ratio": 3.444831529412615,
+      "rect": {
+        "x": 14,
+        "y": 79.3671875,
+        "width": 81.5234375,
+        "height": 12.6484375,
+        "top": 79.3671875,
+        "right": 95.5234375,
+        "bottom": 92.015625,
+        "left": 14
+      }
+    },
+    {
+      "text": "3",
+      "color": "rgb(255, 255, 255)",
+      "bg": [
+        255,
+        77,
+        79
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.267743233071127,
+      "rect": {
+        "x": 315.234375,
+        "y": 84.6953125,
+        "width": 7.5234375,
+        "height": 14,
+        "top": 84.6953125,
+        "right": 322.7578125,
+        "bottom": 98.6953125,
+        "left": 315.234375
+      }
+    },
+    {
+      "text": "查询",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 315.4765625,
+        "y": 541.21875,
+        "width": 26.5234375,
+        "height": 14.9453125,
+        "top": 541.21875,
+        "right": 342,
+        "bottom": 556.1640625,
+        "left": 315.4765625
+      }
+    },
+    {
+      "text": "导出 CSV",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 284.984375,
+        "y": 597.21875,
+        "width": 57.015625,
+        "height": 14.9453125,
+        "top": 597.21875,
+        "right": 342,
+        "bottom": 612.1640625,
+        "left": 284.984375
+      }
+    },
+    {
+      "text": "水单使用明细",
+      "color": "rgb(40, 76, 184)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 7.457020586511991,
+      "rect": {
+        "x": 36,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 145.5625,
+        "bottom": 703.6953125,
+        "left": 36
+      }
+    },
+    {
+      "text": "银行水单汇总",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.307322332967657,
+      "rect": {
+        "x": 151.5625,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 261.125,
+        "bottom": 703.6953125,
+        "left": 151.5625
+      }
+    },
+    {
+      "text": "货款支付情况",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.307322332967657,
+      "rect": {
+        "x": 267.125,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 376.6875,
+        "bottom": 703.6953125,
+        "left": 267.125
+      }
+    },
+    {
+      "text": "费用支付情况",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.307322332967657,
+      "rect": {
+        "x": 382.6875,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 492.25,
+        "bottom": 703.6953125,
+        "left": 382.6875
+      }
+    },
+    {
+      "text": "报关回单催收",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.307322332967657,
+      "rect": {
+        "x": 498.25,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 607.8125,
+        "bottom": 703.6953125,
+        "left": 498.25
+      }
+    },
+    {
+      "text": "申报退税统计",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.307322332967657,
+      "rect": {
+        "x": 613.8125,
+        "y": 659.6953125,
+        "width": 109.5625,
+        "height": 44,
+        "top": 659.6953125,
+        "right": 723.375,
+        "bottom": 703.6953125,
+        "left": 613.8125
+      }
+    },
+    {
+      "text": "水单号",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 31,
+        "y": 709.6953125,
+        "width": 72.953125,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 103.953125,
+        "bottom": 802.1015625,
+        "left": 31
+      }
+    },
+    {
+      "text": "收款日期",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 103.953125,
+        "y": 709.6953125,
+        "width": 53.9140625,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 157.8671875,
+        "bottom": 802.1015625,
+        "left": 103.953125
+      }
+    },
+    {
+      "text": "付款方",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 157.8671875,
+        "y": 709.6953125,
+        "width": 75.796875,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 233.6640625,
+        "bottom": 802.1015625,
+        "left": 157.8671875
+      }
+    },
+    {
+      "text": "分摊类型",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 233.6640625,
+        "y": 709.6953125,
+        "width": 29.265625,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 262.9296875,
+        "bottom": 802.1015625,
+        "left": 233.6640625
+      }
+    },
+    {
+      "text": "合同号",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 262.9296875,
+        "y": 709.6953125,
+        "width": 65.1328125,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 328.0625,
+        "bottom": 802.1015625,
+        "left": 262.9296875
+      }
+    },
+    {
+      "text": "发票号",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 328.0625,
+        "y": 709.6953125,
+        "width": 28.2578125,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 356.3203125,
+        "bottom": 802.1015625,
+        "left": 328.0625
+      }
+    },
+    {
+      "text": "分摊金额",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 356.3203125,
+        "y": 709.6953125,
+        "width": 51.3046875,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 407.625,
+        "bottom": 802.1015625,
+        "left": 356.3203125
+      }
+    },
+    {
+      "text": "下钻",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 407.625,
+        "y": 709.6953125,
+        "width": 61.6484375,
+        "height": 92.40625,
+        "top": 709.6953125,
+        "right": 469.2734375,
+        "bottom": 802.1015625,
+        "left": 407.625
+      }
+    },
+    {
+      "text": "BR-MWYV53",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 31,
+        "y": 802.1015625,
+        "width": 72.953125,
+        "height": 92.375,
+        "top": 802.1015625,
+        "right": 103.953125,
+        "bottom": 894.4765625,
+        "left": 31
+      }
+    },
+    {
+      "text": "2026-11-12",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 103.953125,
+        "y": 802.1015625,
+        "width": 53.9140625,
+        "height": 92.375,
+        "top": 802.1015625,
+        "right": 157.8671875,
+        "bottom": 894.4765625,
+        "left": 103.953125
+      }
+    },
+    {
+      "text": "QA261112 测试客户",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 157.8671875,
+        "y": 802.1015625,
+        "width": 75.796875,
+        "height": 92.375,
+        "top": 802.1015625,
+        "right": 233.6640625,
+        "bottom": 894.4765625,
+        "left": 157.8671875
+      }
+    },
+    {
+      "text": "合同分摊",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 233.6640625,
+        "y": 802.1015625,
+        "width": 29.265625,
+        "height": 92.375,
+        "top": 802.1015625,
+        "right": 262.9296875,
+        "bottom": 894.4765625,
+        "left": 233.6640625
+      }
+    },
+    {
+      "text": "EC-F8D7RX",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 262.9296875,
+        "y": 802.1015625,
+        "width": 65.1328125,
+        "height": 92.375,
+        "top": 802.1015625,
+        "right": 328.0625,
+        "bottom": 894.4765625,
+        "left": 262.9296875
+      }
+    },
+    {
+      "text": "-",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 328.0625,
+        "y": 802.1015625,
+        "width": 28.2578125,
+        "height": 92.375,
+        "top": 802.1015625,
+        "right": 356.3203125,
+        "bottom": 894.4765625,
+        "left": 328.0625
+      }
+    },
+    {
+      "text": "USD 60.00",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 356.3203125,
+        "y": 802.1015625,
+        "width": 51.3046875,
+        "height": 92.375,
+        "top": 802.1015625,
+        "right": 407.625,
+        "bottom": 894.4765625,
+        "left": 356.3203125
+      }
+    },
+    {
+      "text": "来 源",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 424.625,
+        "y": 823.3984375,
+        "width": 27.6484375,
+        "height": 17.3984375,
+        "top": 823.3984375,
+        "right": 452.2734375,
+        "bottom": 840.796875,
+        "left": 424.625
+      }
+    },
+    {
+      "text": "BR-MWYV53",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 31,
+        "y": 894.4765625,
+        "width": 72.953125,
+        "height": 92.375,
+        "top": 894.4765625,
+        "right": 103.953125,
+        "bottom": 986.8515625,
+        "left": 31
+      }
+    },
+    {
+      "text": "2026-11-12",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 103.953125,
+        "y": 894.4765625,
+        "width": 53.9140625,
+        "height": 92.375,
+        "top": 894.4765625,
+        "right": 157.8671875,
+        "bottom": 986.8515625,
+        "left": 103.953125
+      }
+    },
+    {
+      "text": "QA261112 测试客户",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 157.8671875,
+        "y": 894.4765625,
+        "width": 75.796875,
+        "height": 92.375,
+        "top": 894.4765625,
+        "right": 233.6640625,
+        "bottom": 986.8515625,
+        "left": 157.8671875
+      }
+    },
+    {
+      "text": "合同分摊",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 233.6640625,
+        "y": 894.4765625,
+        "width": 29.265625,
+        "height": 92.375,
+        "top": 894.4765625,
+        "right": 262.9296875,
+        "bottom": 986.8515625,
+        "left": 233.6640625
+      }
+    },
+    {
+      "text": "EC-F8D7RX",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 262.9296875,
+        "y": 894.4765625,
+        "width": 65.1328125,
+        "height": 92.375,
+        "top": 894.4765625,
+        "right": 328.0625,
+        "bottom": 986.8515625,
+        "left": 262.9296875
+      }
+    },
+    {
+      "text": "-",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 328.0625,
+        "y": 894.4765625,
+        "width": 28.2578125,
+        "height": 92.375,
+        "top": 894.4765625,
+        "right": 356.3203125,
+        "bottom": 986.8515625,
+        "left": 328.0625
+      }
+    },
+    {
+      "text": "USD 60.00",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 356.3203125,
+        "y": 894.4765625,
+        "width": 51.3046875,
+        "height": 92.375,
+        "top": 894.4765625,
+        "right": 407.625,
+        "bottom": 986.8515625,
+        "left": 356.3203125
+      }
+    },
+    {
+      "text": "来 源",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 424.625,
+        "y": 915.7734375,
+        "width": 27.6484375,
+        "height": 17.3984375,
+        "top": 915.7734375,
+        "right": 452.2734375,
+        "bottom": 933.171875,
+        "left": 424.625
+      }
+    }
+  ]
+}

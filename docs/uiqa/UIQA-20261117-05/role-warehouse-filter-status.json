@@ -1,0 +1,34 @@
+[
+  {
+    "requestId": "79503.2774",
+    "url": "http://localhost:8080/api/v1/purchase/contracts?approval_status=approved",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购合同权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购合同权限"
+      }
+    }
+  },
+  {
+    "requestId": "79503.2775",
+    "url": "http://localhost:8080/api/v1/purchase/contracts?approval_status=approved",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购合同权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购合同权限"
+      }
+    }
+  }
+]

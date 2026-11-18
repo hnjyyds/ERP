@@ -1,0 +1,767 @@
+{
+  "url": "http://localhost:8080/sample/requests/9c10a3ed-91e4-4823-9087-690dd887451d",
+  "title": "打样管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "打样管理",
+    "打样单明细",
+    "内部打样单明细"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "打样进度\n进度阶段\n外发工厂\n进度状态\n进行中\n进度日期\n进度经办人\n进度说明\n更新打样进度",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_7_",
+          "label": "进度阶段\n外发工厂",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 294,
+            "y": 691.25,
+            "width": 1074,
+            "height": 26,
+            "top": 691.25,
+            "right": 1368,
+            "bottom": 717.25,
+            "left": 294
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_9_",
+          "label": "进度状态\n进行中",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 294,
+            "y": 761.25,
+            "width": 1074,
+            "height": 26,
+            "top": 761.25,
+            "right": 1368,
+            "bottom": 787.25,
+            "left": 294
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "进度日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 826.25,
+            "width": 1114,
+            "height": 36,
+            "top": 826.25,
+            "right": 1397,
+            "bottom": 862.25,
+            "left": 283
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "进度经办人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 896.25,
+            "width": 1114,
+            "height": 36,
+            "top": 896.25,
+            "right": 1397,
+            "bottom": 932.25,
+            "left": 283
+          }
+        },
+        {
+          "j": 4,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "进度说明",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 966.25,
+            "width": 1114,
+            "height": 58.296875,
+            "top": 966.25,
+            "right": 1397,
+            "bottom": 1024.546875,
+            "left": 283
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "更新打样进度",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 283,
+            "y": 1040.546875,
+            "width": 132,
+            "height": 36,
+            "top": 1040.546875,
+            "right": 415,
+            "bottom": 1076.546875,
+            "left": 283
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "打样费用\n打样费用类型\n打样费\n打样费用金额\n打样费用币种\n收款方类型\n供应商\n收款方名称\n打样费用备注\n登记打样费用",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_b_",
+          "label": "打样费用类型\n打样费",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 294,
+            "y": 1316.921875,
+            "width": 1074,
+            "height": 26,
+            "top": 1316.921875,
+            "right": 1368,
+            "bottom": 1342.921875,
+            "left": 294
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "打样费用金额",
+          "text": "",
+          "value": "0",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 1381.921875,
+            "width": 1114,
+            "height": 36,
+            "top": 1381.921875,
+            "right": 1397,
+            "bottom": 1417.921875,
+            "left": 283
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "打样费用币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 1451.921875,
+            "width": 1114,
+            "height": 36,
+            "top": 1451.921875,
+            "right": 1397,
+            "bottom": 1487.921875,
+            "left": 283
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_d_",
+          "label": "收款方类型\n供应商",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 294,
+            "y": 1526.921875,
+            "width": 1074,
+            "height": 26,
+            "top": 1526.921875,
+            "right": 1368,
+            "bottom": 1552.921875,
+            "left": 294
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "收款方名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 1591.921875,
+            "width": 1114,
+            "height": 36,
+            "top": 1591.921875,
+            "right": 1397,
+            "bottom": 1627.921875,
+            "left": 283
+          }
+        },
+        {
+          "j": 5,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "打样费用备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 1661.921875,
+            "width": 1114,
+            "height": 58.296875,
+            "top": 1661.921875,
+            "right": 1397,
+            "bottom": 1720.21875,
+            "left": 283
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "登记打样费用",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 283,
+            "y": 1736.21875,
+            "width": 132,
+            "height": 36,
+            "top": 1736.21875,
+            "right": 415,
+            "bottom": 1772.21875,
+            "left": 283
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": null,
+      "visible": true,
+      "text": "打样完成转样品登记\n样品编号\n样品分类\n确认样\n收样数量\n收样日期\n提交日期\n单位\n客户货号\n供应商货号\n采购合同标识\n采购合同号\n样品说明\n转为样品登记",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "样品编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 1963.59375,
+            "width": 360.6640625,
+            "height": 36,
+            "top": 1963.59375,
+            "right": 643.6640625,
+            "bottom": 1999.59375,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_f_",
+          "label": "样品分类\n确认样",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 670.6640625,
+            "y": 1968.59375,
+            "width": 320.6640625,
+            "height": 26,
+            "top": 1968.59375,
+            "right": 991.328125,
+            "bottom": 1994.59375,
+            "left": 670.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "收样数量",
+          "text": "",
+          "value": "1",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1036.328125,
+            "y": 1963.59375,
+            "width": 360.6640625,
+            "height": 36,
+            "top": 1963.59375,
+            "right": 1396.9921875,
+            "bottom": 1999.59375,
+            "left": 1036.328125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "收样日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 2033.59375,
+            "width": 360.6640625,
+            "height": 36,
+            "top": 2033.59375,
+            "right": 643.6640625,
+            "bottom": 2069.59375,
+            "left": 283
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "提交日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659.6640625,
+            "y": 2033.59375,
+            "width": 360.6640625,
+            "height": 36,
+            "top": 2033.59375,
+            "right": 1020.328125,
+            "bottom": 2069.59375,
+            "left": 659.6640625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单位",
+          "text": "",
+          "value": "pcs",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1036.328125,
+            "y": 2033.59375,
+            "width": 360.6640625,
+            "height": 36,
+            "top": 2033.59375,
+            "right": 1396.9921875,
+            "bottom": 2069.59375,
+            "left": 1036.328125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户货号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 2103.59375,
+            "width": 549,
+            "height": 36,
+            "top": 2103.59375,
+            "right": 832,
+            "bottom": 2139.59375,
+            "left": 283
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商货号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 2103.59375,
+            "width": 549,
+            "height": 36,
+            "top": 2103.59375,
+            "right": 1397,
+            "bottom": 2139.59375,
+            "left": 848
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "采购合同标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 2173.59375,
+            "width": 549,
+            "height": 36,
+            "top": 2173.59375,
+            "right": 832,
+            "bottom": 2209.59375,
+            "left": 283
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "采购合同号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 2173.59375,
+            "width": 549,
+            "height": 36,
+            "top": 2173.59375,
+            "right": 1397,
+            "bottom": 2209.59375,
+            "left": 848
+          }
+        },
+        {
+          "j": 10,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "样品说明",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 2243.59375,
+            "width": 1114,
+            "height": 58.296875,
+            "top": 2243.59375,
+            "right": 1397,
+            "bottom": 2301.890625,
+            "left": 283
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "转为样品登记",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 283,
+            "y": 2317.890625,
+            "width": 132,
+            "height": 36,
+            "top": 2317.890625,
+            "right": 415,
+            "bottom": 2353.890625,
+            "left": 283
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "产品编号\t产品名称\t规格\t数量\t单位\t要求\nQA261112-P01\tQA261112 验收测试围巾\t-\t3\tpcs\t-",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "阶段\t状态\t日期\t经办人\t说明\n客户确认\t已完成\t2026-11-12\t-\tQA261112 客户确认完成\nQA261112 制样\t进行中\t2026-11-12\t-\tQA261112 进度测试",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "费用类型\t金额\t收款方\t付款状态\t付款申请\t操作\n暂无打样费用",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

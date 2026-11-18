@@ -1,0 +1,67 @@
+{
+  "identity": {
+    "username": "purchase",
+    "display_name": "演示采购专员"
+  },
+  "profile": {
+    "id": "u-purchase",
+    "username": "purchase",
+    "display_name": "演示采购专员",
+    "department_name": "采购部",
+    "permissions": [
+      "dashboard:view",
+      "followup:plan:edit",
+      "followup:plan:view",
+      "followup:template:view",
+      "masterdata:product:view",
+      "masterdata:supplier:credit:view",
+      "masterdata:supplier:edit",
+      "masterdata:supplier:view",
+      "masterdata:supplier:view_all",
+      "purchase:contract:approve",
+      "purchase:contract:edit",
+      "purchase:contract:view",
+      "purchase:contract:view_all",
+      "purchase:followup:view",
+      "purchase:inquiry:edit",
+      "purchase:inquiry:export",
+      "purchase:inquiry:view",
+      "purchase:inquiry:view_all",
+      "purchase:invoice_notice:edit",
+      "purchase:invoice_notice:send",
+      "purchase:invoice_notice:view",
+      "purchase:invoice_notice:view_all",
+      "schedule:create"
+    ]
+  },
+  "menus": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "采购询价",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "开票通知",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

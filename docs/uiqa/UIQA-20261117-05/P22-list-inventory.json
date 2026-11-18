@@ -1,0 +1,173 @@
+{
+  "url": "http://localhost:8080/warehouse/stocktakes",
+  "title": "库存盘点",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "库存盘点",
+    "库存盘点"
+  ],
+  "forms": [],
+  "tables": [
+    {
+      "i": 0,
+      "text": "盘点单号\t仓库\t盘点日期\t明细数\t差异\t状态\t盘点人\t审批人\t\n\n盘点单号\n\t\n仓库\n\t\n盘点日期\n\t\n明细数\n\t\n差异\n\t\n状态\n\t\n盘点人\n\t\n审批人\n\t\n \n\nST-Z5VPWB\tQA261112 测试仓库 / QA261112-A01\t2026-11-12\t1\t-21\t已审批\tQA261112 测试经办\t演示业务主管\t\n查看",
+      "buttons": [
+        "查看"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "入仓",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "出库计划",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "货物出库",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "库存盘点",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

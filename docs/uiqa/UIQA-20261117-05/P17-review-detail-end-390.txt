@@ -1,0 +1,232 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=8057, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "跟单任务中心"
+        button "通知" [ref=8041, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=8042, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        container "采购跟单概览"
+          text "跟单计划"
+          text "1"
+          text "已完成计划"
+          text "0"
+          text "逾期计划"
+          text "1"
+          text "完成节点"
+          text "3/6"
+          text "逾期节点"
+          text "1"
+        container
+          svg_root
+          heading
+            text "节点进度查询"
+          button [ref=8043]
+            svg_root
+            text "返回列表"
+          unordered_list
+            list_item
+              text "整体状态"
+            list_item
+              text "已逾期"
+            list_item
+              text "供应商"
+            list_item
+              text "QA261112 测试供应商"
+            list_item
+              text "基准日期"
+            list_item
+              text "2026-11-12"
+            list_item
+              text "采购合同 ID"
+            list_item
+              text "56cd6434-f367-4553-8caf-092a96ab097d"
+          button [ref=8044]
+            svg_root
+            text "同步样品事件"
+          button [ref=8045]
+            svg_root
+            text "查询逾期节点"
+          text "采购合同节点进度"
+          text "6 个节点"
+          table
+            table_row
+              table_cell
+                text "节点"
+              table_cell
+                text "预计"
+              table_cell
+                text "提醒"
+              table_cell
+                text "实际"
+              table_cell
+                text "状态"
+              table_cell
+                text "来源"
+              table_cell
+                text "操作"
+            table_row
+              table_cell
+                text "下单日期"
+              table_cell
+                text "2026-11-12"
+              table_cell
+                text "2026-11-12"
+              table_cell
+                text "2026-11-12"
+              table_cell
+                text "已完成"
+              table_cell
+                text "采购合同"
+              table_cell
+                button [ref=8046]
+                  svg_root
+                  text "查看来源"
+            table_row
+              table_cell
+                text "确认样提交日期"
+              table_cell
+                text "2026-11-15"
+              table_cell
+                text "2026-11-14"
+              table_cell
+                text "待回写"
+              table_cell
+                text "已逾期"
+              table_cell
+                text "未回写"
+              table_cell
+                button [ref=8047]
+                  svg_root
+                  text "登记提交"
+            table_row
+              table_cell
+                text "大货样提交日期"
+              table_cell
+                text "2026-11-19"
+              table_cell
+                text "2026-11-17"
+              table_cell
+                text "待回写"
+              table_cell
+                text "待完成"
+              table_cell
+                text "未回写"
+              table_cell
+                button [ref=8048]
+                  svg_root
+                  text "登记提交"
+            table_row
+              table_cell
+                text "QC查验日期"
+              table_cell
+                text "2026-11-26"
+              table_cell
+                text "2026-11-24"
+              table_cell
+                text "2026-11-12"
+              table_cell
+                text "已完成"
+              table_cell
+                text "QC 查验"
+                text "QC-8TXV57 QC 查验通过"
+              table_cell
+                button [ref=8049]
+                  svg_root
+                  text "查看来源"
+            table_row
+              table_cell
+                text "入库日期"
+              table_cell
+                text "2026-12-02"
+              table_cell
+                text "2026-11-29"
+              table_cell
+                text "2026-11-12"
+              table_cell
+                text "已完成"
+              table_cell
+                text "入库单"
+                text "XP-IN-MVU9CU 正式入库"
+              table_cell
+                button [ref=8050]
+                  svg_root
+                  text "查看来源"
+            table_row
+              table_cell
+                text "出库日期"
+              table_cell
+                text "2026-12-07"
+              table_cell
+                text "2026-12-04"
+              table_cell
+                text "待回写"
+              table_cell
+                text "待完成"
+              table_cell
+                text "未回写"
+              table_cell
+                button [ref=8051]
+                  svg_root
+                  text "进入出库"
+          container
+            text "逾期节点预警"
+            text "1 条"
+          form
+            container
+              text "截至日期"
+              textbox [ref=8052]
+                spinbutton "年" [ref=8053]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=8054]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=8055]
+                  text "18"
+            button [ref=8056]
+              svg_root
+              text "查询"
+          table
+            table_row
+              table_cell
+                text "采购合同"
+              table_cell
+                text "供应商"
+              table_cell
+                text "节点"
+              table_cell
+                text "预计"
+              table_cell
+                text "逾期"
+            table_row
+              table_cell
+                text "PC-HR36RU"
+              table_cell
+                text "QA261112 测试供应商"
+              table_cell
+                text "确认样提交日期"
+              table_cell
+                text "2026-11-15"
+              table_cell
+                text "3 天"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

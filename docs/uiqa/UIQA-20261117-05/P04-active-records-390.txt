@@ -1,0 +1,140 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=6722, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "合作伙伴"
+        button "通知" [ref=6619, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "8"
+        button "系统设置" [ref=6620, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        container "合作伙伴概览"
+          text "合作伙伴"
+          text "3"
+          text "启用"
+          text "2"
+          text "联系人"
+          text "3"
+          text "类型数"
+          text "2"
+        container
+          svg_root
+          heading
+            text "合作伙伴"
+          button [ref=6732]
+            svg_root
+            text "返回列表"
+          button [ref=6733]
+            svg_root
+            text "新增联系人"
+          button [ref=6734]
+            svg_root
+            text "编辑资料"
+          button [ref=6735]
+            svg_root
+            text "停用"
+          container
+            text "Q"
+            text "QA261112-F01"
+            heading
+              text "QA261112 测试货代"
+            paragraph
+              text "QA261112 Forwarder"
+            text "启用"
+          unordered_list
+            container
+              list_item
+                text "国家/地区"
+              list_item
+                text "CN"
+            container
+              list_item
+                text "地址"
+              list_item
+                text "未维护"
+            container
+              list_item
+                text "网站"
+              list_item
+                text "未维护"
+            container
+              list_item
+                text "伙伴类型"
+              list_item
+                text "货代公司"
+            container
+              list_item
+                text "负责人"
+              list_item
+                text "系统管理员"
+          container
+            container
+              svg_root
+              heading
+                text "联系人"
+            text "暂无联系人"
+          container
+            container
+              svg_root
+              heading
+                text "费用记录"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=6736]
+                table
+                  table_row
+                    table_cell
+                      text "来源"
+                    table_cell
+                      text "编号"
+                    table_cell
+                      text "摘要"
+                    table_cell
+                      text "金额"
+                    table_cell
+                      text "时间"
+                  table_row
+                    table_cell
+                      text "fee_invoice"
+                    table_cell
+                      text "QA261112-FEE01"
+                    table_cell
+                      text "费用发票 QA261112-FEE01（freight / USD）"
+                    table_cell
+                      text "20.00"
+                    table_cell
+                      text "2026-11-12"
+                  table_row
+                    table_cell
+                      text "fee_payment_request"
+                    table_cell
+                      text "FPR-G7WTAX"
+                    table_cell
+                      text "费用付款申请 FPR-G7WTAX（freight / USD）"
+                    table_cell
+                      text "20.00"
+                    table_cell
+                      text "2026-11-12"
+              table
+                table_row
+                  table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

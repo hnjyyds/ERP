@@ -1,0 +1,1621 @@
+[
+  {
+    "control": {
+      "i": 2,
+      "id": "sample-record-type",
+      "label": "样品分类\n确认样",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 0,
+        "label": "来样",
+        "title": "来样",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 1,
+        "label": "确认样",
+        "title": "确认样",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 2,
+        "label": "大货样",
+        "title": "大货样",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 3,
+        "label": "留样",
+        "title": "留样",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "来样",
+        "state": {
+          "selected": "来样",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已登记",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "确认样",
+        "result": "OPTION_CHANGED"
+      }
+    ]
+  },
+  {
+    "control": {
+      "i": 3,
+      "id": "sample-record-status",
+      "label": "样品状态\n已登记",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 4,
+        "label": "已登记",
+        "title": "已登记",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 5,
+        "label": "已提交",
+        "title": "已提交",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 6,
+        "label": "已确认",
+        "title": "已确认",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 7,
+        "label": "已归档",
+        "title": "已归档",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "已登记",
+        "state": {
+          "selected": "已登记",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已登记",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "已提交",
+        "state": {
+          "selected": "已提交",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  },
+  {
+    "control": {
+      "i": 4,
+      "id": "_r_19_",
+      "label": "产品\n输入关键词搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 8,
+        "label": "UIQA-20261117-05-P16 / UIQA分页验收商品16\nUIQA-SPEC-16 · UIQA-M16",
+        "title": "UIQA-20261117-05-P16 / UIQA分页验收商品16",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 9,
+        "label": "UIQA-20261117-05-P15 / UIQA分页验收商品15\nUIQA-SPEC-15 · UIQA-M15",
+        "title": "UIQA-20261117-05-P15 / UIQA分页验收商品15",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 10,
+        "label": "UIQA-20261117-05-P14 / UIQA分页验收商品14\nUIQA-SPEC-14 · UIQA-M14",
+        "title": "UIQA-20261117-05-P14 / UIQA分页验收商品14",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 11,
+        "label": "UIQA-20261117-05-P13 / UIQA分页验收商品13\nUIQA-SPEC-13 · UIQA-M13",
+        "title": "UIQA-20261117-05-P13 / UIQA分页验收商品13",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 12,
+        "label": "UIQA-20261117-05-P12 / UIQA分页验收商品12\nUIQA-SPEC-12 · UIQA-M12",
+        "title": "UIQA-20261117-05-P12 / UIQA分页验收商品12",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 13,
+        "label": "UIQA-20261117-05-P11 / UIQA分页验收商品11\nUIQA-SPEC-11 · UIQA-M11",
+        "title": "UIQA-20261117-05-P11 / UIQA分页验收商品11",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "UIQA-20261117-05-P16 / UIQA分页验收商品16\nUIQA-SPEC-16 · UIQA-M16",
+        "state": {
+          "selected": "UIQA-20261117-05-P16 / UIQA分页验收商品16",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\nUIQA-20261117-05-P16 / UIQA分页验收商品16",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "UIQA-20261117-05-P15 / UIQA分页验收商品15\nUIQA-SPEC-15 · UIQA-M15",
+        "state": {
+          "selected": "UIQA-20261117-05-P15 / UIQA分页验收商品15",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\nUIQA-20261117-05-P15 / UIQA分页验收商品15",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入关键词搜索",
+      "fields": [
+        {
+          "label": "样品编号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "样品分类\n来样",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "样品状态\n已提交",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "收样数量",
+          "type": "number",
+          "value": "1"
+        },
+        {
+          "label": "收样日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "提交日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "产品\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "客户货号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "供应商货号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "客户\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "供应商\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "单位",
+          "type": "text",
+          "value": "pcs"
+        },
+        {
+          "label": "样品来源\n打样单",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "来源单号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "样品说明",
+          "type": "textarea",
+          "value": ""
+        },
+        {
+          "type": "file",
+          "value": ""
+        },
+        {
+          "label": "图片说明",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 5,
+      "id": "_r_1b_",
+      "label": "客户\n输入关键词搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 14,
+        "label": "演示客户｜海湾家居贸易\nUI261114-C01 · 荷兰",
+        "title": "演示客户｜海湾家居贸易",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 15,
+        "label": "QA261112 测试客户\nQA261112-C01 · DE",
+        "title": "QA261112 测试客户",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "演示客户｜海湾家居贸易\nUI261114-C01 · 荷兰",
+        "state": {
+          "selected": "演示客户｜海湾家居贸易",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n演示客户｜海湾家居贸易",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "QA261112 测试客户\nQA261112-C01 · DE",
+        "state": {
+          "selected": "QA261112 测试客户",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\nQA261112 测试客户",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入关键词搜索",
+      "fields": [
+        {
+          "label": "样品编号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "样品分类\n来样",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "样品状态\n已提交",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "收样数量",
+          "type": "number",
+          "value": "1"
+        },
+        {
+          "label": "收样日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "提交日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "产品\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "客户货号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "供应商货号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "客户\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "供应商\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "单位",
+          "type": "text",
+          "value": "pcs"
+        },
+        {
+          "label": "样品来源\n打样单",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "来源单号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "样品说明",
+          "type": "textarea",
+          "value": ""
+        },
+        {
+          "type": "file",
+          "value": ""
+        },
+        {
+          "label": "图片说明",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 6,
+      "id": "_r_1d_",
+      "label": "供应商\n输入关键词搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 16,
+        "label": "演示供应商｜江南织造\nUI261114-S01 · 中国",
+        "title": "演示供应商｜江南织造",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 17,
+        "label": "QA261112 测试供应商\nQA261112-S01 · CN",
+        "title": "QA261112 测试供应商",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "演示供应商｜江南织造\nUI261114-S01 · 中国",
+        "state": {
+          "selected": "演示供应商｜江南织造",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n演示供应商｜江南织造",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "QA261112 测试供应商\nQA261112-S01 · CN",
+        "state": {
+          "selected": "QA261112 测试供应商",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\nQA261112 测试供应商",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入关键词搜索",
+      "fields": [
+        {
+          "label": "样品编号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "样品分类\n来样",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "样品状态\n已提交",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "收样数量",
+          "type": "number",
+          "value": "1"
+        },
+        {
+          "label": "收样日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "提交日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "产品\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "客户货号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "供应商货号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "客户\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "供应商\n输入关键词搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "单位",
+          "type": "text",
+          "value": "pcs"
+        },
+        {
+          "label": "样品来源\n打样单",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "来源单号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "样品说明",
+          "type": "textarea",
+          "value": ""
+        },
+        {
+          "type": "file",
+          "value": ""
+        },
+        {
+          "label": "图片说明",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 7,
+      "id": "sample-record-source-type",
+      "label": "样品来源\n打样单",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 18,
+        "label": "打样单",
+        "title": "打样单",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 19,
+        "label": "采购合同",
+        "title": "采购合同",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 20,
+        "label": "客户提供",
+        "title": "客户提供",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 21,
+        "label": "供应商提供",
+        "title": "供应商提供",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "打样单",
+        "state": {
+          "selected": "打样单",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n打样单",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "采购合同",
+        "state": {
+          "selected": "采购合同",
+          "fields": [
+            {
+              "label": "样品编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品分类\n来样",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "样品状态\n已提交",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "收样数量",
+              "type": "number",
+              "value": "1"
+            },
+            {
+              "label": "收样日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "提交日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "产品\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "供应商货号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "客户\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商\n输入关键词搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "采购合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "样品来源\n采购合同",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "来源单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "样品说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "上传图片",
+              "type": "file",
+              "value": ""
+            },
+            {
+              "label": "图片说明",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  }
+]

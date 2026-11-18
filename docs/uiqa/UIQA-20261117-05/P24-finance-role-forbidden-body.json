@@ -1,0 +1,58 @@
+[
+  {
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers?limit=20",
+    "status": 403,
+    "response": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少供应商权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少供应商权限"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers?limit=20",
+    "status": 403,
+    "response": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少供应商权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少供应商权限"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:8080/api/v1/purchase/invoice-notices?limit=20",
+    "status": 403,
+    "response": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购开票通知权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购开票通知权限"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:8080/api/v1/purchase/contracts?limit=20",
+    "status": 403,
+    "response": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购合同权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购合同权限"
+      }
+    }
+  }
+]

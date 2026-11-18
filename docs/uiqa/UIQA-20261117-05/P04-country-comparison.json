@@ -1,0 +1,17 @@
+[
+  {
+    "url": "http://localhost:8080/masterdata/partners?country=CN",
+    "country": "CN",
+    "table": "编号\t中文名称\t英文名称\t类型\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-B01\tUIQA全量验收停用合作伙伴样本\tUIQA Inactive P04 Test Record\t保险公司\tCN\tUIQA测试联系人\t停用\t\n查看详情\n\nUI261114-B01\t演示伙伴｜远帆国际物流\tDemo Far Sail Logistics\t货代公司\t中国\t演示联系人王女士\t启用\t\n查看详情\n\nQA261112-F01\tQA261112 测试货代\tQA261112 Forwarder\t货代公司\tCN\t未维护\t启用\t\n查看详情"
+  },
+  {
+    "url": "http://localhost:8080/masterdata/partners?country=UIQA-NOCOUNTRY",
+    "country": "UIQA-NOCOUNTRY",
+    "table": "编号\t中文名称\t英文名称\t类型\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-B01\tUIQA全量验收停用合作伙伴样本\tUIQA Inactive P04 Test Record\t保险公司\tCN\tUIQA测试联系人\t停用\t\n查看详情\n\nUI261114-B01\t演示伙伴｜远帆国际物流\tDemo Far Sail Logistics\t货代公司\t中国\t演示联系人王女士\t启用\t\n查看详情\n\nQA261112-F01\tQA261112 测试货代\tQA261112 Forwarder\t货代公司\tCN\t未维护\t启用\t\n查看详情"
+  },
+  {
+    "url": "http://localhost:8080/masterdata/partners",
+    "country": "",
+    "table": "编号\t中文名称\t英文名称\t类型\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-B01\tUIQA全量验收停用合作伙伴样本\tUIQA Inactive P04 Test Record\t保险公司\tCN\tUIQA测试联系人\t停用\t\n查看详情\n\nUI261114-B01\t演示伙伴｜远帆国际物流\tDemo Far Sail Logistics\t货代公司\t中国\t演示联系人王女士\t启用\t\n查看详情\n\nQA261112-F01\tQA261112 测试货代\tQA261112 Forwarder\t货代公司\tCN\t未维护\t启用\t\n查看详情"
+  }
+]

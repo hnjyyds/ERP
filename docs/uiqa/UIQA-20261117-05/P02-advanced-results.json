@@ -1,0 +1,183 @@
+[
+  {
+    "name": "CN-inactive",
+    "expected": "仅当前UIQA停用样本，国家CN",
+    "actual": {
+      "url": "http://localhost:8080/masterdata/suppliers?country=CN&status=inactive",
+      "country": "CN",
+      "selects": [
+        {
+          "aria": "信用",
+          "selected": "全部信用等级"
+        },
+        {
+          "aria": "状态",
+          "selected": "停用"
+        },
+        {
+          "aria": "页码",
+          "selected": "50 条/页"
+        }
+      ],
+      "table": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-S01\tUIQA全量验收停用供应商样本\tUIQA Inactive Supplier Test Record\tCN\tUIQA测试联系人\t停用\t\n查看详情",
+      "summary": [
+        "供应商\n1\n启用\n0\n联系人\n1\n有信用资料\n1"
+      ]
+    },
+    "ownPresent": true
+  },
+  {
+    "name": "active",
+    "expected": "两个现有启用记录，不含UIQA停用样本",
+    "actual": {
+      "url": "http://localhost:8080/masterdata/suppliers?status=active",
+      "country": "",
+      "selects": [
+        {
+          "aria": "信用",
+          "selected": "全部信用等级"
+        },
+        {
+          "aria": "状态",
+          "selected": "启用"
+        },
+        {
+          "aria": "页码",
+          "selected": "50 条/页"
+        }
+      ],
+      "table": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nUI261114-S01\t演示供应商｜江南织造\tDemo Jiangnan Textile\t中国\t演示联系人李先生\t启用\t\n查看详情\n\nQA261112-S01\tQA261112 测试供应商\tQA261112 Supplier\tCN\tQA261112 联系人\t启用\t\n查看详情",
+      "summary": [
+        "供应商\n2\n启用\n2\n联系人\n2\n有信用资料\n2"
+      ]
+    },
+    "ownPresent": false
+  },
+  {
+    "name": "empty",
+    "expected": "无匹配",
+    "actual": {
+      "url": "http://localhost:8080/masterdata/suppliers?status=active&country=UIQA-NOCOUNTRY",
+      "country": "UIQA-NOCOUNTRY",
+      "selects": [
+        {
+          "aria": "信用",
+          "selected": "全部信用等级"
+        },
+        {
+          "aria": "状态",
+          "selected": "启用"
+        }
+      ],
+      "table": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "summary": [
+        "供应商\n0\n启用\n0\n联系人\n0\n有信用资料\n0"
+      ]
+    },
+    "ownPresent": false
+  },
+  {
+    "name": "reset",
+    "expected": "国家清空、状态/信用/类型恢复全部，三条资料恢复",
+    "actual": {
+      "url": "http://localhost:8080/masterdata/suppliers",
+      "country": "",
+      "selects": [
+        {
+          "aria": "信用",
+          "selected": "全部信用等级"
+        },
+        {
+          "aria": "状态",
+          "selected": "全部状态"
+        },
+        {
+          "aria": "页码",
+          "selected": "50 条/页"
+        }
+      ],
+      "table": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-S01\tUIQA全量验收停用供应商样本\tUIQA Inactive Supplier Test Record\tCN\tUIQA测试联系人\t停用\t\n查看详情\n\nUI261114-S01\t演示供应商｜江南织造\tDemo Jiangnan Textile\t中国\t演示联系人李先生\t启用\t\n查看详情\n\nQA261112-S01\tQA261112 测试供应商\tQA261112 Supplier\tCN\tQA261112 联系人\t启用\t\n查看详情",
+      "summary": [
+        "供应商\n3\n启用\n2\n联系人\n3\n有信用资料\n3"
+      ]
+    },
+    "ownPresent": true
+  },
+  {
+    "name": "option-A",
+    "expected": "包含UIQA样本（已知A级）",
+    "actual": {
+      "url": "http://localhost:8080/masterdata/suppliers?credit_grade=A",
+      "country": "",
+      "selects": [
+        {
+          "aria": "信用",
+          "selected": "A"
+        },
+        {
+          "aria": "状态",
+          "selected": "全部状态"
+        },
+        {
+          "aria": "页码",
+          "selected": "50 条/页"
+        }
+      ],
+      "table": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-S01\tUIQA全量验收停用供应商样本\tUIQA Inactive Supplier Test Record\tCN\tUIQA测试联系人\t停用\t\n查看详情\n\nUI261114-S01\t演示供应商｜江南织造\tDemo Jiangnan Textile\t中国\t演示联系人李先生\t启用\t\n查看详情\n\nQA261112-S01\tQA261112 测试供应商\tQA261112 Supplier\tCN\tQA261112 联系人\t启用\t\n查看详情",
+      "summary": [
+        "供应商\n3\n启用\n2\n联系人\n3\n有信用资料\n3"
+      ]
+    },
+    "ownPresent": true
+  },
+  {
+    "name": "option-B",
+    "expected": "不含UIQA样本（已知A级）",
+    "actual": {
+      "url": "http://localhost:8080/masterdata/suppliers?credit_grade=B",
+      "country": "",
+      "selects": [
+        {
+          "aria": "信用",
+          "selected": "B"
+        },
+        {
+          "aria": "状态",
+          "selected": "全部状态"
+        }
+      ],
+      "table": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "summary": [
+        "供应商\n0\n启用\n0\n联系人\n0\n有信用资料\n0"
+      ]
+    },
+    "ownPresent": false
+  },
+  {
+    "name": "final-reset",
+    "expected": "恢复三条",
+    "actual": {
+      "url": "http://localhost:8080/masterdata/suppliers",
+      "country": "",
+      "selects": [
+        {
+          "aria": "信用",
+          "selected": "全部信用等级"
+        },
+        {
+          "aria": "状态",
+          "selected": "全部状态"
+        },
+        {
+          "aria": "页码",
+          "selected": "50 条/页"
+        }
+      ],
+      "table": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-S01\tUIQA全量验收停用供应商样本\tUIQA Inactive Supplier Test Record\tCN\tUIQA测试联系人\t停用\t\n查看详情\n\nUI261114-S01\t演示供应商｜江南织造\tDemo Jiangnan Textile\t中国\t演示联系人李先生\t启用\t\n查看详情\n\nQA261112-S01\tQA261112 测试供应商\tQA261112 Supplier\tCN\tQA261112 联系人\t启用\t\n查看详情",
+      "summary": [
+        "供应商\n3\n启用\n2\n联系人\n3\n有信用资料\n3"
+      ]
+    },
+    "ownPresent": true
+  }
+]

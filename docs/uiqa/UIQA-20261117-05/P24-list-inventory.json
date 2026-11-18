@@ -1,0 +1,426 @@
+{
+  "url": "http://localhost:8080/finance/payments",
+  "title": "付款管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "付款管理",
+    "供应商发票列表",
+    "应付账款查询"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "发票搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 313.2421875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 594.2421875,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_14_",
+          "label": "付款状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 617.2421875,
+            "y": 181.6484375,
+            "width": 132.625,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 749.8671875,
+            "bottom": 207.6484375,
+            "left": 617.2421875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_16_",
+          "label": "发票供应商筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 801.8671875,
+            "y": 181.6484375,
+            "width": 167.9453125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 969.8125,
+            "bottom": 207.6484375,
+            "left": 801.8671875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "采购合同号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1010.8125,
+            "y": 176.6484375,
+            "width": 172.6171875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1183.4296875,
+            "bottom": 212.6484375,
+            "left": 1010.8125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1195.4296875,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1279.953125,
+            "bottom": 212.6484375,
+            "left": 1195.4296875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "发票登记",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 176.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1287.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "应付搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 559.6484375,
+            "width": 359.03125,
+            "height": 36,
+            "top": 559.6484375,
+            "right": 640.03125,
+            "bottom": 595.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1b_",
+          "label": "应付状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 663.03125,
+            "y": 564.6484375,
+            "width": 155.515625,
+            "height": 26,
+            "top": 564.6484375,
+            "right": 818.546875,
+            "bottom": 590.6484375,
+            "left": 663.03125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1d_",
+          "label": "应付供应商筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 870.546875,
+            "y": 564.6484375,
+            "width": 195.4140625,
+            "height": 26,
+            "top": 564.6484375,
+            "right": 1065.9609375,
+            "bottom": 590.6484375,
+            "left": 870.546875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "采购合同号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1106.9609375,
+            "y": 559.6484375,
+            "width": 195.515625,
+            "height": 36,
+            "top": 559.6484375,
+            "right": 1302.4765625,
+            "bottom": 595.6484375,
+            "left": 1106.9609375
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1314.4765625,
+            "y": 559.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 559.6484375,
+            "right": 1399,
+            "bottom": 595.6484375,
+            "left": 1314.4765625
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\nUIQA-20261117-04-INV01\t未付款\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.00\tCNY 0.01\t-\nQA261112-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00",
+      "buttons": [
+        "UIQA-20261117-04-INV01",
+        "QA261112-INV01"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\t已付清\nUIQA-20261117-04-INV01\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.00\tCNY 0.01\t-\t未付款",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

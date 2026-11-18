@@ -1,0 +1,689 @@
+{
+  "url": "http://localhost:8080/finance/receipts",
+  "title": "收款管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "收款管理",
+    "银行水单列表",
+    "应收账款查询"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "水单搜索\n水单状态\n全部状态\n客户标识\n输入客户编号或名称\n查询\n水单录入",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "水单搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 389.78125,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 670.78125,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_6_",
+          "label": "水单状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 693.78125,
+            "y": 181.6484375,
+            "width": 204.328125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 898.109375,
+            "bottom": 207.6484375,
+            "left": 693.78125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_8_",
+          "label": "客户标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 950.109375,
+            "y": 181.6484375,
+            "width": 204.3203125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 1154.4296875,
+            "bottom": 207.6484375,
+            "left": 950.109375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1195.4296875,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1279.953125,
+            "bottom": 212.6484375,
+            "left": 1195.4296875
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "水单录入",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 176.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1287.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "应收搜索\n出口合同号\n发票号\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "应收搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 568.046875,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 568.046875,
+            "right": 637.6640625,
+            "bottom": 604.046875,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出口合同号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 649.6640625,
+            "y": 568.046875,
+            "width": 178.328125,
+            "height": 36,
+            "top": 568.046875,
+            "right": 827.9921875,
+            "bottom": 604.046875,
+            "left": 649.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "发票号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 839.9921875,
+            "y": 568.046875,
+            "width": 178.3359375,
+            "height": 36,
+            "top": 568.046875,
+            "right": 1018.328125,
+            "bottom": 604.046875,
+            "left": 839.9921875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1124.140625,
+            "y": 568.046875,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 568.046875,
+            "right": 1208.6640625,
+            "bottom": 604.046875,
+            "left": 1124.140625
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": "_r_f_",
+      "visible": true,
+      "text": "银行水单号\n收款日期\n付款人\n客户\n搜索客户编号或名称\n客户名称\n收款金额\n币种\n收款性质\n预收款\n收款银行账号\n银行流水号\n备注\n取消\n保存水单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "银行水单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 211.8515625,
+            "width": 328,
+            "height": 36,
+            "top": 211.8515625,
+            "right": 712,
+            "bottom": 247.8515625,
+            "left": 384
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "收款日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 211.8515625,
+            "width": 328,
+            "height": 36,
+            "top": 211.8515625,
+            "right": 1056,
+            "bottom": 247.8515625,
+            "left": 728
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "付款人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 281.8515625,
+            "width": 672,
+            "height": 36,
+            "top": 281.8515625,
+            "right": 1056,
+            "bottom": 317.8515625,
+            "left": 384
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_h_",
+          "label": "客户",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 395,
+            "y": 356.8515625,
+            "width": 288,
+            "height": 26,
+            "top": 356.8515625,
+            "right": 683,
+            "bottom": 382.8515625,
+            "left": 395
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 351.8515625,
+            "width": 328,
+            "height": 36,
+            "top": 351.8515625,
+            "right": 1056,
+            "bottom": 387.8515625,
+            "left": 728
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "收款金额",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 421.8515625,
+            "width": 213.328125,
+            "height": 36,
+            "top": 421.8515625,
+            "right": 597.328125,
+            "bottom": 457.8515625,
+            "left": 384
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 613.328125,
+            "y": 421.8515625,
+            "width": 213.3359375,
+            "height": 36,
+            "top": 421.8515625,
+            "right": 826.6640625,
+            "bottom": 457.8515625,
+            "left": 613.328125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_j_",
+          "label": "收款性质\n预收款",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 853.6640625,
+            "y": 426.8515625,
+            "width": 173.328125,
+            "height": 26,
+            "top": 426.8515625,
+            "right": 1026.9921875,
+            "bottom": 452.8515625,
+            "left": 853.6640625
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "收款银行账号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 491.8515625,
+            "width": 672,
+            "height": 36,
+            "top": 491.8515625,
+            "right": 1056,
+            "bottom": 527.8515625,
+            "left": 384
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "银行流水号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 561.8515625,
+            "width": 672,
+            "height": 36,
+            "top": 561.8515625,
+            "right": 1056,
+            "bottom": 597.8515625,
+            "left": 384
+          }
+        },
+        {
+          "j": 10,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 384,
+            "y": 631.8515625,
+            "width": 672,
+            "height": 58.296875,
+            "top": 631.8515625,
+            "right": 1056,
+            "bottom": 690.1484375,
+            "left": 384
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 888.3125,
+            "y": 706.1484375,
+            "width": 62.5625,
+            "height": 36,
+            "top": 706.1484375,
+            "right": 950.875,
+            "bottom": 742.1484375,
+            "left": 888.3125
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存水单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 958.875,
+            "y": 706.1484375,
+            "width": 97.125,
+            "height": 36,
+            "top": 706.1484375,
+            "right": 1056,
+            "bottom": 742.1484375,
+            "left": 958.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "水单号\t状态\t性质\t收款日\t付款人\t客户\t金额\t未分摊\nBR-MWYV53\t已分摊\t普通收款\t2026-11-12\tQA261112 测试客户\tQA261112 测试客户\tUSD 100.00\tUSD -20.00超额分摊",
+      "buttons": [
+        "BR-MWYV53"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "出口合同\t客户\t业务员\t合同金额\t已收款\t应收余额\t状态\nEC-F8D7RX\tQA261112 测试客户\t系统管理员\tUSD 512.50\tUSD 120.00\tUSD 392.50\t部分收款",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

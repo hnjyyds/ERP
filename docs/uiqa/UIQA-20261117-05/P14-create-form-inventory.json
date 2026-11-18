@@ -1,0 +1,998 @@
+{
+  "url": "http://localhost:8080/sample/deliveries",
+  "title": "寄样管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "寄样管理",
+    "寄样单列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "寄样搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 257.4453125,
+            "width": 242.2421875,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 525.2421875,
+            "bottom": 293.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "sample-delivery-status-filter",
+          "label": "审核状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 548.2421875,
+            "y": 262.4453125,
+            "width": 122.3515625,
+            "height": 26,
+            "top": 262.4453125,
+            "right": 670.59375,
+            "bottom": 288.4453125,
+            "left": 548.2421875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 711.59375,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 873.9453125,
+            "bottom": 293.4453125,
+            "left": 711.59375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "快递公司",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 885.9453125,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1048.296875,
+            "bottom": 293.4453125,
+            "left": 885.9453125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "寄样起始日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1060.296875,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1222.6484375,
+            "bottom": 293.4453125,
+            "left": 1060.296875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "寄样截止日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1234.6484375,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1397,
+            "bottom": 293.4453125,
+            "left": 1234.6484375
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1085.125,
+            "y": 305.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 305.4453125,
+            "right": 1169.6484375,
+            "bottom": 341.4453125,
+            "left": 1085.125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "导出寄样",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1177.6484375,
+            "y": 305.4453125,
+            "width": 87.046875,
+            "height": 36,
+            "top": 305.4453125,
+            "right": 1264.6953125,
+            "bottom": 341.4453125,
+            "left": 1177.6484375
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增寄样单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1272.6953125,
+            "y": 305.4453125,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 305.4453125,
+            "right": 1397,
+            "bottom": 341.4453125,
+            "left": 1272.6953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_c_",
+      "visible": true,
+      "text": "寄样单号\n寄样日期\n客户\n搜索客户编号或名称\n供应商\n工厂\n收件人\n收件公司\n收件地址\n快递公司\n快递单号\n关联报价\n输入关键词搜索\n寄样明细\n样品登记\n输入关键词搜索\n样品编号\n样品分类\n产品编号\n产品名称\n寄样数量\n单位\n明细备注\n费用登记\n费用类型\n快递费\n金额\n币种\n承担方\n公司承担\n费用备注\n寄样备注\n取消\n新增寄样单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "寄样单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 159.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 556,
+            "bottom": 195.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "寄样日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 159.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 872,
+            "bottom": 195.2265625,
+            "left": 568
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_e_",
+          "label": "客户",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 895,
+            "y": 164.2265625,
+            "width": 264,
+            "height": 26,
+            "top": 164.2265625,
+            "right": 1159,
+            "bottom": 190.2265625,
+            "left": 895
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 229.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 229.2265625,
+            "right": 556,
+            "bottom": 265.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "工厂",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 229.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 229.2265625,
+            "right": 872,
+            "bottom": 265.2265625,
+            "left": 568
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "收件人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 884,
+            "y": 229.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 229.2265625,
+            "right": 1188,
+            "bottom": 265.2265625,
+            "left": 884
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "收件公司",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 299.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 299.2265625,
+            "right": 556,
+            "bottom": 335.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "收件地址",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 299.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 299.2265625,
+            "right": 872,
+            "bottom": 335.2265625,
+            "left": 568
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "快递公司",
+          "text": "",
+          "value": "DHL",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 884,
+            "y": 299.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 299.2265625,
+            "right": 1188,
+            "bottom": 335.2265625,
+            "left": 884
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "快递单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 369.2265625,
+            "width": 304,
+            "height": 36,
+            "top": 369.2265625,
+            "right": 556,
+            "bottom": 405.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_g_",
+          "label": "关联报价",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 579,
+            "y": 374.2265625,
+            "width": 264,
+            "height": 26,
+            "top": 374.2265625,
+            "right": 843,
+            "bottom": 400.2265625,
+            "left": 579
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_i_",
+          "label": "样品登记",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 263,
+            "y": 504.078125,
+            "width": 264,
+            "height": 26,
+            "top": 504.078125,
+            "right": 527,
+            "bottom": 530.078125,
+            "left": 263
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "样品编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 499.078125,
+            "width": 304,
+            "height": 36,
+            "top": 499.078125,
+            "right": 872,
+            "bottom": 535.078125,
+            "left": 568
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "样品分类",
+          "text": "",
+          "value": "确认样",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 884,
+            "y": 499.078125,
+            "width": 304,
+            "height": 36,
+            "top": 499.078125,
+            "right": 1188,
+            "bottom": 535.078125,
+            "left": 884
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "产品编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 569.078125,
+            "width": 304,
+            "height": 36,
+            "top": 569.078125,
+            "right": 556,
+            "bottom": 605.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "产品名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 569.078125,
+            "width": 304,
+            "height": 36,
+            "top": 569.078125,
+            "right": 872,
+            "bottom": 605.078125,
+            "left": 568
+          }
+        },
+        {
+          "j": 16,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "寄样数量",
+          "text": "",
+          "value": "1",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 884,
+            "y": 569.078125,
+            "width": 304,
+            "height": 36,
+            "top": 569.078125,
+            "right": 1188,
+            "bottom": 605.078125,
+            "left": 884
+          }
+        },
+        {
+          "j": 17,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单位",
+          "text": "",
+          "value": "pcs",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 639.078125,
+            "width": 304,
+            "height": 36,
+            "top": 639.078125,
+            "right": 556,
+            "bottom": 675.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 18,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "明细备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 639.078125,
+            "width": 304,
+            "height": 36,
+            "top": 639.078125,
+            "right": 872,
+            "bottom": 675.078125,
+            "left": 568
+          }
+        },
+        {
+          "j": 19,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "sample-delivery-fee-type",
+          "label": "费用类型\n快递费",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 263,
+            "y": 773.9296875,
+            "width": 264,
+            "height": 26,
+            "top": 773.9296875,
+            "right": 527,
+            "bottom": 799.9296875,
+            "left": 263
+          }
+        },
+        {
+          "j": 20,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "金额",
+          "text": "",
+          "value": "0.00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 768.9296875,
+            "width": 304,
+            "height": 36,
+            "top": 768.9296875,
+            "right": 872,
+            "bottom": 804.9296875,
+            "left": 568
+          }
+        },
+        {
+          "j": 21,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 884,
+            "y": 768.9296875,
+            "width": 304,
+            "height": 36,
+            "top": 768.9296875,
+            "right": 1188,
+            "bottom": 804.9296875,
+            "left": 884
+          }
+        },
+        {
+          "j": 22,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "sample-delivery-fee-payer",
+          "label": "承担方\n公司承担",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 263,
+            "y": 843.9296875,
+            "width": 264,
+            "height": 26,
+            "top": 843.9296875,
+            "right": 527,
+            "bottom": 869.9296875,
+            "left": 263
+          }
+        },
+        {
+          "j": 23,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "费用备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 568,
+            "y": 838.9296875,
+            "width": 304,
+            "height": 36,
+            "top": 838.9296875,
+            "right": 872,
+            "bottom": 874.9296875,
+            "left": 568
+          }
+        },
+        {
+          "j": 24,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "sample-delivery-remark",
+          "label": "寄样备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 908.9296875,
+            "width": 936,
+            "height": 58.296875,
+            "top": 908.9296875,
+            "right": 1188,
+            "bottom": 967.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 25,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 947.1953125,
+            "y": 781.2265625,
+            "width": 108,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1055.1953125,
+            "bottom": 817.2265625,
+            "left": 947.1953125
+          }
+        },
+        {
+          "j": 26,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增寄样单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1067.1953125,
+            "y": 781.2265625,
+            "width": 120.8046875,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1188,
+            "bottom": 817.2265625,
+            "left": 1067.1953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情",
+      "buttons": [
+        "SD-CXE849",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

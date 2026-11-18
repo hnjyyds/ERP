@@ -1,0 +1,35 @@
+[
+  {
+    "tag": "hit",
+    "url": "http://localhost:8080/sample/deliveries?date_from=2026-11-01&date_to=2026-11-30",
+    "values": [
+      "2026-11-01",
+      "2026-11-30"
+    ],
+    "tables": [
+      "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情"
+    ]
+  },
+  {
+    "tag": "empty",
+    "url": "http://localhost:8080/sample/deliveries?date_from=2027-01-01&date_to=2027-01-31",
+    "values": [
+      "2027-01-01",
+      "2027-01-31"
+    ],
+    "tables": [
+      "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    ]
+  },
+  {
+    "tag": "reset",
+    "url": "http://localhost:8080/sample/deliveries",
+    "values": [
+      "",
+      ""
+    ],
+    "tables": [
+      "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情"
+    ]
+  }
+]

@@ -1,0 +1,457 @@
+{
+  "url": "http://localhost:8080/",
+  "title": "工作台",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "工作台",
+    "快捷入口",
+    "今日优先处理",
+    "我的日程",
+    "消息",
+    "公司公告"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_3h_",
+      "visible": true,
+      "text": "标题\n开始\n结束\n备注\n取消\n新增日程",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "标题",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 434,
+            "y": 346.0078125,
+            "width": 572,
+            "height": 36.421875,
+            "top": 346.0078125,
+            "right": 1006,
+            "bottom": 382.4296875,
+            "left": 434
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "id": "",
+          "label": "开始",
+          "text": "",
+          "value": "2026-11-18T02:00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 434,
+            "y": 416.3046875,
+            "width": 281,
+            "height": 38.421875,
+            "top": 416.3046875,
+            "right": 715,
+            "bottom": 454.7265625,
+            "left": 434
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "id": "",
+          "label": "结束",
+          "text": "",
+          "value": "2026-11-18T03:00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 725,
+            "y": 416.3046875,
+            "width": 281,
+            "height": 38.421875,
+            "top": 416.3046875,
+            "right": 1006,
+            "bottom": 454.7265625,
+            "left": 725
+          }
+        },
+        {
+          "j": 3,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 434,
+            "y": 488.6015625,
+            "width": 572,
+            "height": 77.265625,
+            "top": 488.6015625,
+            "right": 1006,
+            "bottom": 565.8671875,
+            "left": 434
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 838.3125,
+            "y": 579.8671875,
+            "width": 62.5625,
+            "height": 36,
+            "top": 579.8671875,
+            "right": 900.875,
+            "bottom": 615.8671875,
+            "left": 838.3125
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增日程",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 908.875,
+            "y": 579.8671875,
+            "width": 97.125,
+            "height": 36,
+            "top": 579.8671875,
+            "right": 1006,
+            "bottom": 615.8671875,
+            "left": 908.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "新增日程\n标题\n开始\n结束\n备注\n取消\n新增日程",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 986,
+            "y": 276.1328125,
+            "width": 32,
+            "height": 32,
+            "top": 276.1328125,
+            "right": 1018,
+            "bottom": 308.1328125,
+            "left": 986
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "标题",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 434,
+            "y": 346.0078125,
+            "width": 572,
+            "height": 36.421875,
+            "top": 346.0078125,
+            "right": 1006,
+            "bottom": 382.4296875,
+            "left": 434
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "开始",
+          "text": "",
+          "value": "2026-11-18T02:00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 434,
+            "y": 416.3046875,
+            "width": 281,
+            "height": 38.421875,
+            "top": 416.3046875,
+            "right": 715,
+            "bottom": 454.7265625,
+            "left": 434
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "结束",
+          "text": "",
+          "value": "2026-11-18T03:00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 725,
+            "y": 416.3046875,
+            "width": 281,
+            "height": 38.421875,
+            "top": 416.3046875,
+            "right": 1006,
+            "bottom": 454.7265625,
+            "left": 725
+          }
+        },
+        {
+          "j": 4,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "label": "备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 434,
+            "y": 488.6015625,
+            "width": 572,
+            "height": 77.265625,
+            "top": 488.6015625,
+            "right": 1006,
+            "bottom": 565.8671875,
+            "left": 434
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 838.3125,
+            "y": 579.8671875,
+            "width": 62.5625,
+            "height": 36,
+            "top": 579.8671875,
+            "right": 900.875,
+            "bottom": 615.8671875,
+            "left": 838.3125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "新增日程",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 908.875,
+            "y": 579.8671875,
+            "width": 97.125,
+            "height": 36,
+            "top": 579.8671875,
+            "right": 1006,
+            "bottom": 615.8671875,
+            "left": 908.875
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

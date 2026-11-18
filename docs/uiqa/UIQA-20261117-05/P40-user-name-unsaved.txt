@@ -1,0 +1,231 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=10423, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "组织管理"
+          container
+            button "通知" [ref=10314, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=10315, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "组织概览"
+            container
+              svg_root
+              text "用户"
+              text "7"
+            container
+              svg_root
+              text "启用"
+              text "7"
+            container
+              svg_root
+              text "停用"
+              text "0"
+            container
+              svg_root
+              text "部门"
+              text "7"
+            container
+              svg_root
+              text "角色"
+              text "6"
+          container
+            container
+              svg_root
+              textbox "搜索用户、部门或角色" [ref=10390, loc=css:input[placeholder="搜索用户、部门或角色"]]
+                text "搜索用户、部门或角色"
+            button [ref=10391]
+              svg_root
+              text "新增用户"
+          container "公司信息"
+            container
+              container
+                svg_root
+                container
+                  heading
+                    text "公司信息"
+                  paragraph
+                    text "公司抬头、银行信息用于单证和对外文件。"
+              button [ref=10392]
+                svg_root
+                text "编辑公司信息"
+            container
+              container
+                text "当前抬头"
+                text "新裴贸易"
+                text "暂无英文名称或单证抬头"
+              container
+                container
+                  text "电话"
+                  text "-"
+                container
+                  text "邮箱"
+                  text "-"
+                text "开户行"
+                text "-"
+                text "银行账号"
+                text "-"
+          tab [ref=10393]
+            text "用户管理"
+          tab [ref=10394]
+            text "部门与角色"
+          tabpanel "用户管理" [ref=10395, loc=role:tabpanel[name="用户管理"]]
+            container "用户列表"
+              button [ref=10396]
+                svg_root
+                text "演示 QC 专员"
+                text "qc"
+                text "·"
+                text "品质部"
+                text "启用"
+              button [ref=10397]
+                svg_root
+                text "演示仓库专员"
+                text "warehouse"
+                text "·"
+                text "仓储部"
+                text "启用"
+              button [ref=10398]
+                svg_root
+                text "演示财务主管"
+                text "finance_manager"
+                text "·"
+                text "财务部"
+                text "启用"
+              button [ref=10399]
+                svg_root
+                text "演示财务"
+                text "finance"
+                text "·"
+                text "财务部"
+                text "启用"
+              button [ref=10400]
+                svg_root
+                text "演示采购专员"
+                text "purchase"
+                text "·"
+                text "采购部"
+                text "启用"
+              button [ref=10401]
+                svg_root
+                text "演示业务主管"
+                text "demo"
+                text "·"
+                text "业务部"
+                text "启用"
+              button [ref=10402]
+                svg_root
+                text "系统管理员"
+                text "admin"
+                text "·"
+                text "管理部"
+                text "启用"
+            container "用户详情"
+              svg_root
+              paragraph
+                text "qc"
+              heading
+                text "演示 QC 专员"
+              text "启用中"
+              text "部门"
+              text "品质部"
+              text "角色"
+              text "QC 专员"
+              text "密码"
+              text "******"
+              text "创建时间"
+              text "2026-11-11 08:35"
+              button [ref=10403]
+                svg_root
+                text "编辑资料"
+              button [ref=10404]
+                svg_root
+                text "编辑用户权限"
+              button [ref=10405]
+                svg_root
+                text "重置密码"
+              button [ref=10406]
+                svg_root
+                text "删除用户"
+    dialog "编辑用户"
+      button "Close" [ref=10425]
+        container "关闭"
+          image "close"
+            svg_root
+      text "编辑用户"
+      form
+        container "用户头像"
+          button [ref=10426]
+            image "UIQA-UNSAVED-ACCOUNT-NAME 的头像"
+              svg_root
+            container
+              text "头像"
+              text "短发眼镜"
+            svg_root
+        container
+          container
+            text "用户名"
+            textbox "用户名" [ref=10427, loc=css:input[placeholder="用于登录，如 sales.chen"]]
+              text "qc"
+          container
+            text "姓名"
+            textbox "姓名" [ref=10428, loc=css:input[aria-label="姓名"]]
+              text "UIQA-UNSAVED-ACCOUNT-NAME"
+        container
+          text "部门"
+          container
+            container
+              text "品质部"
+              comboboxgrouping [ref=10429]
+            image "down"
+              svg_root
+        container
+          text "角色"
+          container
+            button [ref=10430]
+              svg_root
+              text "QC 专员"
+            button [ref=10431]
+              svg_root
+              text "业务主管"
+            button [ref=10432]
+              svg_root
+              text "仓库专员"
+            button [ref=10433]
+              svg_root
+              text "财务"
+            button [ref=10434]
+              svg_root
+              text "超级管理员"
+            button [ref=10435]
+              svg_root
+              text "采购专员"
+        container
+          checkbox "账号启用" [ref=10436, loc=css:input[aria-label="账号启用"]]
+          text "账号启用"
+        container
+          button [ref=10437]
+            text "取消"
+          button [ref=10438]
+            text "保存修改"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

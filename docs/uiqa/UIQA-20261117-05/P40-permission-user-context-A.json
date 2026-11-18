@@ -1,0 +1,6 @@
+{
+  "user": "finance_manager\n\n演示财务主管\n启用中\n部门\n财务部\n角色\n财务\n密码\n******\n创建时间\n2026-11-11 08:35\n编辑资料\n编辑用户权限\n重置密码\n删除用户",
+  "dialog": [
+    "按侧边栏功能授权\n权限配置\n\n先选择角色，再按左侧导航对应的功能勾选权限；没有勾选的板块不会出现在该角色用户的侧边栏。\n\n配置角色\nQC 专员\n保存权限\n侧边栏模块\n工作桌面\n1/3\n工作桌面\n工作桌面\n1/3\n查看工作桌面\n功能\ndashboard:view\n发布公司公告\n功能\nannouncement:create\n新增个人日程\n功能\nschedule:create\n侧边栏模块\n系统管理\n0/1\n系统管理\n组织管理\n0/1\n超级管理员\n功能\nsystem:super_admin\n侧边栏模块\n基础资料\n1/19\n基础资料\n商品资料\n1/3\n查看商品资料\n功能\nmasterdata:produ"
+  ]
+}

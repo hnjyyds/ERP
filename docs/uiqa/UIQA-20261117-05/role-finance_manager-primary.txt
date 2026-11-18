@@ -1,0 +1,297 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        container "D-DUTCH"
+          text "D-DUTCH"
+        container
+          text "新裴贸易"
+          text "业务管理系统"
+      container "主导航"
+        anchor [ref=6782, loc=href:/, url=http://localhost:8080/]
+          svg_root
+          text "工作台"
+        container "业务模块"
+          container [ref=6783]
+            svg_root
+            text "财务经营"
+            svg_root
+          container
+            container [ref=6803]
+              svg_root
+              text "财务摘要"
+              svg_root
+            container
+              anchor [ref=6804, loc=href:/finance/overview, url=http://localhost:8080/finance/overview]
+                text "经营总览"
+              anchor [ref=6805, loc=href:/finance/receipts, url=http://localhost:8080/finance/receipts]
+                text "收款管理"
+              anchor [ref=6806, loc=href:/finance/payments, url=http://localhost:8080/finance/payments]
+                text "付款管理"
+              anchor [ref=6807, loc=href:/finance/fees, url=http://localhost:8080/finance/fees]
+                text "付费管理"
+              anchor [ref=6808, loc=href:/finance/tax, url=http://localhost:8080/finance/tax]
+                text "核销退税"
+              anchor [ref=6809, loc=href:/finance/misc, url=http://localhost:8080/finance/misc]
+                text "杂费管理"
+              anchor [ref=6810, loc=href:/finance/settlement, url=http://localhost:8080/finance/settlement]
+                text "结算核算"
+              anchor [ref=6811, loc=href:/finance/reimbursements, url=http://localhost:8080/finance/reimbursements]
+                text "报销管理"
+              anchor [ref=6812, loc=href:/finance/port-data, url=http://localhost:8080/finance/port-data]
+                text "口岸数据"
+              anchor [ref=6813, loc=href:/finance/reports, url=http://localhost:8080/finance/reports]
+                text "财务报表"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "付款管理"
+        container
+          button "通知" [ref=6784, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "5"
+          button "系统设置" [ref=6785, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container "付款管理"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "供应商发票列表"
+            form
+              container
+                text "发票搜索"
+                textbox [ref=6814]
+              container
+                text "付款状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=6815]
+                  image "down"
+                    svg_root
+              container
+                text "供应商"
+                container
+                  container
+                    text "输入供应商编号或名称"
+                    comboboxgrouping "发票供应商筛选" [ref=6816, loc=css:input[aria-label="发票供应商筛选"]]
+                  image "down"
+                    svg_root
+              container
+                text "采购合同号"
+                textbox [ref=6817]
+              container
+                button [ref=6818]
+                  svg_root
+                  text "查询"
+                button [ref=6819]
+                  svg_root
+                  text "发票登记"
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=6820]
+                table
+                  table_row
+                    table_cell
+                      text "供应商发票"
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "采购合同"
+                    table_cell
+                      text "发票金额"
+                    table_cell
+                      text "已付"
+                    table_cell
+                      text "未付"
+                    table_cell
+                      text "超付"
+                  table_row
+                    table_cell
+                      button [ref=6821]
+                        text "UIQA-20261117-04-INV01"
+                    table_cell
+                      text "已付清"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "CNY 0.01"
+                    table_cell
+                      text "CNY 0.01"
+                    table_cell
+                      text "CNY 0.00"
+                    table_cell
+                      text "-"
+                  table_row
+                    table_cell
+                      button [ref=6822]
+                        text "QA261112-INV01"
+                    table_cell
+                      text "已付清"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "RMB 100.00"
+                    table_cell
+                      text "RMB 120.00"
+                    table_cell
+                      text "RMB 0.00"
+                    table_cell
+                      text "RMB 20.00"
+              unordered_list
+                list_item
+                  text "共 2 条"
+                list_item
+                  button [ref=6823]
+                    image "left"
+                      svg_root
+                list_item [ref=6824]
+                  anchor [ref=6825]
+                    text "1"
+                list_item
+                  button [ref=6826]
+                    image "right"
+                      svg_root
+                list_item
+                  container
+                    text "50 条/页"
+                    comboboxgrouping "页码" [ref=6827]
+                  image "down"
+                    svg_root
+            table
+              table_row
+                table_cell
+        container
+          container
+            container
+              svg_root
+              heading
+                text "应付账款查询"
+            form
+              container
+                text "应付搜索"
+                textbox [ref=6828]
+              container
+                text "应付状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=6829]
+                  image "down"
+                    svg_root
+              container
+                text "供应商"
+                container
+                  container
+                    text "输入供应商编号或名称"
+                    comboboxgrouping "应付供应商筛选" [ref=6830, loc=css:input[aria-label="应付供应商筛选"]]
+                  image "down"
+                    svg_root
+              container
+                text "采购合同号"
+                textbox [ref=6831]
+              button [ref=6832]
+                svg_root
+                text "查询"
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=6833]
+                table
+                  table_row
+                    table_cell
+                      text "供应商发票"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "采购合同"
+                    table_cell
+                      text "发票金额"
+                    table_cell
+                      text "已付款"
+                    table_cell
+                      text "应付余额"
+                    table_cell
+                      text "超付"
+                    table_cell
+                      text "状态"
+                  table_row
+                    table_cell
+                      text "QA261112-INV01"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "RMB 100.00"
+                    table_cell
+                      text "RMB 120.00"
+                    table_cell
+                      text "RMB 0.00"
+                    table_cell
+                      text "RMB 20.00"
+                    table_cell
+                      text "已付清"
+                  table_row
+                    table_cell
+                      text "UIQA-20261117-04-INV01"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "CNY 0.01"
+                    table_cell
+                      text "CNY 0.01"
+                    table_cell
+                      text "CNY 0.00"
+                    table_cell
+                      text "-"
+                    table_cell
+                      text "已付清"
+              unordered_list
+                list_item
+                  text "共 2 条"
+                list_item
+                  button [ref=6834]
+                    image "left"
+                      svg_root
+                list_item [ref=6835]
+                  anchor [ref=6836]
+                    text "1"
+                list_item
+                  button [ref=6837]
+                    image "right"
+                      svg_root
+                list_item
+                  container
+                    text "50 条/页"
+                    comboboxgrouping "页码" [ref=6838]
+                  image "down"
+                    svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,451 @@
+{
+  "url": "http://localhost:8080/",
+  "title": "工作台",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "工作台",
+    "快捷入口",
+    "今日优先处理",
+    "我的日程",
+    "消息",
+    "公司公告"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_1t_",
+      "visible": true,
+      "text": "名称\n目标页面\n选择目标页面\n商品资料\n供应商资料\n客户资料\n出口合同\n采购合同\nQC 中心\n我的 QC 任务\n跟单中心\n入仓\n财务摘要\n经营总览\n收款管理\n付款管理\n付费管理\n核销退税\n杂费管理\n结算核算\n报销管理\n口岸数据\n老板看板\n财务报表\n出口报价\n样品登记\n打样管理\n寄样管理\n合作伙伴\n单证资料\n出货明细\n采购询价\n开票通知\n入库计划\n组织管理\n出库计划\n货物出库\nMCP 接入\n库存盘点\n审计日志\n出口合同 · 待审批\n出口报价 · 待审批\n出货明细 · 待审批\n图标\n工作台\n待办\n单据\n日程\n包裹\n物流\n人员\n财务\n报表\n提醒\n排序\n关闭\n添加快捷入口",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 402.640625,
+            "width": 592,
+            "height": 36.421875,
+            "top": 402.640625,
+            "right": 1016,
+            "bottom": 439.0625,
+            "left": 424
+          }
+        },
+        {
+          "j": 1,
+          "tag": "SELECT",
+          "type": "select-one",
+          "id": "",
+          "label": "目标页面",
+          "text": "选择目标页面\n商品资料\n供应商资料\n客户资料\n出口合同\n采购合同\nQC 中心\n我的 QC 任务\n跟单中心\n入仓\n财务摘要\n经营总览\n收款管理\n付款管理\n付费管理\n核销退税\n杂费管理\n结算核算\n报销管理\n口岸数据\n老板看板\n财务报表\n出口报价\n样品登记\n打样管理\n寄样管理\n合作伙伴\n单证资料\n出货明细\n采购询价\n开票通知\n入库计划\n组织管理\n出库计划\n货物出库\nMCP 接入\n库存盘点\n审计日志\n出口合同 · 待审批\n出口报价 · 待审批\n出货明细 · 待审批",
+          "value": "",
+          "disabled": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 472.9375,
+            "width": 592,
+            "height": 36,
+            "top": 472.9375,
+            "right": 1016,
+            "bottom": 508.9375,
+            "left": 424
+          }
+        },
+        {
+          "j": 2,
+          "tag": "SELECT",
+          "type": "select-one",
+          "id": "",
+          "label": "图标",
+          "text": "工作台\n待办\n单据\n日程\n包裹\n物流\n人员\n财务\n报表\n提醒",
+          "value": "layout-dashboard",
+          "disabled": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 543.0234375,
+            "width": 291,
+            "height": 36.2109375,
+            "top": 543.0234375,
+            "right": 715,
+            "bottom": 579.234375,
+            "left": 424
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "排序",
+          "text": "",
+          "value": "100",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 725,
+            "y": 542.8125,
+            "width": 291,
+            "height": 36.421875,
+            "top": 542.8125,
+            "right": 1016,
+            "bottom": 579.234375,
+            "left": 725
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "关闭",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 804.75,
+            "y": 593.234375,
+            "width": 62.5625,
+            "height": 36,
+            "top": 593.234375,
+            "right": 867.3125,
+            "bottom": 629.234375,
+            "left": 804.75
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "添加快捷入口",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 875.3125,
+            "y": 593.234375,
+            "width": 140.6875,
+            "height": 36,
+            "top": 593.234375,
+            "right": 1016,
+            "bottom": 629.234375,
+            "left": 875.3125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "管理快捷入口\n还没有快捷入口\n名称\n目标页面\n选择目标页面\n商品资料\n供应商资料\n客户资料\n出口合同\n采购合同\nQC 中心\n我的 QC 任务\n跟单中心\n入仓\n财务摘要\n经营总览\n收款管理\n付款管理\n付费管理\n核销退税\n杂费管理\n结算核算\n报销管理\n口岸数据\n老板看板\n财务报表\n出口报价\n样品登记\n打样管理\n寄样管理\n合作伙伴\n单证资料\n出货明细\n采购询价\n开票通知\n入库计划\n组织管理\n出库计划\n货物出库\nMCP 接入\n库存盘点\n审计日志\n出口合同 · 待审批\n出口报价 · 待审批\n出货明细 · 待审批\n图标\n工作台\n待办\n单据\n日程\n包裹\n物流\n人员\n财务\n报表\n提醒\n排序\n关闭\n添加快捷入口",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 996,
+            "y": 262.765625,
+            "width": 32,
+            "height": 32,
+            "top": 262.765625,
+            "right": 1028,
+            "bottom": 294.765625,
+            "left": 996
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 402.640625,
+            "width": 592,
+            "height": 36.421875,
+            "top": 402.640625,
+            "right": 1016,
+            "bottom": 439.0625,
+            "left": 424
+          }
+        },
+        {
+          "j": 2,
+          "tag": "SELECT",
+          "type": "select-one",
+          "label": "目标页面",
+          "text": "选择目标页面\n商品资料\n供应商资料\n客户资料\n出口合同\n采购合同\nQC 中心\n我的 QC 任务\n跟单中心\n入仓\n财务摘要\n经营总览\n收款管理\n付款管理\n付费管理\n核销退税\n杂费管理\n结算核算\n报销管理\n口岸数据\n老板看板\n财务报表\n出口报价\n样品登记\n打样管理\n寄样管理\n合作伙伴\n单证资料\n出货明细\n采购询价\n开票通知\n入库计划\n组织管理\n出库计划\n货物出库\nMCP 接入\n库存盘点\n审计日志\n出口合同 · 待审批\n出口报价 · 待审批\n出货明细 · 待审批",
+          "value": "",
+          "disabled": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 472.9375,
+            "width": 592,
+            "height": 36,
+            "top": 472.9375,
+            "right": 1016,
+            "bottom": 508.9375,
+            "left": 424
+          }
+        },
+        {
+          "j": 3,
+          "tag": "SELECT",
+          "type": "select-one",
+          "label": "图标",
+          "text": "工作台\n待办\n单据\n日程\n包裹\n物流\n人员\n财务\n报表\n提醒",
+          "value": "layout-dashboard",
+          "disabled": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 543.0234375,
+            "width": 291,
+            "height": 36.2109375,
+            "top": 543.0234375,
+            "right": 715,
+            "bottom": 579.234375,
+            "left": 424
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "number",
+          "label": "排序",
+          "text": "",
+          "value": "100",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 725,
+            "y": 542.8125,
+            "width": 291,
+            "height": 36.421875,
+            "top": 542.8125,
+            "right": 1016,
+            "bottom": 579.234375,
+            "left": 725
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "关闭",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 804.75,
+            "y": 593.234375,
+            "width": 62.5625,
+            "height": 36,
+            "top": 593.234375,
+            "right": 867.3125,
+            "bottom": 629.234375,
+            "left": 804.75
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "添加快捷入口",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 875.3125,
+            "y": 593.234375,
+            "width": 140.6875,
+            "height": 36,
+            "top": 593.234375,
+            "right": 1016,
+            "bottom": 629.234375,
+            "left": 875.3125
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "page": "PAGE-09",
+  "route": "http://localhost:8080/sales/shipments",
+  "role": "admin",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P09出货明细：客户下拉候选项可访问名称回归、键盘路径、焦点恢复、浮层边缘、加载与失败恢复；1440×900与390×844",
+  "customer_candidate_ax": {
+    "control": "筛选区“客户编号”远程选择器 input[aria-label=客户编号]",
+    "visible_candidates": [
+      {"name": "UIQA全量验收停用客户样本", "code": "UIQA-20261117-05-C01", "visible_text": "UIQA全量验收停用客户样本 / UIQA-20261117-05-C01"},
+      {"name": "演示客户｜海湾家居贸易", "code": "UI261114-C01", "visible_text": "演示客户｜海湾家居贸易 / UI261114-C01"},
+      {"name": "QA261112 测试客户", "code": "QA261112-C01", "visible_text": "QA261112 测试客户 / QA261112-C01"}
+    ],
+    "aria_listbox": {
+      "pattern": "rc-select aria镜像listbox（0px隐藏）；仅渲染活动项及相邻项，随键盘移动窗口",
+      "at_open": [
+        {"id": "_r_a__list_0", "aria_label": "UIQA全量验收停用客户样本", "text": "451c5b86-de27-4970-8219-5bdd0573e126", "aria_selected": "false"},
+        {"id": "_r_a__list_1", "aria_label": "演示客户｜海湾家居贸易", "text": "a8898417-0e7b-4573-a6c4-8400733e9fcd", "aria_selected": "false"}
+      ],
+      "after_arrow_down": [
+        {"id": "_r_a__list_1", "aria_label": "演示客户｜海湾家居贸易"},
+        {"id": "_r_a__list_2", "aria_label": "QA261112 测试客户"}
+      ],
+      "all_three_reachable_by_keyboard": true,
+      "ax_option_names_at_rest": ["UIQA全量验收停用客户样本", "演示客户｜海湾家居贸易"],
+      "third_name_after_navigation": "QA261112 测试客户"
+    },
+    "findings": [
+      "候选项可访问名称来自aria-label，为客户名称，不是UUID",
+      "候选项文本节点内容为内部UUID（如451c5b86-...），名称由aria-label覆盖",
+      "候选名称不含客户编号；编号只出现在可视第二行，AX名称未包含",
+      "listbox为窗口化镜像，静止时只暴露2项；键盘移动后第3项会出现，未构成不可达"
+    ],
+    "conclusion": "三个客户候选项均可通过键盘到达且有非UUID的可访问名称；编号未进入AX名称、文本节点含UUID两点留作部分覆盖观察，未判失败"
+  },
+  "keyboard": {
+    "customer_select": {
+      "steps": "ArrowDown打开→ArrowDown/ArrowUp移动→Enter选择→再打开Escape关闭",
+      "selection_sequence": ["QA261112 测试客户", "UIQA全量验收停用客户样本"],
+      "after_clear_icon": "恢复占位“输入客户编号”",
+      "url_unchanged": true,
+      "note": "选择不自动查询，需点击查询；URL保持不变符合当前交互",
+      "conclusion": "A→B切换、Escape保留选中、清空恢复均成立"
+    },
+    "dialog": {
+      "trigger": "生成出货明细（键盘Enter）",
+      "initial_focus": "button[aria-label=Close]",
+      "shift_tab": "最后一个可聚焦操作“生成出货明细”",
+      "escape": "关闭对话框，焦点回到工具栏“生成出货明细”",
+      "conclusion": "焦点进入、边界循环与Esc恢复成立"
+    }
+  },
+  "overlay_edges": {
+    "1440x900": {"dropdown": {"x": 774, "y": 307, "w": 185, "h": 166, "right": 959, "bottom": 473}, "all_options_in_view": true},
+    "390x844": {"dropdown": {"x": 31, "y": 465, "w": 328, "h": 166, "right": 359, "bottom": 631}, "all_options_in_view": true, "page_horizontal_overflow": false, "scroll_height": 156, "scroll_client": 156},
+    "conclusion": "两档下拉完整位于视口内，三个候选项均可见且可滚到末项"
+  },
+  "loading_and_failure": {
+    "loading": {"method": "CDP网络延迟4000ms后刷新", "spinner_count": 1, "table_rows": 0, "conclusion": "有加载指示"},
+    "failure": {
+      "method": "CDP阻断sales/shipments?limit=50请求后刷新",
+      "observed": ["统计出货单0/待审批0/已审批0/应收USD0.00", "表格显示“暂无数据”“完成首次录入后，这里会显示对应记录”", "暴露原始文本Failed to fetch", "无重试入口"],
+      "conclusion": "加载失败被展示为首次录入空态并暴露原始错误，无重试；已登记Q05-28并关联A05，不计入D09保存失败"
+    },
+    "recovery": {"method": "解除阻断后刷新", "table_rows": 1, "conclusion": "可恢复"}
+  },
+  "screenshots": [
+    "screenshots/P09-390-customer-dropdown.png",
+    "screenshots/P09-list-load-error-390.png",
+    "screenshots/P09-customer-select-after-keyboard.png"
+  ],
+  "business_writes": "无；未生成出货明细，未保存任何字段",
+  "not_covered": "审批状态下拉与合同输入的键盘/浮层未逐项；1280档未重复；权限拒绝态未构造",
+  "related_previous": "P09-390-contract-ax-20261118.json（合同选项AX，不能替代本文件客户候选项检查）"
+}

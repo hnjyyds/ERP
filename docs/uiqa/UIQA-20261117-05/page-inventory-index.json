@@ -1,0 +1,579 @@
+[
+  {
+    "page": "P01",
+    "url": "http://localhost:8080/masterdata/products",
+    "headings": [
+      "商品资料",
+      "商品资料"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P01-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P02",
+    "url": "http://localhost:8080/masterdata/suppliers",
+    "headings": [
+      "供应商资料",
+      "供应商资料"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P02-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P03",
+    "url": "http://localhost:8080/masterdata/customers",
+    "headings": [
+      "客户资料和订单要求",
+      "客户资料"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P03-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P04",
+    "url": "http://localhost:8080/masterdata/partners",
+    "headings": [
+      "合作伙伴",
+      "合作伙伴资料"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P04-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P05",
+    "url": "http://localhost:8080/masterdata/document-parties",
+    "headings": [
+      "单证资料",
+      "单证资料列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P05-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P06",
+    "url": "http://localhost:8080/sales/quotations",
+    "headings": [
+      "出口报价",
+      "报价单列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P06-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P07",
+    "url": "http://localhost:8080/sales/contracts",
+    "headings": [
+      "出口合同",
+      "合同列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P07-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P08",
+    "url": "http://localhost:8080/purchase/contracts",
+    "headings": [
+      "采购合同",
+      "采购合同列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P08-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P09",
+    "url": "http://localhost:8080/sales/shipments",
+    "headings": [
+      "出货明细",
+      "出货计划列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P09-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P10",
+    "url": "http://localhost:8080/purchase/inquiries",
+    "headings": [
+      "采购询价",
+      "采购询价列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P10-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P11",
+    "url": "http://localhost:8080/purchase/invoice-notices",
+    "headings": [
+      "开票通知",
+      "开票通知列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P11-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P12",
+    "url": "http://localhost:8080/sample/records",
+    "headings": [
+      "样品登记",
+      "样品列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P12-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P13",
+    "url": "http://localhost:8080/sample/requests",
+    "headings": [
+      "打样管理",
+      "打样单列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P13-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P14",
+    "url": "http://localhost:8080/sample/deliveries",
+    "headings": [
+      "寄样管理",
+      "寄样单列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P14-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P15",
+    "url": "http://localhost:8080/quality/inspections",
+    "headings": [
+      "QC 任务中心",
+      "QC 任务列表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P15-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P16",
+    "url": "http://localhost:8080/quality/tasks",
+    "headings": [
+      "我的 QC 任务",
+      "我的 QC 任务"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P16-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P17",
+    "url": "http://localhost:8080/purchase/followup",
+    "headings": [
+      "跟单任务中心",
+      "采购跟单计划"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P17-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P18",
+    "url": "http://localhost:8080/warehouse/inbound-plans",
+    "headings": [
+      "入库计划",
+      "待入库计划"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P18-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P19",
+    "url": "http://localhost:8080/warehouse/inbound-orders",
+    "headings": [
+      "入仓和库存确认",
+      "入库单"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P19-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P20",
+    "url": "http://localhost:8080/warehouse/outbound-plans",
+    "headings": [
+      "出库计划",
+      "出库计划"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P20-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P21",
+    "url": "http://localhost:8080/warehouse/outbound-orders",
+    "headings": [
+      "货物出库",
+      "出库单"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P21-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P22",
+    "url": "http://localhost:8080/warehouse/stocktakes",
+    "headings": [
+      "库存盘点",
+      "库存盘点"
+    ],
+    "query_forms": 0,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P22-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P23",
+    "url": "http://localhost:8080/finance/receipts",
+    "headings": [
+      "收款管理",
+      "银行水单列表",
+      "应收账款查询"
+    ],
+    "query_forms": 2,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P23-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P24",
+    "url": "http://localhost:8080/finance/payments",
+    "headings": [
+      "付款管理",
+      "供应商发票列表",
+      "应付账款查询"
+    ],
+    "query_forms": 2,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P24-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P25",
+    "url": "http://localhost:8080/finance/fees",
+    "headings": [
+      "付费管理",
+      "合作伙伴费用发票",
+      "应付费用查询"
+    ],
+    "query_forms": 2,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P25-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P26",
+    "url": "http://localhost:8080/finance/tax",
+    "headings": [
+      "核销退税",
+      "核销单列表",
+      "核销单使用情况查询"
+    ],
+    "query_forms": 2,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P26-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P27",
+    "url": "http://localhost:8080/finance/misc",
+    "headings": [
+      "杂费管理",
+      "杂费项目配置",
+      "杂费分摊查询"
+    ],
+    "query_forms": 2,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P27-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P28",
+    "url": "http://localhost:8080/finance/settlement",
+    "headings": [
+      "结算核算",
+      "财务结算列表",
+      "利润核算表"
+    ],
+    "query_forms": 2,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P28-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P29",
+    "url": "http://localhost:8080/finance/reimbursements",
+    "headings": [
+      "报销管理",
+      "报销单列表",
+      "审批与付款"
+    ],
+    "query_forms": 1,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P29-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P30",
+    "url": "http://localhost:8080/finance",
+    "headings": [
+      "财务摘要和订单利润"
+    ],
+    "query_forms": 0,
+    "tables": 0,
+    "tabs": [],
+    "evidence": "P30-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P31",
+    "url": "http://localhost:8080/finance/overview",
+    "headings": [
+      "经营总览",
+      "出运利润明细",
+      "分币种汇总",
+      "开票和付款状态",
+      "合作伙伴费用入口"
+    ],
+    "query_forms": 0,
+    "tables": 5,
+    "tabs": [],
+    "evidence": "P31-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P32",
+    "url": "http://localhost:8080/finance/reports",
+    "headings": [
+      "财务报表",
+      "财务统计报表"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P32-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P33",
+    "url": "http://localhost:8080/finance/port-data",
+    "headings": [
+      "口岸数据",
+      "进出口报关数据查询",
+      "导入批次记录",
+      "导入口岸数据"
+    ],
+    "query_forms": 2,
+    "tables": 2,
+    "tabs": [],
+    "evidence": "P33-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P34",
+    "url": "http://localhost:8080/reporting",
+    "headings": [
+      "老板看板和经营分析",
+      "审批单据查询",
+      "类型汇总",
+      "统计分析报表",
+      "业务员月度出货",
+      "合同状态金额",
+      "原始单据追溯"
+    ],
+    "query_forms": 2,
+    "tables": 8,
+    "tabs": [],
+    "evidence": "P34-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P35",
+    "url": "http://localhost:8080/",
+    "headings": [
+      "工作台",
+      "快捷入口",
+      "今日优先处理",
+      "我的日程",
+      "消息",
+      "公司公告"
+    ],
+    "query_forms": 0,
+    "tables": 0,
+    "tabs": [],
+    "evidence": "P35-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P36",
+    "url": "http://localhost:8080/workspace/todos",
+    "headings": [
+      "工作台",
+      "全局待办"
+    ],
+    "query_forms": 0,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P36-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P37",
+    "url": "http://localhost:8080/workspace/schedules",
+    "headings": [
+      "工作台",
+      "我的日程"
+    ],
+    "query_forms": 0,
+    "tables": 0,
+    "tabs": [],
+    "evidence": "P37-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P38",
+    "url": "http://localhost:8080/workspace/notifications",
+    "headings": [
+      "工作台",
+      "消息"
+    ],
+    "query_forms": 0,
+    "tables": 0,
+    "tabs": [],
+    "evidence": "P38-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P39",
+    "url": "http://localhost:8080/workspace/announcements",
+    "headings": [
+      "工作台",
+      "公司公告"
+    ],
+    "query_forms": 0,
+    "tables": 0,
+    "tabs": [],
+    "evidence": "P39-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P40",
+    "url": "http://localhost:8080/organization/users",
+    "headings": [
+      "组织管理",
+      "公司信息",
+      "演示 QC 专员"
+    ],
+    "query_forms": 0,
+    "tables": 0,
+    "tabs": [
+      {
+        "text": "用户管理",
+        "selected": "true"
+      },
+      {
+        "text": "部门与角色",
+        "selected": "false"
+      }
+    ],
+    "evidence": "P40-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P41",
+    "url": "http://localhost:8080/system/mcp",
+    "headings": [
+      "MCP 与 AI 数据接入",
+      "MCP 服务未启用",
+      "启用后即可查看 AI 连接信息"
+    ],
+    "query_forms": 0,
+    "tables": 0,
+    "tabs": [],
+    "evidence": "P41-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  },
+  {
+    "page": "P42",
+    "url": "http://localhost:8080/system/audit-logs",
+    "headings": [
+      "写操作审计流水",
+      "审计日志"
+    ],
+    "query_forms": 1,
+    "tables": 1,
+    "tabs": [],
+    "evidence": "P42-list-inventory.json",
+    "status": "默认页已枚举；不是整页签收"
+  }
+]

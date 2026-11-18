@@ -1,0 +1,36 @@
+{
+  "defect": "Q05-23",
+  "asset": "assets/index-BTFsUnZ2.js",
+  "css": "assets/index-CVMx6kR8.css",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "admin",
+  "path": "工作台 → 快捷入口 → 管理快捷入口",
+  "repro": "新增快捷入口，名称/目标未提交，点关闭或按Esc后再次打开，草稿原样保留",
+  "fix": "打开与关闭（取消、关闭按钮、Esc）统一重置名称/目标/排序与提示，不保留未提交草稿",
+  "verification": {
+    "close_reopen": {
+      "filled": { "name": "UIQA-UNSAVED-SHORTCUT-BTFs", "target": "出口合同" },
+      "after_reopen": { "name": "", "target": "", "sort": "100" },
+      "result": "passed"
+    },
+    "escape_reopen": {
+      "filled": { "name": "UIQA-ESCAPE-DRAFT" },
+      "after_reopen": { "inputs": [""], "selects": ["", "100"] },
+      "result": "passed"
+    },
+    "saved_new_shortcut": false
+  },
+  "viewports": ["1440x900"],
+  "screenshots": [
+    "screenshots/P35-shortcut-reset-BTFsUnZ2-1440.png",
+    "screenshots/P35-shortcut-escape-reset-BTFsUnZ2-1440.png"
+  ],
+  "automation": {
+    "test_case": "取消或关闭后重开不保留未提交草稿",
+    "vitest": "422 passed / 50 files",
+    "tsc": "passed",
+    "eslint": "passed"
+  },
+  "business_writes": "未保存快捷入口，未新增数据",
+  "verified_at": "2026-11-18"
+}

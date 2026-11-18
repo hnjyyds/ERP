@@ -1,0 +1,148 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "出口合同"
+        button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        container "出口合同概览"
+          text "合同数"
+          text "2"
+          text "待审批"
+          text "0"
+          container
+            text "已审批"
+            text "1"
+          container
+            text "合同金额"
+            text "USD 562.50"
+          container
+            text "预收款"
+            text "USD 0.00"
+        container
+          container
+            svg_root
+            heading
+              text "合同列表"
+          form
+            container
+              text "合同搜索"
+              textbox [ref=1948, loc=css:input[placeholder="合同号 / 客户 / 产品 / 条款"]]
+                text "合同号 / 客户 / 产品 / 条款"
+            container
+              text "审批状态"
+              container
+                container
+                  text "全部状态"
+                  comboboxgrouping [ref=1949]
+                image "down"
+                  svg_root
+            container
+              text "客户筛选"
+              container
+                container
+                  text "从客户资料筛选"
+                  comboboxgrouping [ref=1950]
+                image "down"
+                  svg_root
+            button [ref=1951]
+              svg_root
+              text "查询"
+            button [ref=1952]
+              svg_root
+              text "新增合同"
+          container [ref=1963]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=1953]
+                container [ref=1964]
+                  table
+                    table_row
+                      table_cell
+                        text "合同号"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "计划出运日"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "回签"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=1954]
+                          text "EC-5FW46R"
+                      table_cell
+                        text "草稿"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "USD 50.00"
+                      table_cell
+                        text "未回签"
+                      table_cell
+                        button [ref=1955]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        button [ref=1956]
+                          text "EC-F8D7RX"
+                      table_cell
+                        text "已审批"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "2026-11-25"
+                      table_cell
+                        text "USD 512.50"
+                      table_cell
+                        text "未回签"
+                      table_cell
+                        button [ref=1957]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 2 条"
+                list_item
+                  button [ref=1958]
+                    image "left"
+                      svg_root
+                list_item [ref=1959]
+                  anchor [ref=1960]
+                    text "1"
+                list_item
+                  button [ref=1961]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

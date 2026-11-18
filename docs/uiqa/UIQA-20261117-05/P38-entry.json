@@ -1,0 +1,1438 @@
+{
+  "time": "2026-11-17T10:43:38.908Z",
+  "url": "http://localhost:8080/workspace/notifications",
+  "viewport": [
+    1440,
+    900
+  ],
+  "scripts": [
+    "http://localhost:8080/assets/index-By6s5oGf.js"
+  ],
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai",
+  "scroll": [
+    0,
+    0,
+    1440,
+    1592
+  ],
+  "focus": {
+    "tag": "BODY",
+    "id": "",
+    "label": null,
+    "text": "",
+    "outline": "rgb(32, 36, 44) none 3px",
+    "shadow": "none",
+    "border": "rgb(32, 36, 44)"
+  },
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "导航",
+      "label": "业务导航",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(239, 239, 239)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "工作台",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        12,
+        76.6953125,
+        211,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        155.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        195.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        235.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        275.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        315.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        197.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        237.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        277.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        317.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        239.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        279.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        319.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        359.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        399.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        439.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        281.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        321.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        361.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        401.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        441.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        361.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        398.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        435.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        472.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        509.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        546.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        583.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        620.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        657.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        694.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        363.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        365.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        405.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        445.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        407.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        21,
+        447.6953125,
+        195,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "3",
+      "label": "通知",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1340,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1378,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "全部已读",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1326.515625,
+        106.6484375,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "处理",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1198.03125,
+        183.6484375,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        183.6484375,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        183.6484375,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "处理",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1198.03125,
+        276.1875,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        276.1875,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        276.1875,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "处理",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1198.03125,
+        368.7265625,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        368.7265625,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        368.7265625,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        461.265625,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        461.265625,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        553.8046875,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        553.8046875,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        646.34375,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        646.34375,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        738.8828125,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        738.8828125,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        831.421875,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        831.421875,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        923.9609375,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        923.9609375,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        1016.5,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        1016.5,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        1109.0390625,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        1109.0390625,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        1201.578125,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        1201.578125,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        1294.1171875,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        1294.1171875,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        1386.65625,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        1386.65625,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "查看单据",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1254.2734375,
+        1479.1953125,
+        72.484375,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "删除",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1333.7578125,
+        1479.1953125,
+        49.2421875,
+        34
+      ],
+      "color": "rgb(123, 92, 34)",
+      "background": "rgba(255, 255, 255, 0.9)",
+      "opacity": "1",
+      "fontSize": "11.375px",
+      "hit": false
+    }
+  ],
+  "tables": [],
+  "scrollables": []
+}

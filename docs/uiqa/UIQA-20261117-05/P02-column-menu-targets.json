@@ -1,0 +1,320 @@
+[
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "items": [
+      {
+        "text": "✓\n编号",
+        "disabled": "true",
+        "rect": {
+          "x": 1286.7578125,
+          "y": 301,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 301,
+          "right": 1394,
+          "bottom": 333,
+          "left": 1286.7578125
+        }
+      },
+      {
+        "text": "✓\n中文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1286.7578125,
+          "y": 333,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 333,
+          "right": 1394,
+          "bottom": 365,
+          "left": 1286.7578125
+        }
+      },
+      {
+        "text": "✓\n英文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1286.7578125,
+          "y": 365,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 365,
+          "right": 1394,
+          "bottom": 397,
+          "left": 1286.7578125
+        }
+      },
+      {
+        "text": "✓\n国家/地区",
+        "disabled": null,
+        "rect": {
+          "x": 1286.7578125,
+          "y": 397,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 397,
+          "right": 1394,
+          "bottom": 429,
+          "left": 1286.7578125
+        }
+      },
+      {
+        "text": "✓\n联系人",
+        "disabled": null,
+        "rect": {
+          "x": 1286.7578125,
+          "y": 429,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 429,
+          "right": 1394,
+          "bottom": 461,
+          "left": 1286.7578125
+        }
+      },
+      {
+        "text": "✓\n状态",
+        "disabled": null,
+        "rect": {
+          "x": 1286.7578125,
+          "y": 461,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 461,
+          "right": 1394,
+          "bottom": 493,
+          "left": 1286.7578125
+        }
+      },
+      {
+        "text": "恢复默认",
+        "disabled": null,
+        "rect": {
+          "x": 1286.7578125,
+          "y": 502,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 502,
+          "right": 1394,
+          "bottom": 534,
+          "left": 1286.7578125
+        }
+      }
+    ]
+  },
+  {
+    "viewport": [
+      1280,
+      720
+    ],
+    "items": [
+      {
+        "text": "✓\n编号",
+        "disabled": "true",
+        "rect": {
+          "x": 1126.7578125,
+          "y": 301,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 301,
+          "right": 1234,
+          "bottom": 333,
+          "left": 1126.7578125
+        }
+      },
+      {
+        "text": "✓\n中文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1126.7578125,
+          "y": 333,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 333,
+          "right": 1234,
+          "bottom": 365,
+          "left": 1126.7578125
+        }
+      },
+      {
+        "text": "✓\n英文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1126.7578125,
+          "y": 365,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 365,
+          "right": 1234,
+          "bottom": 397,
+          "left": 1126.7578125
+        }
+      },
+      {
+        "text": "✓\n国家/地区",
+        "disabled": null,
+        "rect": {
+          "x": 1126.7578125,
+          "y": 397,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 397,
+          "right": 1234,
+          "bottom": 429,
+          "left": 1126.7578125
+        }
+      },
+      {
+        "text": "✓\n联系人",
+        "disabled": null,
+        "rect": {
+          "x": 1126.7578125,
+          "y": 429,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 429,
+          "right": 1234,
+          "bottom": 461,
+          "left": 1126.7578125
+        }
+      },
+      {
+        "text": "✓\n状态",
+        "disabled": null,
+        "rect": {
+          "x": 1126.7578125,
+          "y": 461,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 461,
+          "right": 1234,
+          "bottom": 493,
+          "left": 1126.7578125
+        }
+      },
+      {
+        "text": "恢复默认",
+        "disabled": null,
+        "rect": {
+          "x": 1126.7578125,
+          "y": 502,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 502,
+          "right": 1234,
+          "bottom": 534,
+          "left": 1126.7578125
+        }
+      }
+    ]
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "items": [
+      {
+        "text": "✓\n编号",
+        "disabled": "true",
+        "rect": {
+          "x": 272,
+          "y": 497,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 497,
+          "right": 379.2421875,
+          "bottom": 529,
+          "left": 272
+        }
+      },
+      {
+        "text": "✓\n中文名称",
+        "disabled": null,
+        "rect": {
+          "x": 272,
+          "y": 529,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 529,
+          "right": 379.2421875,
+          "bottom": 561,
+          "left": 272
+        }
+      },
+      {
+        "text": "✓\n英文名称",
+        "disabled": null,
+        "rect": {
+          "x": 272,
+          "y": 561,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 561,
+          "right": 379.2421875,
+          "bottom": 593,
+          "left": 272
+        }
+      },
+      {
+        "text": "✓\n国家/地区",
+        "disabled": null,
+        "rect": {
+          "x": 272,
+          "y": 593,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 593,
+          "right": 379.2421875,
+          "bottom": 625,
+          "left": 272
+        }
+      },
+      {
+        "text": "✓\n联系人",
+        "disabled": null,
+        "rect": {
+          "x": 272,
+          "y": 625,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 625,
+          "right": 379.2421875,
+          "bottom": 657,
+          "left": 272
+        }
+      },
+      {
+        "text": "✓\n状态",
+        "disabled": null,
+        "rect": {
+          "x": 272,
+          "y": 657,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 657,
+          "right": 379.2421875,
+          "bottom": 689,
+          "left": 272
+        }
+      },
+      {
+        "text": "恢复默认",
+        "disabled": null,
+        "rect": {
+          "x": 272,
+          "y": 698,
+          "width": 107.2421875,
+          "height": 32,
+          "top": 698,
+          "right": 379.2421875,
+          "bottom": 730,
+          "left": 272
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "command": ".venv/bin/python -m pytest -q",
+  "cwd": "/Users/dev/Documents/\u65b0\u88f4\u8d38\u6613/backend",
+  "exit": 0,
+  "database": "test fixtures: in-memory SQLite / pytest tmp_path SQLite; no live DB writes",
+  "credential_redaction": true
+}

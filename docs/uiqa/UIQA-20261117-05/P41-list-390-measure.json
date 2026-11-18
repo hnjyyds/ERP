@@ -1,0 +1,328 @@
+{
+  "url": "http://localhost:8080/system/mcp",
+  "viewport": [
+    390,
+    844
+  ],
+  "scale": 1,
+  "controls": [
+    {
+      "label": "业务导航",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "frame": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "16.1px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "通知",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "frame": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "系统设置",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "frame": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "是否启用 MCP",
+      "tag": "BUTTON",
+      "role": "switch",
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 307,
+        "y": 250.4296875,
+        "width": 46,
+        "height": 22,
+        "top": 250.4296875,
+        "right": 353,
+        "bottom": 272.4296875,
+        "left": 307
+      },
+      "frame": {
+        "x": 307,
+        "y": 250.4296875,
+        "width": 46,
+        "height": 22,
+        "top": 250.4296875,
+        "right": 353,
+        "bottom": 272.4296875,
+        "left": 307
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "22px",
+      "fontSize": "14px",
+      "hit": true
+    }
+  ],
+  "texts": [
+    {
+      "text": "业务管理系统",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.511976173162169,
+      "rect": {
+        "x": 16,
+        "y": 29.5,
+        "width": 73.515625,
+        "height": 16.1953125,
+        "top": 29.5,
+        "right": 89.515625,
+        "bottom": 45.6953125,
+        "left": 16
+      }
+    },
+    {
+      "text": "导航",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "14px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 332.21875,
+        "y": 25.796875,
+        "width": 28.5625,
+        "height": 16.09375,
+        "top": 25.796875,
+        "right": 360.78125,
+        "bottom": 41.890625,
+        "left": 332.21875
+      }
+    },
+    {
+      "text": "业务模块",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        244,
+        246,
+        248
+      ],
+      "opacity": "1",
+      "fontSize": "11px",
+      "ratio": 3.444831529412615,
+      "rect": {
+        "x": 14,
+        "y": 79.3671875,
+        "width": 183.6640625,
+        "height": 12.6484375,
+        "top": 79.3671875,
+        "right": 197.6640625,
+        "bottom": 92.015625,
+        "left": 14
+      }
+    },
+    {
+      "text": "3",
+      "color": "rgb(255, 255, 255)",
+      "bg": [
+        255,
+        77,
+        79
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.267743233071127,
+      "rect": {
+        "x": 315.234375,
+        "y": 84.6953125,
+        "width": 7.5234375,
+        "height": 14,
+        "top": 84.6953125,
+        "right": 322.7578125,
+        "bottom": 98.6953125,
+        "left": 315.234375
+      }
+    },
+    {
+      "text": "已关闭",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        245,
+        245,
+        245
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.394204357652978,
+      "rect": {
+        "x": 205.8671875,
+        "y": 164.6953125,
+        "width": 50.7578125,
+        "height": 22,
+        "top": 164.6953125,
+        "right": 256.625,
+        "bottom": 186.6953125,
+        "left": 205.8671875
+      }
+    },
+    {
+      "text": "允许受信任的 AI 客户端通过标准 MCP 协议查询和维护 ERP 数据。关闭后不会影响现有业务页面和 API。",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        251.92000000000002,
+        251.76,
+        250.16000000000003
+      ],
+      "opacity": "1",
+      "fontSize": "10.5625px",
+      "ratio": 5.481979960051062,
+      "rect": {
+        "x": 89,
+        "y": 190.6953125,
+        "width": 264,
+        "height": 32.734375,
+        "top": 190.6953125,
+        "right": 353,
+        "bottom": 223.4296875,
+        "left": 89
+      }
+    },
+    {
+      "text": "是否启用 MCP",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        251.92000000000002,
+        251.76,
+        250.16000000000003
+      ],
+      "opacity": "1",
+      "fontSize": "10.5625px",
+      "ratio": 5.481979960051062,
+      "rect": {
+        "x": 33,
+        "y": 255.359375,
+        "width": 70.0078125,
+        "height": 12.140625,
+        "top": 255.359375,
+        "right": 103.0078125,
+        "bottom": 267.5,
+        "left": 33
+      }
+    },
+    {
+      "text": "连接地址、鉴权令牌、客户端配置和全部可用工具只在 MCP 开启时展示。",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        251.92000000000002,
+        251.76,
+        250.16000000000003
+      ],
+      "opacity": "1",
+      "fontSize": "10.5625px",
+      "ratio": 5.481979960051062,
+      "rect": {
+        "x": 57.6953125,
+        "y": 399.53125,
+        "width": 313.3046875,
+        "height": 32.734375,
+        "top": 399.53125,
+        "right": 371,
+        "bottom": 432.265625,
+        "left": 57.6953125
+      }
+    }
+  ]
+}

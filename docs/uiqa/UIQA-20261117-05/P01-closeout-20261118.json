@@ -1,0 +1,102 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "page": "PAGE-01",
+  "route": "http://localhost:8080/masterdata/products",
+  "role": "admin",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P01商品资料：列表与新增商品表单的键盘路径、焦点恢复、浮层边缘、控件状态、加载与失败恢复；1440×900与390×844",
+  "keyboard": {
+    "dialog_open": {
+      "trigger": "工具栏“新增商品”键盘Enter",
+      "initial_focus": "button[aria-label=Close]",
+      "tab_order": ["Close", "product-field-code", "product-field-unit", "product-field-cn_name", "英文名称", "规格", "型号", "product-field-customs_code"],
+      "shift_tab_from_close": "inline-submit“新增商品”（最后一个可聚焦操作）",
+      "tab_after_last": "role=dialog容器→Close→product-field-code，焦点未离开对话框",
+      "conclusion": "对话框内Tab/Shift+Tab可循环，未跳到底层页面"
+    },
+    "escape": {
+      "from_close": "关闭对话框，焦点回到工具栏“新增商品”触发按钮",
+      "from_code_field": "关闭对话框，焦点回到同一触发按钮",
+      "dropdown_open": "只关闭状态下拉，对话框保留，焦点仍在combobox",
+      "conclusion": "Escape分层关闭与焦点恢复成立；未出现焦点留在已关闭浮层"
+    },
+    "select_keyboard": {
+      "control": "状态 Select（combobox，AX名称“状态 启用 down”）",
+      "steps": "ArrowDown打开→ArrowDown移动→Enter选择",
+      "observations": ["aria-expanded=true", "aria-activedescendant=_r_v__list_0", "选中后expanded=false", "选中值停用显示在控件内"],
+      "option_ax": [{"name": "启用", "selected": true}, {"name": "停用", "selected": false}],
+      "conclusion": "键盘可打开、移动、选择、关闭；选项有可访问名称与选中状态"
+    },
+    "list_query": {
+      "enter_after_input": "q=QA261112-P01，命中1行",
+      "escape_after_query": "保留查询条件与结果，不清空",
+      "clear_then_enter": "URL恢复/masterdata/products，列表50行"
+    }
+  },
+  "focus_visibility": {
+    "control": "列表搜索框 input[placeholder=编号 / 中文 / 英文 / 海关编码]",
+    "focus_visible": true,
+    "default": {"border": "rgb(223, 227, 232)", "boxShadow": "none", "outline": "none 3px", "background": "rgb(255, 255, 255)", "caret": "rgb(32, 36, 44)"},
+    "keyboard_focus": {"border": "rgb(49, 91, 214)", "boxShadow": "color(srgb 0.192157 0.356863 0.839216 / 0.14) 0px 0px 0px 2px", "outline": "none 0px", "caret": "rgb(32, 36, 44)"},
+    "typed": {"value": "QA", "selectionStart": 2, "selectionEnd": 2, "caret_visible_in_screenshot": true},
+    "parent_label": "聚焦前后label边框均为rgb(95,104,117)，未变化；聚焦提示由输入框自身承担",
+    "conclusion": "键盘聚焦有蓝色边框与2px浅蓝阴影，默认与聚焦截图均已补；此前“无可感知聚焦指示”的测量系程序化聚焦/过渡未完成导致，已撤回该观察，不判缺陷",
+    "screenshots": ["screenshots/P01-search-focus-default-1440.png", "screenshots/P01-search-focus-keyboard-1440.png", "screenshots/P01-search-focus-keyboard-typed-1440.png"],
+    "not_covered": "其他输入框/按钮的聚焦指示未逐一测量"
+  },
+  "overlay_edges": {
+    "1440x900": {
+      "control": "新增商品-状态下拉",
+      "dropdown": {"x": 252, "y": 363, "w": 299, "h": 74, "right": 551, "bottom": 437},
+      "viewport": [1440, 900],
+      "all_options_in_view": true,
+      "conclusion": "完整位于视口内，两项均可命中"
+    },
+    "390x844": {
+      "control": "新增商品-状态下拉（聚焦后浏览器自动滚动到控件）",
+      "dropdown": {"x": 60, "y": 436, "w": 270, "h": 74, "right": 330, "bottom": 510},
+      "viewport": [390, 844],
+      "options": [{"text": "启用", "bottom": 473, "inView": true}, {"text": "停用", "bottom": 505, "inView": true}],
+      "hit_test": "两项elementFromPoint均命中选项内容",
+      "page_horizontal_overflow": false,
+      "transient_note": "控件位于折叠下方且尚未聚焦时，曾测得下拉bottom=899超出844；聚焦后浏览器滚动到控件，下拉重算并完整可见，未稳定复现裁切，暂不判缺陷"
+    }
+  },
+  "control_states": {
+    "button_hover": {"control": "查询商品按钮", "default": {"border": "rgb(223, 227, 232)", "background": "rgb(255, 255, 255)", "color": "rgb(32, 36, 44)"}, "hover": {"border": "color(srgb 0.533333 0.623529 0.87451)", "background": "rgb(247, 248, 250)", "color": "rgb(40, 76, 184)"}},
+    "pagination_disabled": {"selector": "ant-pagination-prev", "aria-disabled": "true", "class": "ant-pagination-disabled"},
+    "checkbox": {"size": "16×16", "aria_select_all": "Select all"},
+    "dialog_button": "空表单时提交按钮未禁用，由提交校验拦截（Q05-01另记）",
+    "conclusion": "hover与disabled有可见区分；当前页其他控件状态未逐一测量"
+  },
+  "long_form_scroll": {
+    "viewport": "1440×900",
+    "scroller": "form.record-form.entity-modal-form",
+    "scrollHeight": 947,
+    "clientHeight": 684,
+    "after_scroll_bottom": {"cancel_button_y": 781, "submit_button_y": 781, "viewport_height": 900},
+    "conclusion": "滚动表单到底部后取消/提交按钮可达"
+  },
+  "loading_and_failure": {
+    "loading": {"method": "CDP网络延迟4000ms后刷新", "spinner_count": 1, "table_rows": 0, "conclusion": "有加载指示，内容未提前显示旧数据"},
+    "failure": {
+      "method": "CDP阻断masterdata/products?limit=50请求后刷新",
+      "observed": ["统计变为商品0/配件0/有图0件", "表格显示“还没有商品资料”“完成首次录入后，这里会显示对应记录”", "页面暴露原始文本Failed to fetch", "无重试入口"],
+      "expected": "加载失败应说明失败原因并提供重试，不应与首次未建档空态混同",
+      "conclusion": "加载失败被展示为首次录入空态且暴露原始错误，无重试；已登记Q05-28并关联A05，不计入D09保存失败"
+    },
+    "recovery": {"method": "解除阻断后刷新", "table_rows": 50, "error_toast": false, "conclusion": "解除失败源后可恢复"}
+  },
+  "screenshots": [
+    "screenshots/P01-390-status-dropdown-edge.png",
+    "screenshots/P01-list-loading.png",
+    "screenshots/P01-list-load-error.png",
+    "screenshots/P01-search-focus-default-1440.png",
+    "screenshots/P01-search-focus-keyboard-1440.png",
+    "screenshots/P01-search-focus-keyboard-typed-1440.png"
+  ],
+  "business_writes": "无；未保存商品，未上传/删除图片，未导出",
+  "not_covered": "1280档未重复；其他弹窗/日期浮层/带图编辑态未逐项；权限拒绝态未构造"
+}

@@ -1,0 +1,102 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=9499, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "工作台"
+          container
+            button "通知" [ref=9470, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=9471, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container
+            container
+              svg_root
+              heading
+                text "我的日程"
+            text "3"
+          container
+            button "QA261112 测试日程" [ref=9810, loc=css:button[aria-label="QA261112 测试日程"]]
+              container
+                text "19:00"
+                text "2026-11-12"
+                text "已结束"
+              container
+                text "QA261112 测试日程"
+                text "QA261112"
+            button "测试日程" [ref=9811, loc=css:button[aria-label="测试日程"]]
+              container
+                text "12:00"
+                text "2026-11-13"
+                text "已结束"
+              container
+                text "测试日程"
+                text "12:00 至 13:00"
+            button "测试" [ref=9812, loc=css:button[aria-label="测试"]]
+              container
+                text "04:00"
+                text "2026-11-15"
+                text "已结束"
+              container
+                text "测试"
+                text "04:00 至 05:00"
+    dialog "日程详情"
+      button "Close" [ref=9813, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "日程详情"
+      container
+        container
+          text "QA261112 测试日程"
+          text "2026-11-12 19:00 至 2026-11-12 19:30"
+        unordered_list
+          container
+            list_item
+              text "开始"
+            list_item
+              text "2026-11-12 19:00"
+          container
+            list_item
+              text "结束"
+            list_item
+              text "2026-11-12 19:30"
+          container
+            list_item
+              text "创建时间"
+            list_item
+              text "2026-11-12 19:28"
+        container
+          text "备注"
+          paragraph
+            text "QA261112"
+        container
+          container
+            button [ref=9814]
+              svg_root
+              text "编辑日程"
+            button [ref=9815]
+              svg_root
+              text "删除日程"
+          button [ref=9816]
+            text "关闭"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

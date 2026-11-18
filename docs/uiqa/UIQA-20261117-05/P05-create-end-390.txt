@@ -1,0 +1,211 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "单证资料"
+          container
+            button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "单证资料概览"
+            container
+              text "单证资料"
+              text "1"
+            container
+              text "默认资料"
+              text "0"
+            container
+              text "收货人"
+              text "1"
+            container
+              text "开证行"
+              text "0"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "单证资料列表"
+              form
+                container
+                  text "搜索"
+                  textbox [ref=2059, loc=css:input[placeholder="编号 / 名称 / 客户 / 银行 / 联系人"]]
+                    text "编号 / 名称 / 客户 / 银行 / 联系人"
+                container
+                  text "类型"
+                  container
+                    container
+                      text "全部类型"
+                      comboboxgrouping [ref=2060]
+                    image "down"
+                      svg_root
+                container
+                  text "状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=2061]
+                    image "down"
+                      svg_root
+                container
+                  button [ref=2062]
+                    svg_root
+                    text "查询"
+                  button [ref=2063]
+                    svg_root
+                    text "新增单证资料"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=2064]
+                  container [ref=2093]
+                    table
+                      table_row
+                        table_cell
+                          text "编号"
+                        table_cell
+                          text "名称"
+                        table_cell
+                          text "类型"
+                        table_cell
+                          text "关联客户"
+                        table_cell
+                          text "国家/地区"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=2065]
+                            text "QA261112-D01"
+                        table_cell
+                          text "QA261112 测试收货人"
+                        table_cell
+                          text "收货人"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "DE"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          button [ref=2066]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=2067]
+                      image "left"
+                        svg_root
+                  list_item [ref=2068]
+                    anchor [ref=2069]
+                      text "1"
+                  list_item
+                    button [ref=2070]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    dialog "新增单证资料"
+      button "Close" [ref=2072, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增单证资料"
+      form [ref=2073]
+        container
+          text "编号"
+          textbox [ref=2074]
+        container
+          text "类型"
+          container
+            text "收货人"
+            comboboxgrouping [ref=2075]
+            svg_root
+        container
+          text "状态"
+          container
+            text "启用"
+            comboboxgrouping [ref=2076]
+            svg_root
+        container
+          text "显示名称"
+          textbox [ref=2077]
+        container
+          text "关联客户 ID"
+          textbox [ref=2078]
+        container
+          text "关联客户名称"
+          textbox [ref=2079]
+        container
+          text "国家/地区"
+          textbox [ref=2080]
+        container
+          text "地址"
+          textbox [ref=2081]
+        container
+          text "联系人与银行资料"
+          container
+            container
+              text "联系人"
+              textbox [ref=2082]
+            container
+              text "邮箱"
+              textbox [ref=2083]
+            container
+              text "电话"
+              textbox [ref=2084]
+            container
+              text "银行名称"
+              textbox [ref=2085]
+            container
+              text "SWIFT"
+              textbox [ref=2086]
+            container
+              text "账号"
+              textbox [ref=2087]
+            container
+              text "税号"
+              textbox [ref=2088]
+            container
+              container
+                checkbox [ref=2089]
+                table
+                  table_row
+                    table_cell
+              text "设为默认资料"
+            container
+              text "备注"
+              textbox [ref=2090]
+        container
+          button [ref=2091]
+            text "取消"
+          button [ref=2092]
+            text "新增单证资料"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

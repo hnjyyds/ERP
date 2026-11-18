@@ -1,0 +1,83 @@
+[
+  {
+    "url": "http://localhost:8080/masterdata/products?q=UIQA-20261117-05-P02",
+    "query": "UIQA-20261117-05-P02",
+    "table": "\t编号\t中文名称\t英文名称\t海关编码\t单位\t状态\t配件\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+    "buttons": [
+      {
+        "text": "",
+        "label": "查询商品"
+      },
+      {
+        "text": "新增商品",
+        "label": null
+      },
+      {
+        "text": "导入",
+        "label": "导入商品"
+      },
+      {
+        "text": "导出",
+        "label": "导出全部商品"
+      },
+      {
+        "text": "",
+        "label": "设置列视图"
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/masterdata/products?q=UIQA-20261117-05-P16",
+    "query": "UIQA-20261117-05-P16",
+    "table": "\t编号\t中文名称\t英文名称\t海关编码\t单位\t状态\t配件\t入口\n\n\tUIQA-20261117-05-P16\tUIQA分页验收商品16\tUIQA Paging Test Product 16\t0000000000\tpcs\t启用\t0\t\n查看详情",
+    "buttons": [
+      {
+        "text": "",
+        "label": "查询商品"
+      },
+      {
+        "text": "新增商品",
+        "label": null
+      },
+      {
+        "text": "导入",
+        "label": "导入商品"
+      },
+      {
+        "text": "导出",
+        "label": "导出全部商品"
+      },
+      {
+        "text": "",
+        "label": "设置列视图"
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/masterdata/products?q=UIQA-20261117-05-NOMATCH",
+    "query": "UIQA-20261117-05-NOMATCH",
+    "table": "\t编号\t中文名称\t英文名称\t海关编码\t单位\t状态\t配件\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+    "buttons": [
+      {
+        "text": "",
+        "label": "查询商品"
+      },
+      {
+        "text": "新增商品",
+        "label": null
+      },
+      {
+        "text": "导入",
+        "label": "导入商品"
+      },
+      {
+        "text": "导出",
+        "label": "导出全部商品"
+      },
+      {
+        "text": "",
+        "label": "设置列视图"
+      }
+    ]
+  }
+]

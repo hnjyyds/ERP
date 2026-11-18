@@ -1,0 +1,22 @@
+{
+  "draftField": "备注",
+  "values": [
+    {
+      "label": "结算单号",
+      "value": ""
+    },
+    {
+      "label": "出运单号\n搜索出运单号或客户",
+      "value": ""
+    },
+    {
+      "label": "结算日期",
+      "value": "2026-11-18"
+    },
+    {
+      "label": "备注",
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

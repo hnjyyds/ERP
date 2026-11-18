@@ -1,0 +1,117 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=9234, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "杂费管理"
+        container
+          button "通知" [ref=9214, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=9215, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        button [ref=9216]
+          svg_root
+          text "杂费管理"
+        container "杂费管理"
+          container
+            container
+              svg_root
+              heading
+                text "单票杂费分摊"
+            unordered_list
+              container
+                list_item
+                  text "当前项目"
+                list_item
+                  text "QA261112 测试杂费"
+              container
+                list_item
+                  text "分类"
+                list_item
+                  text "其他杂费"
+              container
+                list_item
+                  text "默认方式"
+                list_item
+                  text "手工分摊"
+              container
+                list_item
+                  text "状态"
+                list_item
+                  text "启用"
+            form
+              container
+                container
+                  text "分摊单号"
+                  textbox [ref=9217, loc=css:input[placeholder="保存后自动生成"]]
+                    text "保存后自动生成"
+                container
+                  text "项目标识"
+                  textbox [ref=9218]
+                    text "9016bf9c-45e0-4e65-8602-e5d432717092"
+              container
+                container
+                  text "出运单标识"
+                  textbox [ref=9219]
+                container
+                  text "出运单号"
+                  textbox [ref=9220]
+              container
+                container
+                  text "业务员标识"
+                  textbox [ref=9221]
+                container
+                  text "业务员姓名"
+                  textbox [ref=9222]
+              container
+                text "分摊日期"
+                textbox [ref=9223]
+                  spinbutton "年" [ref=9224]
+                    text "2026"
+                  text "/"
+                  spinbutton "月" [ref=9225]
+                    text "11"
+                  text "/"
+                  spinbutton "日" [ref=9226]
+                    text "18"
+              container
+                text "金额"
+                textbox [ref=9227]
+              container
+                text "币种"
+                textbox [ref=9228]
+                  text "USD"
+              container
+                text "分摊方式"
+                container
+                  text "手工分摊"
+                  comboboxgrouping [ref=9229]
+                  svg_root
+              container
+                text "分摊依据"
+                textbox [ref=9230]
+              container
+                text "备注"
+                textbox [ref=9231]
+              button [ref=9232]
+                svg_root
+                text "保存分摊"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

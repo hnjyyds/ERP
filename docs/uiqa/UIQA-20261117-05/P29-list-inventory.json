@@ -1,0 +1,288 @@
+{
+  "url": "http://localhost:8080/finance/reimbursements",
+  "title": "报销管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "报销管理",
+    "报销单列表",
+    "审批与付款"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "搜索\n状态\n全部状态\n分类\n全部分类\n查询\n新增报销",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 389.78125,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 670.78125,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_hv_",
+          "label": "状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 693.78125,
+            "y": 181.6484375,
+            "width": 204.328125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 898.109375,
+            "bottom": 207.6484375,
+            "left": 693.78125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_i1_",
+          "label": "分类\n全部分类",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 950.109375,
+            "y": 181.6484375,
+            "width": 204.3203125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 1154.4296875,
+            "bottom": 207.6484375,
+            "left": 950.109375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1195.4296875,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1279.953125,
+            "bottom": 212.6484375,
+            "left": 1195.4296875
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增报销",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 176.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1287.953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "报销单号\t申请人\t部门\t分类\t金额\t状态\nQA261112-RB01\t系统管理员\t管理部\t差旅\tCNY 10.00\t已付款",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "报销单号\nQA261112-RB01\n\n\n当前状态\n已付款\n\n\n金额\nCNY 10.00\n\n\n审批人\n演示财务主管",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,599 @@
+{
+  "url": "http://localhost:8080/purchase/contracts",
+  "title": "采购合同",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "采购合同",
+    "采购合同列表",
+    "库存/手工采购合同"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 285.4453125,
+            "width": 237.546875,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 520.546875,
+            "bottom": 321.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_b9_",
+          "label": "审批状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 543.546875,
+            "y": 290.4453125,
+            "width": 94.609375,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 638.15625,
+            "bottom": 316.4453125,
+            "left": 543.546875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_bb_",
+          "label": "来源类型\n全部来源",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 690.15625,
+            "y": 290.4453125,
+            "width": 94.609375,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 784.765625,
+            "bottom": 316.4453125,
+            "left": 690.15625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_bd_",
+          "label": "供应商标识",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 836.765625,
+            "y": 290.4453125,
+            "width": 122.328125,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 959.09375,
+            "bottom": 316.4453125,
+            "left": 836.765625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1000.09375,
+            "y": 285.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1084.6171875,
+            "bottom": 321.4453125,
+            "left": 1000.09375
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增采购合同",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1096.6171875,
+            "y": 285.4453125,
+            "width": 137.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1234.1796875,
+            "bottom": 321.4453125,
+            "left": 1096.6171875
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "从出口合同生成",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1246.1796875,
+            "y": 285.4453125,
+            "width": 150.8203125,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1397,
+            "bottom": 321.4453125,
+            "left": 1246.1796875
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "库存/手工采购合同\n合同号\n合同日期\n选择供应商\n从供应商资料选择\n供应商名称\n采购员\n选择采购员\nQC 负责人\n从系统用户选择\n币种\n交货日期\n来源\n手工采购\n付款条款\n合同备注\n合同商品明细\n\n已添加 0 个商品，可分别调整规格、数量、单位和采购单价。\n\n添加商品\n商品\t规格/型号\t数量\t单位\t单价\t金额\t行备注\t操作\n\n商品\n\t\n规格/型号\n\t\n数量\n\t\n单位\n\t\n单价\n\t\n金额\n\t\n行备注\n\t\n操作\n\n\n暂未添加商品，请点击“添加商品”批量选择",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 273.875,
+            "width": 340,
+            "height": 36,
+            "top": 273.875,
+            "right": 532,
+            "bottom": 309.875,
+            "left": 192
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "合同日期",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 548,
+            "y": 273.875,
+            "width": 340,
+            "height": 36,
+            "top": 273.875,
+            "right": 888,
+            "bottom": 309.875,
+            "left": 548
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_bj_",
+          "label": "选择供应商\n从供应商资料选择",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 915,
+            "y": 278.875,
+            "width": 300,
+            "height": 26,
+            "top": 278.875,
+            "right": 1215,
+            "bottom": 304.875,
+            "left": 915
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商名称",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 342.875,
+            "width": 340,
+            "height": 36,
+            "top": 342.875,
+            "right": 532,
+            "bottom": 378.875,
+            "left": 192
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_bl_",
+          "label": "采购员\n选择采购员",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 559,
+            "y": 347.875,
+            "width": 300,
+            "height": 26,
+            "top": 347.875,
+            "right": 859,
+            "bottom": 373.875,
+            "left": 559
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_bn_",
+          "label": "QC 负责人\n从系统用户选择",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 915,
+            "y": 347.875,
+            "width": 300,
+            "height": 26,
+            "top": 347.875,
+            "right": 1215,
+            "bottom": 373.875,
+            "left": 915
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "RMB",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 411.875,
+            "width": 340,
+            "height": 36,
+            "top": 411.875,
+            "right": 532,
+            "bottom": 447.875,
+            "left": 192
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "交货日期",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 548,
+            "y": 411.875,
+            "width": 340,
+            "height": 36,
+            "top": 411.875,
+            "right": 888,
+            "bottom": 447.875,
+            "left": 548
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_bp_",
+          "label": "来源\n手工采购",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 915,
+            "y": 416.875,
+            "width": 300,
+            "height": 26,
+            "top": 416.875,
+            "right": 1215,
+            "bottom": 442.875,
+            "left": 915
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "付款条款",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 480.875,
+            "width": 340,
+            "height": 36,
+            "top": 480.875,
+            "right": 532,
+            "bottom": 516.875,
+            "left": 192
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 548,
+            "y": 480.875,
+            "width": 340,
+            "height": 36,
+            "top": 480.875,
+            "right": 888,
+            "bottom": 516.875,
+            "left": 548
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "添加商品",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1132.953125,
+            "y": 542.796875,
+            "width": 111.046875,
+            "height": 36,
+            "top": 542.796875,
+            "right": 1244,
+            "bottom": 578.796875,
+            "left": 1132.953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情",
+      "buttons": [
+        "PC-HR36RU",
+        "查看详情"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "商品\t规格/型号\t数量\t单位\t单价\t金额\t行备注\t操作\n\n商品\n\t\n规格/型号\n\t\n数量\n\t\n单位\n\t\n单价\n\t\n金额\n\t\n行备注\n\t\n操作\n\n\n暂未添加商品，请点击“添加商品”批量选择",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

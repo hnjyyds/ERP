@@ -1,0 +1,202 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=9234, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "报销管理"
+          container
+            button "通知" [ref=9214, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=9215, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container "报销管理"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "报销单列表"
+              form
+                container
+                  text "搜索"
+                  textbox [ref=9307, loc=css:input[placeholder="单号 / 申请人 / 部门"]]
+                    text "单号 / 申请人 / 部门"
+                container
+                  text "状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=9308]
+                    image "down"
+                      svg_root
+                container
+                  text "分类"
+                  container
+                    container
+                      text "全部分类"
+                      comboboxgrouping [ref=9309]
+                    image "down"
+                      svg_root
+                container
+                  button [ref=9310]
+                    svg_root
+                    text "查询"
+                  button [ref=9311]
+                    svg_root
+                    text "新增报销"
+            container [ref=9334]
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=9312]
+                  table
+                    table_row
+                      table_cell
+                        text "报销单号"
+                      table_cell
+                        text "申请人"
+                      table_cell
+                        text "部门"
+                      table_cell
+                        text "分类"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "状态"
+                    table_row
+                      table_cell
+                        text "QA261112-RB01"
+                      table_cell
+                        text "系统管理员"
+                      table_cell
+                        text "管理部"
+                      table_cell
+                        text "差旅"
+                      table_cell
+                        text "CNY 10.00"
+                      table_cell
+                        text "已付款"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=9313]
+                      image "left"
+                        svg_root
+                  list_item [ref=9314]
+                    anchor [ref=9315]
+                      text "1"
+                  list_item
+                    button [ref=9316]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+            container
+              text "报销单 1 条"
+              text "CNY 10.00"
+          container
+            container
+              svg_root
+              heading
+                text "审批与付款"
+            table
+              table_row
+                table_cell
+                  text "报销单号"
+                  text ":"
+                  text "QA261112-RB01"
+              table_row
+                table_cell
+                  text "当前状态"
+                  text ":"
+                  text "已付款"
+              table_row
+                table_cell
+                  text "金额"
+                  text ":"
+                  text "CNY 10.00"
+              table_row
+                table_cell
+                  text "审批人"
+                  text ":"
+                  text "演示财务主管"
+            button [ref=9318]
+              text "审批通过"
+            button [ref=9319]
+              text "驳 回"
+            container
+              text "银行转账"
+              comboboxgrouping [ref=9320]
+              svg_root
+            button [ref=9321]
+              text "确认付款"
+    dialog "新增报销单"
+      button "Close" [ref=9322, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增报销单"
+      form
+        container
+          text "报销单号"
+          textbox [ref=9323]
+        container
+          text "申请人工号"
+          textbox [ref=9324]
+        container
+          text "申请人姓名"
+          textbox [ref=9325]
+        container
+          text "部门"
+          textbox [ref=9326]
+        container
+          text "分类"
+          container
+            container
+              text "差旅"
+              comboboxgrouping [ref=9327]
+            image "down"
+              svg_root
+        container
+          text "币种"
+          textbox [ref=9328]
+            text "CNY"
+        container
+          text "金额"
+          textbox [ref=9329]
+        container
+          text "事由"
+          textbox [ref=9330]
+        container
+          text "审批人"
+          container
+            container
+              text "选择审批人"
+              comboboxgrouping "审批人" [ref=9331, loc=css:input[aria-label="审批人"]]
+            image "down"
+              svg_root
+        button [ref=9332]
+          svg_root
+          text "登记报销单"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,124 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "计划搜索",
+    "before": {
+      "url": "http://localhost:8080/warehouse/inbound-plans",
+      "form": "计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位",
+      "inputs": [
+        {
+          "label": "计划搜索",
+          "value": ""
+        },
+        {
+          "label": "入库状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "入库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同 ID",
+          "value": ""
+        }
+      ],
+      "text": "待入库计划\n计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位\n计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情"
+    },
+    "positive": "IP-PC-HR36RU",
+    "hit": {
+      "url": "http://localhost:8080/warehouse/inbound-plans?q=IP-PC-HR36RU",
+      "form": "计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位",
+      "inputs": [
+        {
+          "label": "计划搜索",
+          "value": "IP-PC-HR36RU"
+        },
+        {
+          "label": "入库状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "入库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同 ID",
+          "value": ""
+        }
+      ],
+      "text": "待入库计划\n计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位\n计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/warehouse/inbound-plans?q=UIQA-20261117-05-NOMATCH",
+      "form": "计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位",
+      "inputs": [
+        {
+          "label": "计划搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "入库状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "入库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同 ID",
+          "value": ""
+        }
+      ],
+      "text": "待入库计划\n计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位\n计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/warehouse/inbound-plans",
+      "form": "计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位",
+      "inputs": [
+        {
+          "label": "计划搜索",
+          "value": ""
+        },
+        {
+          "label": "入库状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "入库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同 ID",
+          "value": ""
+        }
+      ],
+      "text": "待入库计划\n计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位\n计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

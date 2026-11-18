@@ -1,0 +1,1035 @@
+{
+  "url": "http://localhost:8080/purchase/inquiries",
+  "viewport": [
+    390,
+    844
+  ],
+  "scale": 1,
+  "controls": [
+    {
+      "label": "业务导航",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "frame": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "16.1px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "通知",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "frame": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "系统设置",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "frame": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "询价搜索",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 33,
+        "y": 421.2890625,
+        "width": 324,
+        "height": 44,
+        "top": 421.2890625,
+        "right": 357,
+        "bottom": 465.2890625,
+        "left": 33
+      },
+      "frame": {
+        "x": 33,
+        "y": 421.2890625,
+        "width": 324,
+        "height": 44,
+        "top": 421.2890625,
+        "right": 357,
+        "bottom": 465.2890625,
+        "left": 33
+      },
+      "placeholderColor": "rgb(107, 114, 128)",
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "询价状态\n全部状态",
+      "tag": "INPUT",
+      "role": "combobox",
+      "disabled": false,
+      "readOnly": true,
+      "value": "",
+      "rect": {
+        "x": 44,
+        "y": 504.2890625,
+        "width": 284,
+        "height": 34,
+        "top": 504.2890625,
+        "right": 328,
+        "bottom": 538.2890625,
+        "left": 44
+      },
+      "frame": {
+        "x": 33,
+        "y": 499.2890625,
+        "width": 324,
+        "height": 44,
+        "top": 499.2890625,
+        "right": 357,
+        "bottom": 543.2890625,
+        "left": 33
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "商品标识",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 33,
+        "y": 577.2890625,
+        "width": 324,
+        "height": 44,
+        "top": 577.2890625,
+        "right": 357,
+        "bottom": 621.2890625,
+        "left": 33
+      },
+      "frame": {
+        "x": 33,
+        "y": 577.2890625,
+        "width": 324,
+        "height": 44,
+        "top": 577.2890625,
+        "right": 357,
+        "bottom": 621.2890625,
+        "left": 33
+      },
+      "placeholderColor": "rgb(107, 114, 128)",
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "供应商标识",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 33,
+        "y": 655.2890625,
+        "width": 324,
+        "height": 44,
+        "top": 655.2890625,
+        "right": 357,
+        "bottom": 699.2890625,
+        "left": 33
+      },
+      "frame": {
+        "x": 33,
+        "y": 655.2890625,
+        "width": 324,
+        "height": 44,
+        "top": 655.2890625,
+        "right": 357,
+        "bottom": 699.2890625,
+        "left": 33
+      },
+      "placeholderColor": "rgb(107, 114, 128)",
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "查询",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 33,
+        "y": 711.2890625,
+        "width": 158,
+        "height": 44,
+        "top": 711.2890625,
+        "right": 191,
+        "bottom": 755.2890625,
+        "left": 33
+      },
+      "frame": {
+        "x": 33,
+        "y": 711.2890625,
+        "width": 158,
+        "height": 44,
+        "top": 711.2890625,
+        "right": 191,
+        "bottom": 755.2890625,
+        "left": 33
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "12.1469px",
+      "fontSize": "10.5625px",
+      "hit": true
+    },
+    {
+      "label": "新增采购询价",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 199,
+        "y": 711.2890625,
+        "width": 158,
+        "height": 44,
+        "top": 711.2890625,
+        "right": 357,
+        "bottom": 755.2890625,
+        "left": 199
+      },
+      "frame": {
+        "x": 199,
+        "y": 711.2890625,
+        "width": 158,
+        "height": 44,
+        "top": 711.2890625,
+        "right": 357,
+        "bottom": 755.2890625,
+        "left": 199
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "12.1469px",
+      "fontSize": "10.5625px",
+      "hit": true
+    },
+    {
+      "label": "PI-KTPXTU",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 41,
+        "y": 864.84375,
+        "width": 71.921875,
+        "height": 44,
+        "top": 864.84375,
+        "right": 112.921875,
+        "bottom": 908.84375,
+        "left": 41
+      },
+      "frame": {
+        "x": 41,
+        "y": 864.84375,
+        "width": 71.921875,
+        "height": 44,
+        "top": 864.84375,
+        "right": 112.921875,
+        "bottom": 908.84375,
+        "left": 41
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "18.85px",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "label": "查看详情",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 366.3828125,
+        "y": 864.84375,
+        "width": 67.015625,
+        "height": 44,
+        "top": 864.84375,
+        "right": 433.3984375,
+        "bottom": 908.84375,
+        "left": 366.3828125
+      },
+      "frame": {
+        "x": 366.3828125,
+        "y": 864.84375,
+        "width": 67.015625,
+        "height": 44,
+        "top": 864.84375,
+        "right": 433.3984375,
+        "bottom": 908.84375,
+        "left": 366.3828125
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": true,
+      "value": "",
+      "rect": {
+        "x": 277,
+        "y": 985.0625,
+        "width": 24,
+        "height": 44,
+        "top": 985.0625,
+        "right": 301,
+        "bottom": 1029.0625,
+        "left": 277
+      },
+      "frame": {
+        "x": 277,
+        "y": 985.0625,
+        "width": 24,
+        "height": 44,
+        "top": 985.0625,
+        "right": 301,
+        "bottom": 1029.0625,
+        "left": 277
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "24px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": true,
+      "value": "",
+      "rect": {
+        "x": 333,
+        "y": 985.0625,
+        "width": 24,
+        "height": 44,
+        "top": 985.0625,
+        "right": 357,
+        "bottom": 1029.0625,
+        "left": 333
+      },
+      "frame": {
+        "x": 333,
+        "y": 985.0625,
+        "width": 24,
+        "height": 44,
+        "top": 985.0625,
+        "right": 357,
+        "bottom": 1029.0625,
+        "left": 333
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "24px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "页码",
+      "tag": "INPUT",
+      "role": "combobox",
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "placeholderColor": null,
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": false
+    }
+  ],
+  "texts": [
+    {
+      "text": "业务管理系统",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.511976173162169,
+      "rect": {
+        "x": 16,
+        "y": 29.5,
+        "width": 73.515625,
+        "height": 16.1953125,
+        "top": 29.5,
+        "right": 89.515625,
+        "bottom": 45.6953125,
+        "left": 16
+      }
+    },
+    {
+      "text": "导航",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "14px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 332.21875,
+        "y": 25.796875,
+        "width": 28.5625,
+        "height": 16.09375,
+        "top": 25.796875,
+        "right": 360.78125,
+        "bottom": 41.890625,
+        "left": 332.21875
+      }
+    },
+    {
+      "text": "业务模块",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        244,
+        246,
+        248
+      ],
+      "opacity": "1",
+      "fontSize": "11px",
+      "ratio": 3.444831529412615,
+      "rect": {
+        "x": 14,
+        "y": 79.3671875,
+        "width": 81.5234375,
+        "height": 12.6484375,
+        "top": 79.3671875,
+        "right": 95.5234375,
+        "bottom": 92.015625,
+        "left": 14
+      }
+    },
+    {
+      "text": "3",
+      "color": "rgb(255, 255, 255)",
+      "bg": [
+        255,
+        77,
+        79
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.267743233071127,
+      "rect": {
+        "x": 315.234375,
+        "y": 84.6953125,
+        "width": 7.5234375,
+        "height": 14,
+        "top": 84.6953125,
+        "right": 322.7578125,
+        "bottom": 98.6953125,
+        "left": 315.234375
+      }
+    },
+    {
+      "text": "询价单",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 5.6397400089526695,
+      "rect": {
+        "x": 31,
+        "y": 159.6953125,
+        "width": 146.5,
+        "height": 13.796875,
+        "top": 159.6953125,
+        "right": 177.5,
+        "bottom": 173.4921875,
+        "left": 31
+      }
+    },
+    {
+      "text": "已发模板",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 5.6397400089526695,
+      "rect": {
+        "x": 211.5,
+        "y": 159.6953125,
+        "width": 146.5,
+        "height": 13.796875,
+        "top": 159.6953125,
+        "right": 358,
+        "bottom": 173.4921875,
+        "left": 211.5
+      }
+    },
+    {
+      "text": "已报价",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 5.6397400089526695,
+      "rect": {
+        "x": 31,
+        "y": 234.4921875,
+        "width": 146.5,
+        "height": 13.796875,
+        "top": 234.4921875,
+        "right": 177.5,
+        "bottom": 248.2890625,
+        "left": 31
+      }
+    },
+    {
+      "text": "供应商报价",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 5.6397400089526695,
+      "rect": {
+        "x": 211.5,
+        "y": 234.4921875,
+        "width": 147.5,
+        "height": 13.796875,
+        "top": 234.4921875,
+        "right": 359,
+        "bottom": 248.2890625,
+        "left": 211.5
+      }
+    },
+    {
+      "text": "查询",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "10.5625px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 113.203125,
+        "y": 727.21875,
+        "width": 21.5859375,
+        "height": 12.140625,
+        "top": 727.21875,
+        "right": 134.7890625,
+        "bottom": 739.359375,
+        "left": 113.203125
+      }
+    },
+    {
+      "text": "新增采购询价",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "10.5625px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 257.6171875,
+        "y": 727.21875,
+        "width": 64.7578125,
+        "height": 12.140625,
+        "top": 727.21875,
+        "right": 322.375,
+        "bottom": 739.359375,
+        "left": 257.6171875
+      }
+    },
+    {
+      "text": "询价单号",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 33,
+        "y": 783.2890625,
+        "width": 87.921875,
+        "height": 73.5546875,
+        "top": 783.2890625,
+        "right": 120.921875,
+        "bottom": 856.84375,
+        "left": 33
+      }
+    },
+    {
+      "text": "状态",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 120.921875,
+        "y": 783.2890625,
+        "width": 29.265625,
+        "height": 73.5546875,
+        "top": 783.2890625,
+        "right": 150.1875,
+        "bottom": 856.84375,
+        "left": 120.921875
+      }
+    },
+    {
+      "text": "商品",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 150.1875,
+        "y": 783.2890625,
+        "width": 81.8515625,
+        "height": 73.5546875,
+        "top": 783.2890625,
+        "right": 232.0390625,
+        "bottom": 856.84375,
+        "left": 150.1875
+      }
+    },
+    {
+      "text": "询价日",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 232.0390625,
+        "y": 783.2890625,
+        "width": 53.9140625,
+        "height": 73.5546875,
+        "top": 783.2890625,
+        "right": 285.953125,
+        "bottom": 856.84375,
+        "left": 232.0390625
+      }
+    },
+    {
+      "text": "报价数",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 285.953125,
+        "y": 783.2890625,
+        "width": 28.2578125,
+        "height": 73.5546875,
+        "top": 783.2890625,
+        "right": 314.2109375,
+        "bottom": 856.84375,
+        "left": 285.953125
+      }
+    },
+    {
+      "text": "最低价",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 314.2109375,
+        "y": 783.2890625,
+        "width": 44.171875,
+        "height": 73.5546875,
+        "top": 783.2890625,
+        "right": 358.3828125,
+        "bottom": 856.84375,
+        "left": 314.2109375
+      }
+    },
+    {
+      "text": "入口",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 358.3828125,
+        "y": 783.2890625,
+        "width": 83.015625,
+        "height": 73.5546875,
+        "top": 783.2890625,
+        "right": 441.3984375,
+        "bottom": 856.84375,
+        "left": 358.3828125
+      }
+    },
+    {
+      "text": "PI-KTPXTU",
+      "color": "rgb(49, 91, 214)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.183022202749855,
+      "rect": {
+        "x": 41,
+        "y": 864.84375,
+        "width": 71.921875,
+        "height": 44,
+        "top": 864.84375,
+        "right": 112.921875,
+        "bottom": 908.84375,
+        "left": 41
+      }
+    },
+    {
+      "text": "已报价",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 120.921875,
+        "y": 856.84375,
+        "width": 29.265625,
+        "height": 111.21875,
+        "top": 856.84375,
+        "right": 150.1875,
+        "bottom": 968.0625,
+        "left": 120.921875
+      }
+    },
+    {
+      "text": "QA261112-P01 / QA261112 验收测试围巾",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 150.1875,
+        "y": 856.84375,
+        "width": 81.8515625,
+        "height": 111.21875,
+        "top": 856.84375,
+        "right": 232.0390625,
+        "bottom": 968.0625,
+        "left": 150.1875
+      }
+    },
+    {
+      "text": "2026-11-12",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 232.0390625,
+        "y": 856.84375,
+        "width": 53.9140625,
+        "height": 111.21875,
+        "top": 856.84375,
+        "right": 285.953125,
+        "bottom": 968.0625,
+        "left": 232.0390625
+      }
+    },
+    {
+      "text": "1",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 285.953125,
+        "y": 856.84375,
+        "width": 28.2578125,
+        "height": 111.21875,
+        "top": 856.84375,
+        "right": 314.2109375,
+        "bottom": 968.0625,
+        "left": 285.953125
+      }
+    },
+    {
+      "text": "RMB 2.50",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 314.2109375,
+        "y": 856.84375,
+        "width": 44.171875,
+        "height": 111.21875,
+        "top": 856.84375,
+        "right": 358.3828125,
+        "bottom": 968.0625,
+        "left": 314.2109375
+      }
+    },
+    {
+      "text": "查看详情",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 375.3828125,
+        "y": 878.140625,
+        "width": 49.015625,
+        "height": 17.3984375,
+        "top": 878.140625,
+        "right": 424.3984375,
+        "bottom": 895.5390625,
+        "left": 375.3828125
+      }
+    }
+  ]
+}

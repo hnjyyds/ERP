@@ -1,0 +1,291 @@
+{
+  "url": "http://localhost:8080/sales/quotations?q=QT-A33KVZ",
+  "title": "出口报价",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出口报价",
+    "报价单列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "报价搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增出口报价",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报价搜索",
+          "text": "",
+          "value": "QT-A33KVZ",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 267.4453125,
+            "width": 377.2265625,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 658.2265625,
+            "bottom": 303.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_3n_",
+          "label": "审批状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 681.2265625,
+            "y": 272.4453125,
+            "width": 197.34375,
+            "height": 26,
+            "top": 272.4453125,
+            "right": 878.5703125,
+            "bottom": 298.4453125,
+            "left": 681.2265625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_3p_",
+          "label": "客户筛选\n从客户资料筛选",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 930.5703125,
+            "y": 272.4453125,
+            "width": 197.34375,
+            "height": 26,
+            "top": 272.4453125,
+            "right": 1127.9140625,
+            "bottom": 298.4453125,
+            "left": 930.5703125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1168.9140625,
+            "y": 267.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1253.4375,
+            "bottom": 303.4453125,
+            "left": 1168.9140625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增出口报价",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1261.4375,
+            "y": 267.4453125,
+            "width": 137.5625,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1399,
+            "bottom": 303.4453125,
+            "left": 1261.4375
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "报价单号\t状态\t客户\t贸易条款\t金额\t合同\t入口\nQT-A33KVZ\t已生成合同\tQA261112 测试客户\tFOB Ningbo\tUSD 50.00\tEC-5FW46R\t\n查看详情",
+      "buttons": [
+        "QT-A33KVZ",
+        "查看详情"
+      ]
+    }
+  ],
+  "dialogs": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

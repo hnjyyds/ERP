@@ -1,0 +1,83 @@
+[
+  {
+    "requestId": "79503.1427",
+    "url": "http://localhost:8080/api/v1/finance/overview",
+    "status": 200,
+    "method": "GET",
+    "bodyUnavailable": "Error: No resource with given identifier found"
+  },
+  {
+    "requestId": "79503.1481",
+    "url": "http://localhost:8080/api/v1/finance/overview",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "summary": {
+          "shipment_count": 1,
+          "currency_label": "USD",
+          "receivable_amount": "205.00",
+          "payable_amount": "0.00",
+          "profit_amount": "210.00",
+          "profit_rate": "102.44",
+          "invoice_notice_count": 3,
+          "invoice_notice_amount": "0.01",
+          "sample_fee_count": 0,
+          "sample_fee_amount": "0.00",
+          "partner_count": 3,
+          "active_partner_count": 2
+        },
+        "currency_summaries": [
+          {
+            "currency": "USD",
+            "shipment_count": 1,
+            "receivable_amount": "205.00",
+            "payable_amount": "0.00",
+            "profit_amount": "210.00",
+            "profit_rate": "102.44"
+          }
+        ],
+        "invoice_notice_statuses": [
+          {
+            "status": "draft",
+            "currency": "CNY",
+            "count": 2,
+            "amount": "0.00"
+          },
+          {
+            "status": "received",
+            "currency": "CNY",
+            "count": 1,
+            "amount": "0.01"
+          }
+        ],
+        "sample_fee_statuses": [],
+        "partner_type_summaries": [
+          {
+            "partner_type": "freight_forwarder",
+            "count": 2
+          }
+        ],
+        "shipment_profit_items": [
+          {
+            "id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+            "code": "SP-DAEPEG",
+            "shipment_date": "2026-11-12",
+            "planned_ship_date": "2026-11-25",
+            "customer_name": "QA261112 测试客户",
+            "currency": "USD",
+            "approval_status": "approved",
+            "receivable_amount": "205.00",
+            "payable_amount": "0.00",
+            "profit_amount": "210.00",
+            "profit_rate": "102.44"
+          }
+        ]
+      },
+      "error": null
+    }
+  }
+]

@@ -1,0 +1,104 @@
+{
+  "task_space": 36,
+  "page": "p1",
+  "bundle": "index-Bpsh7zKB.js",
+  "phase": "历史29项全部关闭；剩余6项与Q05-22原失败路径复验完成",
+  "status": "completed",
+  "main_pages_completed": [],
+  "next": "空间36/admin，部署index-Bpsh7zKB.js。Q05-03/06/07/09/12/14已三档复验关闭；Q05-22按finance_manager→财务、purchase→采购专员、切回无残留补测并关闭；历史29项=关闭29、待复验0、开放0、0页签收；新版规范项未测与缺陷关闭分开保留",
+  "authorizations": [
+    "全站只读",
+    "补充UIQA测试资料",
+    "限定业务编号持久化测试",
+    "UIQA-20261117-05-P01 图片上传/替换/追加/移除/保存/负例，用户已明确授权",
+    "用户明确允许W-FIN-01 CNY0.01付款闭环",
+    "用户明确允许自取自用测试账号凭据登录；只读DB哈希核对，不修改账号权限"
+  ],
+  "open_defects": [],
+  "data_changes": [
+    "新增商品 UIQA-NAMES-01 / ec46eab8-76f1-4ba7-931c-da30a5b80d9b，上传UIQA-C.png、UIQA-A.png，用于Q05-07文件名持久化复验",
+    "新增商品 UIQA-20261117-05-P01 / 0de270b6-67e9-41fc-be47-6da47f8703ac",
+    "该商品上传A/B，替换A为C，追加A，移除B，最终C/A两图",
+    "测试发票UIQA-20261117-04-INV01经W-FIN-01批准付款CNY0.01，已付清",
+    "新增停用供应商 UIQA-20261117-05-S01 / 3a96df3a-848e-41be-b08a-6460a458024d，含一个测试联系人",
+    "新增停用客户 UIQA-20261117-05-C01 / 451c5b86-de27-4970-8219-5bdd0573e126，含一个测试联系人",
+    "新增停用合作伙伴 UIQA-20261117-05-B01 / 3e4df6ca-23ff-41b4-a522-6afc9f2b8d3e，类型保险公司，含一个测试联系人",
+    "经UI导入15条UIQA分页商品P02-P16，新增15/更新0/失败0，商品总数6→21；均默认启用，无图片或业务单据",
+    "仅测试商品UIQA-20261117-05-P02 / 2fded9d3-11cd-4bb7-a6b5-b25d9d77dbed经编辑保存为停用；刷新显示停用，其余导入字段/0图片保持",
+    "在UIQA-20261117-05-P01新增1条配件UIQA-20261117-05-A01 测试配件，单耗1.25pcs，默认供应商文字QA261112测试供应商；空名称422后补填201，刷新仍1.2500；编辑改2.50后取消重开仍1.25",
+    "分别为S01/C01/B01各新增1个第二联系人（均非主要），并仅更新新联系人的测试职务；各自原主要联系人保持，现各有2联系人",
+    "新增停用非默认通知人UIQA-20261117-05-D01 / 5021d7c5-d1aa-4390-8d5e-e918aa1ff13c，关联现有启用QA261112-C01；先前引用本轮停用C01被409拒绝，未产生记录",
+    "新增普通商品 UIQA-20261117-05-P17 / c46a02d4-a4a3-4b50-833d-dfcbfe6ca4d1，单位box，税率/退税率0，无图无配件；用于跨日审计与单位回填，沿既有补资料授权",
+    "经UI导入P18–P47普通商品30条：新增30/更新0/失败0；启用列表21→51。本轮P01–P47共47条，P02已停用；没有新增图片或业务交易"
+  ],
+  "helpers": [
+    "/tmp/full-harness.mjs",
+    "/tmp/full-baseline.mjs",
+    "/tmp/full-images.mjs",
+    "/tmp/full-measure.mjs"
+  ],
+  "do_not_finish": "用户要求当前版本整体验收，未完成所有可独立继续工作前不要宣称完成或停止；保留AUTH/DATA/TOOL区别",
+  "role": "admin",
+  "payment_case": {
+    "request": "PR-PG3X2P",
+    "id": "3dd07bb3-457e-4483-b50b-16431e1627a3",
+    "status": "approved",
+    "invoice": "UIQA-20261117-04-INV01",
+    "paid": "CNY0.01",
+    "allocation_count": 1
+  },
+  "state_notes": [
+    "隐藏AntD Modal仍在DOM，不能用首个[role=dialog]可见性判断；用opened/closed helper",
+    "nav helper用summary.textContent和:has-text，嵌套关闭分组innerText为空",
+    "临时凭据文件仅用于用户已授权的测试登录，结束后删除，勿写入报告",
+    "tableEnds已修正不在无纵向滚动的表格上wheelY，避免页面滚动导致多表采证错位；P23-P27的table0手机需补定位截图",
+    "P02/P03/P04空提交只toast，无字段错误；非GET新增请求均0，已补Q05-01；取消重开值重置",
+    "P02自动下拉第二项偶发OPTION_CHANGED属于工具状态；已手动选择信用等级B并点外部验证，证据P02-credit-B-outside",
+    "P01稳定预览三档已重采P01-preview-stable-*.png，替代早期过渡态图",
+    "新增snapReady以目标文本/URL和无可见加载标记等待刷新回读，避免网络空闲追踪残留请求误报；记录readiness方式",
+    "P05保存时浏览器Network latency=2500ms观测disabled提交按钮，finally已恢复latency0；POST201且刷新回读成功",
+    "参考客户临时页p2已关闭，当前仅p1",
+    "联系人checkbox简化快照可能省略名称，完整AX树有“设为主要联系人”；点击文字有效，标签实际外层270×18（不要误用内部16px）",
+    "Q02-R2在Ceqk43QQ历史独立验收已关闭；By6的出货客户选项计算后AX名称为当前回归待补，不重记为未修复缺陷"
+  ],
+  "spreadsheet_authoring": {
+    "skill": "spreadsheets已完整读取",
+    "builder": "/tmp/uiqa-20261117-05-ledger/build.mjs",
+    "node": "/Users/dev/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "node_modules": "/tmp/uiqa-20261117-05-ledger/node_modules",
+    "marker": "已成功执行一次create expected-output-count 6 csv，后续不再重复",
+    "csv_export": "未发现CSV export帮助；用已文档化range.values序列化CSV，内容由artifact-tool编排。最终5个台账CSV尚未生成。",
+    "preview_note": "海关编码string保留10个0；预览数字格式0000000000，CSV独立解析已核对",
+    "status": "五份CSV中断快照已生成，等待恢复后继续补齐逐场景和控件状态，不代表验收完成"
+  },
+  "pending_sessions": {
+    "browser": null
+  },
+  "pending_authorization": {
+    "case": "W-STOCK-01",
+    "document": "一件库存闭环用例.md",
+    "status": "awaiting_user",
+    "object": "UIQA-20261117-05-P03",
+    "quantity": "1 pcs inbound then 1 pcs outbound",
+    "amounts": [
+      "purchase RMB0.01",
+      "export USD0.01"
+    ],
+    "contracts_saved": false
+  },
+  "continuation_checkpoint": "/tmp/uiqa-continuation-20261118.md",
+  "continuation_notes": [
+    "11月18日续测P12原图p3已关闭；P15/16同QC完成详情；P17配置窗未填写草稿，不从markerRemaining推导完整通过"
+  ],
+  "browser_environment": {
+    "space_id": 7,
+    "exists": false,
+    "inventory_total_spaces": 3,
+    "matching_goal_space": false,
+    "last_attempt": "P12单位切换用例未开始，taskSpace(7)即报not found",
+    "resume_confirmation": "awaiting_user"
+  },
+  "offline_ledger_summary": "ledger-summary.json",
+  "offline_integrity": "ledger-integrity-check.json",
+  "updated_at": "2026-11-18T13:30:00+00:00"
+}

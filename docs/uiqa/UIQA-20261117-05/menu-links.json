@@ -1,0 +1,150 @@
+[
+  {
+    "name": "工作台",
+    "href": "/"
+  },
+  {
+    "name": "商品资料",
+    "href": "/masterdata/products"
+  },
+  {
+    "name": "供应商资料",
+    "href": "/masterdata/suppliers"
+  },
+  {
+    "name": "客户资料",
+    "href": "/masterdata/customers"
+  },
+  {
+    "name": "合作伙伴",
+    "href": "/masterdata/partners"
+  },
+  {
+    "name": "单证资料",
+    "href": "/masterdata/document-parties"
+  },
+  {
+    "name": "出口合同",
+    "href": "/sales/contracts"
+  },
+  {
+    "name": "采购合同",
+    "href": "/purchase/contracts"
+  },
+  {
+    "name": "出口报价",
+    "href": "/sales/quotations"
+  },
+  {
+    "name": "出货明细",
+    "href": "/sales/shipments"
+  },
+  {
+    "name": "QC 中心",
+    "href": "/quality/inspections"
+  },
+  {
+    "name": "我的 QC 任务",
+    "href": "/quality/tasks"
+  },
+  {
+    "name": "跟单中心",
+    "href": "/purchase/followup"
+  },
+  {
+    "name": "样品登记",
+    "href": "/sample/records"
+  },
+  {
+    "name": "打样管理",
+    "href": "/sample/requests"
+  },
+  {
+    "name": "寄样管理",
+    "href": "/sample/deliveries"
+  },
+  {
+    "name": "入仓",
+    "href": "/warehouse/inbound-orders"
+  },
+  {
+    "name": "入库计划",
+    "href": "/warehouse/inbound-plans"
+  },
+  {
+    "name": "出库计划",
+    "href": "/warehouse/outbound-plans"
+  },
+  {
+    "name": "货物出库",
+    "href": "/warehouse/outbound-orders"
+  },
+  {
+    "name": "库存盘点",
+    "href": "/warehouse/stocktakes"
+  },
+  {
+    "name": "经营总览",
+    "href": "/finance/overview"
+  },
+  {
+    "name": "收款管理",
+    "href": "/finance/receipts"
+  },
+  {
+    "name": "付款管理",
+    "href": "/finance/payments"
+  },
+  {
+    "name": "付费管理",
+    "href": "/finance/fees"
+  },
+  {
+    "name": "核销退税",
+    "href": "/finance/tax"
+  },
+  {
+    "name": "杂费管理",
+    "href": "/finance/misc"
+  },
+  {
+    "name": "结算核算",
+    "href": "/finance/settlement"
+  },
+  {
+    "name": "报销管理",
+    "href": "/finance/reimbursements"
+  },
+  {
+    "name": "口岸数据",
+    "href": "/finance/port-data"
+  },
+  {
+    "name": "财务报表",
+    "href": "/finance/reports"
+  },
+  {
+    "name": "老板看板",
+    "href": "/reporting"
+  },
+  {
+    "name": "组织管理",
+    "href": "/organization/users"
+  },
+  {
+    "name": "MCP 接入",
+    "href": "/system/mcp"
+  },
+  {
+    "name": "审计日志",
+    "href": "/system/audit-logs"
+  },
+  {
+    "name": "采购询价",
+    "href": "/purchase/inquiries"
+  },
+  {
+    "name": "开票通知",
+    "href": "/purchase/invoice-notices"
+  }
+]

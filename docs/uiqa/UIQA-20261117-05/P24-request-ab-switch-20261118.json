@@ -1,0 +1,51 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "viewport": "1440×900",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "review_status": "撤回通过；待复核",
+  "withdrawn_reason": [
+    "切换操作点的是申请号按钮（row-button），不是源码绑定的行点击；不能用URL和发票标题不变判断切换结果",
+    "三个申请项都记为selected_row=true，无法证明同一时刻只有一行被选中",
+    "PR-PG3X2P申请金额为CNY 0.01，原记录审批金额输入却为0.00，结论仍写“对应”，数据自相矛盾"
+  ],
+  "scope": "P24 /finance/payments：两张既有发票A/B切换、同一发票下三个既有付款申请切换；只读，未点击审批付款",
+  "invoice_switch": [
+    {
+      "label": "A",
+      "invoice": "UIQA-20261117-04-INV01",
+      "url": "http://localhost:8080/finance/payments/489f9619-6f86-433c-a412-47236257892a",
+      "heading": "付款管理 / 付款申请和审批",
+      "current_invoice": "UIQA-20261117-04-INV01",
+      "paid": "CNY 0.01",
+      "unpaid": "CNY 0.00",
+      "overpaid": "CNY 0.00"
+    },
+    {
+      "label": "B",
+      "invoice": "QA261112-INV01",
+      "url": "http://localhost:8080/finance/payments/015bcc0d-58cf-47cb-a10d-a0747860fd18",
+      "heading": "付款管理 / 付款申请和审批",
+      "current_invoice": "QA261112-INV01",
+      "paid": "RMB 120.00",
+      "unpaid": "RMB 0.00",
+      "overpaid": "RMB 20.00",
+      "notice": "该发票已付款超过发票金额 RMB 20.00，应付余额按 0 显示；超付部分请在付款分配中核对。"
+    }
+  ],
+  "application_switch": {
+    "status": "本段不作为通过证据",
+    "items": [
+      {"request_no": "PR-PG3X2P", "status": "已审批", "amount": "CNY 0.01", "selected_row": true, "approval_amount_input": "0.00", "approval_reviewer": "演示财务主管"},
+      {"request_no": "PR-GZN8H6", "status": "已审批", "amount": "RMB 60.00", "selected_row": true, "approval_amount_input": "60.00", "approval_reviewer": "演示财务主管"},
+      {"request_no": "PR-ZAWWF6", "status": "已审批", "amount": "RMB 60.00", "selected_row": true, "approval_amount_input": "60.00", "approval_reviewer": "演示财务主管"}
+    ],
+    "conclusion": "原结论“选中行、审批金额与申请对应”作废；该分支撤回通过，改由行点击复核记录替代"
+  },
+  "application_list_scope_observation": "发票A详情下的付款申请列表同时包含发票B的PR-GZN8H6/PR-ZAWWF6；是否为供应商级联展示需求未明确，本轮仅记录，不作缺陷。",
+  "business_writes": "无；未新增申请、未审批付款、未重复付款，唯一0.01分配未变",
+  "screenshots": ["screenshots/P24-app-switch-1440.png", "screenshots/P24-invoice-B-detail-1440.png"],
+  "superseded_by": "P24-application-switch-recheck-20261118.json"
+}

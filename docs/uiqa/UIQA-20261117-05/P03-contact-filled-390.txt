@@ -1,0 +1,190 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=5042, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "客户资料和订单要求"
+          container
+            button "通知" [ref=5018, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=5019, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "客户概览"
+            container
+              text "客户"
+              text "3"
+            container
+              text "启用"
+              text "2"
+            container
+              text "联系人"
+              text "3"
+            container
+              text "有信用资料"
+              text "3"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "客户资料"
+              container
+                button [ref=5028]
+                  svg_root
+                  text "返回列表"
+                button [ref=5029]
+                  svg_root
+                  text "新增联系人"
+                button [ref=5030]
+                  svg_root
+                  text "编辑资料"
+                button [ref=5031]
+                  svg_root
+                  text "停用"
+            container
+              text "U"
+              container
+                text "UIQA-20261117-05-C01"
+                heading
+                  text "UIQA全量验收停用客户样本"
+                paragraph
+                  text "UIQA Inactive P03 Test Record"
+              text "停用"
+            unordered_list
+              container
+                list_item
+                  text "国家/地区"
+                list_item
+                  text "CN"
+              container
+                list_item
+                  text "地址"
+                list_item
+                  text "UIQA测试资料，非真实地址"
+              container
+                list_item
+                  text "网站"
+                list_item
+                  text "未维护"
+              container
+                list_item
+                  text "信用等级"
+                list_item
+                  text "A"
+              container
+                list_item
+                  text "授信额度"
+                list_item
+                  text "0.00 USD"
+              list_item
+                text "账期"
+              list_item
+                text "未维护"
+              list_item
+                text "风险备注"
+              list_item
+                text "无"
+              list_item
+                text "负责人"
+              list_item
+                text "系统管理员"
+            container
+              svg_root
+              heading
+                text "联系人"
+              container
+                text "UIQA测试联系人"
+                text "未填写职务"
+                paragraph
+                  text "uiqa-p03@example.invalid"
+                paragraph
+                  text "未填写电话"
+                text "主要联系人"
+                button [ref=5032]
+                  text "编 辑"
+                button [ref=5033]
+                  text "删 除"
+            container
+              svg_root
+              heading
+                text "业务记录"
+              table
+                table_row
+                  table_cell
+              container [ref=5043]
+                table
+                  table_row
+                    table_cell
+                      text "来源"
+                    table_cell
+                      text "编号"
+                    table_cell
+                      text "摘要"
+                    table_cell
+                      text "金额"
+                    table_cell
+                      text "时间"
+                  table_row
+                    table_cell
+                      svg_root
+                      paragraph
+                        text "暂无数据"
+              table
+                table_row
+                  table_cell
+    dialog "新增客户联系人"
+      button "Close" [ref=5034, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增客户联系人"
+      form
+        container
+          container
+            text "姓名"
+            textbox [ref=5035]
+              text "UIQA-20261117-05-C01 联系人二"
+          container
+            text "职务"
+            textbox [ref=5036]
+              text "UIQA测试职务"
+          container
+            text "邮箱"
+            textbox [ref=5037]
+              text "uiqa-c01-02@example.invalid"
+          container
+            text "电话"
+            textbox [ref=5038]
+              text "00000000002"
+          container
+            container
+              checkbox [ref=5039]
+              table
+                table_row
+                  table_cell
+            text "设为主要联系人"
+        container
+          button [ref=5040]
+            text "取消"
+          button [ref=5041]
+            text "新增联系人"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

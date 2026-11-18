@@ -1,0 +1,161 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "寄样管理"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "寄样管理概览"
+          container
+            text "寄样单"
+            text "1"
+          container
+            text "待审核"
+            text "0"
+          container
+            text "已审核"
+            text "1"
+          container
+            text "寄样数量"
+            text "1"
+          container
+            text "费用"
+            text "USD 0.00"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "寄样单列表"
+            form
+              container
+                text "寄样搜索"
+                textbox [ref=2286, loc=css:input[placeholder="单号 / 客户 / 样品 / 快递"]]
+                  text "单号 / 客户 / 样品 / 快递"
+              container
+                text "审核状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=2287]
+                  image "down"
+                    svg_root
+              container
+                text "客户标识"
+                textbox [ref=2288, loc=css:input[placeholder="输入客户编号或名称"]]
+                  text "输入客户编号或名称"
+              container
+                text "快递公司"
+                textbox [ref=2289, loc=css:input[placeholder="DHL / FedEx"]]
+                  text "DHL / FedEx"
+              container
+                text "寄样起始日期"
+                textbox [ref=2290]
+                  spinbutton "年" [ref=2291]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=2292]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=2293]
+                    text "日"
+              container
+                text "寄样截止日期"
+                textbox [ref=2294]
+                  spinbutton "年" [ref=2295]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=2296]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=2297]
+                    text "日"
+              container
+                button [ref=2298]
+                  svg_root
+                  text "查询"
+                button [ref=2299]
+                  text "导出寄样"
+                button [ref=2300]
+                  svg_root
+                  text "新增寄样单"
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=2301]
+                container [ref=2309]
+                  table
+                    table_row
+                      table_cell
+                        text "寄样单号"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "快递"
+                      table_cell
+                        text "报价单"
+                      table_cell
+                        text "费用"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=2302]
+                          text "SD-CXE849"
+                      table_cell
+                        text "已寄出"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "QA261112-MOCK / QA261112-NOT-SHIPPED"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "USD 0.00"
+                      table_cell
+                        button [ref=2303]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=2304]
+                    image "left"
+                      svg_root
+                list_item [ref=2305]
+                  anchor [ref=2306]
+                    text "1"
+                list_item
+                  button [ref=2307]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

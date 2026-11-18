@@ -1,0 +1,194 @@
+{
+  "url": "http://localhost:8080/finance/overview",
+  "title": "经营总览",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "经营总览",
+    "出运利润明细",
+    "分币种汇总",
+    "开票和付款状态",
+    "合作伙伴费用入口"
+  ],
+  "forms": [],
+  "tables": [
+    {
+      "i": 0,
+      "text": "出货单\t客户\t状态\t出货日期\t计划出运\t应收\t应付\t利润\t利润率\nSP-DAEPEG\tQA261112 测试客户\t已审批\t2026-11-12\t2026-11-25\tUSD 205.00\tUSD 0.00\tUSD 210.00\t102.4%",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "币种\t出货\t应收\t利润\t利润率\nUSD\t1\tUSD 205.00\tUSD 210.00\t102.4%",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "状态\t数量\t金额\n草稿\t2\tCNY 0.00\n已收票\t1\tCNY 0.01",
+      "buttons": []
+    },
+    {
+      "i": 3,
+      "text": "状态\t数量\t金额\n\n\n暂无数据",
+      "buttons": []
+    },
+    {
+      "i": 4,
+      "text": "伙伴类型\t数量\n货代公司\t2",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

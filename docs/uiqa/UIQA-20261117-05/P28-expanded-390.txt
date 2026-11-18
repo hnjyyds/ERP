@@ -1,0 +1,311 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=9234, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "结算核算"
+        button "通知" [ref=9214, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=9215, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container "财务结算和利润核算"
+        container
+          svg_root
+          heading
+            text "财务结算列表"
+          form
+            container
+              text "结算搜索"
+              textbox [ref=9270]
+                text "结算单 / 出运单 / 客户"
+            container
+              text "出运单号"
+              textbox [ref=9271]
+            button [ref=9272]
+              svg_root
+              text "查询"
+            button [ref=9273]
+              svg_root
+              text "新增结算"
+          container
+            text "锁定结算 1 单"
+            text "USD 205.00"
+            container
+              text "毛利"
+              text "USD 188.00"
+          container [ref=9292]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=9274]
+                container [ref=9293]
+                  table
+                    table_row
+                      table_cell
+                        text "结算单"
+                      table_cell
+                        text "出运单"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "结算日"
+                      table_cell
+                        text "收入"
+                      table_cell
+                        text "成本"
+                      table_cell
+                        text "退税"
+                      table_cell
+                        text "杂费"
+                      table_cell
+                        text "手工成本"
+                      table_cell
+                        text "毛利"
+                      table_cell
+                        text "毛利率"
+                      table_cell
+                        text "状态"
+                    table_row
+                      table_cell
+                        text "FS-PT3G9T"
+                      table_cell
+                        text "SP-DAEPEG"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "USD 205.00"
+                      table_cell
+                        text "USD 0.00"
+                      table_cell
+                        text "USD 10.00"
+                      table_cell
+                        text "USD 5.00"
+                      table_cell
+                        text "USD 2.00"
+                      table_cell
+                        text "USD 188.00"
+                      table_cell
+                        text "91.7%"
+                      table_cell
+                        text "已锁定"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=9275]
+                    image "left"
+                      svg_root
+                list_item [ref=9276]
+                  anchor [ref=9277]
+                    text "1"
+                list_item
+                  button [ref=9278]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+        container
+          container
+            svg_root
+            heading
+              text "利润核算表"
+          form
+            container
+              text "核算搜索"
+              textbox [ref=9280]
+                text "结算单 / 出运单 / 客户"
+            container
+              text "出运单号"
+              textbox [ref=9281]
+            button [ref=9282]
+              svg_root
+              text "查询"
+          container
+            text "核算单票 1 单"
+            text "USD 188.00"
+            text "按结算锁定口径展开成本明细"
+          container [ref=9294]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=9283]
+                container [ref=9295]
+                  table
+                    table_row
+                      table_cell
+                      table_cell
+                        text "结算单"
+                      table_cell
+                        text "出运单"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "收入"
+                      table_cell
+                        text "总成本"
+                      table_cell
+                        text "退税"
+                      table_cell
+                        text "毛利"
+                      table_cell
+                        text "毛利率"
+                    table_row
+                      table_cell
+                        button "关闭行" [ref=9284, loc=css:button[aria-label="关闭行"]]
+                      table_cell
+                        text "FS-PT3G9T"
+                      table_cell
+                        text "SP-DAEPEG"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "USD 205.00"
+                      table_cell
+                        text "USD 27.00"
+                      table_cell
+                        text "USD 10.00"
+                      table_cell
+                        text "USD 188.00"
+                      table_cell
+                        text "91.7%"
+                    table_row
+                      table_cell
+                        container [ref=9285]
+                          table
+                            table_row
+                              table_cell
+                          container [ref=9286]
+                            table
+                              table_row
+                                table_cell
+                                  text "类型"
+                                table_cell
+                                  text "方向"
+                                table_cell
+                                  text "来源"
+                                table_cell
+                                  text "日期"
+                                table_cell
+                                  text "金额"
+                                table_cell
+                                  text "原因"
+                              table_row
+                                table_cell
+                                  text "销售收入"
+                                table_cell
+                                  text "收入"
+                                table_cell
+                                  text "SP-DAEPEG"
+                                table_cell
+                                  text "2026-11-12"
+                                table_cell
+                                  text "USD 205.00"
+                                table_cell
+                                  text "结算销售收入快照"
+                              table_row
+                                table_cell
+                                  text "退税收入"
+                                table_cell
+                                  text "收入"
+                                table_cell
+                                  text "SP-DAEPEG"
+                                table_cell
+                                  text "2026-11-12"
+                                table_cell
+                                  text "USD 10.00"
+                                table_cell
+                                  text "结算退税收入汇总"
+                              table_row
+                                table_cell
+                                  text "杂费分摊"
+                                table_cell
+                                  text "成本"
+                                table_cell
+                                  text "SP-DAEPEG"
+                                table_cell
+                                  text "2026-11-12"
+                                table_cell
+                                  text "USD 5.00"
+                                table_cell
+                                  text "结算杂费分摊汇总"
+                              table_row
+                                table_cell
+                                  text "合作伙伴费"
+                                table_cell
+                                  text "成本"
+                                table_cell
+                                  text "SP-DAEPEG"
+                                table_cell
+                                  text "2026-11-12"
+                                table_cell
+                                  text "USD 20.00"
+                                table_cell
+                                  text "结算合作伙伴费用汇总"
+                              table_row
+                                table_cell
+                                  text "采购成本"
+                                table_cell
+                                  text "成本"
+                                table_cell
+                                  text "SP-DAEPEG"
+                                table_cell
+                                  text "2026-11-12"
+                                table_cell
+                                  text "USD 0.00"
+                                table_cell
+                                  text "结算采购成本快照"
+                              table_row
+                                table_cell
+                                  text "其他成本"
+                                table_cell
+                                  text "成本"
+                                table_cell
+                                  text "-"
+                                table_cell
+                                  text "2026-11-12"
+                                table_cell
+                                  text "USD 2.00"
+                                table_cell
+                                  text "QA261112 手工成本测试"
+                          table
+                            table_row
+                              table_cell
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=9287]
+                    image "left"
+                      svg_root
+                list_item [ref=9288]
+                  anchor [ref=9289]
+                    text "1"
+                list_item
+                  button [ref=9290]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

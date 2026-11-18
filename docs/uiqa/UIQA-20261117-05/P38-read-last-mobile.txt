@@ -1,0 +1,184 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=9499, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "工作台"
+        button "通知" [ref=9470, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=9471, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        svg_root
+        heading
+          text "消息"
+        text "15"
+        button [ref=9921]
+          text "全部已读"
+        container
+          container
+            text "审批通知"
+            text "演示财务主管 已审批通过付款 PR-PG3X2P"
+            text "已通过"
+            button [ref=9922]
+              text "处理"
+            button [ref=9923]
+              text "查看单据"
+            button [ref=9924]
+              text "删除"
+          container
+            text "采购跟单提醒"
+            text "采购合同 PC-HR36RU 的跟单节点「确认样提交日期」已逾期 2 天，请尽快更新进度"
+            text "高优先级"
+            button [ref=9925]
+              text "处理"
+            button [ref=9926]
+              text "查看单据"
+            button [ref=9927]
+              text "删除"
+          container
+            text "采购跟单提醒"
+            text "采购合同 PC-HR36RU 的跟单节点「确认样提交日期」已逾期 1 天，请尽快更新进度"
+            text "高优先级"
+            button [ref=9928]
+              text "处理"
+            button [ref=9929]
+              text "查看单据"
+            button [ref=9930]
+              text "删除"
+          container
+            text "审批通知"
+            text "演示业务主管 已审批通过出口报价 QT-A33KVZ"
+            text "已通过"
+            text "已读"
+            button [ref=9931]
+              text "查看单据"
+            button [ref=9932]
+              text "删除"
+          container
+            text "审批通知"
+            text "演示业务主管 驳回了出口报价 QT-A33KVZ，原因：QA261112 驳回测试"
+            text "提醒"
+            text "已读"
+            button [ref=9933]
+              text "查看单据"
+            button [ref=9934]
+              text "删除"
+          container
+            text "审批通知"
+            text "演示财务主管 已审批通过报销单 QA261112-RB01"
+            text "已通过"
+            text "已读"
+            button [ref=9935]
+              text "查看单据"
+            button [ref=9936]
+              text "删除"
+          container
+            text "审批通知"
+            text "演示财务主管 已审批通过合作方费用付款 FPR-G7WTAX"
+            text "已通过"
+            text "已读"
+            button [ref=9937]
+              text "查看单据"
+            button [ref=9938]
+              text "删除"
+          container
+            text "审批通知"
+            text "演示业务主管 已审批通过寄样单 SD-CXE849"
+            text "已通过"
+            text "已读"
+            button [ref=9939]
+              text "查看单据"
+            button [ref=9940]
+              text "删除"
+          container
+            text "审批通知"
+            text "演示财务主管 已审批通过付款 PR-ZAWWF6"
+            text "已通过"
+            text "已读"
+            button [ref=9941]
+              text "查看单据"
+            button [ref=9942]
+              text "删除"
+          container
+            text "审批通知"
+            text "演示财务主管 已审批通过付款 PR-GZN8H6"
+            container
+              text "已通过"
+              text "已读"
+              button [ref=9943]
+                text "查看单据"
+              button [ref=9944]
+                text "删除"
+          container
+            container
+              text "审批通知"
+              text "演示业务主管 已审批通过出库单 XP-OUT-33A95C"
+            container
+              text "已通过"
+              text "已读"
+              button [ref=9945]
+                text "查看单据"
+              button [ref=9946]
+                text "删除"
+          container
+            container
+              text "审批通知"
+              text "演示业务主管 已审批通过出运计划 SP-DAEPEG"
+            container
+              text "已通过"
+              text "已读"
+              button [ref=9947]
+                text "查看单据"
+              button [ref=9948]
+                text "删除"
+          container
+            container
+              text "审批通知"
+              text "演示业务主管 已审批通过入库单 XP-IN-MVU9CU"
+            container
+              text "已通过"
+              text "已读"
+              button [ref=9949]
+                text "查看单据"
+              button [ref=9950]
+                text "删除"
+          container
+            container
+              text "审批通知"
+              text "演示业务主管 已审批通过采购合同 PC-HR36RU"
+            container
+              text "已通过"
+              text "已读"
+              button [ref=9951]
+                text "查看单据"
+              button [ref=9952]
+                text "删除"
+          container
+            container
+              text "审批通知"
+              text "演示业务主管 已审批通过出口合同 EC-F8D7RX"
+            container
+              text "已通过"
+              text "已读"
+              button [ref=9953]
+                text "查看单据"
+              button [ref=9954]
+                text "删除"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

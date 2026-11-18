@@ -1,0 +1,322 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=3665, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "出货明细"
+        container
+          button "通知" [ref=3650, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=3651, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "出货明细概览"
+          container
+            text "出货单"
+            text "1"
+          container
+            text "待审批"
+            text "0"
+          container
+            text "已审批"
+            text "1"
+          container
+            text "应收金额"
+            text "USD 205.00"
+          container
+            text "预计利润"
+            text "USD 210.00"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "出货明细"
+            button [ref=3652]
+              svg_root
+              text "返回列表"
+          unordered_list
+            container
+              list_item
+                text "状态/日期"
+              list_item
+                text "已审批"
+                text "/"
+                text "2026-11-12"
+            container
+              list_item
+                text "客户"
+              list_item
+                text "QA261112 测试客户"
+            container
+              list_item
+                text "运输方式"
+              list_item
+                text "海运"
+            container
+              list_item
+                text "出运港口"
+              list_item
+                text "Ningbo -> Hamburg"
+            container
+              list_item
+                text "船名/箱号"
+              list_item
+                text "未填"
+                text "/"
+                text "未填"
+            container
+              list_item
+                text "订舱号"
+              list_item
+                text "未填"
+            container
+              list_item
+                text "单证负责人"
+              list_item
+                text "未填"
+            list_item
+              text "审批人"
+            list_item
+              text "演示业务主管"
+          text "收付款和利润概览"
+          text "应收金额"
+          text "USD 205.00"
+          text "预计付款"
+          text "USD 0.00"
+          text "预计利润"
+          text "USD 210.00"
+          text "利润率"
+          text "102.44%"
+          button [ref=3653]
+            text "提交审批"
+          form
+            text "出货审批"
+            container
+              text "审批人"
+              textbox [ref=3654]
+                text "演示业务主管"
+            container
+              text "审批日期"
+              textbox [ref=3655]
+                spinbutton "年" [ref=3656]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=3657]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=3658]
+                  text "12"
+            button [ref=3659]
+              text "审批通过"
+          text "出货提醒"
+          paragraph
+            text "SP-DAEPEG 计划于 2026-11-25 出运"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=3660]
+              table
+                table_row
+                  table_cell
+                    text "提醒日期"
+                  table_cell
+                    text "出货单"
+                  table_cell
+                    text "状态"
+                  table_cell
+                    text "提醒内容"
+                table_row
+                  table_cell
+                    text "2026-11-18"
+                  table_cell
+                    text "SP-DAEPEG"
+                  table_cell
+                    text "已处理"
+                  table_cell
+                    text "SP-DAEPEG 计划于 2026-11-25 出运"
+            table
+              table_row
+                table_cell
+          text "出货商品明细"
+          text "1 条"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=3661]
+              container [ref=3666]
+                table
+                  table_row
+                    table_cell
+                      text "合同号"
+                    table_cell
+                      text "商品编号"
+                    table_cell
+                      text "商品名称"
+                    table_cell
+                      text "规格"
+                    table_cell
+                      text "型号"
+                    table_cell
+                      text "出货数量"
+                    table_cell
+                      text "金额"
+                    table_cell
+                      text "计划出运日"
+                  table_row
+                    table_cell
+                      text "EC-F8D7RX"
+                    table_cell
+                      text "QA261112-P01"
+                    table_cell
+                      text "QA261112 验收测试围巾"
+                    table_cell
+                      text "-"
+                    table_cell
+                      text "-"
+                    table_cell
+                      text "20 pcs"
+                    table_cell
+                      text "USD 205.00"
+                    table_cell
+                      text "2026-11-25"
+            table
+              table_row
+                table_cell
+          text "出口合同出货情况"
+          text "1 条"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=3662]
+              container [ref=3667]
+                table
+                  table_row
+                    table_cell
+                      text "合同号"
+                    table_cell
+                      text "商品编号"
+                    table_cell
+                      text "商品名称"
+                    table_cell
+                      text "合同数量"
+                    table_cell
+                      text "已出货"
+                    table_cell
+                      text "未出货"
+                    table_cell
+                      text "未出货金额"
+                    table_cell
+                      text "状态"
+                  table_row
+                    table_cell
+                      text "EC-F8D7RX"
+                    table_cell
+                      text "QA261112-P01"
+                    table_cell
+                      text "QA261112 验收测试围巾"
+                    table_cell
+                      text "50"
+                    table_cell
+                      text "20"
+                    table_cell
+                      text "30"
+                    table_cell
+                      text "USD 307.50"
+                    table_cell
+                      text "部分完成"
+            table
+              table_row
+                table_cell
+          text "出口合同采购情况"
+          text "1 条"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=3663]
+              container [ref=3668]
+                table
+                  table_row
+                    table_cell
+                      text "合同号"
+                    table_cell
+                      text "商品编号"
+                    table_cell
+                      text "商品名称"
+                    table_cell
+                      text "合同数量"
+                    table_cell
+                      text "已采购"
+                    table_cell
+                      text "未采购"
+                    table_cell
+                      text "状态"
+                  table_row
+                    table_cell
+                      text "EC-F8D7RX"
+                    table_cell
+                      text "QA261112-P01"
+                    table_cell
+                      text "QA261112 验收测试围巾"
+                    table_cell
+                      text "50"
+                    table_cell
+                      text "0"
+                    table_cell
+                      text "50"
+                    table_cell
+                      text "未开始"
+            table
+              table_row
+                table_cell
+          text "出货提醒列表"
+          text "1 条"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=3664]
+              table
+                table_row
+                  table_cell
+                    text "提醒日期"
+                  table_cell
+                    text "出货单"
+                  table_cell
+                    text "状态"
+                  table_cell
+                    text "提醒内容"
+                table_row
+                  table_cell
+                    text "2026-11-18"
+                  table_cell
+                    text "SP-DAEPEG"
+                  table_cell
+                    text "已处理"
+                  table_cell
+                    text "SP-DAEPEG 计划于 2026-11-25 出运"
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

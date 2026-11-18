@@ -1,0 +1,575 @@
+{
+  "url": "http://localhost:8080/sales/contracts",
+  "title": "出口合同",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出口合同",
+    "合同列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 269.4453125,
+            "width": 421.2109375,
+            "height": 36,
+            "top": 269.4453125,
+            "right": 702.2109375,
+            "bottom": 305.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "export-contract-status-filter",
+          "label": "审批状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 725.2109375,
+            "y": 274.4453125,
+            "width": 186.609375,
+            "height": 26,
+            "top": 274.4453125,
+            "right": 911.8203125,
+            "bottom": 300.4453125,
+            "left": 725.2109375
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_7m_",
+          "label": "客户筛选\n从客户资料筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 963.8203125,
+            "y": 274.4453125,
+            "width": 186.609375,
+            "height": 26,
+            "top": 274.4453125,
+            "right": 1150.4296875,
+            "bottom": 300.4453125,
+            "left": 963.8203125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1191.4296875,
+            "y": 269.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 269.4453125,
+            "right": 1275.953125,
+            "bottom": 305.4453125,
+            "left": 1191.4296875
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增合同",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 269.4453125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 269.4453125,
+            "right": 1399,
+            "bottom": 305.4453125,
+            "left": 1287.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "合同号\n合同日期\n业务员\n系统管理员\n选择客户\n从客户资料选择\n客户名称\n币种\n贸易条款\n付款条款\n计划出运日\n合同备注\n合同商品明细\n\n已添加 0 个商品，可分别填写条形码并调整规格、数量和销售单价。\n\n添加商品\n商品\t条形码\t规格 / 型号\t数量\t单位\t销售单价\t金额\t操作\n\n商品\n\t\n条形码\n\t\n规格 / 型号\n\t\n数量\n\t\n单位\n\t\n销售单价\n\t\n金额\n\t\n操作\n\n\n暂未添加商品，请点击“添加商品”批量选择\n取 消\n新增出口合同",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 210.875,
+            "width": 340,
+            "height": 36,
+            "top": 210.875,
+            "right": 532,
+            "bottom": 246.875,
+            "left": 192
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "合同日期",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 550,
+            "y": 210.875,
+            "width": 340,
+            "height": 36,
+            "top": 210.875,
+            "right": 890,
+            "bottom": 246.875,
+            "left": 550
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_7s_",
+          "label": "业务员",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 919,
+            "y": 215.875,
+            "width": 300,
+            "height": 26,
+            "top": 215.875,
+            "right": 1219,
+            "bottom": 241.875,
+            "left": 919
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_7u_",
+          "label": "选择客户\n从客户资料选择",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 203,
+            "y": 291.875,
+            "width": 300,
+            "height": 26,
+            "top": 291.875,
+            "right": 503,
+            "bottom": 317.875,
+            "left": 203
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户名称",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 550,
+            "y": 286.875,
+            "width": 340,
+            "height": 36,
+            "top": 286.875,
+            "right": 890,
+            "bottom": 322.875,
+            "left": 550
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 908,
+            "y": 286.875,
+            "width": 340,
+            "height": 36,
+            "top": 286.875,
+            "right": 1248,
+            "bottom": 322.875,
+            "left": 908
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "贸易条款",
+          "text": "",
+          "value": "FOB Ningbo",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 362.875,
+            "width": 340,
+            "height": 36,
+            "top": 362.875,
+            "right": 532,
+            "bottom": 398.875,
+            "left": 192
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "付款条款",
+          "text": "",
+          "value": "30% T/T in advance, balance before shipment",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 550,
+            "y": 362.875,
+            "width": 340,
+            "height": 36,
+            "top": 362.875,
+            "right": 890,
+            "bottom": 398.875,
+            "left": 550
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "计划出运日",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 908,
+            "y": 362.875,
+            "width": 340,
+            "height": 36,
+            "top": 362.875,
+            "right": 1248,
+            "bottom": 398.875,
+            "left": 908
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 438.875,
+            "width": 340,
+            "height": 36,
+            "top": 438.875,
+            "right": 532,
+            "bottom": 474.875,
+            "left": 192
+          }
+        },
+        {
+          "j": 10,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "添加商品",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1136.953125,
+            "y": 509.796875,
+            "width": 111.046875,
+            "height": 36,
+            "top": 509.796875,
+            "right": 1248,
+            "bottom": 545.796875,
+            "left": 1136.953125
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取 消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1043.0234375,
+            "y": 731.5703125,
+            "width": 63.8515625,
+            "height": 36,
+            "top": 731.5703125,
+            "right": 1106.875,
+            "bottom": 767.5703125,
+            "left": 1043.0234375
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增出口合同",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1118.875,
+            "y": 731.5703125,
+            "width": 129.125,
+            "height": 36,
+            "top": 731.5703125,
+            "right": 1248,
+            "bottom": 767.5703125,
+            "left": 1118.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情\n\nEC-F8D7RX\t已审批\tQA261112 测试客户\t2026-11-25\tUSD 512.50\t未回签\t\n查看详情",
+      "buttons": [
+        "EC-5FW46R",
+        "查看详情",
+        "EC-F8D7RX",
+        "查看详情"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "商品\t条形码\t规格 / 型号\t数量\t单位\t销售单价\t金额\t操作\n\n商品\n\t\n条形码\n\t\n规格 / 型号\n\t\n数量\n\t\n单位\n\t\n销售单价\n\t\n金额\n\t\n操作\n\n\n暂未添加商品，请点击“添加商品”批量选择",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,621 @@
+{
+  "url": "http://localhost:8080/warehouse/outbound-plans",
+  "title": "出库计划",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出库计划",
+    "出库计划",
+    "计划生成和排库位"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "计划搜索\n出库状态\n全部状态\n出库类型\n全部类型\n来源类型\n全部来源\n客户标识\n来源单 ID\n查询\n生成/排库位",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "计划搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 285.4453125,
+            "width": 242.2421875,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 525.2421875,
+            "bottom": 321.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "outbound-status-filter",
+          "label": "出库状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 548.2421875,
+            "y": 290.4453125,
+            "width": 122.3515625,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 670.59375,
+            "bottom": 316.4453125,
+            "left": 548.2421875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "outbound-type-filter",
+          "label": "出库类型\n全部类型",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 722.59375,
+            "y": 290.4453125,
+            "width": 122.3515625,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 844.9453125,
+            "bottom": 316.4453125,
+            "left": 722.59375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "outbound-source-filter",
+          "label": "来源类型\n全部来源",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 896.9453125,
+            "y": 290.4453125,
+            "width": 122.3515625,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 1019.296875,
+            "bottom": 316.4453125,
+            "left": 896.9453125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1060.296875,
+            "y": 285.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1222.6484375,
+            "bottom": 321.4453125,
+            "left": 1060.296875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "来源单 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1234.6484375,
+            "y": 285.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1397,
+            "bottom": 321.4453125,
+            "left": 1234.6484375
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1175.9609375,
+            "y": 333.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 333.4453125,
+            "right": 1260.484375,
+            "bottom": 369.4453125,
+            "left": 1175.9609375
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "生成/排库位",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1268.484375,
+            "y": 333.4453125,
+            "width": 128.515625,
+            "height": 36,
+            "top": 333.4453125,
+            "right": 1397,
+            "bottom": 369.4453125,
+            "left": 1268.484375
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_f_",
+      "visible": true,
+      "text": "从发货计划生成\n发货计划\nSP-DAEPEG / QA261112 测试客户 / 2026-11-25\n出库类型\n成品出库\n计划出库日\n生成出库计划",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "outbound-plan-shipment-id",
+          "label": "发货计划\nSP-DAEPEG / QA261112 测试客户 / 2026-11-25",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 293,
+            "y": 266.078125,
+            "width": 836,
+            "height": 26,
+            "top": 266.078125,
+            "right": 1129,
+            "bottom": 292.078125,
+            "left": 293
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "outbound-plan-type",
+          "label": "出库类型\n成品出库",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 293,
+            "y": 336.078125,
+            "width": 390,
+            "height": 26,
+            "top": 336.078125,
+            "right": 683,
+            "bottom": 362.078125,
+            "left": 293
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "outbound-plan-date",
+          "label": "计划出库日",
+          "text": "",
+          "value": "2026-11-12",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 331.078125,
+            "width": 430,
+            "height": 36,
+            "top": 331.078125,
+            "right": 1158,
+            "bottom": 367.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "生成出库计划",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 282,
+            "y": 383.078125,
+            "width": 141.5625,
+            "height": 36,
+            "top": 383.078125,
+            "right": 423.5625,
+            "bottom": 419.078125,
+            "left": 282
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": "_r_f_",
+      "visible": true,
+      "text": "库位预安排\n计划出库日\n仓库 ID\n仓库\n库位 ID\n库位\n经办人\n保存库位安排",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "outbound-schedule-date",
+          "label": "计划出库日",
+          "text": "",
+          "value": "2026-11-12",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 531.9296875,
+            "width": 874,
+            "height": 36,
+            "top": 531.9296875,
+            "right": 1157,
+            "bottom": 567.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "outbound-warehouse-id",
+          "label": "仓库 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 601.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 601.9296875,
+            "right": 712,
+            "bottom": 637.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "outbound-warehouse-name",
+          "label": "仓库",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 728,
+            "y": 601.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 601.9296875,
+            "right": 1157,
+            "bottom": 637.9296875,
+            "left": 728
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "outbound-location-id",
+          "label": "库位 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 671.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 671.9296875,
+            "right": 712,
+            "bottom": 707.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "outbound-location-name",
+          "label": "库位",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 728,
+            "y": 671.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 671.9296875,
+            "right": 1157,
+            "bottom": 707.9296875,
+            "left": 728
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "outbound-operator-name",
+          "label": "经办人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 741.9296875,
+            "width": 874,
+            "height": 36,
+            "top": 741.9296875,
+            "right": 1157,
+            "bottom": 777.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存库位安排",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 283,
+            "y": 793.9296875,
+            "width": 141.5625,
+            "height": 36,
+            "top": 793.9296875,
+            "right": 424.5625,
+            "bottom": 829.9296875,
+            "left": 283
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "计划号\t状态\t类型\t来源单\t客户\t计划出库日\t数量\t入口\nOP-SP-DAEPEG\t已关闭\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情",
+      "buttons": [
+        "OP-SP-DAEPEG",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "入仓",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "出库计划",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "货物出库",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "库存盘点",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "url": "http://localhost:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+  "title": "商品资料",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "商品资料",
+    "商品明细",
+    "相关客户与交易",
+    "业务记录"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "配件名称\n单耗\n单位\n默认供应商\n采购拆分\n按供应商分单\n取消\n追加配件",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "配件名称",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 412,
+            "y": 348.7265625,
+            "width": 298,
+            "height": 36,
+            "top": 348.7265625,
+            "right": 710,
+            "bottom": 384.7265625,
+            "left": 412
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "单耗",
+          "text": "",
+          "value": "1",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 730,
+            "y": 348.7265625,
+            "width": 298,
+            "height": 36,
+            "top": 348.7265625,
+            "right": 1028,
+            "bottom": 384.7265625,
+            "left": 730
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单位",
+          "text": "",
+          "value": "pcs",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 412,
+            "y": 424.7265625,
+            "width": 298,
+            "height": 36,
+            "top": 424.7265625,
+            "right": 710,
+            "bottom": 460.7265625,
+            "left": 412
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "默认供应商",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 730,
+            "y": 424.7265625,
+            "width": 298,
+            "height": 36,
+            "top": 424.7265625,
+            "right": 1028,
+            "bottom": 460.7265625,
+            "left": 730
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_11_",
+          "label": "采购拆分\n按供应商分单",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 423,
+            "y": 505.7265625,
+            "width": 576,
+            "height": 26,
+            "top": 505.7265625,
+            "right": 999,
+            "bottom": 531.7265625,
+            "left": 423
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 839.1953125,
+            "y": 591.7265625,
+            "width": 70.5625,
+            "height": 36,
+            "top": 591.7265625,
+            "right": 909.7578125,
+            "bottom": 627.7265625,
+            "left": 839.1953125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "追加配件",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 921.7578125,
+            "y": 591.7265625,
+            "width": 106.2421875,
+            "height": 36,
+            "top": 591.7265625,
+            "right": 1028,
+            "bottom": 627.7265625,
+            "left": 921.7578125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "配件名称\t单耗\t单位\t默认供应商\t采购拆分\t操作\n\n\n暂无数据",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "客户\t合同数\t累计数量\t累计金额\t最近合同\n暂无关联客户，出口合同生成后自动汇总",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "来源\t单号\t日期\t往来方\t数量\t金额\t摘要\n暂无业务记录，报价/合同/出货/采购引用该商品后自动汇总",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

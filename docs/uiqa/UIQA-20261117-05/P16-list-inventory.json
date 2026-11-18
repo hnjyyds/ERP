@@ -1,0 +1,244 @@
+{
+  "url": "http://localhost:8080/quality/tasks",
+  "title": "我的 QC 任务",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "我的 QC 任务",
+    "我的 QC 任务"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "任务搜索\n任务状态\n全部状态\n \n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "任务搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 283.4453125,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 637.6640625,
+            "bottom": 319.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_a8_",
+          "label": "任务状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 660.6640625,
+            "y": 288.4453125,
+            "width": 138.328125,
+            "height": 26,
+            "top": 288.4453125,
+            "right": 798.9921875,
+            "bottom": 314.4453125,
+            "left": 660.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "label": " \n查询",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 839.9921875,
+            "y": 283.4453125,
+            "width": 178.3359375,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 1018.328125,
+            "bottom": 319.4453125,
+            "left": 839.9921875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "QC 任务单号\t采购合同\t供应商\t排期时间\t状态\t结果\t操作\nQC-8TXV57\tPC-HR36RU\tQA261112 测试供应商\t2026/11/13 09:00\t已完成\t通过\t\n查看详情",
+      "buttons": [
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,759 @@
+{
+  "url": "http://localhost:8080/finance/tax",
+  "title": "核销退税",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "核销退税",
+    "核销单列表",
+    "核销单使用情况查询"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "核销单搜索\n进度状态\n全部状态\n提醒状态\n全部提醒\n业务员标识\n出运单号\n查询\n领用核销单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "核销单搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 259.0546875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 540.0546875,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_4_",
+          "label": "进度状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 563.0546875,
+            "y": 181.6484375,
+            "width": 105.5234375,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 668.578125,
+            "bottom": 207.6484375,
+            "left": 563.0546875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_6_",
+          "label": "提醒状态\n全部提醒",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 720.578125,
+            "y": 181.6484375,
+            "width": 105.53125,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 826.109375,
+            "bottom": 207.6484375,
+            "left": 720.578125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "业务员标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 867.109375,
+            "y": 176.6484375,
+            "width": 145.53125,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1012.640625,
+            "bottom": 212.6484375,
+            "left": 867.109375
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1024.640625,
+            "y": 176.6484375,
+            "width": 145.53125,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1170.171875,
+            "bottom": 212.6484375,
+            "left": 1024.640625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1182.171875,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1266.6953125,
+            "bottom": 212.6484375,
+            "left": 1182.171875
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "领用核销单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1274.6953125,
+            "y": 176.6484375,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1274.6953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "使用情况搜索\n进度状态\n全部状态\n提醒状态\n全部提醒\n出运单号\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "使用情况搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 515.6484375,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 637.6640625,
+            "bottom": 551.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_b_",
+          "label": "进度状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 660.6640625,
+            "y": 520.6484375,
+            "width": 138.328125,
+            "height": 26,
+            "top": 520.6484375,
+            "right": 798.9921875,
+            "bottom": 546.6484375,
+            "left": 660.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_d_",
+          "label": "提醒状态\n全部提醒",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 850.9921875,
+            "y": 520.6484375,
+            "width": 138.3359375,
+            "height": 26,
+            "top": 520.6484375,
+            "right": 989.328125,
+            "bottom": 546.6484375,
+            "left": 850.9921875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1030.328125,
+            "y": 515.6484375,
+            "width": 178.3359375,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1208.6640625,
+            "bottom": 551.6484375,
+            "left": 1030.328125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1314.46875,
+            "y": 515.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1398.9921875,
+            "bottom": 551.6484375,
+            "left": 1314.46875
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": "_r_f_",
+      "visible": true,
+      "text": "核销单号\n领用日期\n出运单标识\n出运单号\n业务员标识\n业务员姓名\n客户名称\n有效期至\n可退税金额\n币种\n备注\n取消\n领用核销单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "核销单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 258,
+            "width": 348,
+            "height": 36,
+            "top": 258,
+            "right": 712,
+            "bottom": 294,
+            "left": 364
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "领用日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 258,
+            "width": 348,
+            "height": 36,
+            "top": 258,
+            "right": 1076,
+            "bottom": 294,
+            "left": 728
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 328,
+            "width": 348,
+            "height": 36,
+            "top": 328,
+            "right": 712,
+            "bottom": 364,
+            "left": 364
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 328,
+            "width": 348,
+            "height": 36,
+            "top": 328,
+            "right": 1076,
+            "bottom": 364,
+            "left": 728
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "业务员标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 398,
+            "width": 348,
+            "height": 36,
+            "top": 398,
+            "right": 712,
+            "bottom": 434,
+            "left": 364
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "业务员姓名",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 398,
+            "width": 348,
+            "height": 36,
+            "top": 398,
+            "right": 1076,
+            "bottom": 434,
+            "left": 728
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 468,
+            "width": 348,
+            "height": 36,
+            "top": 468,
+            "right": 712,
+            "bottom": 504,
+            "left": 364
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "有效期至",
+          "text": "",
+          "value": "2026-12-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 468,
+            "width": 348,
+            "height": 36,
+            "top": 468,
+            "right": 1076,
+            "bottom": 504,
+            "left": 728
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "可退税金额",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 538,
+            "width": 348,
+            "height": 36,
+            "top": 538,
+            "right": 712,
+            "bottom": 574,
+            "left": 364
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 538,
+            "width": 348,
+            "height": 36,
+            "top": 538,
+            "right": 1076,
+            "bottom": 574,
+            "left": 728
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 608,
+            "width": 712,
+            "height": 36,
+            "top": 608,
+            "right": 1076,
+            "bottom": 644,
+            "left": 364
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 894.03125,
+            "y": 660,
+            "width": 62.5625,
+            "height": 36,
+            "top": 660,
+            "right": 956.59375,
+            "bottom": 696,
+            "left": 894.03125
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "领用核销单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 964.59375,
+            "y": 660,
+            "width": 111.40625,
+            "height": 36,
+            "top": 660,
+            "right": 1076,
+            "bottom": 696,
+            "left": 964.59375
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "核销单\t状态\t提醒\t出运单\t有效期\t可退税\t已退税\nVD-DZAUMQ\t已退税\t已完成\tSP-DAEPEG\t2026-12-12\tUSD 10.00\tUSD 10.00",
+      "buttons": [
+        "VD-DZAUMQ"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "核销单\t出运单\t业务员\t状态\t提醒\t可退税\t已退税\t回单号\t核销编号\nVD-DZAUMQ\tSP-DAEPEG\t-\t已退税\t已完成\tUSD 10.00\tUSD 10.00\tQA261112-CR01\tVERIFY-WY9VXB",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

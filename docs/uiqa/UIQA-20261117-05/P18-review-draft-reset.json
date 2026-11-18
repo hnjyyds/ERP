@@ -1,0 +1,41 @@
+{
+  "values": [
+    {
+      "label": "采购合同\nPC-HR36RU / QA261112 测试供应商",
+      "value": ""
+    },
+    {
+      "label": "入库类型\n采购入库",
+      "value": ""
+    },
+    {
+      "label": "计划入库日",
+      "value": "2026-11-12"
+    },
+    {
+      "label": "计划入库日",
+      "value": "2026-11-12"
+    },
+    {
+      "label": "仓库 ID",
+      "value": ""
+    },
+    {
+      "label": "仓库",
+      "value": ""
+    },
+    {
+      "label": "库位 ID",
+      "value": ""
+    },
+    {
+      "label": "库位",
+      "value": ""
+    },
+    {
+      "label": "经办人",
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

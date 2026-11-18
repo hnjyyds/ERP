@@ -1,0 +1,41 @@
+{
+  "values": [
+    {
+      "label": "报销单号",
+      "value": ""
+    },
+    {
+      "label": "申请人工号",
+      "value": ""
+    },
+    {
+      "label": "申请人姓名",
+      "value": ""
+    },
+    {
+      "label": "部门",
+      "value": ""
+    },
+    {
+      "label": "分类\n差旅",
+      "value": ""
+    },
+    {
+      "label": "币种",
+      "value": "CNY"
+    },
+    {
+      "label": "金额",
+      "value": ""
+    },
+    {
+      "label": "事由",
+      "value": ""
+    },
+    {
+      "label": "审批人\n选择审批人",
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

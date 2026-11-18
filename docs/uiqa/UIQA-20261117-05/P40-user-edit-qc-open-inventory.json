@@ -1,0 +1,1069 @@
+{
+  "url": "http://localhost:8080/organization/users",
+  "title": "组织管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "组织管理",
+    "公司信息",
+    "演示 QC 专员"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_19_",
+      "visible": false,
+      "text": "公司名称 *英文名称单证抬头地址英文地址电话传真邮箱网站税号开户行银行账号SWIFT取消保存公司信息",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "公司名称",
+          "text": "",
+          "value": "新裴贸易",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "英文名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单证抬头",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "地址",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "英文地址",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "电话",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "传真",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "邮箱",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "网站",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "税号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "开户行",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "银行账号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "SWIFT",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 13,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 14,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存公司信息",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_1b_",
+      "visible": true,
+      "text": "头像\n短发眼镜\n用户名\n姓名\n部门\n品质部\n角色\nQC 专员\n业务主管\n仓库专员\n财务\n超级管理员\n采购专员\n账号启用\n取消\n保存修改",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "头像\n短发眼镜",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 383,
+            "y": 284.9765625,
+            "width": 674,
+            "height": 80,
+            "top": 284.9765625,
+            "right": 1057,
+            "bottom": 364.9765625,
+            "left": 383
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "用户名",
+          "text": "",
+          "value": "qc",
+          "checked": false,
+          "disabled": true,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 417.8515625,
+            "width": 351,
+            "height": 36.421875,
+            "top": 417.8515625,
+            "right": 715,
+            "bottom": 454.2734375,
+            "left": 364
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "姓名",
+          "text": "",
+          "value": "演示 QC 专员",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 725,
+            "y": 417.8515625,
+            "width": 351,
+            "height": 36.421875,
+            "top": 417.8515625,
+            "right": 1076,
+            "bottom": 454.2734375,
+            "left": 725
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1d_",
+          "label": "部门\n品质部",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 375,
+            "y": 493.1484375,
+            "width": 260,
+            "height": 26,
+            "top": 493.1484375,
+            "right": 635,
+            "bottom": 519.1484375,
+            "left": 375
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "QC 专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 364,
+            "y": 560.0234375,
+            "width": 101.1484375,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 465.1484375,
+            "bottom": 594.0234375,
+            "left": 364
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "业务主管",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 473.1484375,
+            "y": 560.0234375,
+            "width": 105.125,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 578.2734375,
+            "bottom": 594.0234375,
+            "left": 473.1484375
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "仓库专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 586.2734375,
+            "y": 560.0234375,
+            "width": 105.125,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 691.3984375,
+            "bottom": 594.0234375,
+            "left": 586.2734375
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "财务",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 699.3984375,
+            "y": 560.0234375,
+            "width": 76.5625,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 775.9609375,
+            "bottom": 594.0234375,
+            "left": 699.3984375
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "超级管理员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 783.9609375,
+            "y": 560.0234375,
+            "width": 119.40625,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 903.3671875,
+            "bottom": 594.0234375,
+            "left": 783.9609375
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "采购专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 911.3671875,
+            "y": 560.0234375,
+            "width": 105.125,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 1016.4921875,
+            "bottom": 594.0234375,
+            "left": 911.3671875
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "",
+          "label": "账号启用",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 604.0234375,
+            "width": 18,
+            "height": 18,
+            "top": 604.0234375,
+            "right": 382,
+            "bottom": 622.0234375,
+            "left": 364
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 908.3125,
+            "y": 636.0234375,
+            "width": 62.5625,
+            "height": 36,
+            "top": 636.0234375,
+            "right": 970.875,
+            "bottom": 672.0234375,
+            "left": 908.3125
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存修改",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 978.875,
+            "y": 636.0234375,
+            "width": 97.125,
+            "height": 36,
+            "top": 636.0234375,
+            "right": 1076,
+            "bottom": 672.0234375,
+            "left": 978.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "编辑用户\n头像\n短发眼镜\n用户名\n姓名\n部门\n品质部\n角色\nQC 专员\n业务主管\n仓库专员\n财务\n超级管理员\n采购专员\n账号启用\n取消\n保存修改",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1056,
+            "y": 219.9765625,
+            "width": 32,
+            "height": 32,
+            "top": 219.9765625,
+            "right": 1088,
+            "bottom": 251.9765625,
+            "left": 1056
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "头像\n短发眼镜",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 383,
+            "y": 284.9765625,
+            "width": 674,
+            "height": 80,
+            "top": 284.9765625,
+            "right": 1057,
+            "bottom": 364.9765625,
+            "left": 383
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "用户名",
+          "text": "",
+          "value": "qc",
+          "checked": false,
+          "disabled": true,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 417.8515625,
+            "width": 351,
+            "height": 36.421875,
+            "top": 417.8515625,
+            "right": 715,
+            "bottom": 454.2734375,
+            "left": 364
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "姓名",
+          "text": "",
+          "value": "演示 QC 专员",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 725,
+            "y": 417.8515625,
+            "width": 351,
+            "height": 36.421875,
+            "top": 417.8515625,
+            "right": 1076,
+            "bottom": 454.2734375,
+            "left": 725
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "label": "部门\n品质部",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 375,
+            "y": 493.1484375,
+            "width": 260,
+            "height": 26,
+            "top": 493.1484375,
+            "right": 635,
+            "bottom": 519.1484375,
+            "left": 375
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "QC 专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 364,
+            "y": 560.0234375,
+            "width": 101.1484375,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 465.1484375,
+            "bottom": 594.0234375,
+            "left": 364
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "业务主管",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 473.1484375,
+            "y": 560.0234375,
+            "width": 105.125,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 578.2734375,
+            "bottom": 594.0234375,
+            "left": 473.1484375
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "仓库专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 586.2734375,
+            "y": 560.0234375,
+            "width": 105.125,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 691.3984375,
+            "bottom": 594.0234375,
+            "left": 586.2734375
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "财务",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 699.3984375,
+            "y": 560.0234375,
+            "width": 76.5625,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 775.9609375,
+            "bottom": 594.0234375,
+            "left": 699.3984375
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "超级管理员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 783.9609375,
+            "y": 560.0234375,
+            "width": 119.40625,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 903.3671875,
+            "bottom": 594.0234375,
+            "left": 783.9609375
+          }
+        },
+        {
+          "j": 10,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "采购专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 911.3671875,
+            "y": 560.0234375,
+            "width": 105.125,
+            "height": 34,
+            "top": 560.0234375,
+            "right": 1016.4921875,
+            "bottom": 594.0234375,
+            "left": 911.3671875
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "账号启用",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 364,
+            "y": 604.0234375,
+            "width": 18,
+            "height": 18,
+            "top": 604.0234375,
+            "right": 382,
+            "bottom": 622.0234375,
+            "left": 364
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 908.3125,
+            "y": 636.0234375,
+            "width": 62.5625,
+            "height": 36,
+            "top": 636.0234375,
+            "right": 970.875,
+            "bottom": 672.0234375,
+            "left": 908.3125
+          }
+        },
+        {
+          "j": 13,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "保存修改",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 978.875,
+            "y": 636.0234375,
+            "width": 97.125,
+            "height": 36,
+            "top": 636.0234375,
+            "right": 1076,
+            "bottom": 672.0234375,
+            "left": 978.875
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "text": "用户管理",
+      "selected": "true"
+    },
+    {
+      "text": "部门与角色",
+      "selected": "false"
+    }
+  ],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "组织管理",
+      "href": "/organization/users"
+    },
+    {
+      "text": "MCP 接入",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "审计日志",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "defect": "Q05-14",
+  "asset": "assets/index-Bpsh7zKB.js",
+  "checks": [
+    {
+      "area": "往来资料 / 业务记录来源",
+      "viewport": "1440x900",
+      "supplierQA261112S01": { "rawCodes": [], "shown": ["供应商发票", "供应商报价", "采购合同"] },
+      "customerQA261112C01": { "rawCodes": [], "shown": ["出口报价", "出口合同", "出货明细"] }
+    },
+    {
+      "area": "往来资料 / 费用摘要",
+      "partnerQA261112F01": {
+        "summary": ["费用发票 QA261112-FEE01（货代费 / USD）", "费用付款申请 FPR-G7WTAX（货代费 / USD）"],
+        "rawFreight": false
+      },
+      "viewport390": { "hasFreightCn": true, "hasRaw": false, "hasFeeInvoiceCn": true }
+    },
+    {
+      "area": "寄样管理 / 样品登记候选说明",
+      "options": [
+        "SM-D45XDB / QA261112 验收测试围巾 | 确认样 · QA261112-P01 · pcs · 留样数量 3",
+        "SM-ZB334N / QA261112 验收测试围巾 | 来样 · QA261112-P01 · pcs · 留样数量 2"
+      ]
+    },
+    {
+      "area": "财务报表",
+      "goodsPayment": { "status": "已审批", "rawApproved": false },
+      "feePayment": { "feeType": "货代费", "status": "已审批", "rawFreight": false, "rawApproved": false }
+    },
+    {
+      "area": "组织权限窗口",
+      "module": "库存盘点",
+      "hasStocktakeRaw": false
+    }
+  ],
+  "untouched": "权限码本身（permission.code）仍按技术码展示，未做翻译",
+  "screenshots": [
+    "screenshots/q05-14-partner-BRdw-1440.png",
+    "screenshots/q05-14-partner-Bpsh-390.png",
+    "screenshots/q05-14-sample-options-Bpsh-1440.png"
+  ],
+  "conclusion": "五处业务可见枚举均显示中文业务名称，无原始枚举码；技术权限码未改动。Q05-14 关闭。",
+  "captured_at": "2026-11-18T21:25:00+08:00"
+}

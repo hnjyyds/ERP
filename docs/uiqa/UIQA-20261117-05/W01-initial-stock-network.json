@@ -1,0 +1,38 @@
+[
+  {
+    "requestId": "79503.3007",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-ledgers?q=UIQA-20261117-05-P03&source_id=5bf1413c-53e6-466a-805d-199a515a81aa",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3006",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-balances?q=UIQA-20261117-05-P03",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0,
+        "summary": {
+          "available_quantity": "0",
+          "pending_inspection_quantity": "0"
+        }
+      },
+      "error": null
+    }
+  }
+]

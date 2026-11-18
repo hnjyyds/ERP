@@ -1,0 +1,285 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=7542, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "寄样管理"
+          container
+            button "通知" [ref=7532, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=7533, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "寄样管理概览"
+            container
+              text "寄样单"
+              text "1"
+            container
+              text "待审核"
+              text "0"
+            container
+              text "已审核"
+              text "1"
+            container
+              text "寄样数量"
+              text "1"
+            container
+              text "费用"
+              text "USD 0.00"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "寄样单列表"
+              form
+                container
+                  text "寄样搜索"
+                  textbox [ref=7551, loc=css:input[placeholder="单号 / 客户 / 样品 / 快递"]]
+                    text "单号 / 客户 / 样品 / 快递"
+                container
+                  text "审核状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=7552]
+                    image "down"
+                      svg_root
+                container
+                  text "客户标识"
+                  textbox [ref=7553, loc=css:input[placeholder="输入客户编号或名称"]]
+                    text "输入客户编号或名称"
+                container
+                  text "快递公司"
+                  textbox [ref=7554, loc=css:input[placeholder="DHL / FedEx"]]
+                    text "DHL / FedEx"
+                container
+                  text "寄样起始日期"
+                  textbox [ref=7555]
+                    spinbutton "年" [ref=7556]
+                      text "年"
+                    text "/"
+                    spinbutton "月" [ref=7557]
+                      text "月"
+                    text "/"
+                    spinbutton "日" [ref=7558]
+                      text "日"
+                container
+                  text "寄样截止日期"
+                  textbox [ref=7559]
+                    spinbutton "年" [ref=7560]
+                      text "年"
+                    text "/"
+                    spinbutton "月" [ref=7561]
+                      text "月"
+                    text "/"
+                    spinbutton "日" [ref=7562]
+                      text "日"
+                container
+                  button [ref=7563]
+                    svg_root
+                    text "查询"
+                  button [ref=7564]
+                    text "导出寄样"
+                  button [ref=7565]
+                    svg_root
+                    text "新增寄样单"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=7566]
+                  container [ref=7606]
+                    table
+                      table_row
+                        table_cell
+                          text "寄样单号"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "客户"
+                        table_cell
+                          text "快递"
+                        table_cell
+                          text "报价单"
+                        table_cell
+                          text "费用"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=7567]
+                            text "SD-CXE849"
+                        table_cell
+                          text "已寄出"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "QA261112-MOCK / QA261112-NOT-SHIPPED"
+                        table_cell
+                          text "-"
+                        table_cell
+                          text "USD 0.00"
+                        table_cell
+                          button [ref=7568]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=7569]
+                      image "left"
+                        svg_root
+                  list_item [ref=7570]
+                    anchor [ref=7571]
+                      text "1"
+                  list_item
+                    button [ref=7572]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    dialog "新增寄样单"
+      button "Close" [ref=7574, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增寄样单"
+      form [ref=7575]
+        container
+          text "寄样单号"
+          textbox [ref=7576, loc=css:input[placeholder="系统自动生成"]]
+            text "系统自动生成"
+        container
+          text "寄样日期"
+          textbox [ref=7577]
+            spinbutton "年" [ref=7578]
+              text "2026"
+            text "/"
+            spinbutton "月" [ref=7579]
+              text "11"
+            text "/"
+            spinbutton "日" [ref=7580]
+              text "17"
+        container
+          text "客户"
+          container
+            text "搜索客户编号或名称"
+            comboboxgrouping "客户" [ref=7581, loc=css:input[aria-label="客户"]]
+            svg_root
+        container
+          text "供应商"
+          textbox [ref=7582]
+        container
+          text "工厂"
+          textbox [ref=7583]
+        container
+          text "收件人"
+          textbox [ref=7584]
+        container
+          text "收件公司"
+          textbox [ref=7585]
+        container
+          text "收件地址"
+          textbox [ref=7586]
+        container
+          text "快递公司"
+          textbox [ref=7587]
+            text "DHL"
+        container
+          text "快递单号"
+          textbox [ref=7588]
+        container
+          text "关联报价"
+          container
+            text "输入关键词搜索"
+            comboboxgrouping "关联报价" [ref=7589, loc=css:input[aria-label="关联报价"]]
+            svg_root
+        text "寄样明细"
+        container
+          text "样品登记"
+          container
+            text "输入关键词搜索"
+            comboboxgrouping "样品登记" [ref=7590, loc=css:input[aria-label="样品登记"]]
+            svg_root
+        container
+          text "样品编号"
+          textbox [ref=7591]
+        container
+          text "样品分类"
+          textbox [ref=7592]
+            text "确认样"
+        container
+          text "产品编号"
+          textbox [ref=7593]
+        container
+          text "产品名称"
+          textbox [ref=7594]
+        container
+          text "寄样数量"
+          spinbutton [ref=7595]
+            text "1"
+        container
+          text "单位"
+          textbox [ref=7596]
+            text "pcs"
+        container
+          text "明细备注"
+          textbox [ref=7597]
+            text "UIQA-UNSAVED-P14"
+        text "费用登记"
+        container
+          text "费用类型"
+          container
+            container
+              text "快递费"
+              comboboxgrouping [ref=7598]
+            image "down"
+              svg_root
+        container
+          text "金额"
+          spinbutton [ref=7599]
+            text "0.00"
+        container
+          text "币种"
+          textbox [ref=7600]
+            text "USD"
+        container
+          text "承担方"
+          container
+            text "公司承担"
+            comboboxgrouping [ref=7601]
+            image "down"
+              svg_root
+        container
+          text "费用备注"
+          textbox [ref=7602]
+        container
+          text "寄样备注"
+          textbox [ref=7603]
+        container
+          button [ref=7604]
+            text "取消"
+          button [ref=7605]
+            text "新增寄样单"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

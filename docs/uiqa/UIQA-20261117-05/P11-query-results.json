@@ -1,0 +1,108 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "通知搜索",
+    "before": {
+      "url": "http://localhost:8080/purchase/invoice-notices",
+      "form": "通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知",
+      "inputs": [
+        {
+          "label": "通知搜索",
+          "value": ""
+        },
+        {
+          "label": "通知状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        },
+        {
+          "label": "报关单证 ID",
+          "value": ""
+        }
+      ],
+      "text": "开票通知列表\n通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知\n开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-02-02\t草稿\tUIQA-20261117-02 测试供应商B\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-04-01\t已收票\tQA261112 测试供应商\tUIQA-20261117-04\tCNY 0.01\t0 个\t\n查看详情\n共 3 条\n1\n50 条/页",
+      "tableText": "开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-02-02\t草稿\tUIQA-20261117-02 测试供应商B\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-04-01\t已收票\tQA261112 测试供应商\tUIQA-20261117-04\tCNY 0.01\t0 个\t\n查看详情"
+    },
+    "positive": "PIN-UIQA-20261117-02-01",
+    "hit": {
+      "url": "http://localhost:8080/purchase/invoice-notices?q=PIN-UIQA-20261117-02-01",
+      "form": "通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知",
+      "inputs": [
+        {
+          "label": "通知搜索",
+          "value": "PIN-UIQA-20261117-02-01"
+        },
+        {
+          "label": "通知状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        },
+        {
+          "label": "报关单证 ID",
+          "value": ""
+        }
+      ],
+      "text": "开票通知列表\n通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知\n开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/purchase/invoice-notices?q=UIQA-20261117-05-NOMATCH",
+      "form": "通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知",
+      "inputs": [
+        {
+          "label": "通知搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "通知状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        },
+        {
+          "label": "报关单证 ID",
+          "value": ""
+        }
+      ],
+      "text": "开票通知列表\n通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知\n开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/purchase/invoice-notices",
+      "form": "通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知",
+      "inputs": [
+        {
+          "label": "通知搜索",
+          "value": ""
+        },
+        {
+          "label": "通知状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        },
+        {
+          "label": "报关单证 ID",
+          "value": ""
+        }
+      ],
+      "text": "开票通知列表\n通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知\n开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-02-02\t草稿\tUIQA-20261117-02 测试供应商B\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-04-01\t已收票\tQA261112 测试供应商\tUIQA-20261117-04\tCNY 0.01\t0 个\t\n查看详情\n共 3 条\n1\n50 条/页",
+      "tableText": "开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-02-02\t草稿\tUIQA-20261117-02 测试供应商B\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-04-01\t已收票\tQA261112 测试供应商\tUIQA-20261117-04\tCNY 0.01\t0 个\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

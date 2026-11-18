@@ -1,0 +1,155 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "开票通知"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "开票通知概览"
+          container
+            text "开票通知"
+            text "3"
+          container
+            text "已发送"
+            text "0"
+          container
+            text "已收票"
+            text "1"
+          container
+            text "通知金额"
+            text "CNY 0.01"
+          container
+            text "待催收"
+            text "0"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "开票通知明细"
+            button [ref=2521]
+              svg_root
+              text "返回列表"
+          unordered_list
+            container
+              list_item
+                text "状态/通知日"
+              list_item
+                text "已收票"
+                text "/"
+                text "2026-11-17"
+            container
+              list_item
+                text "供应商"
+              list_item
+                text "QA261112 测试供应商"
+            container
+              list_item
+                text "报关单号"
+              list_item
+                text "UIQA-20261117-04"
+            container
+              list_item
+                text "报关日期"
+              list_item
+                text "2026-11-17"
+            container
+              list_item
+                text "开票数量"
+              list_item
+                text "1"
+            container
+              list_item
+                text "通知金额"
+              list_item
+                text "CNY 0.01"
+            list_item
+              text "发送人"
+            list_item
+              text "未发送"
+            list_item
+              text "税票号"
+            list_item
+              text "UIQA-20261117-04-TAX01"
+          text "开票通知备注"
+          paragraph
+            text "UIQA持久化验收专用，0.01元测试通知；非真实交易。"
+          button [ref=2522]
+            text "发送开票通知"
+          button [ref=2523]
+            text "登记税票"
+          text "开票品名和数量"
+          text "1 行"
+          table
+            table_row
+              table_cell
+                text "采购合同"
+              table_cell
+                text "报关品名"
+              table_cell
+                text "开票品名"
+              table_cell
+                text "数量"
+              table_cell
+                text "金额"
+            table_row
+              table_cell
+                text "未关联"
+              table_cell
+                text "UIQA测试品名"
+              table_cell
+                text "UIQA测试开票品名"
+              table_cell
+                text "1"
+                text "pcs"
+              table_cell
+                text "CNY 0.01"
+          text "税票催收提醒"
+          text "0 条"
+          table
+            table_row
+              table_cell
+                text "标题"
+              table_cell
+                text "到期日"
+              table_cell
+                text "状态"
+            table_row
+              table_cell
+                text "发送后自动生成税票催收提醒"
+          text "全局税票催收"
+          text "0 条"
+          table
+            table_row
+              table_cell
+                text "标题"
+              table_cell
+                text "到期日"
+              table_cell
+                text "状态"
+            table_row
+              table_cell
+                text "暂无税票催收提醒"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

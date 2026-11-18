@@ -1,0 +1,114 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=9499, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "工作台"
+        container
+          button "通知" [ref=9470, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=9471, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container
+          svg_root
+          heading
+            text "全局待办"
+        container
+          radiogroup "待办范围" [ref=9695, loc=role:radiogroup[name="待办范围"]]
+            container
+              radio [ref=9696]
+              text "全局业务待办 3"
+            container
+              radio [ref=9697]
+              text "我创建的 1"
+          container
+            container
+              svg_root
+              textbox "搜索任务、客户或供应商" [ref=9698, loc=css:input[placeholder="搜索任务、客户或供应商"]]
+                text "搜索任务、客户或供应商"
+            container
+              container
+                text "全部类型"
+                comboboxgrouping "任务类型筛选" [ref=9699, loc=css:input[aria-label="任务类型筛选"]]
+              image "down"
+                svg_root
+            container
+              container
+                text "全部时效"
+                comboboxgrouping "截止状态筛选" [ref=9700, loc=css:input[aria-label="截止状态筛选"]]
+              image "down"
+                svg_root
+        container
+          text "当前结果"
+          text "1"
+        container
+          table
+            table_row
+              table_cell
+          container [ref=9719]
+            table
+              table_row
+                table_cell
+                  text "任务"
+                table_cell
+                  text "类型"
+                table_cell
+                  text "负责人"
+                table_cell
+                  text "截止时间"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  text "任务"
+                table_cell
+                  text "类型"
+                table_cell
+                  text "负责人"
+                table_cell
+                  text "截止时间"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  text "QA261112 自测待办"
+                  text "QA261112 仅分配给测试操作者"
+                table_cell
+                  text "手动"
+                table_cell
+                  text "系统管理员"
+                table_cell
+                  text "未设置"
+                  text "未排期"
+                table_cell
+                  button [ref=9715]
+                    text "去处理"
+                    svg_root
+                  button [ref=9716]
+                    text "完成"
+                  button [ref=9717]
+                    text "改派"
+                  button [ref=9718]
+                    text "取消"
+          table
+            table_row
+              table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

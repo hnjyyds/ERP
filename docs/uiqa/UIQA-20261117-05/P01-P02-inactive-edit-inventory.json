@@ -1,0 +1,492 @@
+{
+  "url": "http://localhost:8080/masterdata/products/2fded9d3-11cd-4bb7-a6b5-b25d9d77dbed",
+  "title": "商品资料",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "商品资料",
+    "商品明细",
+    "相关客户与交易",
+    "业务记录"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "产品编号\n*\n商品单位\n*\n中文名称\n*\n英文名称\n规格\n型号\n海关编码\n*\n税率\n%\n按百分比填写，例如 13 表示 13%\n退税率\n%\n按百分比填写，例如 13 表示 13%\n状态\n停用\n商品图片\n共 0 张\n添加图片\n\n支持 PNG、JPG，图片需小于 2MB；第一张为主图，点击缩略图可更换。\n\n包装资料\n取消\n保存商品",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "product-field-code",
+          "label": "产品编号\n*",
+          "text": "",
+          "value": "UIQA-20261117-05-P02",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 159.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 550.6640625,
+            "bottom": 195.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "product-field-unit",
+          "label": "商品单位\n*",
+          "text": "",
+          "value": "pcs",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 159.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 869.328125,
+            "bottom": 195.2265625,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "product-field-cn_name",
+          "label": "中文名称\n*",
+          "text": "",
+          "value": "UIQA分页验收商品02",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 159.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 1187.9921875,
+            "bottom": 195.2265625,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "英文名称",
+          "text": "",
+          "value": "UIQA Paging Test Product 02",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 235.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 235.2265625,
+            "right": 550.6640625,
+            "bottom": 271.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "规格",
+          "text": "",
+          "value": "UIQA-SPEC-02",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 235.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 235.2265625,
+            "right": 869.328125,
+            "bottom": 271.2265625,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "型号",
+          "text": "",
+          "value": "UIQA-M02",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 235.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 235.2265625,
+            "right": 1187.9921875,
+            "bottom": 271.2265625,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "product-field-customs_code",
+          "label": "海关编码\n*",
+          "text": "",
+          "value": "0000000000",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 311.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 311.2265625,
+            "right": 550.6640625,
+            "bottom": 347.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "税率\n%\n按百分比填写，例如 13 表示 13%",
+          "text": "",
+          "value": "0.00",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 582.6640625,
+            "y": 312.2265625,
+            "width": 257.2734375,
+            "height": 36,
+            "top": 312.2265625,
+            "right": 839.9375,
+            "bottom": 348.2265625,
+            "left": 582.6640625
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "退税率\n%\n按百分比填写，例如 13 表示 13%",
+          "text": "",
+          "value": "0.00",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 901.328125,
+            "y": 312.2265625,
+            "width": 257.2734375,
+            "height": 36,
+            "top": 312.2265625,
+            "right": 1158.6015625,
+            "bottom": 348.2265625,
+            "left": 901.328125
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_b_",
+          "label": "状态\n停用",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 263,
+            "y": 409.875,
+            "width": 258.6640625,
+            "height": 26,
+            "top": 409.875,
+            "right": 521.6640625,
+            "bottom": 435.875,
+            "left": 263
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "file",
+          "id": "",
+          "label": "添加图片",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 11,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "包装资料",
+          "text": "",
+          "value": "UIQA分页测试资料，不用于真实交易。",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 658.1484375,
+            "width": 935.9921875,
+            "height": 98.59375,
+            "top": 658.1484375,
+            "right": 1187.9921875,
+            "bottom": 756.7421875,
+            "left": 252
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 999.1953125,
+            "y": 781.2265625,
+            "width": 70.5625,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1069.7578125,
+            "bottom": 817.2265625,
+            "left": 999.1953125
+          }
+        },
+        {
+          "j": 13,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存商品",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1081.7578125,
+            "y": 781.2265625,
+            "width": 106.2421875,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1188,
+            "bottom": 817.2265625,
+            "left": 1081.7578125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "配件名称\t单耗\t单位\t默认供应商\t采购拆分\t操作\n\n\n暂无数据",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "客户\t合同数\t累计数量\t累计金额\t最近合同\n暂无关联客户，出口合同生成后自动汇总",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "来源\t单号\t日期\t往来方\t数量\t金额\t摘要\n暂无业务记录，报价/合同/出货/采购引用该商品后自动汇总",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

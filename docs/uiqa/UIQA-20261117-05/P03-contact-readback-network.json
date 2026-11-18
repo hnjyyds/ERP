@@ -1,0 +1,163 @@
+[
+  {
+    "requestId": "79503.2165",
+    "url": "http://localhost:8080/api/v1/masterdata/customers?limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "451c5b86-de27-4970-8219-5bdd0573e126",
+            "code": "UIQA-20261117-05-C01",
+            "cn_name": "UIQA全量验收停用客户样本",
+            "en_name": "UIQA Inactive P03 Test Record",
+            "country": "CN",
+            "address": "UIQA测试资料，非真实地址",
+            "website": null,
+            "status": "inactive",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "216c8f08-4e28-4fde-9ec8-b7687f948463",
+                "customer_id": "451c5b86-de27-4970-8219-5bdd0573e126",
+                "name": "UIQA测试联系人",
+                "title": null,
+                "email": "uiqa-p03@example.invalid",
+                "phone": null,
+                "is_primary": true
+              },
+              {
+                "id": "35ddfbda-8e7e-42bc-a2f2-713c636df0d1",
+                "customer_id": "451c5b86-de27-4970-8219-5bdd0573e126",
+                "name": "UIQA-20261117-05-C01 联系人二",
+                "title": "UIQA测试职务",
+                "email": "uiqa-c01-02@example.invalid",
+                "phone": "00000000002",
+                "is_primary": false
+              }
+            ],
+            "primary_contact": {
+              "id": "216c8f08-4e28-4fde-9ec8-b7687f948463",
+              "customer_id": "451c5b86-de27-4970-8219-5bdd0573e126",
+              "name": "UIQA测试联系人",
+              "title": null,
+              "email": "uiqa-p03@example.invalid",
+              "phone": null,
+              "is_primary": true
+            },
+            "credit_profile": {
+              "credit_grade": "A",
+              "credit_limit": "0.00",
+              "currency": "USD",
+              "payment_terms": "",
+              "risk_note": null
+            }
+          },
+          {
+            "id": "a8898417-0e7b-4573-a6c4-8400733e9fcd",
+            "code": "UI261114-C01",
+            "cn_name": "演示客户｜海湾家居贸易",
+            "en_name": "Demo Bay Home Trading",
+            "country": "荷兰",
+            "address": "演示地址：Rotterdam Demo Street 18",
+            "website": "https://customer.example.com",
+            "status": "active",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "bb4bd74a-c50c-4ec1-9ca4-c3385e8b504a",
+                "customer_id": "a8898417-0e7b-4573-a6c4-8400733e9fcd",
+                "name": "演示联系人陈女士",
+                "title": "采购经理",
+                "email": "buyer@example.com",
+                "phone": "000-00000000",
+                "is_primary": true
+              }
+            ],
+            "primary_contact": {
+              "id": "bb4bd74a-c50c-4ec1-9ca4-c3385e8b504a",
+              "customer_id": "a8898417-0e7b-4573-a6c4-8400733e9fcd",
+              "name": "演示联系人陈女士",
+              "title": "采购经理",
+              "email": "buyer@example.com",
+              "phone": "000-00000000",
+              "is_primary": true
+            },
+            "credit_profile": {
+              "credit_grade": "A",
+              "credit_limit": "0.00",
+              "currency": "USD",
+              "payment_terms": "发货后30天",
+              "risk_note": "仅用于前端验收的虚构客户，请勿用于真实交易。"
+            }
+          },
+          {
+            "id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+            "code": "QA261112-C01",
+            "cn_name": "QA261112 测试客户",
+            "en_name": "QA261112 Customer",
+            "country": "DE",
+            "address": null,
+            "website": null,
+            "status": "active",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "b9e1fd5c-9d78-47f8-8216-0e93cd9f6f22",
+                "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+                "name": "QA261112 联系人",
+                "title": null,
+                "email": "qa261112@example.invalid",
+                "phone": null,
+                "is_primary": true
+              }
+            ],
+            "primary_contact": {
+              "id": "b9e1fd5c-9d78-47f8-8216-0e93cd9f6f22",
+              "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+              "name": "QA261112 联系人",
+              "title": null,
+              "email": "qa261112@example.invalid",
+              "phone": null,
+              "is_primary": true
+            },
+            "credit_profile": {
+              "credit_grade": "A",
+              "credit_limit": "10000.00",
+              "currency": "USD",
+              "payment_terms": "",
+              "risk_note": "QA261112 风险备注\n多行回显检查"
+            }
+          }
+        ],
+        "total": 3,
+        "summary": {
+          "active_count": 2,
+          "contact_count": 4,
+          "credit_profile_count": 3
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.2168",
+    "url": "http://localhost:8080/api/v1/masterdata/customers/451c5b86-de27-4970-8219-5bdd0573e126/transactions",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0
+      },
+      "error": null
+    }
+  }
+]

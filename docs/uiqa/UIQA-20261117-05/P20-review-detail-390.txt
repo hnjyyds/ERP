@@ -1,0 +1,118 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=8441, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "出库计划"
+        container
+          button "通知" [ref=8438, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=8439, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "出库计划概览"
+          container
+            text "出库计划"
+            text "1"
+          container
+            text "待安排"
+            text "0"
+          container
+            text "已排库位"
+            text "0"
+          container
+            text "待出库数量"
+            text "0.00"
+          container
+            text "发货来源"
+            text "1"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "出库计划明细"
+            button [ref=8440]
+              svg_root
+              text "返回列表"
+          unordered_list
+            container
+              list_item
+                text "来源单据"
+              list_item
+                text "发货计划"
+                text "/"
+                text "SP-DAEPEG"
+            container
+              list_item
+                text "客户"
+              list_item
+                text "QA261112 测试客户"
+            container
+              list_item
+                text "出库类型"
+              list_item
+                text "成品出库"
+            container
+              list_item
+                text "计划状态"
+              list_item
+                text "已关闭"
+            container
+              list_item
+                text "计划出库日"
+              list_item
+                text "2026-11-12"
+            container
+              list_item
+                text "库位"
+              list_item
+                text "未安排"
+                text "/"
+                text "未安排"
+          text "已出库商品"
+          text "1 条"
+          table
+            table_row
+              table_cell
+                text "商品"
+              table_cell
+                text "规格"
+              table_cell
+                text "计划数量"
+              table_cell
+                text "已出库"
+              table_cell
+                text "状态"
+            table_row
+              table_cell
+                text "QA261112-P01"
+                text "QA261112 验收测试围巾"
+              table_cell
+                text "未设置"
+              table_cell
+                text "20"
+                text "pcs"
+              table_cell
+                text "20"
+                text "pcs"
+              table_cell
+                text "已出库"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

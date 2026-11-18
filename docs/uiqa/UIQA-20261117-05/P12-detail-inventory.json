@@ -1,0 +1,466 @@
+{
+  "url": "http://localhost:8080/sample/records/dbb51664-8f59-4075-af85-782117615fb7",
+  "title": "样品登记",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "样品登记",
+    "样品明细"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "追加图片\n样品图片\n上传图片\n\n尚未上传样品图片\n\n图片说明\n追加样品图片",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "上传图片",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 351.046875,
+            "y": 842.9921875,
+            "width": 89.015625,
+            "height": 28,
+            "top": 842.9921875,
+            "right": 440.0625,
+            "bottom": 870.9921875,
+            "left": 351.046875
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "file",
+          "id": "",
+          "label": "上传图片",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "图片说明",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 298,
+            "y": 907.9375,
+            "width": 519,
+            "height": 36,
+            "top": 907.9375,
+            "right": 817,
+            "bottom": 943.9375,
+            "left": 298
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "追加样品图片",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 298,
+            "y": 959.9375,
+            "width": 132,
+            "height": 36,
+            "top": 959.9375,
+            "right": 430,
+            "bottom": 995.9375,
+            "left": 298
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "数量事件\n事件类型\n寄样\n数量\n日期\n单位\n寄样单号\n接收方\n事件备注\n登记样品数量",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_7_",
+          "label": "事件类型\n寄样",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 874,
+            "y": 869.9921875,
+            "width": 479,
+            "height": 26,
+            "top": 869.9921875,
+            "right": 1353,
+            "bottom": 895.9921875,
+            "left": 874
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "数量",
+          "text": "",
+          "value": "1",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 934.9921875,
+            "width": 519,
+            "height": 36,
+            "top": 934.9921875,
+            "right": 1382,
+            "bottom": 970.9921875,
+            "left": 863
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 1004.9921875,
+            "width": 519,
+            "height": 36,
+            "top": 1004.9921875,
+            "right": 1382,
+            "bottom": 1040.9921875,
+            "left": 863
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单位",
+          "text": "",
+          "value": "pcs",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 1074.9921875,
+            "width": 519,
+            "height": 36,
+            "top": 1074.9921875,
+            "right": 1382,
+            "bottom": 1110.9921875,
+            "left": 863
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "寄样单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 1144.9921875,
+            "width": 519,
+            "height": 36,
+            "top": 1144.9921875,
+            "right": 1382,
+            "bottom": 1180.9921875,
+            "left": 863
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "接收方",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 1214.9921875,
+            "width": 519,
+            "height": 36,
+            "top": 1214.9921875,
+            "right": 1382,
+            "bottom": 1250.9921875,
+            "left": 863
+          }
+        },
+        {
+          "j": 6,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "事件备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 1284.9921875,
+            "width": 519,
+            "height": 58.296875,
+            "top": 1284.9921875,
+            "right": 1382,
+            "bottom": 1343.2890625,
+            "left": 863
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "登记样品数量",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 863,
+            "y": 1359.2890625,
+            "width": 132,
+            "height": 36,
+            "top": 1359.2890625,
+            "right": 995,
+            "bottom": 1395.2890625,
+            "left": 863
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "收样数\t寄样数\t公司留样\t单位\n3\t0\t3\tpcs",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "图片预览\t图片文件\t说明\t主图\n暂无样品图片",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "跟单节点\t实际日期\t采购合同\t事件\n暂无跟单节点事件",
+      "buttons": []
+    },
+    {
+      "i": 3,
+      "text": "事件类型\t数量\t单位\t日期\t寄样单号\t接收方\t说明\n收样\t3\tpcs\t2026-11-12\t-\tQA261112 测试供应商\t打样单 SR-W3C3DV 转样品登记",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

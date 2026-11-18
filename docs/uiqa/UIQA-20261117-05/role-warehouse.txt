@@ -1,0 +1,211 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          container "D-DUTCH"
+            text "D-DUTCH"
+          container
+            text "新裴贸易"
+            text "业务管理系统"
+        container "主导航"
+          anchor [ref=6504, loc=href:/, url=http://localhost:8080/]
+            svg_root
+            text "工作台"
+          container "业务模块"
+            container
+              container [ref=6505]
+                svg_root
+                text "基础资料"
+                svg_root
+              anchor [ref=6506, loc=href:/masterdata/products, url=http://localhost:8080/masterdata/products]
+                svg_root
+                text "商品资料"
+            container
+              container [ref=6507]
+                svg_root
+                text "仓库"
+                svg_root
+              container
+                anchor [ref=6508, loc=href:/warehouse/inbound-orders, url=http://localhost:8080/warehouse/inbound-orders]
+                  svg_root
+                  text "入仓"
+                anchor [ref=6509, loc=href:/warehouse/inbound-plans, url=http://localhost:8080/warehouse/inbound-plans]
+                  svg_root
+                  text "入库计划"
+                anchor [ref=6510, loc=href:/warehouse/outbound-plans, url=http://localhost:8080/warehouse/outbound-plans]
+                  svg_root
+                  text "出库计划"
+                anchor [ref=6511, loc=href:/warehouse/outbound-orders, url=http://localhost:8080/warehouse/outbound-orders]
+                  svg_root
+                  text "货物出库"
+                anchor [ref=6512, loc=href:/warehouse/stocktakes, url=http://localhost:8080/warehouse/stocktakes]
+                  svg_root
+                  text "库存盘点"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "工作台"
+          container
+            button "通知" [ref=6513, loc=css:button[aria-label="通知"]]
+              svg_root
+            button "系统设置" [ref=6514, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "工作台"
+            button [ref=6515]
+              svg_root
+              text "待办"
+              text "0"
+            button [ref=6516]
+              svg_root
+              text "今日日程"
+              text "0"
+            button [ref=6517]
+              svg_root
+              text "未读消息"
+              text "0"
+            button [ref=6518]
+              svg_root
+              text "公告"
+              text "1"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "快捷入口"
+              button [ref=6519]
+                svg_root
+                text "管理快捷入口"
+            container
+              text "推荐入口"
+              container
+                button [ref=6520]
+                  text "商品资料"
+                button [ref=6521]
+                  text "入仓"
+                button [ref=6522]
+                  text "入库计划"
+                button [ref=6523]
+                  text "出库计划"
+          container
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "今日优先处理"
+                container
+                  text "我的待办"
+                  container "待办时效概览"
+                    text "暂无紧急待办"
+                  button "新增待办" [ref=6524, loc=css:button[aria-label="新增待办"]]
+                    svg_root
+                  button [ref=6525]
+                    text "查看全部"
+              container
+                svg_root
+                paragraph
+                  text "暂无待办"
+                button [ref=6526]
+                  svg_root
+                  text "新增待办"
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "我的日程"
+                container
+                  button [ref=6527]
+                    svg_root
+                    text "新增日程"
+                  button [ref=6528]
+                    text "查看全部"
+              container
+                svg_root
+                paragraph
+                  text "暂无日程"
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "消息"
+                button [ref=6529]
+                  text "查看全部"
+              container
+                svg_root
+                paragraph
+                  text "暂无消息"
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "公司公告"
+                button [ref=6530]
+                  text "查看全部"
+              container
+                text "外贸业务系统启动"
+                paragraph
+                  text "请关注采购跟单、QC 查验和仓库入出库提醒。"
+    dialog "系统设置"
+      button "Close" [ref=6531, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "系统设置"
+      container
+        container
+          image "演示仓库专员 的头像"
+            svg_root
+          container
+            text "账号"
+            text "演示仓库专员"
+            container
+              text "仓储部"
+              text "·"
+              text "仓库专员"
+        container
+          container "用户头像"
+            button [ref=6532]
+              image "演示仓库专员 的头像"
+                svg_root
+              container
+                text "头像"
+                text "短发眼镜"
+              svg_root
+          button [ref=6533]
+            text "保存头像"
+        container
+          text "语言"
+          container
+            button [ref=6534]
+              text "中文"
+              text "UTC+8 / Asia Shanghai"
+            button [ref=6535]
+              text "English"
+              text "UTC"
+        container
+          text "时区"
+          container
+            text "UTC+8 / Asia Shanghai"
+            text "用于展示时间与提醒"
+        container
+          button [ref=6536]
+            svg_root
+            text "退出登录"
+          button [ref=6537]
+            text "关闭"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

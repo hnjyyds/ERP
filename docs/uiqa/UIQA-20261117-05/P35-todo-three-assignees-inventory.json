@@ -1,0 +1,710 @@
+{
+  "url": "http://localhost:8080/",
+  "title": "工作台",
+  "viewport": [
+    390,
+    844
+  ],
+  "headings": [
+    "工作台",
+    "快捷入口",
+    "今日优先处理",
+    "我的日程",
+    "消息",
+    "公司公告"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_2u_",
+      "visible": true,
+      "text": "截止时间（可选）\n系统管理员\n演示财务主管\n演示 QC 专员\n系统管理员\nadmin · 管理部\n演示业务主管\ndemo · 业务部\n演示采购专员\npurchase · 采购部\n演示财务\nfinance · 财务部\n演示财务主管\nfinance_manager · 财务部\n演示仓库专员\nwarehouse · 仓储部\n演示 QC 专员\nqc · 品质部\n取消\n新增待办",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "标题",
+          "text": "",
+          "value": "UIQA-UNSAVED-TODO-20261118",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 33,
+            "y": 178.4765625,
+            "width": 324,
+            "height": 62,
+            "top": 178.4765625,
+            "right": 357,
+            "bottom": 240.4765625,
+            "left": 33
+          }
+        },
+        {
+          "j": 1,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "内容",
+          "text": "",
+          "value": "只读草稿，取消后不应留存。",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 33,
+            "y": 240.4765625,
+            "width": 324,
+            "height": 260,
+            "top": 240.4765625,
+            "right": 357,
+            "bottom": 500.4765625,
+            "left": 33
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "id": "",
+          "label": "截止时间",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 33,
+            "y": 524.3515625,
+            "width": 324,
+            "height": 38.421875,
+            "top": 524.3515625,
+            "right": 357,
+            "bottom": 562.7734375,
+            "left": 33
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "指派人",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 305,
+            "y": 579.6484375,
+            "width": 38,
+            "height": 44,
+            "top": 579.6484375,
+            "right": 343,
+            "bottom": 623.6484375,
+            "left": 305
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "系统管理员\nadmin · 管理部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 152.0234375,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 152.0234375,
+            "right": 334,
+            "bottom": 205.796875,
+            "left": 56
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "演示业务主管\ndemo · 业务部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 211.796875,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 211.796875,
+            "right": 334,
+            "bottom": 265.5703125,
+            "left": 56
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "演示采购专员\npurchase · 采购部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 271.5703125,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 271.5703125,
+            "right": 334,
+            "bottom": 325.34375,
+            "left": 56
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "演示财务\nfinance · 财务部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 331.34375,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 331.34375,
+            "right": 334,
+            "bottom": 385.1171875,
+            "left": 56
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "演示财务主管\nfinance_manager · 财务部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 391.1171875,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 391.1171875,
+            "right": 334,
+            "bottom": 444.890625,
+            "left": 56
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "演示仓库专员\nwarehouse · 仓储部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 450.890625,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 450.890625,
+            "right": 334,
+            "bottom": 504.6640625,
+            "left": 56
+          }
+        },
+        {
+          "j": 10,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "演示 QC 专员\nqc · 品质部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 510.6640625,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 510.6640625,
+            "right": 334,
+            "bottom": 564.4375,
+            "left": 56
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 190.3125,
+            "y": 660.5234375,
+            "width": 62.5625,
+            "height": 44,
+            "top": 660.5234375,
+            "right": 252.875,
+            "bottom": 704.5234375,
+            "left": 190.3125
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增待办",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 260.875,
+            "y": 660.5234375,
+            "width": 97.125,
+            "height": 44,
+            "top": 660.5234375,
+            "right": 358,
+            "bottom": 704.5234375,
+            "left": 260.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "新增待办\n截止时间（可选）\n系统管理员\n演示财务主管\n演示 QC 专员\n系统管理员\nadmin · 管理部\n演示业务主管\ndemo · 业务部\n演示采购专员\npurchase · 采购部\n演示财务\nfinance · 财务部\n演示财务主管\nfinance_manager · 财务部\n演示仓库专员\nwarehouse · 仓储部\n演示 QC 专员\nqc · 品质部\n取消\n新增待办",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 326,
+            "y": 131.4765625,
+            "width": 44,
+            "height": 44,
+            "top": 131.4765625,
+            "right": 370,
+            "bottom": 175.4765625,
+            "left": 326
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "标题",
+          "text": "",
+          "value": "UIQA-UNSAVED-TODO-20261118",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 33,
+            "y": 178.4765625,
+            "width": 324,
+            "height": 62,
+            "top": 178.4765625,
+            "right": 357,
+            "bottom": 240.4765625,
+            "left": 33
+          }
+        },
+        {
+          "j": 2,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "label": "内容",
+          "text": "",
+          "value": "只读草稿，取消后不应留存。",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 33,
+            "y": 240.4765625,
+            "width": 324,
+            "height": 260,
+            "top": 240.4765625,
+            "right": 357,
+            "bottom": 500.4765625,
+            "left": 33
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "截止时间",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 33,
+            "y": 524.3515625,
+            "width": 324,
+            "height": 38.421875,
+            "top": 524.3515625,
+            "right": 357,
+            "bottom": 562.7734375,
+            "left": 33
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "指派人",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 305,
+            "y": 579.6484375,
+            "width": 38,
+            "height": 44,
+            "top": 579.6484375,
+            "right": 343,
+            "bottom": 623.6484375,
+            "left": 305
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "系统管理员\nadmin · 管理部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 152.0234375,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 152.0234375,
+            "right": 334,
+            "bottom": 205.796875,
+            "left": 56
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "演示业务主管\ndemo · 业务部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 211.796875,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 211.796875,
+            "right": 334,
+            "bottom": 265.5703125,
+            "left": 56
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "演示采购专员\npurchase · 采购部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 271.5703125,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 271.5703125,
+            "right": 334,
+            "bottom": 325.34375,
+            "left": 56
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "演示财务\nfinance · 财务部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 331.34375,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 331.34375,
+            "right": 334,
+            "bottom": 385.1171875,
+            "left": 56
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "演示财务主管\nfinance_manager · 财务部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 391.1171875,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 391.1171875,
+            "right": 334,
+            "bottom": 444.890625,
+            "left": 56
+          }
+        },
+        {
+          "j": 10,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "演示仓库专员\nwarehouse · 仓储部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 450.890625,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 450.890625,
+            "right": 334,
+            "bottom": 504.6640625,
+            "left": 56
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "演示 QC 专员\nqc · 品质部",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 56,
+            "y": 510.6640625,
+            "width": 278,
+            "height": 53.7734375,
+            "top": 510.6640625,
+            "right": 334,
+            "bottom": 564.4375,
+            "left": 56
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 190.3125,
+            "y": 660.5234375,
+            "width": 62.5625,
+            "height": 44,
+            "top": 660.5234375,
+            "right": 252.875,
+            "bottom": 704.5234375,
+            "left": 190.3125
+          }
+        },
+        {
+          "j": 13,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "新增待办",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 260.875,
+            "y": 660.5234375,
+            "width": 97.125,
+            "height": 44,
+            "top": 660.5234375,
+            "right": 358,
+            "bottom": 704.5234375,
+            "left": 260.875
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "入仓",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "出库计划",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "货物出库",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "库存盘点",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "组织管理",
+      "href": "/organization/users"
+    },
+    {
+      "text": "MCP 接入",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "审计日志",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "采购询价",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "开票通知",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

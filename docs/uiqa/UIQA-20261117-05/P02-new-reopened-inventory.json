@@ -1,0 +1,704 @@
+{
+  "url": "http://localhost:8080/masterdata/suppliers",
+  "title": "供应商资料",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "供应商资料",
+    "供应商资料"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "搜索\n新增供应商",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 256.640625,
+            "width": 853.6953125,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1134.6953125,
+            "bottom": 292.640625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "label": "查询供应商",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1142.6953125,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1178.6953125,
+            "bottom": 292.640625,
+            "left": 1142.6953125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增供应商",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1186.6953125,
+            "y": 256.640625,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1311,
+            "bottom": 292.640625,
+            "left": 1186.6953125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "高级筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1319,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1355,
+            "bottom": 292.640625,
+            "left": 1319
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "设置列视图",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1363,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1399,
+            "bottom": 292.640625,
+            "left": 1363
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "编号\n中文名称\n英文名称\n国家/地区\n状态\n启用\n网站\n地址\n信用资料\n信用等级\nA\n授信额度\n币种\n账期\n风险备注\n首个联系人\n姓名\n职务\n邮箱\n电话\n主要联系人\n取消\n新增供应商",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "编号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 159.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 550.6640625,
+            "bottom": 195.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "中文名称",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 159.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 869.328125,
+            "bottom": 195.2265625,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "英文名称",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 159.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 1187.9921875,
+            "bottom": 195.2265625,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "国家/地区",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 235.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 235.2265625,
+            "right": 550.6640625,
+            "bottom": 271.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_38_",
+          "label": "状态\n启用",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 581.6640625,
+            "y": 240.2265625,
+            "width": 258.6640625,
+            "height": 26,
+            "top": 240.2265625,
+            "right": 840.328125,
+            "bottom": 266.2265625,
+            "left": 581.6640625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "网站",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 235.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 235.2265625,
+            "right": 1187.9921875,
+            "bottom": 271.2265625,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "地址",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 311.2265625,
+            "width": 935.9921875,
+            "height": 36,
+            "top": 311.2265625,
+            "right": 1187.9921875,
+            "bottom": 347.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_3a_",
+          "label": "信用等级\nA",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 263,
+            "y": 473.078125,
+            "width": 258.6640625,
+            "height": 26,
+            "top": 473.078125,
+            "right": 521.6640625,
+            "bottom": 499.078125,
+            "left": 263
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "授信额度",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 468.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 468.078125,
+            "right": 869.328125,
+            "bottom": 504.078125,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 468.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 468.078125,
+            "right": 1187.9921875,
+            "bottom": 504.078125,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "账期",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 544.078125,
+            "width": 935.9921875,
+            "height": 36,
+            "top": 544.078125,
+            "right": 1187.9921875,
+            "bottom": 580.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 11,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "风险备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 620.078125,
+            "width": 935.9921875,
+            "height": 78.4453125,
+            "top": 620.078125,
+            "right": 1187.9921875,
+            "bottom": 698.5234375,
+            "left": 252
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "姓名",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 819.375,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 819.375,
+            "right": 550.6640625,
+            "bottom": 855.375,
+            "left": 252
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "职务",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 819.375,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 819.375,
+            "right": 869.328125,
+            "bottom": 855.375,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "邮箱",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 819.375,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 819.375,
+            "right": 1187.9921875,
+            "bottom": 855.375,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "电话",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 895.375,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 895.375,
+            "right": 550.6640625,
+            "bottom": 931.375,
+            "left": 252
+          }
+        },
+        {
+          "j": 16,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "",
+          "label": "",
+          "text": "",
+          "value": "on",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 894.375,
+            "width": 16,
+            "height": 16,
+            "top": 894.375,
+            "right": 586.6640625,
+            "bottom": 910.375,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 17,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 984.6328125,
+            "y": 781.2265625,
+            "width": 70.5625,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1055.1953125,
+            "bottom": 817.2265625,
+            "left": 984.6328125
+          }
+        },
+        {
+          "j": 18,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增供应商",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1067.1953125,
+            "y": 781.2265625,
+            "width": 120.8046875,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1188,
+            "bottom": 817.2265625,
+            "left": 1067.1953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nUIQA-20261117-05-S01\tUIQA全量验收停用供应商样本\tUIQA Inactive Supplier Test Record\tCN\tUIQA测试联系人\t停用\t\n查看详情\n\nUI261114-S01\t演示供应商｜江南织造\tDemo Jiangnan Textile\t中国\t演示联系人李先生\t启用\t\n查看详情\n\nQA261112-S01\tQA261112 测试供应商\tQA261112 Supplier\tCN\tQA261112 联系人\t启用\t\n查看详情",
+      "buttons": [
+        "UIQA-20261117-05-S01",
+        "查看详情",
+        "UI261114-S01",
+        "查看详情",
+        "QA261112-S01",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

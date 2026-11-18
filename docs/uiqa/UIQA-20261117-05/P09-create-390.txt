@@ -1,0 +1,242 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=3665, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "出货明细"
+          container
+            button "通知" [ref=3650, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=3651, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "出货明细概览"
+            container
+              text "出货单"
+              text "1"
+            container
+              text "待审批"
+              text "0"
+            container
+              text "已审批"
+              text "1"
+            container
+              text "应收金额"
+              text "USD 205.00"
+            container
+              text "预计利润"
+              text "USD 210.00"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "出货计划列表"
+              form
+                container
+                  text "出货搜索"
+                  textbox [ref=3669, loc=css:input[placeholder="出货单 / 客户 / 合同 / 港口"]]
+                    text "出货单 / 客户 / 合同 / 港口"
+                container
+                  text "审批状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=3670]
+                    image "down"
+                      svg_root
+                container
+                  text "客户编号"
+                  container
+                    container
+                      text "输入客户编号"
+                      comboboxgrouping "客户编号" [ref=3671, loc=css:input[aria-label="客户编号"]]
+                    image "down"
+                      svg_root
+                container
+                  text "出口合同编号"
+                  textbox [ref=3672, loc=css:input[placeholder="输入出口合同编号"]]
+                    text "输入出口合同编号"
+                container
+                  button [ref=3673]
+                    svg_root
+                    text "查询"
+                  button [ref=3674]
+                    svg_root
+                    text "生成出货明细"
+            container [ref=3709]
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=3675]
+                  container [ref=3710]
+                    table
+                      table_row
+                        table_cell
+                          text "出货单号"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "客户"
+                        table_cell
+                          text "出货日期"
+                        table_cell
+                          text "计划出运日"
+                        table_cell
+                          text "应收"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=3676]
+                            text "SP-DAEPEG"
+                        table_cell
+                          text "已审批"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "2026-11-12"
+                        table_cell
+                          text "2026-11-25"
+                        table_cell
+                          text "USD 205.00"
+                        table_cell
+                          button [ref=3677]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=3678]
+                      image "left"
+                        svg_root
+                  list_item [ref=3679]
+                    anchor [ref=3680]
+                      text "1"
+                  list_item
+                    button [ref=3681]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    container [ref=3683]
+      dialog "从出口合同生成出货明细"
+        button "Close" [ref=3684, loc=css:button[aria-label="Close"]]
+          container "关闭"
+            image "close"
+              svg_root
+        text "从出口合同生成出货明细"
+        form
+          container
+            container
+              text "出货单号"
+              textbox [ref=3685, loc=css:input[placeholder="系统自动生成"]]
+                text "系统自动生成"
+            container
+              text "出货日期"
+              textbox [ref=3686]
+                spinbutton "年" [ref=3687]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=3688]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=3689]
+                  text "17"
+          container
+            container
+              text "计划出运日"
+              textbox [ref=3690]
+                spinbutton "年" [ref=3691]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=3692]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=3693]
+                  text "17"
+            container
+              text "运输方式"
+              container
+                container
+                  text "海运"
+                  comboboxgrouping [ref=3694]
+                image "down"
+                  svg_root
+          text "出口合同选择"
+          container
+            container
+              text "出口合同 A"
+              container
+                container
+                  text "输入合同号或客户搜索"
+                  comboboxgrouping "出口合同 A" [ref=3695, loc=css:input[aria-label="出口合同 A"]]
+                image "down"
+                  svg_root
+            container
+              text "合同 A 出货数量"
+              spinbutton [ref=3696]
+          container
+            container
+              text "出口合同 B（可选）"
+              container
+                container
+                  text "需要合并出货时选择第二份合同"
+                  comboboxgrouping "出口合同 B（可选）" [ref=3697, loc=css:input[aria-label="出口合同 B（可选）"]]
+                image "down"
+                  svg_root
+            container
+              text "合同 B 出货数量"
+              spinbutton [ref=3698]
+          text "物流单证"
+          container
+            text "起运港"
+            textbox [ref=3699]
+              text "Ningbo"
+          container
+            text "目的港"
+            textbox [ref=3700]
+          container
+            text "船名航次"
+            textbox [ref=3701]
+          container
+            text "箱号"
+            textbox [ref=3702]
+          container
+            text "订舱号"
+            textbox [ref=3703]
+          container
+            text "单证负责人"
+            textbox [ref=3704]
+          container
+            text "预计付款成本"
+            spinbutton [ref=3705]
+              text "0.00"
+          container
+            text "出货备注"
+            textbox [ref=3706]
+          button [ref=3707]
+            text "取 消"
+          button [ref=3708]
+            text "生成出货明细"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

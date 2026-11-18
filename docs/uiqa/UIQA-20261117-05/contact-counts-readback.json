@@ -1,0 +1,65 @@
+[
+  {
+    "page": "P02",
+    "code": "UIQA-20261117-05-S01",
+    "count": 2,
+    "contacts": [
+      {
+        "id": "7df1d11a-6b04-4082-aa2d-59ca2a13390b",
+        "name": "UIQA测试联系人",
+        "title": null,
+        "email": "uiqa-supplier@example.invalid",
+        "is_primary": true
+      },
+      {
+        "id": "955e03a9-7292-4130-b492-10620f1d9f84",
+        "name": "UIQA-20261117-05-S01 联系人二",
+        "title": "UIQA测试职务",
+        "email": "uiqa-s01-02@example.invalid",
+        "is_primary": false
+      }
+    ]
+  },
+  {
+    "page": "P03",
+    "code": "UIQA-20261117-05-C01",
+    "count": 2,
+    "contacts": [
+      {
+        "id": "216c8f08-4e28-4fde-9ec8-b7687f948463",
+        "name": "UIQA测试联系人",
+        "title": null,
+        "email": "uiqa-p03@example.invalid",
+        "is_primary": true
+      },
+      {
+        "id": "35ddfbda-8e7e-42bc-a2f2-713c636df0d1",
+        "name": "UIQA-20261117-05-C01 联系人二",
+        "title": "UIQA测试职务",
+        "email": "uiqa-c01-02@example.invalid",
+        "is_primary": false
+      }
+    ]
+  },
+  {
+    "page": "P04",
+    "code": "UIQA-20261117-05-B01",
+    "count": 2,
+    "contacts": [
+      {
+        "id": "55639aef-5dd4-40c5-8093-7ae3c76b5d06",
+        "name": "UIQA测试联系人",
+        "title": null,
+        "email": "uiqa-p04@example.invalid",
+        "is_primary": true
+      },
+      {
+        "id": "8d17060a-4265-4e39-82b4-2a1dd841dbd7",
+        "name": "UIQA-20261117-05-B01 联系人二",
+        "title": "UIQA测试职务",
+        "email": "uiqa-b01-02@example.invalid",
+        "is_primary": false
+      }
+    ]
+  }
+]

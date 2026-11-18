@@ -1,0 +1,49 @@
+{
+  "identity": {
+    "username": "qc",
+    "display_name": "演示 QC 专员"
+  },
+  "profile": {
+    "id": "u-qc",
+    "username": "qc",
+    "display_name": "演示 QC 专员",
+    "department_name": "品质部",
+    "permissions": [
+      "dashboard:view",
+      "masterdata:product:view",
+      "purchase:contract:view",
+      "purchase:contract:view_all",
+      "quality:inspection:edit",
+      "quality:inspection:view",
+      "quality:inspection:view_all",
+      "warehouse:inbound_plan:view",
+      "warehouse:inbound_plan:view_all"
+    ]
+  },
+  "menus": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    }
+  ]
+}

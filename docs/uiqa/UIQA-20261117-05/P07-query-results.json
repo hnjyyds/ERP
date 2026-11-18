@@ -1,0 +1,92 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "合同搜索",
+    "before": {
+      "url": "http://localhost:8080/sales/contracts",
+      "form": "合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": ""
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户筛选\n从客户资料筛选",
+          "value": ""
+        }
+      ],
+      "text": "合同列表\n合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同\n合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情\n\nEC-F8D7RX\t已审批\tQA261112 测试客户\t2026-11-25\tUSD 512.50\t未回签\t\n查看详情\n共 2 条\n1\n50 条/页",
+      "tableText": "合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情\n\nEC-F8D7RX\t已审批\tQA261112 测试客户\t2026-11-25\tUSD 512.50\t未回签\t\n查看详情"
+    },
+    "positive": "EC-5FW46R",
+    "hit": {
+      "url": "http://localhost:8080/sales/contracts?q=EC-5FW46R",
+      "form": "合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": "EC-5FW46R"
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户筛选\n从客户资料筛选",
+          "value": ""
+        }
+      ],
+      "text": "合同列表\n合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同\n合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/sales/contracts?q=UIQA-20261117-05-NOMATCH",
+      "form": "合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户筛选\n从客户资料筛选",
+          "value": ""
+        }
+      ],
+      "text": "合同列表\n合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同\n合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/sales/contracts",
+      "form": "合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": ""
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户筛选\n从客户资料筛选",
+          "value": ""
+        }
+      ],
+      "text": "合同列表\n合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同\n合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情\n\nEC-F8D7RX\t已审批\tQA261112 测试客户\t2026-11-25\tUSD 512.50\t未回签\t\n查看详情\n共 2 条\n1\n50 条/页",
+      "tableText": "合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情\n\nEC-F8D7RX\t已审批\tQA261112 测试客户\t2026-11-25\tUSD 512.50\t未回签\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

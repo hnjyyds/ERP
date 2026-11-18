@@ -1,0 +1,76 @@
+[
+  {
+    "requestId": "79503.2663",
+    "url": "http://localhost:8080/api/v1/purchase/contracts?approval_status=approved",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购合同权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购合同权限"
+      }
+    }
+  },
+  {
+    "requestId": "79503.2669",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-balances?limit=1",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2667",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-plans?status=scheduled",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2665",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2664",
+    "url": "http://localhost:8080/api/v1/purchase/contracts?approval_status=approved",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购合同权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购合同权限"
+      }
+    }
+  },
+  {
+    "requestId": "79503.2668",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-plans?status=planned",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2666",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-plans",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2671",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-ledgers?q=QA261112-P01&source_id=5bf1413c-53e6-466a-805d-199a515a81aa",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2670",
+    "url": "http://localhost:8080/api/v1/warehouse/inbound-orders/inventory-balances?q=QA261112-P01",
+    "status": 200,
+    "method": "GET"
+  }
+]

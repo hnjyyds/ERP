@@ -1,0 +1,331 @@
+{
+  "url": "http://localhost:8080/masterdata/partners/3e4df6ca-23ff-41b4-a522-6afc9f2b8d3e",
+  "title": "合作伙伴",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "合作伙伴",
+    "合作伙伴",
+    "UIQA全量验收停用合作伙伴样本",
+    "联系人",
+    "费用记录"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_8_",
+      "visible": true,
+      "text": "姓名\n职务\n邮箱\n电话\n设为主要联系人\n取消\n保存联系人",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "姓名",
+          "text": "",
+          "value": "UIQA测试联系人",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 393.1978454589844,
+            "y": 369.5487060546875,
+            "width": 316.9209289550781,
+            "height": 35.8778076171875,
+            "top": 369.5487060546875,
+            "right": 710.1187744140625,
+            "bottom": 405.426513671875,
+            "left": 393.1978454589844
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "职务",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 730.0509033203125,
+            "y": 369.5487060546875,
+            "width": 316.9208984375,
+            "height": 35.8778076171875,
+            "top": 369.5487060546875,
+            "right": 1046.9718017578125,
+            "bottom": 405.426513671875,
+            "left": 730.0509033203125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "邮箱",
+          "text": "",
+          "value": "uiqa-p04@example.invalid",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 393.1978454589844,
+            "y": 445.2908020019531,
+            "width": 316.9209289550781,
+            "height": 35.877838134765625,
+            "top": 445.2908020019531,
+            "right": 710.1187744140625,
+            "bottom": 481.16864013671875,
+            "left": 393.1978454589844
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "电话",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 730.0509033203125,
+            "y": 445.2908020019531,
+            "width": 316.9208984375,
+            "height": 35.877838134765625,
+            "top": 445.2908020019531,
+            "right": 1046.9718017578125,
+            "bottom": 481.16864013671875,
+            "left": 730.0509033203125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "",
+          "label": "",
+          "text": "",
+          "value": "on",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 393.1978454589844,
+            "y": 500.1041564941406,
+            "width": 15.945709228515625,
+            "height": 15.945709228515625,
+            "top": 500.1041564941406,
+            "right": 409.1435546875,
+            "bottom": 516.0498657226562,
+            "left": 393.1978454589844
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 844.294677734375,
+            "y": 571.85986328125,
+            "width": 70.3231201171875,
+            "height": 35.8778076171875,
+            "top": 571.85986328125,
+            "right": 914.6177978515625,
+            "bottom": 607.7376708984375,
+            "left": 844.294677734375
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存联系人",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 926.5770263671875,
+            "y": 571.85986328125,
+            "width": 120.394775390625,
+            "height": 35.8778076171875,
+            "top": 571.85986328125,
+            "right": 1046.9718017578125,
+            "bottom": 607.7376708984375,
+            "left": 926.5770263671875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "来源\t编号\t摘要\t金额\t时间\n\n\n暂无数据",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

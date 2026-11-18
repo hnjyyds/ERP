@@ -1,0 +1,406 @@
+[
+  {
+    "control": {
+      "i": 3,
+      "id": "_r_n_",
+      "label": "业务员\n演示业务主管",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 0,
+        "label": "系统管理员\nadmin · 管理部",
+        "title": "",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 1,
+        "label": "演示业务主管\ndemo · 业务部",
+        "title": "",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "系统管理员\nadmin · 管理部",
+        "state": {
+          "selected": "系统管理员",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "业务员\n系统管理员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "选择客户\n从客户资料选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户名称",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "USD"
+            },
+            {
+              "label": "贸易条款",
+              "type": "text",
+              "value": "FOB Ningbo"
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": "30% T/T in advance, balance before shipment"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "演示业务主管\ndemo · 业务部",
+        "state": {
+          "selected": "演示业务主管",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "业务员\n演示业务主管",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "选择客户\n从客户资料选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户名称",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "USD"
+            },
+            {
+              "label": "贸易条款",
+              "type": "text",
+              "value": "FOB Ningbo"
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": "30% T/T in advance, balance before shipment"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "请选择业务员",
+      "fields": [
+        {
+          "label": "合同号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "合同日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "业务员\n请选择业务员",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "选择客户\n从客户资料选择",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "客户名称",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "币种",
+          "type": "text",
+          "value": "USD"
+        },
+        {
+          "label": "贸易条款",
+          "type": "text",
+          "value": "FOB Ningbo"
+        },
+        {
+          "label": "付款条款",
+          "type": "text",
+          "value": "30% T/T in advance, balance before shipment"
+        },
+        {
+          "label": "计划出运日",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "合同备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 4,
+      "id": "_r_p_",
+      "label": "选择客户\n从客户资料选择",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 2,
+        "label": "演示客户｜海湾家居贸易\nUI261114-C01 · 荷兰",
+        "title": "",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 3,
+        "label": "QA261112 测试客户\nQA261112-C01 · DE",
+        "title": "",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "演示客户｜海湾家居贸易\nUI261114-C01 · 荷兰",
+        "state": {
+          "selected": "演示客户｜海湾家居贸易",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "业务员\n请选择业务员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "选择客户\n演示客户｜海湾家居贸易",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户名称",
+              "type": "text",
+              "value": "演示客户｜海湾家居贸易"
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "USD"
+            },
+            {
+              "label": "贸易条款",
+              "type": "text",
+              "value": "FOB Ningbo"
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": "30% T/T in advance, balance before shipment"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "QA261112 测试客户\nQA261112-C01 · DE",
+        "state": {
+          "selected": "QA261112 测试客户",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "业务员\n请选择业务员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "选择客户\nQA261112 测试客户",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "客户名称",
+              "type": "text",
+              "value": "QA261112 测试客户"
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "USD"
+            },
+            {
+              "label": "贸易条款",
+              "type": "text",
+              "value": "FOB Ningbo"
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": "30% T/T in advance, balance before shipment"
+            },
+            {
+              "label": "计划出运日",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "从客户资料选择",
+      "fields": [
+        {
+          "label": "合同号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "合同日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "业务员\n请选择业务员",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "选择客户\n从客户资料选择",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "客户名称",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "币种",
+          "type": "text",
+          "value": "USD"
+        },
+        {
+          "label": "贸易条款",
+          "type": "text",
+          "value": "FOB Ningbo"
+        },
+        {
+          "label": "付款条款",
+          "type": "text",
+          "value": "30% T/T in advance, balance before shipment"
+        },
+        {
+          "label": "计划出运日",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "合同备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  }
+]

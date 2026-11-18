@@ -1,0 +1,284 @@
+{
+  "url": "http://localhost:8080/masterdata/customers",
+  "title": "客户资料和订单要求",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "客户资料和订单要求",
+    "客户资料"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "搜索\n新增客户",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 256.640625,
+            "width": 866.953125,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1147.953125,
+            "bottom": 292.640625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "label": "查询客户",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1155.953125,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1191.953125,
+            "bottom": 292.640625,
+            "left": 1155.953125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增客户",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1199.953125,
+            "y": 256.640625,
+            "width": 111.046875,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1311,
+            "bottom": 292.640625,
+            "left": 1199.953125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "高级筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1319,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1355,
+            "bottom": 292.640625,
+            "left": 1319
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "设置列视图",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1363,
+            "y": 256.640625,
+            "width": 36,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1399,
+            "bottom": 292.640625,
+            "left": 1363
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "编号\t中文名称\t英文名称\t国家/地区\t联系人\t状态\t入口\nUI261114-C01\t演示客户｜海湾家居贸易\tDemo Bay Home Trading\t荷兰\t演示联系人陈女士\t启用\t\n查看详情\n\nQA261112-C01\tQA261112 测试客户\tQA261112 Customer\tDE\tQA261112 联系人\t启用\t\n查看详情",
+      "buttons": [
+        "UI261114-C01",
+        "查看详情",
+        "QA261112-C01",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

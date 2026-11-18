@@ -1,0 +1,307 @@
+{
+  "url": "http://localhost:8080/purchase/inquiries",
+  "title": "采购询价",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "采购询价",
+    "采购询价列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "询价搜索\n询价状态\n全部状态\n商品标识\n供应商标识\n查询\n新增采购询价",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "询价搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 285.4453125,
+            "width": 282.21875,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 565.21875,
+            "bottom": 321.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_5i_",
+          "label": "询价状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 588.21875,
+            "y": 290.4453125,
+            "width": 144.5703125,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 732.7890625,
+            "bottom": 316.4453125,
+            "left": 588.21875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "商品标识",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 773.7890625,
+            "y": 285.4453125,
+            "width": 184.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 958.3515625,
+            "bottom": 321.4453125,
+            "left": 773.7890625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商标识",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 970.3515625,
+            "y": 285.4453125,
+            "width": 184.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1154.9140625,
+            "bottom": 321.4453125,
+            "left": 970.3515625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1166.9140625,
+            "y": 285.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1251.4375,
+            "bottom": 321.4453125,
+            "left": 1166.9140625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增采购询价",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1259.4375,
+            "y": 285.4453125,
+            "width": 137.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1397,
+            "bottom": 321.4453125,
+            "left": 1259.4375
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "询价单号\t状态\t商品\t询价日\t报价数\t最低价\t入口\nPI-KTPXTU\t已报价\tQA261112-P01 / QA261112 验收测试围巾\t2026-11-12\t1\tRMB 2.50\t\n查看详情",
+      "buttons": [
+        "PI-KTPXTU",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "采购询价",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "开票通知",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

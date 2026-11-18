@@ -1,0 +1,947 @@
+{
+  "url": "http://localhost:8080/purchase/followup",
+  "title": "跟单任务中心",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "跟单任务中心",
+    "采购跟单计划",
+    "跟单流程模板"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "计划搜索\n整体状态\n全部状态\n供应商标识\n采购合同 ID\n查询\n配置/生成",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "计划搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 285.4453125,
+            "width": 322.4921875,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 605.4921875,
+            "bottom": 321.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_a_",
+          "label": "整体状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 628.4921875,
+            "y": 290.4453125,
+            "width": 137.2421875,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 765.734375,
+            "bottom": 316.4453125,
+            "left": 628.4921875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 806.734375,
+            "y": 285.4453125,
+            "width": 177.25,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 983.984375,
+            "bottom": 321.4453125,
+            "left": 806.734375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "采购合同 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 995.984375,
+            "y": 285.4453125,
+            "width": 177.2421875,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1173.2265625,
+            "bottom": 321.4453125,
+            "left": 995.984375
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1185.2265625,
+            "y": 285.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1269.75,
+            "bottom": 321.4453125,
+            "left": 1185.2265625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "配置/生成",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1281.75,
+            "y": 285.4453125,
+            "width": 115.25,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1397,
+            "bottom": 321.4453125,
+            "left": 1281.75
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_e_",
+      "visible": true,
+      "text": "模板名称\n默认模板\n是\n否\n启用模板\n节点标准天数 / 提前提醒天数\n下单日期\n合同提醒\n确认样提交日期\n确认样提醒\n大货样提交日期\n大货样提醒\nQC查验日期\nQC 提醒\n入库日期\n入库提醒\n出库日期\n出库提醒\n保存跟单模板",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "followup-template-name",
+          "label": "模板名称",
+          "text": "",
+          "value": "标准采购跟单流程",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 252,
+            "y": 201.2265625,
+            "width": 460,
+            "height": 36,
+            "top": 201.2265625,
+            "right": 712,
+            "bottom": 237.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "radio",
+          "id": "",
+          "label": "默认模板\n是\n否",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 731,
+            "y": 204.2265625,
+            "width": 0,
+            "height": 0,
+            "top": 204.2265625,
+            "right": 731,
+            "bottom": 204.2265625,
+            "left": 731
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "radio",
+          "id": "",
+          "label": "否",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 958,
+            "y": 204.2265625,
+            "width": 0,
+            "height": 0,
+            "top": 204.2265625,
+            "right": 958,
+            "bottom": 204.2265625,
+            "left": 958
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "followup-template-enabled",
+          "label": "启用模板",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 250.2265625,
+            "width": 16,
+            "height": 16,
+            "top": 250.2265625,
+            "right": 268,
+            "bottom": 266.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "下单日期",
+          "text": "",
+          "value": "0",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 361.078125,
+            "width": 460,
+            "height": 36,
+            "top": 361.078125,
+            "right": 712,
+            "bottom": 397.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "合同提醒",
+          "text": "",
+          "value": "0",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 361.078125,
+            "width": 460,
+            "height": 36,
+            "top": 361.078125,
+            "right": 1188,
+            "bottom": 397.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "确认样提交日期",
+          "text": "",
+          "value": "3",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 431.078125,
+            "width": 460,
+            "height": 36,
+            "top": 431.078125,
+            "right": 712,
+            "bottom": 467.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "确认样提醒",
+          "text": "",
+          "value": "1",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 431.078125,
+            "width": 460,
+            "height": 36,
+            "top": 431.078125,
+            "right": 1188,
+            "bottom": 467.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "大货样提交日期",
+          "text": "",
+          "value": "7",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 501.078125,
+            "width": 460,
+            "height": 36,
+            "top": 501.078125,
+            "right": 712,
+            "bottom": 537.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "大货样提醒",
+          "text": "",
+          "value": "2",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 501.078125,
+            "width": 460,
+            "height": 36,
+            "top": 501.078125,
+            "right": 1188,
+            "bottom": 537.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "QC查验日期",
+          "text": "",
+          "value": "14",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 571.078125,
+            "width": 460,
+            "height": 36,
+            "top": 571.078125,
+            "right": 712,
+            "bottom": 607.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "QC 提醒",
+          "text": "",
+          "value": "2",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 571.078125,
+            "width": 460,
+            "height": 36,
+            "top": 571.078125,
+            "right": 1188,
+            "bottom": 607.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "入库日期",
+          "text": "",
+          "value": "20",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 641.078125,
+            "width": 460,
+            "height": 36,
+            "top": 641.078125,
+            "right": 712,
+            "bottom": 677.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "入库提醒",
+          "text": "",
+          "value": "3",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 641.078125,
+            "width": 460,
+            "height": 36,
+            "top": 641.078125,
+            "right": 1188,
+            "bottom": 677.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "出库日期",
+          "text": "",
+          "value": "25",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 711.078125,
+            "width": 460,
+            "height": 36,
+            "top": 711.078125,
+            "right": 712,
+            "bottom": 747.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "出库提醒",
+          "text": "",
+          "value": "3",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 711.078125,
+            "width": 460,
+            "height": 36,
+            "top": 711.078125,
+            "right": 1188,
+            "bottom": 747.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 16,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存跟单模板",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 252,
+            "y": 763.078125,
+            "width": 117.5625,
+            "height": 36,
+            "top": 763.078125,
+            "right": 369.5625,
+            "bottom": 799.078125,
+            "left": 252
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": "_r_e_",
+      "visible": true,
+      "text": "采购合同生成跟单计划\n采购合同 ID\n基准日期\n生成跟单计划",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "followup-contract-id",
+          "label": "采购合同 ID",
+          "text": "",
+          "value": "56cd6434-f367-4553-8caf-092a96ab097d",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 253,
+            "y": 911.9296875,
+            "width": 934,
+            "height": 36,
+            "top": 911.9296875,
+            "right": 1187,
+            "bottom": 947.9296875,
+            "left": 253
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "followup-base-date",
+          "label": "基准日期",
+          "text": "",
+          "value": "2026-11-12",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 253,
+            "y": 981.9296875,
+            "width": 934,
+            "height": 36,
+            "top": 981.9296875,
+            "right": 1187,
+            "bottom": 1017.9296875,
+            "left": 253
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "生成跟单计划",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 253,
+            "y": 1033.9296875,
+            "width": 117.5625,
+            "height": 36,
+            "top": 1033.9296875,
+            "right": 370.5625,
+            "bottom": 1069.9296875,
+            "left": 253
+          }
+        }
+      ]
+    },
+    {
+      "i": 3,
+      "dialog": "_r_e_",
+      "visible": true,
+      "text": "业务来源回写\n采购合同 ID\n节点\n确认样提交日期\n来源类型\n样品事件\n来源记录 ID\n实际日期\n来源摘要\n回写实际日期",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "followup-source-contract-id",
+          "label": "采购合同 ID",
+          "text": "",
+          "value": "56cd6434-f367-4553-8caf-092a96ab097d",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 253,
+            "y": 1183.78125,
+            "width": 934,
+            "height": 36,
+            "top": 1183.78125,
+            "right": 1187,
+            "bottom": 1219.78125,
+            "left": 253
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_h_",
+          "label": "节点\n确认样提交日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 264,
+            "y": 1258.78125,
+            "width": 419,
+            "height": 26,
+            "top": 1258.78125,
+            "right": 683,
+            "bottom": 1284.78125,
+            "left": 264
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_j_",
+          "label": "来源类型\n样品事件",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 739,
+            "y": 1258.78125,
+            "width": 419,
+            "height": 26,
+            "top": 1258.78125,
+            "right": 1158,
+            "bottom": 1284.78125,
+            "left": 739
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "followup-source-id",
+          "label": "来源记录 ID",
+          "text": "",
+          "value": "confirm_sample_submitted-source",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 253,
+            "y": 1323.78125,
+            "width": 459,
+            "height": 36,
+            "top": 1323.78125,
+            "right": 712,
+            "bottom": 1359.78125,
+            "left": 253
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "followup-actual-date",
+          "label": "实际日期",
+          "text": "",
+          "value": "2026-11-15",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 728,
+            "y": 1323.78125,
+            "width": 459,
+            "height": 36,
+            "top": 1323.78125,
+            "right": 1187,
+            "bottom": 1359.78125,
+            "left": 728
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "followup-source-summary",
+          "label": "来源摘要",
+          "text": "",
+          "value": "确认样提交日期完成",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 253,
+            "y": 1393.78125,
+            "width": 934,
+            "height": 36,
+            "top": 1393.78125,
+            "right": 1187,
+            "bottom": 1429.78125,
+            "left": 253
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "回写实际日期",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 253,
+            "y": 1445.78125,
+            "width": 117.5625,
+            "height": 36,
+            "top": 1445.78125,
+            "right": 370.5625,
+            "bottom": 1481.78125,
+            "left": 253
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "采购合同\t状态\t供应商\t基准日\t节点\t入口\nPC-HR36RU\t已逾期\tQA261112 测试供应商\t2026-11-12\t3/6\t\n查看详情",
+      "buttons": [
+        "PC-HR36RU",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

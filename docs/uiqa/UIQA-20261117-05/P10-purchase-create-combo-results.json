@@ -1,0 +1,247 @@
+[
+  {
+    "control": {
+      "i": 3,
+      "id": "_r_13_",
+      "label": "商品\n搜索商品编号或名称",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 4,
+        "label": "UIQA-20261117-05-P16 / UIQA分页验收商品16\nUIQA-SPEC-16 · UIQA-M16",
+        "title": "UIQA-20261117-05-P16 / UIQA分页验收商品16",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 5,
+        "label": "UIQA-20261117-05-P15 / UIQA分页验收商品15\nUIQA-SPEC-15 · UIQA-M15",
+        "title": "UIQA-20261117-05-P15 / UIQA分页验收商品15",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 6,
+        "label": "UIQA-20261117-05-P14 / UIQA分页验收商品14\nUIQA-SPEC-14 · UIQA-M14",
+        "title": "UIQA-20261117-05-P14 / UIQA分页验收商品14",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 7,
+        "label": "UIQA-20261117-05-P13 / UIQA分页验收商品13\nUIQA-SPEC-13 · UIQA-M13",
+        "title": "UIQA-20261117-05-P13 / UIQA分页验收商品13",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 8,
+        "label": "UIQA-20261117-05-P12 / UIQA分页验收商品12\nUIQA-SPEC-12 · UIQA-M12",
+        "title": "UIQA-20261117-05-P12 / UIQA分页验收商品12",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 9,
+        "label": "UIQA-20261117-05-P11 / UIQA分页验收商品11\nUIQA-SPEC-11 · UIQA-M11",
+        "title": "UIQA-20261117-05-P11 / UIQA分页验收商品11",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "UIQA-20261117-05-P16 / UIQA分页验收商品16\nUIQA-SPEC-16 · UIQA-M16",
+        "state": {
+          "selected": "UIQA-20261117-05-P16 / UIQA分页验收商品16",
+          "fields": [
+            {
+              "label": "询价单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "询价日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "业务员\n演示采购专员（采购部）",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "商品编号",
+              "type": "text",
+              "value": "UIQA-20261117-05-P16"
+            },
+            {
+              "label": "商品\nUIQA-20261117-05-P16 / UIQA分页验收商品16",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "商品名称",
+              "type": "text",
+              "value": "UIQA分页验收商品16"
+            },
+            {
+              "label": "规格",
+              "type": "text",
+              "value": "UIQA-SPEC-16"
+            },
+            {
+              "label": "型号",
+              "type": "text",
+              "value": "UIQA-M16"
+            },
+            {
+              "label": "询价数量",
+              "type": "number",
+              "value": "1000"
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "询价备注",
+              "type": "textarea",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "UIQA-20261117-05-P15 / UIQA分页验收商品15\nUIQA-SPEC-15 · UIQA-M15",
+        "state": {
+          "selected": "UIQA-20261117-05-P15 / UIQA分页验收商品15",
+          "fields": [
+            {
+              "label": "询价单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "询价日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "业务员\n演示采购专员（采购部）",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "商品编号",
+              "type": "text",
+              "value": "UIQA-20261117-05-P15"
+            },
+            {
+              "label": "商品\nUIQA-20261117-05-P15 / UIQA分页验收商品15",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "商品名称",
+              "type": "text",
+              "value": "UIQA分页验收商品15"
+            },
+            {
+              "label": "规格",
+              "type": "text",
+              "value": "UIQA-SPEC-15"
+            },
+            {
+              "label": "型号",
+              "type": "text",
+              "value": "UIQA-M15"
+            },
+            {
+              "label": "询价数量",
+              "type": "number",
+              "value": "1000"
+            },
+            {
+              "label": "单位",
+              "type": "text",
+              "value": "pcs"
+            },
+            {
+              "label": "询价备注",
+              "type": "textarea",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "搜索商品编号或名称",
+      "fields": [
+        {
+          "label": "询价单号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "询价日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "业务员\n演示采购专员（采购部）",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "商品编号",
+          "type": "text",
+          "value": "UIQA-20261117-05-P15"
+        },
+        {
+          "label": "商品\n搜索商品编号或名称",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "商品名称",
+          "type": "text",
+          "value": "UIQA分页验收商品15"
+        },
+        {
+          "label": "规格",
+          "type": "text",
+          "value": "UIQA-SPEC-15"
+        },
+        {
+          "label": "型号",
+          "type": "text",
+          "value": "UIQA-M15"
+        },
+        {
+          "label": "询价数量",
+          "type": "number",
+          "value": "1000"
+        },
+        {
+          "label": "单位",
+          "type": "text",
+          "value": "pcs"
+        },
+        {
+          "label": "询价备注",
+          "type": "textarea",
+          "value": ""
+        }
+      ]
+    }
+  }
+]

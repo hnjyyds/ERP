@@ -1,0 +1,355 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          container "D-DUTCH"
+            text "D-DUTCH"
+          container
+            text "新裴贸易"
+            text "业务管理系统"
+        container "主导航"
+          anchor [ref=5908, loc=href:/, url=http://localhost:8080/]
+            svg_root
+            text "工作台"
+          container "业务模块"
+            container
+              container [ref=5909]
+                svg_root
+                text "基础资料"
+                svg_root
+              container
+                anchor [ref=5932, loc=href:/masterdata/products, url=http://localhost:8080/masterdata/products]
+                  svg_root
+                  text "商品资料"
+                anchor [ref=5933, loc=href:/masterdata/suppliers, url=http://localhost:8080/masterdata/suppliers]
+                  svg_root
+                  text "供应商资料"
+            container
+              container [ref=5910]
+                svg_root
+                text "订单流程"
+                svg_root
+              anchor [ref=5931, loc=href:/purchase/contracts, url=http://localhost:8080/purchase/contracts]
+                svg_root
+                text "采购合同"
+            container
+              container [ref=5911]
+                svg_root
+                text "QC / 跟单"
+                svg_root
+              anchor [ref=5934, loc=href:/purchase/followup, url=http://localhost:8080/purchase/followup]
+                svg_root
+                text "跟单中心"
+            container
+              container [ref=5912]
+                svg_root
+                text "采购单据"
+                svg_root
+              container
+                anchor [ref=5935, loc=href:/purchase/inquiries, url=http://localhost:8080/purchase/inquiries]
+                  svg_root
+                  text "采购询价"
+                anchor [ref=5936, loc=href:/purchase/invoice-notices, url=http://localhost:8080/purchase/invoice-notices]
+                  svg_root
+                  text "开票通知"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "采购合同"
+          container
+            button "通知" [ref=5913, loc=css:button[aria-label="通知"]]
+              svg_root
+            button "系统设置" [ref=5914, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "采购合同概览"
+            container
+              text "采购合同"
+              text "1"
+            container
+              text "待审批"
+              text "0"
+            container
+              text "已审批"
+              text "1"
+            container
+              text "合同金额"
+              text "RMB 250.00"
+            container
+              text "待办提醒"
+              text "2"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "采购合同列表"
+              form
+                container
+                  text "合同搜索"
+                  textbox [ref=5937, loc=css:input[placeholder="合同号 / 供应商 / 商品 / 备注"]]
+                    text "合同号 / 供应商 / 商品 / 备注"
+                container
+                  text "审批状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=5938]
+                    image "down"
+                      svg_root
+                container
+                  text "来源类型"
+                  container
+                    container
+                      text "全部来源"
+                      comboboxgrouping [ref=5939]
+                    image "down"
+                      svg_root
+                container
+                  text "供应商标识"
+                  container
+                    container
+                      text "输入供应商编号或名称"
+                      comboboxgrouping "供应商标识" [ref=5940, loc=css:input[aria-label="供应商标识"]]
+                    image "down"
+                      svg_root
+                button [ref=5941]
+                  svg_root
+                  text "查询"
+                button [ref=5942]
+                  svg_root
+                  text "新增采购合同"
+                button [ref=5943]
+                  svg_root
+                  text "从出口合同生成"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=5944]
+                  table
+                    table_row
+                      table_cell
+                        text "采购合同"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "来源"
+                      table_cell
+                        text "供应商"
+                      table_cell
+                        text "QC 负责人"
+                      table_cell
+                        text "交货日"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=5945]
+                          text "PC-HR36RU"
+                      table_cell
+                        text "已审批"
+                      table_cell
+                        text "手工采购"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "演示 QC 专员"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "RMB 250.00"
+                      table_cell
+                        button [ref=5946]
+                          text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=5947]
+                      image "left"
+                        svg_root
+                  list_item [ref=5948]
+                    anchor [ref=5949]
+                      text "1"
+                  list_item
+                    button [ref=5950]
+                      image "right"
+                        svg_root
+                  list_item
+                    container
+                      text "50 条/页"
+                      comboboxgrouping "页码" [ref=5951, loc=css:input[aria-label="页码"]]
+                    image "down"
+                      svg_root
+              table
+                table_row
+                  table_cell
+    dialog "新增采购合同"
+      button "Close" [ref=5952, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增采购合同"
+      form
+        container
+          svg_root
+          heading
+            text "库存/手工采购合同"
+        container
+          container
+            text "合同号"
+            textbox [ref=5953, loc=css:input[placeholder="系统自动生成"]]
+              text "系统自动生成"
+          container
+            text "合同日期"
+            textbox [ref=5954]
+              spinbutton "年" [ref=5955]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=5956]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=5957]
+                text "17"
+          container
+            text "选择供应商"
+            container
+              container
+                text "从供应商资料选择"
+                comboboxgrouping [ref=5958]
+              image "search"
+                svg_root
+        container
+          container
+            text "供应商名称"
+            textbox [ref=5959]
+          container
+            text "采购员"
+            container
+              container
+                text "选择采购员"
+                comboboxgrouping [ref=5960]
+              image "down"
+                svg_root
+          container
+            text "QC 负责人"
+            container
+              container
+                text "从系统用户选择"
+                comboboxgrouping [ref=5961]
+              image "down"
+                svg_root
+        container
+          container
+            text "币种"
+            textbox [ref=5962]
+              text "RMB"
+          container
+            text "交货日期"
+            textbox [ref=5963]
+              spinbutton "年" [ref=5964]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=5965]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=5966]
+                text "17"
+          container
+            text "来源"
+            container
+              container
+                text "手工采购"
+                comboboxgrouping [ref=5967]
+              image "down"
+                svg_root
+        container
+          container
+            text "付款条款"
+            textbox [ref=5968]
+          container
+            text "合同备注"
+            textbox [ref=5969]
+        container
+          container
+            text "合同商品明细"
+            paragraph
+              text "已添加 0 个商品，可分别调整规格、数量、单位和采购单价。"
+          button [ref=5970]
+            svg_root
+            text "添加商品"
+        container
+          table
+            table_row
+              table_cell
+          container [ref=5971]
+            table
+              table_row
+                table_cell
+                  text "商品"
+                table_cell
+                  text "规格/型号"
+                table_cell
+                  text "数量"
+                table_cell
+                  text "单位"
+                table_cell
+                  text "单价"
+                table_cell
+                  text "金额"
+                table_cell
+                  text "行备注"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  text "商品"
+                table_cell
+                  text "规格/型号"
+                table_cell
+                  text "数量"
+                table_cell
+                  text "单位"
+                table_cell
+                  text "单价"
+                table_cell
+                  text "金额"
+                table_cell
+                  text "行备注"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  text "暂未添加商品，请点击“添加商品”批量选择"
+          table
+            table_row
+              table_cell
+      container
+        button [ref=5972]
+          text "取 消"
+        button [ref=5973]
+          text "新增采购合同"
+    container
+      listbox
+        listboxoption "UI261114-S01 / 演示供应商｜江南织造 / Demo Jiangnan Textile"
+          text "c9318639-55ac-431e-ab5b-01c53bbfb087"
+        listboxoption "QA261112-S01 / QA261112 测试供应商 / QA261112 Supplier"
+          text "c6d43566-694f-41d0-85f0-6631c6478d52"
+      container
+        text "UI261114-S01 / 演示供应商｜江南织造 / Demo Jiangnan Textile"
+        text "QA261112-S01 / QA261112 测试供应商 / QA261112 Supplier"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

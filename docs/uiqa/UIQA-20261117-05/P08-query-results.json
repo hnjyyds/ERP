@@ -1,0 +1,108 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "合同搜索",
+    "before": {
+      "url": "http://localhost:8080/purchase/contracts",
+      "form": "合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": ""
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "来源类型\n全部来源",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        }
+      ],
+      "text": "采购合同列表\n合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成\n采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情"
+    },
+    "positive": "PC-HR36RU",
+    "hit": {
+      "url": "http://localhost:8080/purchase/contracts?q=PC-HR36RU",
+      "form": "合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": "PC-HR36RU"
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "来源类型\n全部来源",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        }
+      ],
+      "text": "采购合同列表\n合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成\n采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/purchase/contracts?q=UIQA-20261117-05-NOMATCH",
+      "form": "合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "来源类型\n全部来源",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        }
+      ],
+      "text": "采购合同列表\n合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成\n采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/purchase/contracts",
+      "form": "合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成",
+      "inputs": [
+        {
+          "label": "合同搜索",
+          "value": ""
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "来源类型\n全部来源",
+          "value": ""
+        },
+        {
+          "label": "供应商标识",
+          "value": ""
+        }
+      ],
+      "text": "采购合同列表\n合同搜索\n审批状态\n全部状态\n来源类型\n全部来源\n供应商标识\n输入供应商编号或名称\n查询\n新增采购合同\n从出口合同生成\n采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "采购合同\t状态\t来源\t供应商\tQC 负责人\t交货日\t金额\t入口\nPC-HR36RU\t已审批\t手工采购\tQA261112 测试供应商\t演示 QC 专员\t2026-11-12\tRMB 250.00\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

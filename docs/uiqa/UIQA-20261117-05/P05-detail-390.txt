@@ -1,0 +1,124 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "单证资料"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "单证资料概览"
+          container
+            text "单证资料"
+            text "1"
+          container
+            text "默认资料"
+            text "0"
+          container
+            text "收货人"
+            text "1"
+          container
+            text "开证行"
+            text "0"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "单证资料明细"
+            container
+              button [ref=2056]
+                svg_root
+                text "返回列表"
+              button [ref=2057]
+                svg_root
+                text "编辑资料"
+              button [ref=2058]
+                svg_root
+                text "停用"
+          container
+            text "Q"
+            container
+              text "QA261112-D01"
+              heading
+                text "QA261112 测试收货人"
+              paragraph
+                text "收货人"
+            text "启用"
+          unordered_list
+            container
+              list_item
+                text "关联客户"
+              list_item
+                text "QA261112 测试客户"
+            container
+              list_item
+                text "国家/地区"
+              list_item
+                text "DE"
+            container
+              list_item
+                text "联系人"
+              list_item
+                text "未维护"
+            container
+              list_item
+                text "联系方式"
+              list_item
+                text "未维护"
+            container
+              list_item
+                text "地址"
+              list_item
+                text "未维护"
+            container
+              list_item
+                text "税号"
+              list_item
+                text "未维护"
+            list_item
+              text "备注"
+            list_item
+              text "QA261112 单证引用测试"
+            list_item
+              text "负责人"
+            list_item
+              text "u-baeac30b5127ebdb"
+          container
+            svg_root
+            heading
+              text "银行资料"
+            unordered_list
+              list_item
+                text "银行名称"
+              list_item
+                text "未维护"
+              list_item
+                text "SWIFT"
+              list_item
+                text "未维护"
+              list_item
+                text "账号"
+              list_item
+                text "未维护"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

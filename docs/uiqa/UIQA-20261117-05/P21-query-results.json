@@ -1,0 +1,140 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "出库搜索",
+    "before": {
+      "url": "http://localhost:8080/warehouse/outbound-orders",
+      "form": "出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单",
+      "inputs": [
+        {
+          "label": "出库搜索",
+          "value": ""
+        },
+        {
+          "label": "单据状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "出库模式\n全部模式",
+          "value": ""
+        },
+        {
+          "label": "出库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "来源单 ID",
+          "value": ""
+        }
+      ],
+      "text": "出库单\n出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单\n出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\nXP-OUT-33A95C\t已出库\t正式出库\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\nXP-OUT-33A95C\t已出库\t正式出库\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情"
+    },
+    "positive": "XP-OUT-33A95C",
+    "hit": {
+      "url": "http://localhost:8080/warehouse/outbound-orders?q=XP-OUT-33A95C",
+      "form": "出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单",
+      "inputs": [
+        {
+          "label": "出库搜索",
+          "value": "XP-OUT-33A95C"
+        },
+        {
+          "label": "单据状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "出库模式\n全部模式",
+          "value": ""
+        },
+        {
+          "label": "出库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "来源单 ID",
+          "value": ""
+        }
+      ],
+      "text": "出库单\n出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单\n出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\nXP-OUT-33A95C\t已出库\t正式出库\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\nXP-OUT-33A95C\t已出库\t正式出库\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/warehouse/outbound-orders?q=UIQA-20261117-05-NOMATCH",
+      "form": "出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单",
+      "inputs": [
+        {
+          "label": "出库搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "单据状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "出库模式\n全部模式",
+          "value": ""
+        },
+        {
+          "label": "出库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "来源单 ID",
+          "value": ""
+        }
+      ],
+      "text": "出库单\n出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单\n出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/warehouse/outbound-orders",
+      "form": "出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单",
+      "inputs": [
+        {
+          "label": "出库搜索",
+          "value": ""
+        },
+        {
+          "label": "单据状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "出库模式\n全部模式",
+          "value": ""
+        },
+        {
+          "label": "出库类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "客户标识",
+          "value": ""
+        },
+        {
+          "label": "来源单 ID",
+          "value": ""
+        }
+      ],
+      "text": "出库单\n出库搜索\n单据状态\n全部状态\n出库模式\n全部模式\n出库类型\n全部类型\n客户标识\n来源单 ID\n查询\n生成/审批出库单\n出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\nXP-OUT-33A95C\t已出库\t正式出库\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "出库单\t状态\t模式\t出库类型\t来源单\t客户\t出库日\t数量\t入口\nXP-OUT-33A95C\t已出库\t正式出库\t成品出库\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\t20.00\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

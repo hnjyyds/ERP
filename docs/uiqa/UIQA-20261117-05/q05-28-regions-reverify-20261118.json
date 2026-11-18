@@ -1,0 +1,93 @@
+{
+  "defect": "Q05-28",
+  "asset": "assets/index-DJFI-T9o.js",
+  "css": "assets/index-CVMx6kR8.css",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "admin",
+  "method": "CDP Network.setBlockedURLs 按 /api/v1 前缀阻断单个列表接口；解除后点击错误态“重 试”按钮",
+  "data_baseline": {
+    "captured_at": "2026-11-18T18:13:51+08:00",
+    "path": "/finance/payments",
+    "supplier_invoice_rows": 2,
+    "payable_rows": 2,
+    "combined_rows": 4,
+    "supplier_invoice_objects": [
+      "UIQA-20261117-04-INV01",
+      "QA261112-INV01"
+    ],
+    "payable_objects": [
+      "QA261112-INV01",
+      "UIQA-20261117-04-INV01"
+    ],
+    "db_ground_truth": {
+      "finance_supplier_invoices": 2,
+      "finance_payment_requests": 3,
+      "note": "付款页应付按发票聚合，3 条付款申请聚合为 2 行"
+    },
+    "new_records_this_round": 0,
+    "note": "本轮未新增发票或应付记录；当前 2+2=4 行即此前记录的“2→4”口径，未沿用旧数量判断恢复"
+  },
+  "regions": [
+    {
+      "page": "P01 商品资料",
+      "path": "/masterdata/products",
+      "blocked": "*/api/v1/masterdata/products*",
+      "failure_state": "列表显示“加载失败 / 数据读取失败，请重试；当前筛选条件会保留”与重试按钮，不显示“暂无数据/完成首次录入”",
+      "recovery": "解除阻断点击重试后恢复 50 行、共 51 条",
+      "screenshots": [
+        "screenshots/Q05-28-products-fail-DJFI-1440.png",
+        "screenshots/Q05-28-products-recovered-DJFI-1440.png"
+      ],
+      "result": "通过"
+    },
+    {
+      "page": "P09 出货明细",
+      "path": "/sales/shipments",
+      "blocked": "*/api/v1/sales/shipments*",
+      "failure_state": "列表显示独立“加载失败”错误态与重试按钮",
+      "recovery": "解除阻断点击重试后恢复 1 行、共 1 条",
+      "screenshots": [
+        "screenshots/Q05-28-shipments-fail-DJFI-1440.png",
+        "screenshots/Q05-28-shipments-recovered-DJFI-1440.png"
+      ],
+      "result": "通过"
+    },
+    {
+      "page": "P24 付款管理-供应商发票区",
+      "path": "/finance/payments",
+      "blocked": "*/api/v1/finance/supplier-invoices*",
+      "failure_state": "发票区独立错误态与重试按钮；同页应付账款区2行不受影响",
+      "recovery": "解除阻断点击重试后发票区恢复2行、共2条；应付账款区仍2行",
+      "screenshots": [
+        "screenshots/Q05-28-invoices-fail-DJFI-1440.png",
+        "screenshots/Q05-28-invoices-recovered-DJFI-1440.png"
+      ],
+      "result": "通过"
+    },
+    {
+      "page": "P24 付款管理-应付账款区",
+      "path": "/finance/payments",
+      "blocked": "*/api/v1/finance/payables*",
+      "failure_state": "应付区独立错误态与重试按钮；同页供应商发票2行不受影响",
+      "recovery": "解除阻断点击重试后应付区恢复2行、共2条",
+      "screenshots": [
+        "screenshots/Q05-28-payables-fail-DJFI-1440.png",
+        "screenshots/Q05-28-payables-recovered-DJFI-1440.png"
+      ],
+      "result": "通过"
+    }
+  ],
+  "observations": [
+    "发票区重试后约 0.5-1 秒内会短暂显示“暂无数据/完成首次录入”，随后恢复 2 行；属重试请求进行中的过渡态，未作为缺陷新增",
+    "应付区与发票区错误态相互独立，互不污染"
+  ],
+  "automation": {
+    "vitest": "423 passed / 50 files（本轮早前运行）",
+    "tsc": "passed",
+    "eslint": "passed"
+  },
+  "status": "P01/P09/P24两区四块均完成失败→解除→重试→恢复，正常区域未受影响；Q05-28 已关闭",
+  "verified_at": "2026-11-18",
+  "prior_asset_tested": "assets/index-CCfyf6F1.js",
+  "note": "四区先在 CCfyf6F1 通过；重建 DJFI-T9o 后再次全量重跑，结论一致，截图以 -DJFI 版本为准"
+}

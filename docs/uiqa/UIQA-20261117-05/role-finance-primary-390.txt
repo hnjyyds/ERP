@@ -1,0 +1,244 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=6435, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "付款管理"
+        container
+          button "通知" [ref=6363, loc=css:button[aria-label="通知"]]
+            svg_root
+          button "系统设置" [ref=6364, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container "付款管理"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "供应商发票列表"
+            form
+              container
+                text "发票搜索"
+                textbox [ref=6392]
+              container
+                text "付款状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=6393]
+                  image "down"
+                    svg_root
+              container
+                text "供应商"
+                container
+                  container
+                    text "输入供应商编号或名称"
+                    comboboxgrouping "发票供应商筛选" [ref=6394, loc=css:input[aria-label="发票供应商筛选"]]
+                  image "down"
+                    svg_root
+              container
+                text "采购合同号"
+                textbox [ref=6395]
+              container
+                button [ref=6396]
+                  svg_root
+                  text "查询"
+                button [ref=6397]
+                  svg_root
+                  text "发票登记"
+          container [ref=6436]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=6398]
+                container [ref=6437]
+                  table
+                    table_row
+                      table_cell
+                        text "供应商发票"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "供应商"
+                      table_cell
+                        text "采购合同"
+                      table_cell
+                        text "发票金额"
+                      table_cell
+                        text "已付"
+                      table_cell
+                        text "未付"
+                      table_cell
+                        text "超付"
+                    table_row
+                      table_cell
+                        button [ref=6399]
+                          text "UIQA-20261117-04-INV01"
+                      table_cell
+                        text "已付清"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "PC-HR36RU"
+                      table_cell
+                        text "CNY 0.01"
+                      table_cell
+                        text "CNY 0.01"
+                      table_cell
+                        text "CNY 0.00"
+                      table_cell
+                        text "-"
+                    table_row
+                      table_cell
+                        button [ref=6400]
+                          text "QA261112-INV01"
+                      table_cell
+                        text "已付清"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "PC-HR36RU"
+                      table_cell
+                        text "RMB 100.00"
+                      table_cell
+                        text "RMB 120.00"
+                      table_cell
+                        text "RMB 0.00"
+                      table_cell
+                        text "RMB 20.00"
+              unordered_list
+                list_item
+                  text "共 2 条"
+                list_item
+                  button [ref=6401]
+                    image "left"
+                      svg_root
+                list_item [ref=6402]
+                  anchor [ref=6403]
+                    text "1"
+                list_item
+                  button [ref=6404]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+        container
+          svg_root
+          heading
+            text "应付账款查询"
+          form
+            container
+              text "应付搜索"
+              textbox [ref=6406]
+            container
+              text "应付状态"
+              container
+                text "全部状态"
+                comboboxgrouping [ref=6407]
+                svg_root
+            container
+              text "供应商"
+              container
+                text "输入供应商编号或名称"
+                comboboxgrouping "应付供应商筛选" [ref=6408, loc=css:input[aria-label="应付供应商筛选"]]
+                svg_root
+            container
+              text "采购合同号"
+              textbox [ref=6409]
+            button [ref=6410]
+              svg_root
+              text "查询"
+          container [ref=6438]
+            table
+              table_row
+                table_cell
+            container [ref=6411]
+              container [ref=6439]
+                table
+                  table_row
+                    table_cell
+                      text "供应商发票"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "采购合同"
+                    table_cell
+                      text "发票金额"
+                    table_cell
+                      text "已付款"
+                    table_cell
+                      text "应付余额"
+                    table_cell
+                      text "超付"
+                    table_cell
+                      text "状态"
+                  table_row
+                    table_cell
+                      text "QA261112-INV01"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "RMB 100.00"
+                    table_cell
+                      text "RMB 120.00"
+                    table_cell
+                      text "RMB 0.00"
+                    table_cell
+                      text "RMB 20.00"
+                    table_cell
+                      text "已付清"
+                  table_row
+                    table_cell
+                      text "UIQA-20261117-04-INV01"
+                    table_cell
+                      text "QA261112 测试供应商"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "CNY 0.01"
+                    table_cell
+                      text "CNY 0.01"
+                    table_cell
+                      text "CNY 0.00"
+                    table_cell
+                      text "-"
+                    table_cell
+                      text "已付清"
+            unordered_list
+              list_item
+                text "共 2 条"
+              list_item
+                button [ref=6412]
+                  image "left"
+                    svg_root
+              list_item [ref=6413]
+                anchor [ref=6414]
+                  text "1"
+              list_item
+                button [ref=6415]
+                  image "right"
+                    svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

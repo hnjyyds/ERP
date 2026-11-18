@@ -1,0 +1,198 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "项目搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/misc",
+      "form": "项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费",
+      "inputs": [
+        {
+          "label": "项目搜索",
+          "value": ""
+        },
+        {
+          "label": "项目分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "启停状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "杂费项目配置\n项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费\n项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用\n共 1 条\n1\n50 条/页",
+      "tableText": "项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用"
+    },
+    "positive": "QA261112-MISC01",
+    "hit": {
+      "url": "http://localhost:8080/finance/misc?misc_items_q=QA261112-MISC01",
+      "form": "项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费",
+      "inputs": [
+        {
+          "label": "项目搜索",
+          "value": "QA261112-MISC01"
+        },
+        {
+          "label": "项目分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "启停状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "杂费项目配置\n项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费\n项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用\n共 1 条\n1\n50 条/页",
+      "tableText": "项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/misc?misc_items_q=UIQA-20261117-05-NOMATCH",
+      "form": "项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费",
+      "inputs": [
+        {
+          "label": "项目搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "项目分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "启停状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "杂费项目配置\n项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费\n项目编码\t项目名称\t分类\t默认分摊\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "项目编码\t项目名称\t分类\t默认分摊\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/misc",
+      "form": "项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费",
+      "inputs": [
+        {
+          "label": "项目搜索",
+          "value": ""
+        },
+        {
+          "label": "项目分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "启停状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "杂费项目配置\n项目搜索\n项目分类\n全部分类\n启停状态\n全部状态\n查询\n新增杂费\n项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用\n共 1 条\n1\n50 条/页",
+      "tableText": "项目编码\t项目名称\t分类\t默认分摊\t状态\nQA261112-MISC01\tQA261112 测试杂费\t其他杂费\t手工分摊\t启用"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  },
+  {
+    "i": 1,
+    "input": 1,
+    "button": 2,
+    "label": "分摊搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/misc",
+      "form": "分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询",
+      "inputs": [
+        {
+          "label": "分摊搜索",
+          "value": ""
+        },
+        {
+          "label": "分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        },
+        {
+          "label": "业务员标识",
+          "value": ""
+        }
+      ],
+      "text": "杂费分摊查询\n分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询\n分摊记录 1 条\nUSD 5.00\n已进入单票利润成本\n分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊\n共 1 条\n1\n50 条/页",
+      "tableText": "分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊"
+    },
+    "positive": "MFA-SN2JDU",
+    "hit": {
+      "url": "http://localhost:8080/finance/misc?misc_allocations_q=MFA-SN2JDU",
+      "form": "分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询",
+      "inputs": [
+        {
+          "label": "分摊搜索",
+          "value": "MFA-SN2JDU"
+        },
+        {
+          "label": "分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        },
+        {
+          "label": "业务员标识",
+          "value": ""
+        }
+      ],
+      "text": "杂费分摊查询\n分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询\n分摊记录 1 条\nUSD 5.00\n已进入单票利润成本\n分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊\n共 1 条\n1\n50 条/页",
+      "tableText": "分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/misc?misc_allocations_q=UIQA-20261117-05-NOMATCH",
+      "form": "分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询",
+      "inputs": [
+        {
+          "label": "分摊搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        },
+        {
+          "label": "业务员标识",
+          "value": ""
+        }
+      ],
+      "text": "杂费分摊查询\n分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询\n分摊记录 0 条\nUSD 5.00\n已进入单票利润成本\n分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/misc",
+      "form": "分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询",
+      "inputs": [
+        {
+          "label": "分摊搜索",
+          "value": ""
+        },
+        {
+          "label": "分类\n全部分类",
+          "value": ""
+        },
+        {
+          "label": "出运单号",
+          "value": ""
+        },
+        {
+          "label": "业务员标识",
+          "value": ""
+        }
+      ],
+      "text": "杂费分摊查询\n分摊搜索\n分类\n全部分类\n出运单号\n业务员标识\n查询\n分摊记录 1 条\nUSD 5.00\n已进入单票利润成本\n分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊\n共 1 条\n1\n50 条/页",
+      "tableText": "分摊单号\t杂费项目\t分类\t出运单\t客户\t业务员\t分摊日\t金额\t方式\nMFA-SN2JDU\tQA261112 测试杂费\t其他杂费\tSP-DAEPEG\tQA261112 测试客户\t-\t2026-11-12\tUSD 5.00\t手工分摊"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

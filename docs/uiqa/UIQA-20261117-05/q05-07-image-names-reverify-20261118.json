@@ -1,0 +1,29 @@
+{
+  "defect": "Q05-07",
+  "asset": "assets/index-Bpsh7zKB.js",
+  "object": "新建商品 UIQA-NAMES-01",
+  "uploads": ["fixtures/UIQA-C.png", "fixtures/UIQA-A.png"],
+  "storage": "products.image_names（JSON 数组，与 image_urls 等长）；迁移 0021_product_image_names",
+  "checks": {
+    "formBeforeSave": { "names": ["UIQA-C.png", "UIQA-A.png"], "count": "共 2 张" },
+    "afterReloadDetail1440": {
+      "names": ["UIQA-C.png", "UIQA-A.png"],
+      "alts": [
+        "UIQA图片文件名验收 图片 第 1 张 UIQA-C.png",
+        "UIQA图片文件名验收 图片 第 2 张 UIQA-A.png"
+      ]
+    },
+    "afterReloadDetail390": {
+      "names": ["UIQA-C.png", "UIQA-A.png"],
+      "nameBox": "144x16"
+    }
+  },
+  "screenshots": [
+    "screenshots/q05-07-form-names-Bpsh-1440.png",
+    "screenshots/q05-07-detail-names-Bpsh-1440.png",
+    "screenshots/q05-07-detail-names-Bpsh-390.png"
+  ],
+  "legacy_fallback": "历史记录无文件名时回退 URL 末段解码文件名",
+  "conclusion": "文件名随商品持久化，保存并刷新后详情与表单均显示原始文件名；多图可访问名称含序号与文件名。Q05-07 关闭。",
+  "captured_at": "2026-11-18T21:15:00+08:00"
+}

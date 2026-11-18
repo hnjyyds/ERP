@@ -1,0 +1,49 @@
+{
+  "url": "http://localhost:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+  "viewport": [
+    1440,
+    900
+  ],
+  "images": [
+    {
+      "src": "http://localhost:8080/uploads/images/ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "alt": "商品图片预览",
+      "title": "",
+      "complete": true,
+      "natural": [
+        640,
+        480
+      ],
+      "rect": {
+        "x": 253,
+        "y": 488.296875,
+        "width": 102,
+        "height": 102,
+        "top": 488.296875,
+        "right": 355,
+        "bottom": 590.296875,
+        "left": 253
+      }
+    },
+    {
+      "src": "http://localhost:8080/uploads/images/be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png",
+      "alt": "商品图片预览",
+      "title": "",
+      "complete": true,
+      "natural": [
+        640,
+        480
+      ],
+      "rect": {
+        "x": 369,
+        "y": 488.296875,
+        "width": 102,
+        "height": 102,
+        "top": 488.296875,
+        "right": 471,
+        "bottom": 590.296875,
+        "left": 369
+      }
+    }
+  ]
+}

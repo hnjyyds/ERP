@@ -1,0 +1,59 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "viewport": "1440×900",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "Q05-24共享选择器影响面补查：商品新增弹窗内普通AntD Select聚焦可见性；未提交商品",
+  "defect": "Q05-24",
+  "product_form": {
+    "url": "http://localhost:8080/masterdata/products",
+    "dialog": "新增商品",
+    "status_select": {
+      "selected_title": "启用",
+      "focused": true,
+      "input_width_px": 258.6640625,
+      "content_width_px": 258.6640625,
+      "input_background": "rgb(255, 255, 255)",
+      "content_background": "rgba(0, 0, 0, 0)",
+      "visible_to_user": false
+    },
+    "after_blur": {
+      "input_background": "rgba(0, 0, 0, 0)",
+      "visible_to_user": true
+    },
+    "purchase_split_select_not_focused": {
+      "selected_title": "按供应商分单",
+      "input_background": "rgba(0, 0, 0, 0)",
+      "note": "该次鼠标点击未落在内部输入框，未取得聚焦态；不用于结论"
+    }
+  },
+  "tested_surfaces": [
+    {"page": "PAGE-12", "form": "样品登记FormModal", "control": "RemoteSelect 产品/客户", "viewports": ["1440×900", "390×844"], "status": "已实测复现"},
+    {"page": "PAGE-01", "form": "商品新增FormModal", "control": "普通AntD Select 状态", "viewports": ["1440×900"], "status": "已实测复现"}
+  ],
+  "inferred_surfaces": {
+    "basis": "源码选择器作用域+FormModal统一record-form包装，未逐页操作",
+    "examples": ["商品编辑/配件", "供应商/客户/合作伙伴/单证资料", "样品登记/寄样/申请", "出货生成/报价/合同/寄样请求", "采购询价/合同/跟单配置", "QC任务/整改/问题解决", "入仓/出库工作流与计划生成"],
+    "not_tested_note": "上述页面不能算作已实测；修复后需按页面抽样或逐项复验"
+  },
+  "code_scope": {
+    "wrapper": "frontend/src/shared/ui/FormModal.tsx:48 所有FormModal子表单均包在<form className=\"record-form\">内",
+    "css": "frontend/src/styles/design-system-apply.css:694 body .record-form input:focus 给内部搜索框刷白底；694未排除.ant-select-input，且晚于352透明规则",
+    "affected_pattern": "所有.record-form内的AntD Select与RemoteSelect，包括普通状态/分类下拉，不只远程选择器",
+    "examples_from_code": [
+      "商品新增/编辑与配件弹窗（ProductFormModal、ProductAccessoryModal）",
+      "供应商/客户/合作伙伴/单证资料编辑表单",
+      "样品登记、寄样、样品申请表单",
+      "出货生成、报价/合同/寄样请求表单",
+      "采购询价、采购合同、跟单配置表单",
+      "QC任务、整改、问题解决、任务完成表单",
+      "入仓/出库工作流与入库/出库计划生成表单"
+    ],
+    "not_affected_by_css_scope": "列表页筛选栏（如P19入库的供应商/合同筛选）不在.record-form内，按选择器作用域不触发该遮挡；P19已实际选中并显示标签，但未单列聚焦态测量"
+  },
+  "screenshots": ["screenshots/Q05-24-product-status-focused-1440.png"],
+  "business_writes": "无；未提交商品，未保存任何表单",
+  "conclusion": "Q05-24已实测页面为PAGE-12与PAGE-01；record-form内其他AntD Select/RemoteSelect属源码推定影响面，未逐页实测。修复选择器时必须同时覆盖普通Select，复验不能只测远程选择器，也不能把推定清单当作已测页面。"
+}

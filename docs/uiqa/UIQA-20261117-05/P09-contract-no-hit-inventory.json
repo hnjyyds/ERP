@@ -1,0 +1,313 @@
+{
+  "url": "http://localhost:8080/sales/shipments?contract=EC-F8D7RX",
+  "title": "出货明细",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出货明细",
+    "出货计划列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出货搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 267.4453125,
+            "width": 283.71875,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 564.71875,
+            "bottom": 303.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_o_",
+          "label": "审批状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 587.71875,
+            "y": 272.4453125,
+            "width": 145.3984375,
+            "height": 26,
+            "top": 272.4453125,
+            "right": 733.1171875,
+            "bottom": 298.4453125,
+            "left": 587.71875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_q_",
+          "label": "客户编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 785.1171875,
+            "y": 272.4453125,
+            "width": 145.3984375,
+            "height": 26,
+            "top": 272.4453125,
+            "right": 930.515625,
+            "bottom": 298.4453125,
+            "left": 785.1171875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出口合同编号",
+          "text": "",
+          "value": "EC-F8D7RX",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 971.515625,
+            "y": 267.4453125,
+            "width": 185.3984375,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1156.9140625,
+            "bottom": 303.4453125,
+            "left": 971.515625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1168.9140625,
+            "y": 267.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1253.4375,
+            "bottom": 303.4453125,
+            "left": 1168.9140625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "生成出货明细",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1261.4375,
+            "y": 267.4453125,
+            "width": 137.5625,
+            "height": 36,
+            "top": 267.4453125,
+            "right": 1399,
+            "bottom": 303.4453125,
+            "left": 1261.4375
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情",
+      "buttons": [
+        "SP-DAEPEG",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

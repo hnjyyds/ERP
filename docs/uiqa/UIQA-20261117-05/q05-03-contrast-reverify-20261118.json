@@ -1,0 +1,48 @@
+{
+  "defect": "Q05-03",
+  "asset": "assets/index-Bpsh7zKB.js",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "admin",
+  "threshold": 4.5,
+  "changes": [
+    "design-system.css: --ui-text-muted #7c8592 -> #68707d",
+    "navigation-settings.css: 导航分组文字/图标 -> var(--ui-text-secondary)",
+    "organization.css: .organization-company-field span -> var(--ui-text-secondary)",
+    "organization-members.css: 权限说明 p 与“配置角色”标签 -> var(--ui-text-secondary)"
+  ],
+  "measurements": [
+    {
+      "viewport": "1440x900",
+      "navGroupSummary": [{ "text": "基础资料", "contrast": 5.64 }, { "text": "订单流程", "contrast": 5.31 }, { "text": "QC / 跟单", "contrast": 5.31 }, { "text": "仓库", "contrast": 5.31 }, { "text": "财务经营", "contrast": 5.31 }, { "text": "系统设置", "contrast": 5.31 }],
+      "companyFieldLabels": 5.64,
+      "permissionDescription": 5.64,
+      "permissionRoleLabel": 5.64
+    },
+    {
+      "viewport": "1280x720",
+      "navGroupSummary": 5.31,
+      "companyFieldLabels": 5.64,
+      "permissionDescription": 5.64,
+      "permissionRoleLabel": 5.64
+    },
+    {
+      "viewport": "390x844",
+      "navGroupSummary": 5.31,
+      "companyFieldLabels": 5.64,
+      "permissionDescription": 5.64,
+      "permissionRoleLabel": 5.64,
+      "navAccess": "通过“业务导航”抽屉展开后测量"
+    }
+  ],
+  "screenshots": [
+    "screenshots/q05-03-nav-BRdw-1440.png",
+    "screenshots/q05-03-company-BRdw-1440.png",
+    "screenshots/q05-03-permission-BRdw-1440.png",
+    "screenshots/q05-03-nav-Bpsh-390.png",
+    "screenshots/q05-03-company-Bpsh-390.png",
+    "screenshots/q05-03-permission-Bpsh-390.png"
+  ],
+  "result": "三档全部 ≥4.5:1",
+  "conclusion": "导航分组、公司信息字段标签、权限窗口说明与“配置角色”标签在三档视口均达到 4.5:1。Q05-03 关闭。",
+  "captured_at": "2026-11-18T21:10:00+08:00"
+}

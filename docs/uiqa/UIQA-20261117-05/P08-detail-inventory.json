@@ -1,0 +1,194 @@
+{
+  "url": "http://localhost:8080/purchase/contracts/56cd6434-f367-4553-8caf-092a96ab097d",
+  "title": "采购合同",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "采购合同",
+    "采购合同明细",
+    "合同概况",
+    "履约安排",
+    "金额与审批"
+  ],
+  "forms": [],
+  "tables": [
+    {
+      "i": 0,
+      "text": "商品\t规格/型号\t数量\t单价\t金额\t未收\nQA261112-P01 / QA261112 验收测试围巾\t180×70cm / 含中文与符号 / QA-M01\t100 pcs\tRMB 2.50\tRMB 250.00\t0 pcs",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "出口合同\t客户\t商品\t需求数量\n库存采购或手工采购，无来源出口合同",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "类型\t标题\t到期日\t金额\t状态\n交货提醒\tPC-HR36RU 供应商交货提醒\t2026-11-12\t无金额\t待处理\n付款提醒\tPC-HR36RU 供应商付款提醒\t2026-11-19\tRMB 75.00\t待处理",
+      "buttons": []
+    },
+    {
+      "i": 3,
+      "text": "总数量\t已收\t未收\t已付\t未付\n100\t100\t0\tRMB 0.00\tRMB 250.00",
+      "buttons": []
+    },
+    {
+      "i": 4,
+      "text": "类型\t标题\t到期日\t金额\n交货提醒\tPC-HR36RU 供应商交货提醒\t2026-11-12\t无金额\n付款提醒\tPC-HR36RU 供应商付款提醒\t2026-11-19\tRMB 75.00",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

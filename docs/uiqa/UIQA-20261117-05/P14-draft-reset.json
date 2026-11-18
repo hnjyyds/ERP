@@ -1,0 +1,106 @@
+{
+  "draftField": "明细备注",
+  "values": [
+    {
+      "label": "寄样单号",
+      "value": ""
+    },
+    {
+      "label": "寄样日期",
+      "value": "2026-11-17"
+    },
+    {
+      "label": "客户\n搜索客户编号或名称",
+      "value": ""
+    },
+    {
+      "label": "供应商",
+      "value": ""
+    },
+    {
+      "label": "工厂",
+      "value": ""
+    },
+    {
+      "label": "收件人",
+      "value": ""
+    },
+    {
+      "label": "收件公司",
+      "value": ""
+    },
+    {
+      "label": "收件地址",
+      "value": ""
+    },
+    {
+      "label": "快递公司",
+      "value": "DHL"
+    },
+    {
+      "label": "快递单号",
+      "value": ""
+    },
+    {
+      "label": "关联报价\n输入关键词搜索",
+      "value": ""
+    },
+    {
+      "label": "样品登记\n输入关键词搜索",
+      "value": ""
+    },
+    {
+      "label": "样品编号",
+      "value": ""
+    },
+    {
+      "label": "样品分类",
+      "value": "确认样"
+    },
+    {
+      "label": "产品编号",
+      "value": ""
+    },
+    {
+      "label": "产品名称",
+      "value": ""
+    },
+    {
+      "label": "寄样数量",
+      "value": "1"
+    },
+    {
+      "label": "单位",
+      "value": "pcs"
+    },
+    {
+      "label": "明细备注",
+      "value": ""
+    },
+    {
+      "label": "费用类型\n快递费",
+      "value": ""
+    },
+    {
+      "label": "金额",
+      "value": "0.00"
+    },
+    {
+      "label": "币种",
+      "value": "USD"
+    },
+    {
+      "label": "承担方\n公司承担",
+      "value": ""
+    },
+    {
+      "label": "费用备注",
+      "value": ""
+    },
+    {
+      "label": "寄样备注",
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

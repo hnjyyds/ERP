@@ -1,0 +1,16 @@
+{
+  "defect": "Q05-09",
+  "asset": "assets/index-Bpsh7zKB.js",
+  "viewport": "390x844",
+  "threshold": { "height": 44, "width": 44 },
+  "method": "展开“设置列视图”下拉，等待滑入动画结束后测量 .ant-dropdown-menu-item 的 getBoundingClientRect",
+  "results": {
+    "products": { "minHeight": 45, "minWidth": 103.13, "items": 8 },
+    "suppliers": { "minHeight": 45, "minWidth": 107.24, "items": 7 },
+    "customers": { "minHeight": 45, "minWidth": 107.24, "items": 7 },
+    "partners": { "minHeight": 45, "minWidth": 107.24, "items": 8 }
+  },
+  "note": "首轮在滑入动画期间测得 43.79，动画结束后为 45；以动画结束后的稳定值判定。禁用“编号”行同样达到高度要求。",
+  "conclusion": "四页列设置菜单项均 ≥44×44。Q05-09 关闭。",
+  "captured_at": "2026-11-18T21:05:00+08:00"
+}

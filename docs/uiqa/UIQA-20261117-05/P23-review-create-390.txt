@@ -1,0 +1,275 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=8730, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "收款管理"
+          container
+            button "通知" [ref=8705, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=8706, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container "收款管理"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "银行水单列表"
+              form
+                container
+                  text "水单搜索"
+                  textbox [ref=8731, loc=css:input[placeholder="水单号 / 付款人 / 客户"]]
+                    text "水单号 / 付款人 / 客户"
+                container
+                  text "水单状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=8732]
+                    image "down"
+                      svg_root
+                container
+                  text "客户标识"
+                  container
+                    container
+                      text "输入客户编号或名称"
+                      comboboxgrouping "客户标识" [ref=8733, loc=css:input[aria-label="客户标识"]]
+                    image "down"
+                      svg_root
+                container
+                  button [ref=8734]
+                    svg_root
+                    text "查询"
+                  button [ref=8735]
+                    svg_root
+                    text "水单录入"
+            container
+              text "本次列表 1 条"
+              text "USD 100.00"
+              container
+                text "未分摊"
+                text "USD -20.00"
+            container [ref=8770]
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=8736]
+                  container [ref=8771]
+                    table
+                      table_row
+                        table_cell
+                          text "水单号"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "性质"
+                        table_cell
+                          text "收款日"
+                        table_cell
+                          text "付款人"
+                        table_cell
+                          text "客户"
+                        table_cell
+                          text "金额"
+                        table_cell
+                          text "未分摊"
+                      table_row
+                        table_cell
+                          button [ref=8737]
+                            text "BR-MWYV53"
+                        table_cell
+                          text "已分摊"
+                        table_cell
+                          text "普通收款"
+                        table_cell
+                          text "2026-11-12"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "USD 100.00"
+                        table_cell
+                          text "USD -20.00"
+                          text "超额分摊"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=8738]
+                      image "left"
+                        svg_root
+                  list_item [ref=8739]
+                    anchor [ref=8740]
+                      text "1"
+                  list_item
+                    button [ref=8741]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+          container
+            svg_root
+            heading
+              text "应收账款查询"
+            form
+              container
+                text "应收搜索"
+                textbox [ref=8743, loc=css:input[placeholder="合同号 / 客户 / 报价号"]]
+                  text "合同号 / 客户 / 报价号"
+              container
+                text "出口合同号"
+                textbox [ref=8744]
+              container
+                text "发票号"
+                textbox [ref=8745]
+              button [ref=8746]
+                svg_root
+                text "查询"
+            text "本次列表 1 条"
+            text "USD 392.50"
+            container [ref=8773]
+              table
+                table_row
+                  table_cell
+              container [ref=8747]
+                container [ref=8774]
+                  table
+                    table_row
+                      table_cell
+                        text "出口合同"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "业务员"
+                      table_cell
+                        text "合同金额"
+                      table_cell
+                        text "已收款"
+                      table_cell
+                        text "应收余额"
+                      table_cell
+                        text "状态"
+                    table_row
+                      table_cell
+                        text "EC-F8D7RX"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "系统管理员"
+                      table_cell
+                        text "USD 512.50"
+                      table_cell
+                        text "USD 120.00"
+                      table_cell
+                        text "USD 392.50"
+                      table_cell
+                        text "部分收款"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=8748]
+                    image "left"
+                      svg_root
+                list_item [ref=8749]
+                  anchor [ref=8750]
+                    text "1"
+                list_item
+                  button [ref=8751]
+                    image "right"
+                      svg_root
+              table
+                table_row
+                  table_cell
+    container [ref=8772]
+      dialog "水单录入"
+        button "Close" [ref=8753, loc=css:button[aria-label="Close"]]
+          container "关闭"
+            image "close"
+              svg_root
+        text "水单录入"
+        form
+          container
+            container
+              text "银行水单号"
+              textbox [ref=8754, loc=css:input[placeholder="保存后自动生成"]]
+                text "保存后自动生成"
+            container
+              text "收款日期"
+              textbox [ref=8755]
+                spinbutton "年" [ref=8756]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=8757]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=8758]
+                  text "18"
+          container
+            text "付款人"
+            textbox [ref=8759]
+          container
+            container
+              text "客户"
+              container
+                container
+                  text "搜索客户编号或名称"
+                  comboboxgrouping "客户" [ref=8760, loc=css:input[aria-label="客户"]]
+                image "down"
+                  svg_root
+            container
+              text "客户名称"
+              textbox [ref=8761, loc=css:input[placeholder="选择客户后自动带出"]]
+                text "选择客户后自动带出"
+          container
+            container
+              text "收款金额"
+              textbox [ref=8762]
+            container
+              text "币种"
+              textbox [ref=8763]
+                text "USD"
+            container
+              text "收款性质"
+              container
+                container
+                  text "预收款"
+                  comboboxgrouping [ref=8764]
+                image "down"
+                  svg_root
+          container
+            text "收款银行账号"
+            textbox [ref=8765]
+          container
+            text "银行流水号"
+            textbox [ref=8766]
+          container
+            text "备注"
+            textbox [ref=8767]
+          button [ref=8768]
+            text "取消"
+          button [ref=8769]
+            text "保存水单"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

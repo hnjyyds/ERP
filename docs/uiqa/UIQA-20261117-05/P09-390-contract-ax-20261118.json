@@ -1,0 +1,58 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P09 /sales/shipments：390档合同号实际查询与表格横向滚动；生成出货明细弹窗选择出口合同后的合同/客户组合文本AX核对；客户下拉候选项AX未执行；未生成出货单",
+  "contract_ax_name": {
+    "viewport": "1440×900",
+    "dialog": "从出口合同生成出货明细",
+    "search": "EC-F8D7RX",
+    "option_text": "EC-F8D7RX / QA261112 测试客户 / 出运 2026-11-25 / USD 512.50",
+    "selected_text": "EC-F8D7RX / QA261112 测试客户",
+    "ax_nodes": [
+      "text \"EC-F8D7RX / QA261112 测试客户\"",
+      "comboboxgrouping \"出口合同 A\" [ref=300, loc=css:input[aria-label=\"出口合同 A\"]]"
+    ],
+    "uuid_fallback": false,
+    "conclusion": "合同选择器选中值与Ax树文本包含合同号和客户名称，未见纯UUID回退；这只是合同选项的AX文本"
+  },
+  "customer_candidate_ax": {
+    "status": "未执行/部分覆盖",
+    "note": "合同选中值包含客户名，不能替代“客户下拉候选项”的可访问名称检查；后者需单独打开客户选择器、逐一读取候选项AX并回归",
+    "impact": "P09-customer-AX-regression保持未测，不计入通过"
+  },
+  "not_covered": "本次未执行Tab/Shift+Tab/Enter/Escape完整键盘路径，G03仍保持未测；客户下拉候选项AX未执行",
+  "mobile_contract_query": {
+    "viewport": "390×844",
+    "default": {"rows": 1, "docScrollWidth": 390, "tableScrollWidth": 447, "tableClientWidth": 328},
+    "query": {
+      "input": "EC-F8D7RX",
+      "url": "http://localhost:8080/sales/shipments?contract=EC-F8D7RX",
+      "rows": 1,
+      "row": "SP-DAEPEG / 已审批 / QA261112 测试客户 / 2026-11-12 / 2026-11-25 / USD 205.00 / 查看详情",
+      "tableScrollLeftAfter": 119,
+      "tableScrollMax": 119,
+      "lastCellAfterScroll": "查看详情",
+      "pageHorizontalOverflow": false
+    },
+    "conclusion": "390档合同号查询命中正确，表格可横向滚到末列“查看详情”，页面本身无横向溢出"
+  },
+  "customer_ax_name": {
+    "viewport": "1440×900",
+    "dialog": "从出口合同生成出货明细",
+    "search": "EC-F8D7RX",
+    "option_text": "EC-F8D7RX / QA261112 测试客户 / 出运 2026-11-25 / USD 512.50",
+    "selected_text": "EC-F8D7RX / QA261112 测试客户",
+    "ax_nodes": [
+      "text \"EC-F8D7RX / QA261112 测试客户\"",
+      "comboboxgrouping \"出口合同 A\" [ref=300, loc=css:input[aria-label=\"出口合同 A\"]]"
+    ],
+    "uuid_fallback": false,
+    "conclusion": "选中后可视文本与AX树均包含合同号和客户名称，未见纯UUID回退；未使用可视标签替代AX证据",
+    "not_covered": "本次未执行Tab/Shift+Tab/Enter/Escape完整键盘路径，G03仍保持未测"
+  },
+  "screenshots": ["screenshots/P09-390-contract-query.png", "screenshots/P09-shipment-contract-selected-1440.png"],
+  "business_writes": "无；弹窗已取消，未生成出货明细，未保存任何字段"
+}

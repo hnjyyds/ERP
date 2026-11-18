@@ -1,0 +1,263 @@
+[
+  {
+    "control": {
+      "i": 1,
+      "id": "_r_38_",
+      "label": "状态\n启用",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 0,
+        "label": "启用",
+        "title": "启用",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 1,
+        "label": "停用",
+        "title": "停用",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "启用",
+        "state": {
+          "selected": "启用",
+          "fields": [
+            {
+              "label": "编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "中文名称",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "英文名称",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "国家/地区",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "状态\n启用\n启用",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "网站",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "地址",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "信用等级\nA",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "授信额度",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "USD"
+            },
+            {
+              "label": "账期",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "风险备注",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "姓名",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "职务",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "邮箱",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "电话",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": null,
+              "type": "checkbox",
+              "value": "on"
+            }
+          ],
+          "focus": "combobox"
+        }
+      },
+      {
+        "expected": "停用",
+        "result": "OPTION_CHANGED"
+      }
+    ]
+  },
+  {
+    "control": {
+      "i": 2,
+      "id": "_r_3a_",
+      "label": "信用等级\nA",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 2,
+        "label": "A",
+        "title": "A",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 3,
+        "label": "B",
+        "title": "B",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 4,
+        "label": "C",
+        "title": "C",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "A",
+        "state": {
+          "selected": "A",
+          "fields": [
+            {
+              "label": "编号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "中文名称",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "英文名称",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "国家/地区",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "状态\n启用",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "网站",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "地址",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "信用等级\nA\nA",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "授信额度",
+              "type": "number",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "USD"
+            },
+            {
+              "label": "账期",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "风险备注",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "姓名",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "职务",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "邮箱",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "电话",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": null,
+              "type": "checkbox",
+              "value": "on"
+            }
+          ],
+          "focus": "combobox"
+        }
+      },
+      {
+        "expected": "B",
+        "result": "OPTION_CHANGED"
+      }
+    ]
+  }
+]

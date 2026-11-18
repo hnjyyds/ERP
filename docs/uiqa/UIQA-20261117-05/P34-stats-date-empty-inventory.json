@@ -1,0 +1,570 @@
+{
+  "url": "http://localhost:8080/reporting",
+  "title": "老板看板和经营分析",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "老板看板和经营分析",
+    "审批单据查询",
+    "类型汇总",
+    "统计分析报表",
+    "业务员月度出货",
+    "合同状态金额",
+    "原始单据追溯"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "单据类型\n全部类型\n审批状态\n待审批\n申请人标识\n开始日期\n结束日期\n查询\n重 置",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_v_",
+          "label": "单据类型\n全部类型",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 292,
+            "y": -385.0546875,
+            "width": 237.875,
+            "height": 26,
+            "top": -385.0546875,
+            "right": 529.875,
+            "bottom": -359.0546875,
+            "left": 292
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_11_",
+          "label": "审批状态\n待审批",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 581.875,
+            "y": -385.0546875,
+            "width": 114.9375,
+            "height": 26,
+            "top": -385.0546875,
+            "right": 696.8125,
+            "bottom": -359.0546875,
+            "left": 581.875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "申请人标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 737.8125,
+            "y": -390.0546875,
+            "width": 154.9375,
+            "height": 36,
+            "top": -390.0546875,
+            "right": 892.75,
+            "bottom": -354.0546875,
+            "left": 737.8125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "开始日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 904.75,
+            "y": -390.0546875,
+            "width": 154.9375,
+            "height": 36,
+            "top": -390.0546875,
+            "right": 1059.6875,
+            "bottom": -354.0546875,
+            "left": 904.75
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "结束日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1071.6875,
+            "y": -390.0546875,
+            "width": 154.9375,
+            "height": 36,
+            "top": -390.0546875,
+            "right": 1226.625,
+            "bottom": -354.0546875,
+            "left": 1071.6875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1238.625,
+            "y": -390.0546875,
+            "width": 84.5234375,
+            "height": 36,
+            "top": -390.0546875,
+            "right": 1323.1484375,
+            "bottom": -354.0546875,
+            "left": 1238.625
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "重 置",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1335.1484375,
+            "y": -390.0546875,
+            "width": 63.8515625,
+            "height": 36,
+            "top": -390.0546875,
+            "right": 1399,
+            "bottom": -354.0546875,
+            "left": 1335.1484375
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "统计开始\n统计结束\n统计状态\n全部状态\n客户标识\n供应商标识\n业务员标识\n查询统计\n重置统计",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "统计开始",
+          "text": "",
+          "value": "2027-01-01",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 431.9453125,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 431.9453125,
+            "right": 637.6640625,
+            "bottom": 467.9453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "统计结束",
+          "text": "",
+          "value": "2027-01-31",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 649.6640625,
+            "y": 431.9453125,
+            "width": 178.328125,
+            "height": 36,
+            "top": 431.9453125,
+            "right": 827.9921875,
+            "bottom": 467.9453125,
+            "left": 649.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_13_",
+          "label": "统计状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 850.9921875,
+            "y": 436.9453125,
+            "width": 138.3359375,
+            "height": 26,
+            "top": 436.9453125,
+            "right": 989.328125,
+            "bottom": 462.9453125,
+            "left": 850.9921875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1030.328125,
+            "y": 431.9453125,
+            "width": 178.3359375,
+            "height": 36,
+            "top": 431.9453125,
+            "right": 1208.6640625,
+            "bottom": 467.9453125,
+            "left": 1030.328125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1220.6640625,
+            "y": 431.9453125,
+            "width": 178.328125,
+            "height": 36,
+            "top": 431.9453125,
+            "right": 1398.9921875,
+            "bottom": 467.9453125,
+            "left": 1220.6640625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "业务员标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 501.9453125,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 501.9453125,
+            "right": 637.6640625,
+            "bottom": 537.9453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询统计",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 716.9453125,
+            "y": 501.9453125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 501.9453125,
+            "right": 827.9921875,
+            "bottom": 537.9453125,
+            "left": 716.9453125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "重置统计",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 931.28125,
+            "y": 501.9453125,
+            "width": 87.046875,
+            "height": 36,
+            "top": 501.9453125,
+            "right": 1018.328125,
+            "bottom": 537.9453125,
+            "left": 931.28125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "单据编号\t类型\t状态\t客户/供应商\t申请人\t业务日期\t提交日期\t审批日期\t金额\t操作\n\n\n暂无数据\n\n完成首次录入后，这里会显示对应记录",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "单据类型\t待审批\t已审批\t合计\n\n\n暂无数据\n\n完成首次录入后，这里会显示对应记录",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "客户\t出货单\t应收\t利润\t下钻\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "buttons": [
+        "清空筛选"
+      ]
+    },
+    {
+      "i": 3,
+      "text": "月份\t业务员\t出货单\t出货额\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "buttons": [
+        "清空筛选"
+      ]
+    },
+    {
+      "i": 4,
+      "text": "状态\t数量\t金额\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "buttons": [
+        "清空筛选"
+      ]
+    },
+    {
+      "i": 5,
+      "text": "状态\t数量\t金额\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "buttons": [
+        "清空筛选"
+      ]
+    },
+    {
+      "i": 6,
+      "text": "出货单\t客户\t状态\t出货日\t应收\t利润\t下钻\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "buttons": [
+        "清空筛选"
+      ]
+    },
+    {
+      "i": 7,
+      "text": "出口合同\t客户\t业务员\t状态\t金额\t下钻\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "buttons": [
+        "清空筛选"
+      ]
+    }
+  ],
+  "dialogs": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "开票通知"
+        button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        container "开票通知概览"
+          text "开票通知"
+          text "3"
+          text "已发送"
+          text "0"
+          text "已收票"
+          text "1"
+          text "通知金额"
+          text "CNY 0.01"
+          text "待催收"
+          text "0"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "开票通知列表"
+            form
+              container
+                text "通知搜索"
+                textbox [ref=2024, loc=css:input[placeholder="通知号 / 供应商 / 品名"]]
+                  text "通知号 / 供应商 / 品名"
+              container
+                text "通知状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=2025]
+                  image "down"
+                    svg_root
+              container
+                text "供应商标识"
+                textbox [ref=2026, loc=css:input[placeholder="输入供应商编号或名称"]]
+                  text "输入供应商编号或名称"
+              container
+                text "报关单证 ID"
+                textbox [ref=2027, loc=css:input[placeholder="输入报关单证编号"]]
+                  text "输入报关单证编号"
+              container
+                button [ref=2028]
+                  svg_root
+                  text "查询"
+                button [ref=2029]
+                  svg_root
+                  text "生成开票通知"
+          container [ref=2042]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=2030]
+                container [ref=2043]
+                  table
+                    table_row
+                      table_cell
+                        text "开票通知"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "供应商"
+                      table_cell
+                        text "报关单"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "提醒"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=2031]
+                          text "PIN-UIQA-20261117-02-01"
+                      table_cell
+                        text "草稿"
+                      table_cell
+                        text "UIQA-20261117-02 测试供应商A"
+                      table_cell
+                        text "UIQA-20261117-02"
+                      table_cell
+                        text "CNY 0.00"
+                      table_cell
+                        text "0 个"
+                      table_cell
+                        button [ref=2032]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        button [ref=2033]
+                          text "PIN-UIQA-20261117-02-02"
+                      table_cell
+                        text "草稿"
+                      table_cell
+                        text "UIQA-20261117-02 测试供应商B"
+                      table_cell
+                        text "UIQA-20261117-02"
+                      table_cell
+                        text "CNY 0.00"
+                      table_cell
+                        text "0 个"
+                      table_cell
+                        button [ref=2034]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        button [ref=2035]
+                          text "PIN-UIQA-20261117-04-01"
+                      table_cell
+                        text "已收票"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "UIQA-20261117-04"
+                      table_cell
+                        text "CNY 0.01"
+                      table_cell
+                        text "0 个"
+                      table_cell
+                        button [ref=2036]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 3 条"
+                list_item
+                  button [ref=2037]
+                    image "left"
+                      svg_root
+                list_item [ref=2038]
+                  anchor [ref=2039]
+                    text "1"
+                list_item
+                  button [ref=2040]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

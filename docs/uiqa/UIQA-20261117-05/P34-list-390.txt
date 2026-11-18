@@ -1,0 +1,439 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=2979, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "老板看板和经营分析"
+        container
+          button "通知" [ref=2967, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=2968, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "经理查询概览"
+          container
+            text "审批单据"
+            text "0"
+          container
+            text "待审批"
+            text "0"
+          container
+            text "已审批"
+            text "0"
+          container
+            text "单据类型"
+            text "0"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "审批单据查询"
+            form
+              container
+                text "单据类型"
+                container
+                  container
+                    text "全部类型"
+                    comboboxgrouping [ref=3037]
+                  image "down"
+                    svg_root
+              container
+                text "审批状态"
+                container
+                  container
+                    text "待审批"
+                    comboboxgrouping [ref=3038]
+                  image "down"
+                    svg_root
+              container
+                text "申请人标识"
+                textbox [ref=3039, loc=css:input[placeholder="输入申请人编号"]]
+                  text "输入申请人编号"
+              container
+                text "开始日期"
+                textbox [ref=3040]
+                  spinbutton "年" [ref=3041]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=3042]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=3043]
+                    text "日"
+              container
+                text "结束日期"
+                textbox [ref=3044]
+                  spinbutton "年" [ref=3045]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=3046]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=3047]
+                    text "日"
+              button [ref=3048]
+                svg_root
+                text "查询"
+              button [ref=3049]
+                text "重 置"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3050]
+                table
+                  table_row
+                    table_cell
+                      text "单据编号"
+                    table_cell
+                      text "类型"
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "客户/供应商"
+                    table_cell
+                      text "申请人"
+                    table_cell
+                      text "业务日期"
+                    table_cell
+                      text "提交日期"
+                    table_cell
+                      text "审批日期"
+                    table_cell
+                      text "金额"
+                    table_cell
+                      text "操作"
+                  table_row
+                    table_cell
+                      paragraph
+                        text "暂无数据"
+                      paragraph
+                        text "完成首次录入后，这里会显示对应记录"
+              table
+                table_row
+                  table_cell
+          container
+            svg_root
+            heading
+              text "类型汇总"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3051]
+                table
+                  table_row
+                    table_cell
+                      text "单据类型"
+                    table_cell
+                      text "待审批"
+                    table_cell
+                      text "已审批"
+                    table_cell
+                      text "合计"
+                  table_row
+                    table_cell
+                      paragraph
+                        text "暂无数据"
+                      paragraph
+                        text "完成首次录入后，这里会显示对应记录"
+              table
+                table_row
+                  table_cell
+        container "统计分析报表"
+          container
+            svg_root
+            heading
+              text "统计分析报表"
+            form
+              container
+                text "统计开始"
+                textbox [ref=3052]
+                  spinbutton "年" [ref=3053]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=3054]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=3055]
+                    text "日"
+              container
+                text "统计结束"
+                textbox [ref=3056]
+                  spinbutton "年" [ref=3057]
+                    text "年"
+                  text "/"
+                  spinbutton "月" [ref=3058]
+                    text "月"
+                  text "/"
+                  spinbutton "日" [ref=3059]
+                    text "日"
+              container
+                text "统计状态"
+                container
+                  text "全部状态"
+                  comboboxgrouping [ref=3060]
+                  svg_root
+              container
+                text "客户标识"
+                textbox [ref=3061, loc=css:input[placeholder="输入客户编号或名称"]]
+                  text "输入客户编号或名称"
+              container
+                text "供应商标识"
+                textbox [ref=3062, loc=css:input[placeholder="输入供应商编号或名称"]]
+                  text "输入供应商编号或名称"
+              container
+                text "业务员标识"
+                textbox [ref=3063, loc=css:input[placeholder="输入业务员编号"]]
+                  text "输入业务员编号"
+              button [ref=3064]
+                svg_root
+                text "查询统计"
+              button [ref=3065]
+                text "重置统计"
+            container
+              text "出口合同"
+              text "562.50"
+              text "采购合同"
+              text "250.00"
+              text "出货应收"
+              text "205.00"
+              text "出货利润"
+              text "210.00"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3066]
+                table
+                  table_row
+                    table_cell
+                      text "客户"
+                    table_cell
+                      text "出货单"
+                    table_cell
+                      text "应收"
+                    table_cell
+                      text "利润"
+                    table_cell
+                      text "下钻"
+                  table_row
+                    table_cell
+                      text "QA261112 测试客户"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "USD 205.00"
+                    table_cell
+                      text "USD 210.00"
+                    table_cell
+                      button [ref=3067]
+                        text "查看出货明细"
+              table
+                table_row
+                  table_cell
+          container
+            svg_root
+            heading
+              text "业务员月度出货"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3068]
+                table
+                  table_row
+                    table_cell
+                      text "月份"
+                    table_cell
+                      text "业务员"
+                    table_cell
+                      text "出货单"
+                    table_cell
+                      text "出货额"
+                  table_row
+                    table_cell
+                      text "2026-11"
+                    table_cell
+                      text "系统管理员"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "USD 205.00"
+              table
+                table_row
+                  table_cell
+          container
+            svg_root
+            heading
+              text "合同状态金额"
+            text "出口合同"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3069]
+                table
+                  table_row
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "数量"
+                    table_cell
+                      text "金额"
+                  table_row
+                    table_cell
+                      text "已审批"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "USD 512.50"
+                  table_row
+                    table_cell
+                      text "草稿"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "USD 50.00"
+              table
+                table_row
+                  table_cell
+            text "采购合同"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3070]
+                table
+                  table_row
+                    table_cell
+                      text "状态"
+                    table_cell
+                      text "数量"
+                    table_cell
+                      text "金额"
+                  table_row
+                    table_cell
+                      text "已审批"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "RMB 250.00"
+              table
+                table_row
+                  table_cell
+          container
+            svg_root
+            heading
+              text "原始单据追溯"
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3071]
+                container [ref=3076]
+                  table
+                    table_row
+                      table_cell
+                        text "出货单"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "出货日"
+                      table_cell
+                        text "应收"
+                      table_cell
+                        text "利润"
+                      table_cell
+                        text "下钻"
+                    table_row
+                      table_cell
+                        text "SP-DAEPEG"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "已审批"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "USD 205.00"
+                      table_cell
+                        text "USD 210.00"
+                      table_cell
+                        button [ref=3072]
+                          text "查看出货明细"
+              table
+                table_row
+                  table_cell
+            container
+              table
+                table_row
+                  table_cell
+              container [ref=3073]
+                container [ref=3077]
+                  table
+                    table_row
+                      table_cell
+                        text "出口合同"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "业务员"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "下钻"
+                    table_row
+                      table_cell
+                        text "EC-5FW46R"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "草稿"
+                      table_cell
+                        text "USD 50.00"
+                      table_cell
+                        button [ref=3074]
+                          text "查看出口合同"
+                    table_row
+                      table_cell
+                        text "EC-F8D7RX"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "系统管理员"
+                      table_cell
+                        text "已审批"
+                      table_cell
+                        text "USD 512.50"
+                      table_cell
+                        button [ref=3075]
+                          text "查看出口合同"
+              table
+                table_row
+                  table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

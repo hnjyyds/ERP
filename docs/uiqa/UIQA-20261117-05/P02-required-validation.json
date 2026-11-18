@@ -1,0 +1,151 @@
+{
+  "fields": [
+    {
+      "i": 2,
+      "id": "",
+      "label": "编号",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 3,
+      "id": "",
+      "label": "中文名称",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 4,
+      "id": "",
+      "label": "英文名称",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 5,
+      "id": "",
+      "label": "国家/地区",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 6,
+      "id": "_r_38_",
+      "label": "状态\n启用",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgba(0, 0, 0, 0.88)"
+    },
+    {
+      "i": 7,
+      "id": "",
+      "label": "网站",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 8,
+      "id": "",
+      "label": "地址",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 9,
+      "id": "_r_3a_",
+      "label": "信用等级\nA",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgba(0, 0, 0, 0.88)"
+    },
+    {
+      "i": 10,
+      "id": "",
+      "label": "授信额度",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 11,
+      "id": "",
+      "label": "币种",
+      "value": "USD",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 12,
+      "id": "",
+      "label": "账期",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 13,
+      "id": "",
+      "label": "姓名",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 14,
+      "id": "",
+      "label": "职务",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 15,
+      "id": "",
+      "label": "邮箱",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 16,
+      "id": "",
+      "label": "电话",
+      "value": "",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgb(223, 227, 232)"
+    },
+    {
+      "i": 17,
+      "id": "",
+      "label": "",
+      "value": "on",
+      "required": false,
+      "ariaInvalid": null,
+      "border": "rgba(0, 0, 0, 0.88)"
+    }
+  ],
+  "requests": [],
+  "expected": "字段常驻错误、星号、aria-invalid及错误聚焦",
+  "actual": "详见toast及等待后字段状态"
+}

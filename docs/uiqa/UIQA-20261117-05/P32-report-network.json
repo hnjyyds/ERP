@@ -1,0 +1,735 @@
+[
+  {
+    "requestId": "79503.3879",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "receipt-usage",
+        "title": "水单使用情况明细表",
+        "source_tables": [
+          "finance_bank_receipts",
+          "finance_receipt_allocations"
+        ],
+        "metric_rules": [
+          "按水单分摊日期筛选。",
+          "金额取银行水单分摊明细金额，币种取分摊币种。"
+        ],
+        "fields": [
+          {
+            "label": "水单号",
+            "field": "receipt_no",
+            "formula": "finance_bank_receipts.receipt_no"
+          },
+          {
+            "label": "分摊金额",
+            "field": "amount",
+            "formula": "finance_receipt_allocations.amount"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3878",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [
+          {
+            "receipt_no": "BR-MWYV53",
+            "received_at": "2026-11-12",
+            "payer_name": "QA261112 测试客户",
+            "customer_name": "QA261112 测试客户",
+            "allocation_type": "contract",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "currency": "USD",
+            "amount": "60.00"
+          },
+          {
+            "receipt_no": "BR-MWYV53",
+            "received_at": "2026-11-12",
+            "payer_name": "QA261112 测试客户",
+            "customer_name": "QA261112 测试客户",
+            "allocation_type": "contract",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "currency": "USD",
+            "amount": "60.00"
+          }
+        ],
+        "currency_summaries": [
+          {
+            "currency": "USD",
+            "allocation_count": 2,
+            "allocated_amount": "120.00"
+          }
+        ],
+        "total_count": 2
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3882",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage/export",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "filename": "finance-receipt-usage.csv",
+        "content_type": "text/csv",
+        "content": "水单号,收款日期,付款方,客户,分摊类型,合同号,发票号,分摊日期,币种,金额\r\nBR-MWYV53,2026-11-12,QA261112 测试客户,QA261112 测试客户,contract,EC-F8D7RX,,2026-11-12,USD,60.00\r\nBR-MWYV53,2026-11-12,QA261112 测试客户,QA261112 测试客户,contract,EC-F8D7RX,,2026-11-12,USD,60.00\r\n",
+        "total": 2
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3884",
+    "url": "http://localhost:8080/api/v1/finance/reports/bank-receipt-summary/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "bank-receipt-summary",
+        "title": "银行水单汇总表",
+        "source_tables": [
+          "finance_bank_receipts"
+        ],
+        "metric_rules": [
+          "按收款日期筛选，并按币种/经办人汇总。"
+        ],
+        "fields": [
+          {
+            "label": "总金额",
+            "field": "total_amount",
+            "formula": "sum(amount)"
+          },
+          {
+            "label": "未分摊",
+            "field": "unallocated_amount",
+            "formula": "sum(amount) - sum(allocated_amount)"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3883",
+    "url": "http://localhost:8080/api/v1/finance/reports/bank-receipt-summary",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "currency_summaries": [
+          {
+            "currency": "USD",
+            "receipt_count": 1,
+            "total_amount": "100.00",
+            "allocated_amount": "120.00",
+            "unallocated_amount": "-20.00"
+          }
+        ],
+        "operator_summaries": [
+          {
+            "operator_name": "系统管理员",
+            "currency": "USD",
+            "receipt_count": 1,
+            "total_amount": "100.00"
+          }
+        ],
+        "receipt_count": 1
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3885",
+    "url": "http://localhost:8080/api/v1/finance/reports/bank-receipt-summary/export",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "filename": "finance-bank-receipt-summary.csv",
+        "content_type": "text/csv",
+        "content": "汇总类型,币种,经办人,水单数,总金额,已分摊,未分摊\r\n币种汇总,USD,,1,100.00,120.00,'-20.00\r\n经办人汇总,USD,系统管理员,1,100.00,,\r\n",
+        "total": 2
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3887",
+    "url": "http://localhost:8080/api/v1/finance/reports/goods-payment/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "goods-payment",
+        "title": "货款支付情况查询",
+        "source_tables": [
+          "finance_payment_requests"
+        ],
+        "metric_rules": [
+          "按付款申请日期筛选，未付金额=申请金额-已付金额。"
+        ],
+        "fields": [
+          {
+            "label": "付款单号",
+            "field": "request_no",
+            "formula": "finance_payment_requests.request_no"
+          },
+          {
+            "label": "未付金额",
+            "field": "outstanding_amount",
+            "formula": "requested_amount - paid_amount"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3886",
+    "url": "http://localhost:8080/api/v1/finance/reports/goods-payment",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [
+          {
+            "request_no": "PR-PG3X2P",
+            "request_date": "2026-11-17",
+            "supplier_invoice_no": "UIQA-20261117-04-INV01",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "currency": "CNY",
+            "requested_amount": "0.01",
+            "approved_amount": "0.01",
+            "paid_amount": "0.01",
+            "outstanding_amount": "0.00",
+            "status": "approved"
+          },
+          {
+            "request_no": "PR-GZN8H6",
+            "request_date": "2026-11-12",
+            "supplier_invoice_no": "QA261112-INV01",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "currency": "RMB",
+            "requested_amount": "60.00",
+            "approved_amount": "60.00",
+            "paid_amount": "60.00",
+            "outstanding_amount": "0.00",
+            "status": "approved"
+          },
+          {
+            "request_no": "PR-ZAWWF6",
+            "request_date": "2026-11-12",
+            "supplier_invoice_no": "QA261112-INV01",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "currency": "RMB",
+            "requested_amount": "60.00",
+            "approved_amount": "60.00",
+            "paid_amount": "60.00",
+            "outstanding_amount": "0.00",
+            "status": "approved"
+          }
+        ],
+        "currency_summaries": [
+          {
+            "currency": "CNY",
+            "request_count": 1,
+            "requested_amount": "0.01",
+            "approved_amount": "0.01",
+            "paid_amount": "0.01",
+            "outstanding_amount": "0.00"
+          },
+          {
+            "currency": "RMB",
+            "request_count": 2,
+            "requested_amount": "120.00",
+            "approved_amount": "120.00",
+            "paid_amount": "120.00",
+            "outstanding_amount": "0.00"
+          }
+        ],
+        "total_count": 3
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3888",
+    "url": "http://localhost:8080/api/v1/finance/reports/goods-payment/export",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "filename": "finance-goods-payment.csv",
+        "content_type": "text/csv",
+        "content": "付款单号,日期,供应商发票号,供应商,采购合同号,付款类型,币种,申请金额,审批金额,已付金额,未付金额,状态\r\nPR-PG3X2P,2026-11-17,UIQA-20261117-04-INV01,QA261112 测试供应商,PC-HR36RU,goods_payment,CNY,0.01,0.01,0.01,0.00,approved\r\nPR-GZN8H6,2026-11-12,QA261112-INV01,QA261112 测试供应商,PC-HR36RU,goods_payment,RMB,60.00,60.00,60.00,0.00,approved\r\nPR-ZAWWF6,2026-11-12,QA261112-INV01,QA261112 测试供应商,PC-HR36RU,goods_payment,RMB,60.00,60.00,60.00,0.00,approved\r\n",
+        "total": 3
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3890",
+    "url": "http://localhost:8080/api/v1/finance/reports/fee-payment/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "fee-payment",
+        "title": "费用支付情况查询",
+        "source_tables": [
+          "finance_fee_payment_requests"
+        ],
+        "metric_rules": [
+          "按付费申请日期筛选，支持合作伙伴、费用类型、业务员和状态筛选。"
+        ],
+        "fields": [
+          {
+            "label": "付费单号",
+            "field": "request_no",
+            "formula": "finance_fee_payment_requests.request_no"
+          },
+          {
+            "label": "未付金额",
+            "field": "outstanding_amount",
+            "formula": "requested_amount - paid_amount"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3889",
+    "url": "http://localhost:8080/api/v1/finance/reports/fee-payment",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [
+          {
+            "request_no": "FPR-G7WTAX",
+            "request_date": "2026-11-12",
+            "partner_fee_invoice_no": "QA261112-FEE01",
+            "partner_name": "QA261112 测试货代",
+            "partner_type": "freight_forwarder",
+            "fee_type": "freight",
+            "shipment_no": "SP-DAEPEG",
+            "sales_user_name": null,
+            "currency": "USD",
+            "requested_amount": "20.00",
+            "approved_amount": "20.00",
+            "paid_amount": "20.00",
+            "outstanding_amount": "0.00",
+            "status": "approved"
+          }
+        ],
+        "currency_summaries": [
+          {
+            "currency": "USD",
+            "request_count": 1,
+            "requested_amount": "20.00",
+            "approved_amount": "20.00",
+            "paid_amount": "20.00",
+            "outstanding_amount": "0.00"
+          }
+        ],
+        "total_count": 1
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3891",
+    "url": "http://localhost:8080/api/v1/finance/reports/fee-payment/export",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "filename": "finance-fee-payment.csv",
+        "content_type": "text/csv",
+        "content": "付费单号,日期,合作伙伴发票号,合作伙伴,伙伴类型,费用类型,出运单,业务员,币种,申请金额,审批金额,已付金额,未付金额,状态\r\nFPR-G7WTAX,2026-11-12,QA261112-FEE01,QA261112 测试货代,freight_forwarder,freight,SP-DAEPEG,,USD,20.00,20.00,20.00,0.00,approved\r\n",
+        "total": 1
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3893",
+    "url": "http://localhost:8080/api/v1/finance/reports/customs-receipt-collection/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "customs-receipt-collection",
+        "title": "报关回单催收查询",
+        "source_tables": [
+          "finance_verification_documents"
+        ],
+        "metric_rules": [
+          "默认仅统计未登记报关回单的核销单，可选择包含已登记记录。"
+        ],
+        "fields": [
+          {
+            "label": "核销单号",
+            "field": "document_no",
+            "formula": "finance_verification_documents.document_no"
+          },
+          {
+            "label": "催收状态",
+            "field": "reminder_status",
+            "formula": "finance_verification_documents.reminder_status"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3892",
+    "url": "http://localhost:8080/api/v1/finance/reports/customs-receipt-collection",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [],
+        "status_summaries": [],
+        "total_count": 0
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3894",
+    "url": "http://localhost:8080/api/v1/finance/reports/customs-receipt-collection/export",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "filename": "finance-customs-receipt-collection.csv",
+        "content_type": "text/csv",
+        "content": "核销单号,领用日期,业务员,出运单,客户,报关单号,报关回单号,提醒日期,催收状态,有效期,币种,可退税额\r\n",
+        "total": 0
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3896",
+    "url": "http://localhost:8080/api/v1/finance/reports/tax-refund-statistics/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "tax-refund-statistics",
+        "title": "申报退税统计",
+        "source_tables": [
+          "finance_verification_documents",
+          "finance_verification_tax_refunds"
+        ],
+        "metric_rules": [
+          "可退税额来自核销单，已退税额来自退税登记，待退税额=可退税额-已退税额。"
+        ],
+        "fields": [
+          {
+            "label": "可退税额",
+            "field": "refundable_amount",
+            "formula": "sum(finance_verification_documents.refundable_amount)"
+          },
+          {
+            "label": "已退税额",
+            "field": "refunded_amount",
+            "formula": "sum(finance_verification_documents.refunded_amount)"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3895",
+    "url": "http://localhost:8080/api/v1/finance/reports/tax-refund-statistics",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "status_summaries": [
+          {
+            "status": "refunded",
+            "currency": "USD",
+            "document_count": 1,
+            "refundable_amount": "10.00",
+            "refunded_amount": "10.00",
+            "outstanding_amount": "0.00"
+          }
+        ],
+        "currency_totals": [
+          {
+            "currency": "USD",
+            "document_count": 1,
+            "refundable_amount": "10.00",
+            "refunded_amount": "10.00",
+            "outstanding_amount": "0.00"
+          }
+        ],
+        "document_count": 1,
+        "refund_record_count": 1
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3897",
+    "url": "http://localhost:8080/api/v1/finance/reports/tax-refund-statistics/export",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "filename": "finance-tax-refund-statistics.csv",
+        "content_type": "text/csv",
+        "content": "汇总类型,状态,币种,核销单数,可退税额,已退税额,待退税额\r\n状态汇总,refunded,USD,1,10.00,10.00,0.00\r\n币种汇总,,USD,1,10.00,10.00,0.00\r\n",
+        "total": 2
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3899",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "receipt-usage",
+        "title": "水单使用情况明细表",
+        "source_tables": [
+          "finance_bank_receipts",
+          "finance_receipt_allocations"
+        ],
+        "metric_rules": [
+          "按水单分摊日期筛选。",
+          "金额取银行水单分摊明细金额，币种取分摊币种。"
+        ],
+        "fields": [
+          {
+            "label": "水单号",
+            "field": "receipt_no",
+            "formula": "finance_bank_receipts.receipt_no"
+          },
+          {
+            "label": "分摊金额",
+            "field": "amount",
+            "formula": "finance_receipt_allocations.amount"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3898",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [
+          {
+            "receipt_no": "BR-MWYV53",
+            "received_at": "2026-11-12",
+            "payer_name": "QA261112 测试客户",
+            "customer_name": "QA261112 测试客户",
+            "allocation_type": "contract",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "currency": "USD",
+            "amount": "60.00"
+          },
+          {
+            "receipt_no": "BR-MWYV53",
+            "received_at": "2026-11-12",
+            "payer_name": "QA261112 测试客户",
+            "customer_name": "QA261112 测试客户",
+            "allocation_type": "contract",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "currency": "USD",
+            "amount": "60.00"
+          }
+        ],
+        "currency_summaries": [
+          {
+            "currency": "USD",
+            "allocation_count": 2,
+            "allocated_amount": "120.00"
+          }
+        ],
+        "total_count": 2
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3900",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage?date_from=2026-11-01&date_to=2026-11-30",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [
+          {
+            "receipt_no": "BR-MWYV53",
+            "received_at": "2026-11-12",
+            "payer_name": "QA261112 测试客户",
+            "customer_name": "QA261112 测试客户",
+            "allocation_type": "contract",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "currency": "USD",
+            "amount": "60.00"
+          },
+          {
+            "receipt_no": "BR-MWYV53",
+            "received_at": "2026-11-12",
+            "payer_name": "QA261112 测试客户",
+            "customer_name": "QA261112 测试客户",
+            "allocation_type": "contract",
+            "contract_no": "EC-F8D7RX",
+            "invoice_no": null,
+            "allocated_at": "2026-11-12",
+            "currency": "USD",
+            "amount": "60.00"
+          }
+        ],
+        "currency_summaries": [
+          {
+            "currency": "USD",
+            "allocation_count": 2,
+            "allocated_amount": "120.00"
+          }
+        ],
+        "total_count": 2
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3901",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage?date_from=2027-01-01&date_to=2027-01-31",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [],
+        "currency_summaries": [],
+        "total_count": 0
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3902",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage?date_from=2027-01-01&date_to=2027-01-31",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [],
+        "currency_summaries": [],
+        "total_count": 0
+      },
+      "error": null
+    }
+  }
+]

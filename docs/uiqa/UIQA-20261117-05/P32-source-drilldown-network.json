@@ -1,0 +1,161 @@
+[
+  {
+    "requestId": "79503.3904",
+    "url": "http://localhost:8080/api/v1/finance/reports/receipt-usage/drilldown?source_no=BR-MWYV53",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "receipt-usage",
+        "source_type": "bank_receipt",
+        "source_no": "BR-MWYV53",
+        "items": [
+          {
+            "label": "来源单据",
+            "value": "BR-MWYV53",
+            "target_path": "/finance/receipts"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3906",
+    "url": "http://localhost:8080/api/v1/finance/reports/goods-payment/explain",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "goods-payment",
+        "title": "货款支付情况查询",
+        "source_tables": [
+          "finance_payment_requests"
+        ],
+        "metric_rules": [
+          "按付款申请日期筛选，未付金额=申请金额-已付金额。"
+        ],
+        "fields": [
+          {
+            "label": "付款单号",
+            "field": "request_no",
+            "formula": "finance_payment_requests.request_no"
+          },
+          {
+            "label": "未付金额",
+            "field": "outstanding_amount",
+            "formula": "requested_amount - paid_amount"
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3905",
+    "url": "http://localhost:8080/api/v1/finance/reports/goods-payment",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "rows": [
+          {
+            "request_no": "PR-PG3X2P",
+            "request_date": "2026-11-17",
+            "supplier_invoice_no": "UIQA-20261117-04-INV01",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "currency": "CNY",
+            "requested_amount": "0.01",
+            "approved_amount": "0.01",
+            "paid_amount": "0.01",
+            "outstanding_amount": "0.00",
+            "status": "approved"
+          },
+          {
+            "request_no": "PR-GZN8H6",
+            "request_date": "2026-11-12",
+            "supplier_invoice_no": "QA261112-INV01",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "currency": "RMB",
+            "requested_amount": "60.00",
+            "approved_amount": "60.00",
+            "paid_amount": "60.00",
+            "outstanding_amount": "0.00",
+            "status": "approved"
+          },
+          {
+            "request_no": "PR-ZAWWF6",
+            "request_date": "2026-11-12",
+            "supplier_invoice_no": "QA261112-INV01",
+            "supplier_name": "QA261112 测试供应商",
+            "purchase_contract_no": "PC-HR36RU",
+            "payment_type": "goods_payment",
+            "currency": "RMB",
+            "requested_amount": "60.00",
+            "approved_amount": "60.00",
+            "paid_amount": "60.00",
+            "outstanding_amount": "0.00",
+            "status": "approved"
+          }
+        ],
+        "currency_summaries": [
+          {
+            "currency": "CNY",
+            "request_count": 1,
+            "requested_amount": "0.01",
+            "approved_amount": "0.01",
+            "paid_amount": "0.01",
+            "outstanding_amount": "0.00"
+          },
+          {
+            "currency": "RMB",
+            "request_count": 2,
+            "requested_amount": "120.00",
+            "approved_amount": "120.00",
+            "paid_amount": "120.00",
+            "outstanding_amount": "0.00"
+          }
+        ],
+        "total_count": 3
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3907",
+    "url": "http://localhost:8080/api/v1/finance/reports/goods-payment/drilldown?source_no=PR-PG3X2P",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "report_key": "goods-payment",
+        "source_type": "payment_request",
+        "source_no": "PR-PG3X2P",
+        "items": [
+          {
+            "label": "来源单据",
+            "value": "PR-PG3X2P",
+            "target_path": "/finance/payments"
+          }
+        ]
+      },
+      "error": null
+    }
+  }
+]

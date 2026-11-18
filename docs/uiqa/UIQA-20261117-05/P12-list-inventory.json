@@ -1,0 +1,328 @@
+{
+  "url": "http://localhost:8080/sample/records",
+  "title": "样品登记",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "样品登记",
+    "样品列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "样品搜索\n样品分类筛选\n全部分类\n样品客户筛选\n采购合同筛选\n查询\n导出台账\n新增样品",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "样品搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 257.4453125,
+            "width": 256.515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 539.515625,
+            "bottom": 293.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_87_",
+          "label": "样品分类筛选\n全部分类",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 562.515625,
+            "y": 262.4453125,
+            "width": 130.2890625,
+            "height": 26,
+            "top": 262.4453125,
+            "right": 692.8046875,
+            "bottom": 288.4453125,
+            "left": 562.515625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "样品客户筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 733.8046875,
+            "y": 257.4453125,
+            "width": 170.2890625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 904.09375,
+            "bottom": 293.4453125,
+            "left": 733.8046875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "采购合同筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 916.09375,
+            "y": 257.4453125,
+            "width": 170.2890625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1086.3828125,
+            "bottom": 293.4453125,
+            "left": 916.09375
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1098.3828125,
+            "y": 257.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1182.90625,
+            "bottom": 293.4453125,
+            "left": 1098.3828125
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "导出台账",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1190.90625,
+            "y": 257.4453125,
+            "width": 87.046875,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1277.953125,
+            "bottom": 293.4453125,
+            "left": 1190.90625
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增样品",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1285.953125,
+            "y": 257.4453125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1397,
+            "bottom": 293.4453125,
+            "left": 1285.953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "样品编号\t分类\t来源类型\t来源单号\t产品\t客户货号\t供应商货号\t数量\t入口\nSM-D45XDB\t确认样\t打样单\tSR-W3C3DV\tQA261112 验收测试围巾\t-\t-\t3\t\n查看详情\n\nSM-ZB334N\t来样\t\t-\tQA261112 验收测试围巾\t-\t-\t3\t\n查看详情",
+      "buttons": [
+        "SM-D45XDB",
+        "查看详情",
+        "SM-ZB334N",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

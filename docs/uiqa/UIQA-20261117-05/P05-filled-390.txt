@@ -1,0 +1,225 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=5442, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "单证资料"
+          container
+            button "通知" [ref=5394, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=5395, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "单证资料概览"
+            container
+              text "单证资料"
+              text "1"
+            container
+              text "默认资料"
+              text "0"
+            container
+              text "收货人"
+              text "1"
+            container
+              text "开证行"
+              text "0"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "单证资料列表"
+              form
+                container
+                  text "搜索"
+                  textbox [ref=5556, loc=css:input[placeholder="编号 / 名称 / 客户 / 银行 / 联系人"]]
+                    text "编号 / 名称 / 客户 / 银行 / 联系人"
+                container
+                  text "类型"
+                  container
+                    container
+                      text "全部类型"
+                      comboboxgrouping [ref=5557]
+                    image "down"
+                      svg_root
+                container
+                  text "状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=5558]
+                    image "down"
+                      svg_root
+                container
+                  button [ref=5559]
+                    svg_root
+                    text "查询"
+                  button [ref=5560]
+                    svg_root
+                    text "新增单证资料"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=5561]
+                  container [ref=5590]
+                    table
+                      table_row
+                        table_cell
+                          text "编号"
+                        table_cell
+                          text "名称"
+                        table_cell
+                          text "类型"
+                        table_cell
+                          text "关联客户"
+                        table_cell
+                          text "国家/地区"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=5562]
+                            text "QA261112-D01"
+                        table_cell
+                          text "QA261112 测试收货人"
+                        table_cell
+                          text "收货人"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "DE"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          button [ref=5563]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=5564]
+                      image "left"
+                        svg_root
+                  list_item [ref=5565]
+                    anchor [ref=5566]
+                      text "1"
+                  list_item
+                    button [ref=5567]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    dialog "新增单证资料"
+      button "Close" [ref=5569, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增单证资料"
+      form [ref=5570]
+        container
+          container
+            text "编号"
+            textbox [ref=5571]
+              text "UIQA-20261117-05-D01"
+          container
+            text "类型"
+            container
+              container
+                text "通知人"
+                comboboxgrouping [ref=5572]
+              image "down"
+                svg_root
+          container
+            text "状态"
+            container
+              container
+                text "停用"
+                comboboxgrouping [ref=5573]
+              image "down"
+                svg_root
+          container
+            text "显示名称"
+            textbox [ref=5574]
+              text "UIQA全量验收通知人"
+          container
+            text "关联客户 ID"
+            textbox [ref=5575]
+              text "451c5b86-de27-4970-8219-5bdd0573e126"
+          container
+            text "关联客户名称"
+            textbox [ref=5576]
+              text "UIQA全量验收停用客户样本"
+          container
+            text "国家/地区"
+            textbox [ref=5577]
+              text "CN"
+          container
+            text "地址"
+            textbox [ref=5578]
+              text "UIQA测试地址，非真实地址"
+        container
+          text "联系人与银行资料"
+          container
+            text "联系人"
+            textbox [ref=5579]
+              text "UIQA单证联系人"
+          container
+            text "邮箱"
+            textbox [ref=5580]
+              text "uiqa-d01@example.invalid"
+          container
+            text "电话"
+            textbox [ref=5581]
+              text "00000000003"
+          container
+            text "银行名称"
+            textbox [ref=5582]
+          container
+            text "SWIFT"
+            textbox [ref=5583]
+          container
+            text "账号"
+            textbox [ref=5584]
+          container
+            text "税号"
+            textbox [ref=5585]
+          container
+            container
+              checkbox [ref=5586]
+              table
+                table_row
+                  table_cell
+            text "设为默认资料"
+          container
+            text "备注"
+            textbox [ref=5587]
+              text "UIQA全量验收专用，不用于真实业务单证。"
+        container
+          button [ref=5588]
+            text "取消"
+          button [ref=5589]
+            text "新增单证资料"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,226 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=7883, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "QC 任务中心"
+          container
+            button "通知" [ref=7880, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=7881, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "QC 任务概览"
+            container
+              text "我的待处理"
+              text "0"
+            container
+              text "待查验"
+              text "0"
+            container
+              text "查验中"
+              text "0"
+            container
+              text "已逾期"
+              text "0"
+            container
+              text "异常待关闭"
+              text "0"
+          container
+            container
+              svg_root
+              heading
+                text "QC 任务列表"
+            form
+              container
+                text "任务搜索"
+                textbox [ref=7884, loc=css:input[placeholder="QC 单号 / 合同 / 供应商"]]
+                  text "QC 单号 / 合同 / 供应商"
+              container
+                text "任务状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=7885]
+                  image "down"
+                    svg_root
+              container
+                text "查验结果"
+                container
+                  container
+                    text "全部结果"
+                    comboboxgrouping [ref=7886]
+                  image "down"
+                    svg_root
+              container
+                button [ref=7887]
+                  svg_root
+                  text "更多筛选"
+                button [ref=7888]
+                  svg_root
+                  text "查询"
+                button "重置筛选" [ref=7889, loc=css:button[aria-label="重置筛选"]]
+                  svg_root
+                button "刷新列表" [ref=7890, loc=css:button[aria-label="刷新列表"]]
+                  svg_root
+                button [ref=7891]
+                  svg_root
+                  text "新增 QC 单"
+            container [ref=7916]
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=7892]
+                  container [ref=7917]
+                    table
+                      table_row
+                        table_cell
+                          text "QC 任务单号"
+                        table_cell
+                          text "任务状态"
+                        table_cell
+                          text "查验结果"
+                        table_cell
+                          text "采购合同"
+                        table_cell
+                          text "供应商"
+                        table_cell
+                          text "负责人"
+                        table_cell
+                          text "排期时间"
+                        table_cell
+                          text "下一步"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=7893]
+                            text "QC-8TXV57"
+                        table_cell
+                          text "已完成"
+                        table_cell
+                          text "通过"
+                        table_cell
+                          text "PC-HR36RU"
+                        table_cell
+                          text "QA261112 测试供应商"
+                        table_cell
+                          text "系统管理员"
+                        table_cell
+                          text "2026/11/13 09:00"
+                        table_cell
+                          text "查看结果"
+                        table_cell
+                          button [ref=7894]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=7895]
+                      image "left"
+                        svg_root
+                  list_item [ref=7896]
+                    anchor [ref=7897]
+                      text "1"
+                  list_item
+                    button [ref=7898]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    dialog "新增 QC 任务"
+      button "Close" [ref=7900, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增 QC 任务"
+      container [ref=7901]
+        container [ref=7915]
+          svg_root
+          heading
+            text "建立 QC 任务"
+          alert
+            svg_root
+            container
+              text "这里只建立任务，不填写查验结果"
+              text "负责人将在“我的 QC 任务”中开始查验并登记结果。"
+          form
+            text "任务信息"
+            container
+              container
+                text "QC 任务单号"
+                textbox [ref=7902, loc=css:input[placeholder="系统自动生成"]]
+                  text "系统自动生成"
+              container
+                container
+                  text "采购合同"
+                  text "*"
+                container
+                  container
+                    text "输入合同号或供应商搜索"
+                    comboboxgrouping "采购合同" [ref=7903, loc=css:input[aria-label="采购合同"]]
+                  image "down"
+                    svg_root
+            container
+              container
+                container
+                  text "排期时间"
+                  text "*"
+                textbox [ref=7904]
+                  spinbutton "年" [ref=7905]
+                    text "2026"
+                  text "/"
+                  spinbutton "月" [ref=7906]
+                    text "11"
+                  text "/"
+                  spinbutton "日" [ref=7907]
+                    text "19"
+                  spinbutton "小时" [ref=7908]
+                    text "09"
+                  text ":"
+                  spinbutton "分钟" [ref=7909]
+                    text "00"
+              container
+                container
+                  text "负责人"
+                  text "*"
+                container
+                  container
+                    text "系统管理员 / admin / 管理部"
+                    comboboxgrouping "负责人" [ref=7910, loc=css:input[aria-label="负责人"]]
+                  image "down"
+                    svg_root
+            container
+              text "任务说明"
+              textbox [ref=7911, loc=css:textarea[placeholder="例如：验货地址、重点检查项、供应商联系人"]]
+                text "例如：验货地址、重点检查项、供应商联系人"
+            container
+              text "附件组"
+              textbox [ref=7912]
+      container
+        button [ref=7913]
+          text "取 消"
+        button [ref=7914]
+          text "创建 QC 任务"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,43 @@
+[
+  {
+    "url": "http://localhost:8080/workspace/todos",
+    "tables": [
+      {
+        "i": 0,
+        "text": "任务\t类型\t负责人\t截止时间\t操作\n\n任务\n\t\n类型\n\t\n负责人\n\t\n截止时间\n\t\n操作\n\n\n采购跟单 PC-HR36RU · 确认样提交日期\nQA261112 测试供应商\n\t跟单\t未分配\t\n2026-11-15\n已逾期\n\t\n去处理\n随单据状态自动关闭",
+        "buttons": [
+          "去处理"
+        ]
+      }
+    ],
+    "forms": []
+  },
+  {
+    "url": "http://localhost:8080/workspace/todos",
+    "tables": [
+      {
+        "i": 0,
+        "text": "任务\t类型\t负责人\t截止时间\t操作\n\n任务\n\t\n类型\n\t\n负责人\n\t\n截止时间\n\t\n操作\n\n\n没有符合当前条件的待办\n清除筛选",
+        "buttons": [
+          "清除筛选"
+        ]
+      }
+    ],
+    "forms": []
+  },
+  {
+    "url": "http://localhost:8080/workspace/todos",
+    "tables": [
+      {
+        "i": 0,
+        "text": "任务\t类型\t负责人\t截止时间\t操作\n\n任务\n\t\n类型\n\t\n负责人\n\t\n截止时间\n\t\n操作\n\n\n采购跟单 PC-HR36RU · 确认样提交日期\nQA261112 测试供应商\n\t跟单\t未分配\t\n2026-11-15\n已逾期\n\t\n去处理\n随单据状态自动关闭\n\n\n采购跟单 PC-HR36RU · 大货样提交日期\nQA261112 测试供应商\n\t跟单\t未分配\t\n2026-11-19\n未到期\n\t\n去处理\n随单据状态自动关闭\n\n\n采购跟单 PC-HR36RU · 出库日期\nQA261112 测试供应商\n\t跟单\t未分配\t\n2026-12-07\n未到期\n\t\n去处理\n随单据状态自动关闭",
+        "buttons": [
+          "去处理",
+          "去处理",
+          "去处理"
+        ]
+      }
+    ],
+    "forms": []
+  }
+]

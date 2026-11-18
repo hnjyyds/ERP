@@ -1,0 +1,113 @@
+{
+  "captured_at": "2026-11-18",
+  "deployed": {
+    "frontend_asset": "assets/index-DTcfpjkq.js",
+    "frontend_css": "assets/index-CVMx6kR8.css",
+    "frontend_base_commit": "f9e9e045",
+    "frontend_worktree_patch": "design-system-apply.css 悬停/禁用规则排除 .ant-select-input（未提交）",
+    "frontend_container": "c38eec412601",
+    "frontend_image": "sha256:651391c7d45df2eb2b71db5626a1c0a44aa7060b23fec7a10e3391c4fa121623",
+    "backend_commit": "b370c0fe",
+    "backend_container": "7c91fa0ed275225139b8fd439a26cae3f3c7afe476baa953d4d91e589682a3e7",
+    "base_url": "http://127.0.0.1:8080"
+  },
+  "superseded_build": {
+    "frontend_asset": "assets/index-CWFbyr-R.js",
+    "note": "Q05-28 三页在该构建通过；Q05-24 在同一构建上实测仍可复现（悬停时内部输入被刷白），故修复样式后重新构建为 index-DTcfpjkq.js，本文件结论以新构建为准"
+  },
+  "Q05_24": {
+    "defect": "远程选择器/下拉聚焦后已选值被内部输入层遮挡",
+    "old_build_result": {
+      "asset": "index-CWFbyr-R.js",
+      "sample_product_1440": {
+        "selected_text": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17",
+        "input_background_hover": "rgb(255, 255, 255)",
+        "visible": false,
+        "screenshot": "screenshots/Q05-24-r2-sample-product-1440.png",
+        "root_cause": "body .record-form input:not(:disabled):hover 未排除 .ant-select-input，悬停时以 !important 刷白并覆盖已选值"
+      }
+    },
+    "fix": [
+      "design-system-apply.css: body .record-form input:not(.ant-select-input):not(:disabled):hover",
+      "design-system-apply.css: body .record-form input:not(.ant-select-input):disabled"
+    ],
+    "checks": {
+      "sample_product_1440": {
+        "focused": true,
+        "selected_text": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17",
+        "input_background": "rgba(0, 0, 0, 0)",
+        "input_rect": [263, 303, 365, 26],
+        "container_border": "color(srgb 0.567451 0.650196 0.878039)",
+        "keyboard": {"arrow_down_dropdown": 1, "escape_closed": true, "text_after_escape": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17"},
+        "text_after_tab": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17",
+        "screenshot": "screenshots/Q05-24-r3-product-hover-1440.png"
+      },
+      "sample_customer_1440": {
+        "selected_text": "QA261112 测试客户",
+        "input_background": "rgba(0, 0, 0, 0)",
+        "input_rect": [299, 359, 264, 26],
+        "focused": true,
+        "screenshot": "screenshots/Q05-24-r3-customer-hover-1440.png"
+      },
+      "sample_1280": {
+        "viewport": [1280, 720],
+        "product": {"selected_text": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17", "input_background": "rgba(0, 0, 0, 0)", "input_rect": [183, 283, 365, 26]},
+        "customer": {"selected_text": "QA261112 测试客户", "input_background": "rgba(0, 0, 0, 0)", "input_rect": [183, 352, 264, 26]},
+        "screenshot": "screenshots/Q05-24-r3-product-hover-1280.png"
+      },
+      "sample_390": {
+        "viewport": [390, 844],
+        "product": {"selected_text": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17", "input_background": "rgba(0, 0, 0, 0)", "input_rect": [60, 434, 365, 34], "focused": true},
+        "screenshot": "screenshots/Q05-24-r3-product-focused-390.png"
+      },
+      "product_form_status_1440": {
+        "selected_text": "启用",
+        "input_background": "rgba(0, 0, 0, 0)",
+        "input_rect": [299, 395, 259, 26],
+        "keyboard_dropdown": "active inactive 启用 停用",
+        "screenshot": "screenshots/Q05-24-r3-product-status-hover-1440.png"
+      },
+      "product_form_payment_mode_1440": {
+        "selected_text": "按供应商分单",
+        "input_background": "rgba(0, 0, 0, 0)",
+        "input_rect": [618, 589, 259, 26],
+        "focused": true
+      }
+    },
+    "result": "通过：聚焦/悬停时已选值可见，键盘可打开与关闭下拉且值保留；覆盖样品表单产品与客户 RemoteSelect、商品表单状态与付款方式 AntD Select，1440/1280/390 三档"
+  },
+  "Q05_28": {
+    "defect": "列表加载失败被显示为首次未建档且无重试",
+    "method": "同一脚本内 CDP Network.emulateNetworkConditions offline 后 click 菜单；恢复在线后点击‘重试’",
+    "P01": {
+      "route": "/masterdata/products",
+      "warm_rows": 50,
+      "failure": {"placeholder": "加载失败 数据读取失败，请重试；当前筛选条件会保留 重 试", "retry_button": true, "rows": 0, "misleading_no_data": false},
+      "recovery": {"rows": 50, "retry_button": false},
+      "screenshot": "screenshots/Q05-28-r2-P01-fail-1440.png"
+    },
+    "P09": {
+      "route": "/sales/shipments",
+      "warm_rows": 1,
+      "failure": {"placeholder": "加载失败 数据读取失败，请重试；当前筛选条件会保留 重 试", "retry_button": true, "rows": 0, "misleading_no_data": false},
+      "recovery": {"rows": 1, "retry_button": false},
+      "screenshot": "screenshots/Q05-28-r2-P09-fail-1440.png"
+    },
+    "P24": {
+      "route": "/finance/payments",
+      "method": "CDP Network.setBlockedURLs 定向拦截 */api/v1/finance/supplier-invoices* 后 reload",
+      "failure": {
+        "supplier_invoices": {"placeholder": "加载失败 数据读取失败，请重试；当前筛选条件会保留 重 试", "retry_button": true, "rows": 0},
+        "payables": {"rows": 2, "placeholder": null}
+      },
+      "recovery": {"supplier_invoices_rows": 2, "payables_rows": 2, "retry_button": false},
+      "screenshot": "screenshots/Q05-28-r2-P24-invoice-fail-1440.png"
+    },
+    "scope_notes": [
+      "P24 只阻断供应商发票接口，同页应付账款区保持 2 行，正常区域不受影响。",
+      "整页离线时应付账款区仍会显示“暂无数据/完成首次录入后”，该列表未传入 error/onRetry，不在本次 Q05-28 修复范围；已记录，未计入本次关闭证据。"
+    ],
+    "result": "通过：三页均能在失败时显示独立错误态与重试，解除阻断后重试恢复原数据"
+  },
+  "unchanged_business_data": "未保存样品、商品或付款申请；未提交审批，未付款"
+}

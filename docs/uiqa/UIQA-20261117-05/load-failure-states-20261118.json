@@ -1,0 +1,38 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "executed_at": "2026-11-18",
+  "scope": "通过CDP阻断单一列表请求观察加载失败态；只读，不修改数据；用于区分加载失败与首次无数据",
+  "method": "Network.setBlockedURLs阻断目标列表API后刷新页面，记录界面文案与统计；解除后刷新核对恢复",
+  "cases": [
+    {
+      "page": "PAGE-01",
+      "route": "/masterdata/products",
+      "blocked": "*masterdata/products?limit=50*",
+      "observed": ["统计商品0、配件明细0、有图商品0件", "表格“还没有商品资料”“完成首次录入后，这里会显示对应记录”", "页面暴露Failed to fetch", "无重试入口"],
+      "recovery_rows": 50,
+      "screenshot": "screenshots/P01-list-load-error.png"
+    },
+    {
+      "page": "PAGE-09",
+      "route": "/sales/shipments",
+      "blocked": "*sales/shipments?limit=50*",
+      "observed": ["统计出货单0、待审批0、已审批0、应收USD0.00", "表格“暂无数据”“完成首次录入后，这里会显示对应记录”", "页面暴露Failed to fetch", "无重试入口"],
+      "recovery_rows": 1,
+      "screenshot": "screenshots/P09-list-load-error-390.png"
+    },
+    {
+      "page": "PAGE-24",
+      "route": "/finance/payments",
+      "blocked": "*finance/supplier-invoices*",
+      "observed": ["供应商发票区“暂无数据”“完成首次录入后，这里会显示对应记录”", "同页应付账款查询仍为2行，同屏范围矛盾", "页面暴露Failed to fetch", "无重试入口"],
+      "recovery_rows": [2, 2],
+      "screenshot": "screenshots/P24-list-load-error.png"
+    }
+  ],
+  "conclusion": "三个页面均把加载失败展示为首次录入空态并暴露原始错误文本，无重试入口。PAGE-24同页应付区正常本身不矛盾，错误在于失败区被表述成“没有数据”。已登记Q05-28，关联A05；加载失败属读取失败，不计入D09保存失败。",
+  "impact": "48项矩阵A05在PAGE-01/PAGE-09改为失败，PAGE-24维持失败；缺陷计数由27增至28；D09不据此判失败",
+  "business_writes": "无"
+}

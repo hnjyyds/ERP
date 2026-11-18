@@ -1,0 +1,227 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          container "D-DUTCH"
+            text "D-DUTCH"
+          container
+            text "新裴贸易"
+            text "业务管理系统"
+        container "主导航"
+          anchor [ref=832, loc=href:/, url=http://localhost:8080/]
+            svg_root
+            text "工作台"
+          container "业务模块"
+            container [ref=833]
+              svg_root
+              text "财务经营"
+              svg_root
+            container
+              container
+                svg_root
+                text "财务摘要"
+                svg_root
+              container
+                anchor [ref=834, loc=href:/finance/overview, url=http://localhost:8080/finance/overview]
+                  text "经营总览"
+                anchor [ref=835, loc=href:/finance/receipts, url=http://localhost:8080/finance/receipts]
+                  text "收款管理"
+                anchor [ref=836, loc=href:/finance/payments, url=http://localhost:8080/finance/payments]
+                  text "付款管理"
+                anchor [ref=837, loc=href:/finance/fees, url=http://localhost:8080/finance/fees]
+                  text "付费管理"
+                anchor [ref=838, loc=href:/finance/tax, url=http://localhost:8080/finance/tax]
+                  text "核销退税"
+                anchor [ref=839, loc=href:/finance/misc, url=http://localhost:8080/finance/misc]
+                  text "杂费管理"
+                anchor [ref=840, loc=href:/finance/settlement, url=http://localhost:8080/finance/settlement]
+                  text "结算核算"
+                anchor [ref=841, loc=href:/finance/reimbursements, url=http://localhost:8080/finance/reimbursements]
+                  text "报销管理"
+                anchor [ref=842, loc=href:/finance/port-data, url=http://localhost:8080/finance/port-data]
+                  text "口岸数据"
+                anchor [ref=843, loc=href:/finance/reports, url=http://localhost:8080/finance/reports]
+                  text "财务报表"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "工作台"
+          container
+            button "通知" [ref=844, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "5"
+            button "系统设置" [ref=845, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "工作台"
+            button [ref=846]
+              svg_root
+              text "待办"
+              text "1"
+            button [ref=847]
+              svg_root
+              text "今日日程"
+              text "0"
+            button [ref=848]
+              svg_root
+              text "未读消息"
+              text "5"
+            button [ref=849]
+              svg_root
+              text "公告"
+              text "1"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "快捷入口"
+              button [ref=850]
+                svg_root
+                text "管理快捷入口"
+            container
+              text "推荐入口"
+              container
+                button [ref=851]
+                  text "财务摘要"
+                button [ref=852]
+                  text "经营总览"
+                button [ref=853]
+                  text "收款管理"
+                button [ref=854]
+                  text "付款管理"
+          container
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "今日优先处理"
+                container
+                  text "我的待办"
+                  container "待办时效概览"
+                    text "暂无紧急待办"
+                  button "新增待办" [ref=855, loc=css:button[aria-label="新增待办"]]
+                    svg_root
+                  button [ref=856]
+                    text "查看全部"
+              container
+                svg_root
+                container
+                  container
+                    text "付款审批 PR-PG3X2P"
+                    text "未排期"
+                  paragraph
+                    text "QA261112 测试供应商 / UIQA-20261117-04-INV01"
+                  container
+                    container
+                      text "来源："
+                      text "付款审批"
+                    container
+                      text "截止："
+                      text "未排期"
+                button [ref=857]
+                  text "去处理"
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "我的日程"
+                container
+                  button [ref=858]
+                    svg_root
+                    text "新增日程"
+                  button [ref=859]
+                    text "查看全部"
+              container
+                svg_root
+                paragraph
+                  text "暂无日程"
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "消息"
+                button [ref=860]
+                  text "查看全部"
+              container
+                container
+                  text "审批通知"
+                  text "系统管理员 提交了付款 PR-PG3X2P，请及时审批"
+                container
+                  text "通知"
+                  button [ref=861]
+                    text "处理"
+            container
+              container
+                container
+                  svg_root
+                  heading
+                    text "公司公告"
+                button [ref=862]
+                  text "查看全部"
+              container
+                text "外贸业务系统启动"
+                paragraph
+                  text "请关注采购跟单、QC 查验和仓库入出库提醒。"
+    dialog "系统设置"
+      button "Close" [ref=863, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "系统设置"
+      container
+        container
+          image "演示财务主管 的头像"
+            svg_root
+          container
+            text "账号"
+            text "演示财务主管"
+            container
+              text "财务部"
+              text "·"
+              text "财务"
+        container
+          container "用户头像"
+            button [ref=864]
+              image "演示财务主管 的头像"
+                svg_root
+              container
+                text "头像"
+                text "短发眼镜"
+              svg_root
+          button [ref=865]
+            text "保存头像"
+        container
+          text "语言"
+          container
+            button [ref=866]
+              text "中文"
+              text "UTC+8 / Asia Shanghai"
+            button [ref=867]
+              text "English"
+              text "UTC"
+        container
+          text "时区"
+          container
+            text "UTC+8 / Asia Shanghai"
+            text "用于展示时间与提醒"
+        container
+          button [ref=868]
+            svg_root
+            text "退出登录"
+          button [ref=869]
+            text "关闭"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

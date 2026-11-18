@@ -1,0 +1,546 @@
+{
+  "url": "http://localhost:8080/finance/tax/a62d4ddc-3045-4d8f-9678-1d204e74d3ac",
+  "title": "核销退税",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "核销退税",
+    "回单、核销和退税登记"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "报关回单登记\n报关单号\n回单号\n回单日期\n回单备注\n登记回单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报关单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 353.765625,
+            "width": 551,
+            "height": 36,
+            "top": 353.765625,
+            "right": 832,
+            "bottom": 389.765625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "回单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 353.765625,
+            "width": 551,
+            "height": 36,
+            "top": 353.765625,
+            "right": 1399,
+            "bottom": 389.765625,
+            "left": 848
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "回单日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 423.765625,
+            "width": 551,
+            "height": 36,
+            "top": 423.765625,
+            "right": 832,
+            "bottom": 459.765625,
+            "left": 281
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "回单备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 423.765625,
+            "width": 551,
+            "height": 36,
+            "top": 423.765625,
+            "right": 1399,
+            "bottom": 459.765625,
+            "left": 848
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "登记回单",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 281,
+            "y": 475.765625,
+            "width": 111.046875,
+            "height": 36,
+            "top": 475.765625,
+            "right": 392.046875,
+            "bottom": 511.765625,
+            "left": 281
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "核销登记\n核销编号\n核销日期\n核销备注\n登记核销",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "核销编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 614.140625,
+            "width": 551,
+            "height": 36,
+            "top": 614.140625,
+            "right": 832,
+            "bottom": 650.140625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "核销日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 614.140625,
+            "width": 551,
+            "height": 36,
+            "top": 614.140625,
+            "right": 1399,
+            "bottom": 650.140625,
+            "left": 848
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "核销备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 684.140625,
+            "width": 1118,
+            "height": 36,
+            "top": 684.140625,
+            "right": 1399,
+            "bottom": 720.140625,
+            "left": 281
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "登记核销",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 281,
+            "y": 736.140625,
+            "width": 111.046875,
+            "height": 36,
+            "top": 736.140625,
+            "right": 392.046875,
+            "bottom": 772.140625,
+            "left": 281
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": null,
+      "visible": true,
+      "text": "退税登记\n退税编号\n退税日期\n退税金额\n币种\n银行水单号\n退税备注\n登记退税",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "退税编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 874.515625,
+            "width": 551,
+            "height": 36,
+            "top": 874.515625,
+            "right": 832,
+            "bottom": 910.515625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "退税日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 874.515625,
+            "width": 551,
+            "height": 36,
+            "top": 874.515625,
+            "right": 1399,
+            "bottom": 910.515625,
+            "left": 848
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "退税金额",
+          "text": "",
+          "value": "0.00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 944.515625,
+            "width": 362,
+            "height": 36,
+            "top": 944.515625,
+            "right": 643,
+            "bottom": 980.515625,
+            "left": 281
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659,
+            "y": 944.515625,
+            "width": 362,
+            "height": 36,
+            "top": 944.515625,
+            "right": 1021,
+            "bottom": 980.515625,
+            "left": 659
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "银行水单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1037,
+            "y": 944.515625,
+            "width": 362,
+            "height": 36,
+            "top": 944.515625,
+            "right": 1399,
+            "bottom": 980.515625,
+            "left": 1037
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "退税备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 1014.515625,
+            "width": 1118,
+            "height": 36,
+            "top": 1014.515625,
+            "right": 1399,
+            "bottom": 1050.515625,
+            "left": 281
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "登记退税",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 281,
+            "y": 1066.515625,
+            "width": 111.046875,
+            "height": 36,
+            "top": 1066.515625,
+            "right": 392.046875,
+            "bottom": 1102.515625,
+            "left": 281
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

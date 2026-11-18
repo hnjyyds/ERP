@@ -1,0 +1,214 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "发票搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/payments",
+      "form": "发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记",
+      "inputs": [
+        {
+          "label": "发票搜索",
+          "value": ""
+        },
+        {
+          "label": "付款状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "发票供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "供应商发票列表\n发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记\n供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\nUIQA-20261117-04-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\nQA261112-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\n共 2 条\n1\n50 条/页",
+      "tableText": "供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\nUIQA-20261117-04-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\nQA261112-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00"
+    },
+    "positive": "UIQA-20261117-04-INV01",
+    "hit": {
+      "url": "http://localhost:8080/finance/payments?supplier_invoices_q=UIQA-20261117-04-INV01",
+      "form": "发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记",
+      "inputs": [
+        {
+          "label": "发票搜索",
+          "value": "UIQA-20261117-04-INV01"
+        },
+        {
+          "label": "付款状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "发票供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "供应商发票列表\n发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记\n供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\nUIQA-20261117-04-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\n共 1 条\n1\n50 条/页",
+      "tableText": "供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\nUIQA-20261117-04-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/payments?supplier_invoices_q=UIQA-20261117-05-NOMATCH",
+      "form": "发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记",
+      "inputs": [
+        {
+          "label": "发票搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "付款状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "发票供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "供应商发票列表\n发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记\n供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/payments",
+      "form": "发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记",
+      "inputs": [
+        {
+          "label": "发票搜索",
+          "value": ""
+        },
+        {
+          "label": "付款状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "发票供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "供应商发票列表\n发票搜索\n付款状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n发票登记\n供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\nUIQA-20261117-04-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\nQA261112-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\n共 2 条\n1\n50 条/页",
+      "tableText": "供应商发票\t状态\t供应商\t采购合同\t发票金额\t已付\t未付\t超付\nUIQA-20261117-04-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\nQA261112-INV01\t已付清\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  },
+  {
+    "i": 1,
+    "input": 2,
+    "button": 2,
+    "label": "应付搜索",
+    "before": {
+      "url": "http://localhost:8080/finance/payments",
+      "form": "应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询",
+      "inputs": [
+        {
+          "label": "应付搜索",
+          "value": ""
+        },
+        {
+          "label": "应付状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "应付供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "应付账款查询\n应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\t已付清\nUIQA-20261117-04-INV01\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\t已付清\n共 2 条\n1\n50 条/页",
+      "tableText": "供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\t已付清\nUIQA-20261117-04-INV01\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\t已付清"
+    },
+    "positive": "QA261112-INV01",
+    "hit": {
+      "url": "http://localhost:8080/finance/payments?payables_q=QA261112-INV01",
+      "form": "应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询",
+      "inputs": [
+        {
+          "label": "应付搜索",
+          "value": "QA261112-INV01"
+        },
+        {
+          "label": "应付状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "应付供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "应付账款查询\n应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\t已付清\n共 1 条\n1\n50 条/页",
+      "tableText": "供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\t已付清"
+    },
+    "empty": {
+      "url": "http://localhost:8080/finance/payments?payables_q=UIQA-20261117-05-NOMATCH",
+      "form": "应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询",
+      "inputs": [
+        {
+          "label": "应付搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "应付状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "应付供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "应付账款查询\n应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/finance/payments",
+      "form": "应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询",
+      "inputs": [
+        {
+          "label": "应付搜索",
+          "value": ""
+        },
+        {
+          "label": "应付状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "应付供应商筛选",
+          "value": ""
+        },
+        {
+          "label": "采购合同号",
+          "value": ""
+        }
+      ],
+      "text": "应付账款查询\n应付搜索\n应付状态\n全部状态\n供应商\n输入供应商编号或名称\n采购合同号\n查询\n供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\t已付清\nUIQA-20261117-04-INV01\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\t已付清\n共 2 条\n1\n50 条/页",
+      "tableText": "供应商发票\t供应商\t采购合同\t发票金额\t已付款\t应付余额\t超付\t状态\nQA261112-INV01\tQA261112 测试供应商\tPC-HR36RU\tRMB 100.00\tRMB 120.00\tRMB 0.00\tRMB 20.00\t已付清\nUIQA-20261117-04-INV01\tQA261112 测试供应商\tPC-HR36RU\tCNY 0.01\tCNY 0.01\tCNY 0.00\t-\t已付清"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

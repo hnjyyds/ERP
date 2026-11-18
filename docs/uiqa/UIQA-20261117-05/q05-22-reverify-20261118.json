@@ -1,0 +1,49 @@
+{
+  "defect": "Q05-22",
+  "asset": "assets/index-BawyFJj7.js",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "admin",
+  "viewport": "1440x900",
+  "purpose": "补测原失败路径：不再只验证 QC 用户，改测不同角色用户进入“编辑所属角色权限”后的默认角色，并验证连续切换后无残留",
+  "permission_saved": false,
+  "steps": [
+    {
+      "step": 1,
+      "user": "演示财务主管",
+      "username": "finance_manager",
+      "expected_role": "财务",
+      "dialog_title": "按侧边栏功能授权",
+      "role_select_value": "财务",
+      "result": "通过"
+    },
+    {
+      "step": 2,
+      "user": "演示采购专员",
+      "username": "purchase",
+      "expected_role": "采购专员",
+      "dialog_title": "按侧边栏功能授权",
+      "role_select_value": "采购专员",
+      "result": "通过"
+    },
+    {
+      "step": 3,
+      "user": "演示财务主管（再次打开）",
+      "username": "finance_manager",
+      "expected_role": "财务",
+      "dialog_title": "按侧边栏功能授权",
+      "role_select_value": "财务",
+      "result": "通过",
+      "note": "连续切换两名用户后再次打开，未残留上一位用户的“采购专员”角色"
+    }
+  ],
+  "console_evidence": [
+    "finance_manager { title: '按侧边栏功能授权', sels: [ '财务' ] }",
+    "purchase { title: '按侧边栏功能授权', sels: [ '采购专员' ] }",
+    "finance_manager again { title: '按侧边栏功能授权', sels: [ '财务' ] }"
+  ],
+  "screenshots": [
+    "screenshots/Q05-22-purchase-role-Bawy-1440.png"
+  ],
+  "conclusion": "入口“编辑所属角色权限”按用户所属角色定位，不同角色用户分别命中财务/采购专员；连续切换后无上一角色残留；未保存任何权限。Q05-22 关闭。",
+  "captured_at": "2026-11-18T20:15:00+08:00"
+}

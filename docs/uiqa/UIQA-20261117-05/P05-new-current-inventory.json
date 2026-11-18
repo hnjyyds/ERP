@@ -1,0 +1,726 @@
+{
+  "url": "http://localhost:8080/masterdata/document-parties",
+  "title": "单证资料",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "单证资料",
+    "单证资料列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 256.640625,
+            "width": 377.2265625,
+            "height": 36,
+            "top": 256.640625,
+            "right": 658.2265625,
+            "bottom": 292.640625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_3k_",
+          "label": "类型\n全部类型",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 681.2265625,
+            "y": 261.640625,
+            "width": 197.34375,
+            "height": 26,
+            "top": 261.640625,
+            "right": 878.5703125,
+            "bottom": 287.640625,
+            "left": 681.2265625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_3m_",
+          "label": "状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 930.5703125,
+            "y": 261.640625,
+            "width": 197.34375,
+            "height": 26,
+            "top": 261.640625,
+            "right": 1127.9140625,
+            "bottom": 287.640625,
+            "left": 930.5703125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1168.9140625,
+            "y": 256.640625,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1253.4375,
+            "bottom": 292.640625,
+            "left": 1168.9140625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增单证资料",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1261.4375,
+            "y": 256.640625,
+            "width": 137.5625,
+            "height": 36,
+            "top": 256.640625,
+            "right": 1399,
+            "bottom": 292.640625,
+            "left": 1261.4375
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_3r_",
+      "visible": true,
+      "text": "编号\n类型\n收货人\n状态\n启用\n显示名称\n关联客户 ID\n关联客户名称\n国家/地区\n地址\n联系人与银行资料\n联系人\n邮箱\n电话\n银行名称\nSWIFT\n账号\n税号\n设为默认资料\n备注\n取消\n新增单证资料",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 159.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 550.6640625,
+            "bottom": 195.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_3t_",
+          "label": "类型\n收货人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 581.6640625,
+            "y": 164.2265625,
+            "width": 258.6640625,
+            "height": 26,
+            "top": 164.2265625,
+            "right": 840.328125,
+            "bottom": 190.2265625,
+            "left": 581.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_3v_",
+          "label": "状态\n启用",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 900.328125,
+            "y": 164.2265625,
+            "width": 258.6640625,
+            "height": 26,
+            "top": 164.2265625,
+            "right": 1158.9921875,
+            "bottom": 190.2265625,
+            "left": 900.328125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "显示名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 235.2265625,
+            "width": 935.9921875,
+            "height": 36,
+            "top": 235.2265625,
+            "right": 1187.9921875,
+            "bottom": 271.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "关联客户 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 311.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 311.2265625,
+            "right": 550.6640625,
+            "bottom": 347.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "关联客户名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 311.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 311.2265625,
+            "right": 869.328125,
+            "bottom": 347.2265625,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "国家/地区",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 311.2265625,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 311.2265625,
+            "right": 1187.9921875,
+            "bottom": 347.2265625,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "地址",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 387.2265625,
+            "width": 935.9921875,
+            "height": 36,
+            "top": 387.2265625,
+            "right": 1187.9921875,
+            "bottom": 423.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "联系人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 544.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 544.078125,
+            "right": 550.6640625,
+            "bottom": 580.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "邮箱",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 544.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 544.078125,
+            "right": 869.328125,
+            "bottom": 580.078125,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "电话",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 544.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 544.078125,
+            "right": 1187.9921875,
+            "bottom": 580.078125,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "银行名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 620.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 620.078125,
+            "right": 550.6640625,
+            "bottom": 656.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "SWIFT",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 620.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 620.078125,
+            "right": 869.328125,
+            "bottom": 656.078125,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "账号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 889.328125,
+            "y": 620.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 620.078125,
+            "right": 1187.9921875,
+            "bottom": 656.078125,
+            "left": 889.328125
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "税号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 696.078125,
+            "width": 298.6640625,
+            "height": 36,
+            "top": 696.078125,
+            "right": 550.6640625,
+            "bottom": 732.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "",
+          "label": "",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 570.6640625,
+            "y": 695.078125,
+            "width": 16,
+            "height": 16,
+            "top": 695.078125,
+            "right": 586.6640625,
+            "bottom": 711.078125,
+            "left": 570.6640625
+          }
+        },
+        {
+          "j": 16,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 772.078125,
+            "width": 935.9921875,
+            "height": 98.59375,
+            "top": 772.078125,
+            "right": 1187.9921875,
+            "bottom": 870.671875,
+            "left": 252
+          }
+        },
+        {
+          "j": 17,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 970.0703125,
+            "y": 781.2265625,
+            "width": 70.5625,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1040.6328125,
+            "bottom": 817.2265625,
+            "left": 970.0703125
+          }
+        },
+        {
+          "j": 18,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增单证资料",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1052.6328125,
+            "y": 781.2265625,
+            "width": 135.3671875,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1188,
+            "bottom": 817.2265625,
+            "left": 1052.6328125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nQA261112-D01\tQA261112 测试收货人\t收货人\tQA261112 测试客户\tDE\t启用\t\n查看详情",
+      "buttons": [
+        "QA261112-D01",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

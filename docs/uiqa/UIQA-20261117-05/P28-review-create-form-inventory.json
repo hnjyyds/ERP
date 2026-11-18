@@ -1,0 +1,637 @@
+{
+  "url": "http://localhost:8080/finance/settlement",
+  "title": "结算核算",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "结算核算",
+    "财务结算列表",
+    "利润核算表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "结算搜索\n出运单号\n查询\n新增结算",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "结算搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 178.6484375,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 637.6640625,
+            "bottom": 214.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 649.6640625,
+            "y": 178.6484375,
+            "width": 178.328125,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 827.9921875,
+            "bottom": 214.6484375,
+            "left": 649.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 933.8046875,
+            "y": 178.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 1018.328125,
+            "bottom": 214.6484375,
+            "left": 933.8046875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增结算",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1097.6171875,
+            "y": 178.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 178.6484375,
+            "right": 1208.6640625,
+            "bottom": 214.6484375,
+            "left": 1097.6171875
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "核算搜索\n出运单号\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "核算搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 560.046875,
+            "width": 356.6640625,
+            "height": 36,
+            "top": 560.046875,
+            "right": 637.6640625,
+            "bottom": 596.046875,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 649.6640625,
+            "y": 560.046875,
+            "width": 178.328125,
+            "height": 36,
+            "top": 560.046875,
+            "right": 827.9921875,
+            "bottom": 596.046875,
+            "left": 649.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 933.8046875,
+            "y": 560.046875,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 560.046875,
+            "right": 1018.328125,
+            "bottom": 596.046875,
+            "left": 933.8046875
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": "_r_s_",
+      "visible": true,
+      "text": "结算单号\n出运单号\n搜索出运单号或客户\n结算日期\n备注\n取消\n锁定结算",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "结算单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 302,
+            "width": 592,
+            "height": 36,
+            "top": 302,
+            "right": 1016,
+            "bottom": 338,
+            "left": 424
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_u_",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 435,
+            "y": 377,
+            "width": 552,
+            "height": 26,
+            "top": 377,
+            "right": 987,
+            "bottom": 403,
+            "left": 435
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "结算日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 424,
+            "y": 442,
+            "width": 592,
+            "height": 36,
+            "top": 442,
+            "right": 1016,
+            "bottom": 478,
+            "left": 424
+          }
+        },
+        {
+          "j": 3,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "结算备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 512,
+            "width": 592,
+            "height": 88,
+            "top": 512,
+            "right": 1016,
+            "bottom": 600,
+            "left": 424
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 848.3125,
+            "y": 616,
+            "width": 62.5625,
+            "height": 36,
+            "top": 616,
+            "right": 910.875,
+            "bottom": 652,
+            "left": 848.3125
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "锁定结算",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 918.875,
+            "y": 616,
+            "width": 97.125,
+            "height": 36,
+            "top": 616,
+            "right": 1016,
+            "bottom": 652,
+            "left": 918.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "结算单\t出运单\t客户\t结算日\t收入\t成本\t退税\t杂费\t手工成本\t毛利\t毛利率\t状态\nFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\t2026-11-12\tUSD 205.00\tUSD 0.00\tUSD 10.00\tUSD 5.00\tUSD 2.00\tUSD 188.00\t91.7%\t已锁定",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "\t结算单\t出运单\t客户\t收入\t总成本\t退税\t毛利\t毛利率\n\tFS-PT3G9T\tSP-DAEPEG\tQA261112 测试客户\tUSD 205.00\tUSD 27.00\tUSD 10.00\tUSD 188.00\t91.7%\n\n类型\t方向\t来源\t日期\t金额\t原因\n销售收入\t收入\tSP-DAEPEG\t2026-11-12\tUSD 205.00\t结算销售收入快照\n退税收入\t收入\tSP-DAEPEG\t2026-11-12\tUSD 10.00\t结算退税收入汇总\n杂费分摊\t成本\tSP-DAEPEG\t2026-11-12\tUSD 5.00\t结算杂费分摊汇总\n合作伙伴费\t成本\tSP-DAEPEG\t2026-11-12\tUSD 20.00\t结算合作伙伴费用汇总\n采购成本\t成本\tSP-DAEPEG\t2026-11-12\tUSD 0.00\t结算采购成本快照\n其他成本\t成本\t-\t2026-11-12\tUSD 2.00\tQA261112 手工成本测试",
+      "buttons": [
+        ""
+      ]
+    },
+    {
+      "i": 2,
+      "text": "类型\t方向\t来源\t日期\t金额\t原因\n销售收入\t收入\tSP-DAEPEG\t2026-11-12\tUSD 205.00\t结算销售收入快照\n退税收入\t收入\tSP-DAEPEG\t2026-11-12\tUSD 10.00\t结算退税收入汇总\n杂费分摊\t成本\tSP-DAEPEG\t2026-11-12\tUSD 5.00\t结算杂费分摊汇总\n合作伙伴费\t成本\tSP-DAEPEG\t2026-11-12\tUSD 20.00\t结算合作伙伴费用汇总\n采购成本\t成本\tSP-DAEPEG\t2026-11-12\tUSD 0.00\t结算采购成本快照\n其他成本\t成本\t-\t2026-11-12\tUSD 2.00\tQA261112 手工成本测试",
+      "buttons": []
+    }
+  ],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "单票结算锁定\n结算单号\n出运单号\n搜索出运单号或客户\n结算日期\n备注\n取消\n锁定结算",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 996,
+            "y": 240,
+            "width": 32,
+            "height": 32,
+            "top": 240,
+            "right": 1028,
+            "bottom": 272,
+            "left": 996
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "label": "结算单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 302,
+            "width": 592,
+            "height": 36,
+            "top": 302,
+            "right": 1016,
+            "bottom": 338,
+            "left": 424
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 435,
+            "y": 377,
+            "width": 552,
+            "height": 26,
+            "top": 377,
+            "right": 987,
+            "bottom": 403,
+            "left": 435
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "date",
+          "label": "结算日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 424,
+            "y": 442,
+            "width": 592,
+            "height": 36,
+            "top": 442,
+            "right": 1016,
+            "bottom": 478,
+            "left": 424
+          }
+        },
+        {
+          "j": 4,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "label": "结算备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 424,
+            "y": 512,
+            "width": 592,
+            "height": 88,
+            "top": 512,
+            "right": 1016,
+            "bottom": 600,
+            "left": 424
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 848.3125,
+            "y": 616,
+            "width": 62.5625,
+            "height": 36,
+            "top": 616,
+            "right": 910.875,
+            "bottom": 652,
+            "left": 848.3125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "text": "锁定结算",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 918.875,
+            "y": 616,
+            "width": 97.125,
+            "height": 36,
+            "top": 616,
+            "right": 1016,
+            "bottom": 652,
+            "left": 918.875
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

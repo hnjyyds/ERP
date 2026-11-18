@@ -1,0 +1,748 @@
+{
+  "url": "http://localhost:8080/sample/requests",
+  "title": "打样管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "打样管理",
+    "打样单列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "打样搜索\n打样状态筛选\n全部状态\n打样客户筛选\n打样起始日期\n打样截止日期\n查询\n新增打样单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "打样搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 257.4453125,
+            "width": 225.328125,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 508.328125,
+            "bottom": 293.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_h_",
+          "label": "打样状态筛选\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 531.328125,
+            "y": 262.4453125,
+            "width": 112.9609375,
+            "height": 26,
+            "top": 262.4453125,
+            "right": 644.2890625,
+            "bottom": 288.4453125,
+            "left": 531.328125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "打样客户筛选",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 685.2890625,
+            "y": 257.4453125,
+            "width": 152.9609375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 838.25,
+            "bottom": 293.4453125,
+            "left": 685.2890625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "打样起始日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 850.25,
+            "y": 257.4453125,
+            "width": 152.9609375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1003.2109375,
+            "bottom": 293.4453125,
+            "left": 850.25
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "打样截止日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1015.2109375,
+            "y": 257.4453125,
+            "width": 152.9609375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1168.171875,
+            "bottom": 293.4453125,
+            "left": 1015.2109375
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1180.171875,
+            "y": 257.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1264.6953125,
+            "bottom": 293.4453125,
+            "left": 1180.171875
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增打样单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1272.6953125,
+            "y": 257.4453125,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1397,
+            "bottom": 293.4453125,
+            "left": 1272.6953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_l_",
+      "visible": true,
+      "text": "打样单号\n打样状态\n草稿\n关联报价\n输入关键词搜索\n打样日期\n要求完成日期\n打样客户\n输入关键词搜索\n打样产品\n输入关键词搜索\n供应商\n输入关键词搜索\n打样去向\n内部打样\n客户打样要求\n内部打样单明细\n明细产品编号\n明细产品名称\n明细规格\n明细数量\n明细单位\n明细要求\n取消\n新增打样单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "打样单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 282,
+            "y": 159.2265625,
+            "width": 284,
+            "height": 36,
+            "top": 159.2265625,
+            "right": 566,
+            "bottom": 195.2265625,
+            "left": 282
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "sample-request-status",
+          "label": "打样状态\n草稿",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 589,
+            "y": 164.2265625,
+            "width": 244,
+            "height": 26,
+            "top": 164.2265625,
+            "right": 833,
+            "bottom": 190.2265625,
+            "left": 589
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_p_",
+          "label": "关联报价",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 885,
+            "y": 164.2265625,
+            "width": 244,
+            "height": 26,
+            "top": 164.2265625,
+            "right": 1129,
+            "bottom": 190.2265625,
+            "left": 885
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "打样日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 282,
+            "y": 229.2265625,
+            "width": 284,
+            "height": 36,
+            "top": 229.2265625,
+            "right": 566,
+            "bottom": 265.2265625,
+            "left": 282
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "要求完成日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 578,
+            "y": 229.2265625,
+            "width": 284,
+            "height": 36,
+            "top": 229.2265625,
+            "right": 862,
+            "bottom": 265.2265625,
+            "left": 578
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_r_",
+          "label": "打样客户",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 885,
+            "y": 234.2265625,
+            "width": 244,
+            "height": 26,
+            "top": 234.2265625,
+            "right": 1129,
+            "bottom": 260.2265625,
+            "left": 885
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_t_",
+          "label": "打样产品",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 293,
+            "y": 304.2265625,
+            "width": 244,
+            "height": 26,
+            "top": 304.2265625,
+            "right": 537,
+            "bottom": 330.2265625,
+            "left": 293
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_v_",
+          "label": "供应商",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 589,
+            "y": 304.2265625,
+            "width": 244,
+            "height": 26,
+            "top": 304.2265625,
+            "right": 833,
+            "bottom": 330.2265625,
+            "left": 589
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "sample-request-destination",
+          "label": "打样去向\n内部打样",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 293,
+            "y": 374.2265625,
+            "width": 836,
+            "height": 26,
+            "top": 374.2265625,
+            "right": 1129,
+            "bottom": 400.2265625,
+            "left": 293
+          }
+        },
+        {
+          "j": 9,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "客户打样要求",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 282,
+            "y": 439.2265625,
+            "width": 876,
+            "height": 78.4453125,
+            "top": 439.2265625,
+            "right": 1158,
+            "bottom": 517.671875,
+            "left": 282
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "明细产品编号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 282,
+            "y": 611.5234375,
+            "width": 284,
+            "height": 36,
+            "top": 611.5234375,
+            "right": 566,
+            "bottom": 647.5234375,
+            "left": 282
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "明细产品名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 578,
+            "y": 611.5234375,
+            "width": 284,
+            "height": 36,
+            "top": 611.5234375,
+            "right": 862,
+            "bottom": 647.5234375,
+            "left": 578
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "明细规格",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 874,
+            "y": 611.5234375,
+            "width": 284,
+            "height": 36,
+            "top": 611.5234375,
+            "right": 1158,
+            "bottom": 647.5234375,
+            "left": 874
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "明细数量",
+          "text": "",
+          "value": "1",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 282,
+            "y": 681.5234375,
+            "width": 284,
+            "height": 36,
+            "top": 681.5234375,
+            "right": 566,
+            "bottom": 717.5234375,
+            "left": 282
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "明细单位",
+          "text": "",
+          "value": "pcs",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 578,
+            "y": 681.5234375,
+            "width": 284,
+            "height": 36,
+            "top": 681.5234375,
+            "right": 862,
+            "bottom": 717.5234375,
+            "left": 578
+          }
+        },
+        {
+          "j": 15,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "",
+          "label": "明细要求",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 282,
+            "y": 751.5234375,
+            "width": 876,
+            "height": 58.296875,
+            "top": 751.5234375,
+            "right": 1158,
+            "bottom": 809.8203125,
+            "left": 282
+          }
+        },
+        {
+          "j": 16,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 917.1953125,
+            "y": 781.2265625,
+            "width": 108,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1025.1953125,
+            "bottom": 817.2265625,
+            "left": 917.1953125
+          }
+        },
+        {
+          "j": 17,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增打样单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1037.1953125,
+            "y": 781.2265625,
+            "width": 120.8046875,
+            "height": 36,
+            "top": 781.2265625,
+            "right": 1158,
+            "bottom": 817.2265625,
+            "left": 1037.1953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "打样单号\t报价号\t客户\t产品\t去向\t状态\t要求完成\t入口\nSR-W3C3DV\t-\tQA261112 测试客户\tQA261112 验收测试围巾\t内部打样\t已完成\t2026-11-20\t\n查看详情",
+      "buttons": [
+        "SR-W3C3DV",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

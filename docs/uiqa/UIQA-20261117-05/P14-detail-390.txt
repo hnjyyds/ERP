@@ -1,0 +1,336 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=7542, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "寄样管理"
+        container
+          button "通知" [ref=7532, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=7533, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "寄样管理概览"
+          container
+            text "寄样单"
+            text "1"
+          container
+            text "待审核"
+            text "0"
+          container
+            text "已审核"
+            text "1"
+          container
+            text "寄样数量"
+            text "1"
+          container
+            text "费用"
+            text "USD 0.00"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "寄样明细"
+            button [ref=7534]
+              svg_root
+              text "返回列表"
+          unordered_list
+            container
+              list_item
+                text "状态/日期"
+              list_item
+                text "已寄出"
+                text "/"
+                text "2026-11-12"
+            container
+              list_item
+                text "客户"
+              list_item
+                text "QA261112 测试客户"
+            container
+              list_item
+                text "供应商/工厂"
+              list_item
+                text "未填"
+                text "/"
+                text "未填"
+            container
+              list_item
+                text "收件方"
+              list_item
+                text "QA261112 测试收件人"
+                text "/"
+                text "未填"
+            container
+              list_item
+                text "快递"
+              list_item
+                text "QA261112-MOCK"
+                text "/"
+                text "QA261112-NOT-SHIPPED"
+            container
+              list_item
+                text "报价单"
+              list_item
+                text "未关联"
+            container
+              list_item
+                text "费用合计"
+              list_item
+                text "USD 0.00"
+            list_item
+              text "审核人"
+            list_item
+              text "演示业务主管"
+          text "寄样备注"
+          paragraph
+            text "QA261112 不发实际快递"
+          button [ref=7535]
+            text "编辑草稿"
+          button [ref=7536]
+            text "提交审核"
+          button [ref=7537]
+            text "审核通过"
+          form
+            text "物流跟踪"
+            container
+              text "快递公司"
+              textbox [ref=7538]
+                text "QA261112-MOCK"
+            container
+              text "快递单号"
+              textbox [ref=7539]
+                text "QA261112-NOT-SHIPPED"
+            container
+              text "物流状态"
+              container
+                text "已寄出"
+                comboboxgrouping [ref=7540]
+                svg_root
+            button [ref=7541]
+              text "更新物流"
+          table
+            table_row
+              table_cell
+          container [ref=7543]
+            table
+              table_row
+                table_cell
+                  text "样品编号"
+                table_cell
+                  text "产品"
+                table_cell
+                  text "数量"
+                table_cell
+                  text "分类"
+                table_cell
+                  text "备注"
+              table_row
+                table_cell
+                  text "SM-ZB334N"
+                table_cell
+                  text "QA261112-P01 / QA261112 验收测试围巾"
+                table_cell
+                  text "1 pcs"
+                table_cell
+                  text "来样"
+                table_cell
+                  text "-"
+          table
+            table_row
+              table_cell
+          table
+            table_row
+              table_cell
+          container [ref=7544]
+            table
+              table_row
+                table_cell
+                  text "费用类型"
+                table_cell
+                  text "金额"
+                table_cell
+                  text "承担方"
+                table_cell
+                  text "备注"
+              table_row
+                table_cell
+                  text "暂无费用明细"
+          table
+            table_row
+              table_cell
+          text "费用统计"
+          text "USD 0.00"
+          table
+            table_row
+              table_cell
+          container [ref=7545]
+            table
+              table_row
+                table_cell
+                  text "客户"
+                table_cell
+                  text "快递公司"
+                table_cell
+                  text "寄样单数"
+                table_cell
+                  text "费用合计"
+              table_row
+                table_cell
+                  text "暂无已审核费用"
+          table
+            table_row
+              table_cell
+          text "寄样统计"
+          text "1 单"
+          text "/"
+          text "1 件"
+          table
+            table_row
+              table_cell
+          container [ref=7546]
+            table
+              table_row
+                table_cell
+                  text "状态"
+                table_cell
+                  text "寄样单数"
+                table_cell
+                  text "寄样数量"
+              table_row
+                table_cell
+                  text "已寄出"
+                table_cell
+                  text "1"
+                table_cell
+                  text "1"
+          table
+            table_row
+              table_cell
+          table
+            table_row
+              table_cell
+          container [ref=7547]
+            table
+              table_row
+                table_cell
+                  text "客户"
+                table_cell
+                  text "寄样单数"
+                table_cell
+                  text "寄样数量"
+              table_row
+                table_cell
+                  text "QA261112 测试客户"
+                table_cell
+                  text "1"
+                table_cell
+                  text "1"
+          table
+            table_row
+              table_cell
+          table
+            table_row
+              table_cell
+          container [ref=7548]
+            table
+              table_row
+                table_cell
+                  text "快递公司"
+                table_cell
+                  text "寄样单数"
+                table_cell
+                  text "寄样数量"
+              table_row
+                table_cell
+                  text "QA261112-MOCK"
+                table_cell
+                  text "1"
+                table_cell
+                  text "1"
+          table
+            table_row
+              table_cell
+          text "样品寄样历史"
+          text "1 条"
+          table
+            table_row
+              table_cell
+          container [ref=7549]
+            table
+              table_row
+                table_cell
+                  text "寄样单"
+                table_cell
+                  text "客户"
+                table_cell
+                  text "日期"
+                table_cell
+                  text "状态"
+                table_cell
+                  text "快递"
+              table_row
+                table_cell
+                  text "SD-CXE849"
+                table_cell
+                  text "QA261112 测试客户"
+                table_cell
+                  text "2026-11-12"
+                table_cell
+                  text "已寄出"
+                table_cell
+                  text "QA261112-MOCK / QA261112-NOT-SHIPPED"
+          table
+            table_row
+              table_cell
+          text "报价关联寄样"
+          text "1 条"
+          table
+            table_row
+              table_cell
+          container [ref=7550]
+            table
+              table_row
+                table_cell
+                  text "报价单"
+                table_cell
+                  text "寄样单"
+                table_cell
+                  text "客户"
+                table_cell
+                  text "产品"
+                table_cell
+                  text "审核日期"
+              table_row
+                table_cell
+                  text "-"
+                table_cell
+                  text "SD-CXE849"
+                table_cell
+                  text "QA261112 测试客户"
+                table_cell
+                  text "QA261112 验收测试围巾"
+                table_cell
+                  text "2026-11-12"
+          table
+            table_row
+              table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

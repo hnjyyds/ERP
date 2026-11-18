@@ -1,0 +1,329 @@
+{
+  "url": "http://localhost:8080/warehouse/inbound-orders",
+  "title": "入仓和库存确认",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "入仓和库存确认",
+    "入库单"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "入库搜索\n单据状态\n全部状态\n入库模式\n全部模式\n供应商\n输入供应商编号或名称\n采购合同\n输入合同号或供应商\n查询\n生成/审批入库单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "入库搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 285.4453125,
+            "width": 229.265625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 512.265625,
+            "bottom": 321.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "inbound-order-status-filter",
+          "label": "单据状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 535.265625,
+            "y": 290.4453125,
+            "width": 89.921875,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 625.1875,
+            "bottom": 316.4453125,
+            "left": 535.265625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "inbound-order-mode-filter",
+          "label": "入库模式\n全部模式",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 677.1875,
+            "y": 290.4453125,
+            "width": 89.921875,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 767.109375,
+            "bottom": 316.4453125,
+            "left": 677.1875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_dl_",
+          "label": "供应商筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 819.109375,
+            "y": 290.4453125,
+            "width": 116.671875,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 935.78125,
+            "bottom": 316.4453125,
+            "left": 819.109375
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_dn_",
+          "label": "采购合同筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 987.78125,
+            "y": 290.4453125,
+            "width": 116.6640625,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 1104.4453125,
+            "bottom": 316.4453125,
+            "left": 987.78125
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1145.4453125,
+            "y": 285.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1229.96875,
+            "bottom": 321.4453125,
+            "left": 1145.4453125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "生成/审批入库单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1241.96875,
+            "y": 285.4453125,
+            "width": 155.03125,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1397,
+            "bottom": 321.4453125,
+            "left": 1241.96875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "入库单\t状态\t模式\t采购合同\t供应商\t入库日\t库位\t入口\nXP-IN-MVU9CU\t已审批\t正式入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\tQA261112 测试仓库 / QA261112-A01\t\n查看详情",
+      "buttons": [
+        "XP-IN-MVU9CU",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "入仓",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "出库计划",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "货物出库",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "库存盘点",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

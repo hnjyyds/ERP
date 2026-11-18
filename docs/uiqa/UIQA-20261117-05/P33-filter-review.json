@@ -1,0 +1,1196 @@
+[
+  {
+    "url": "http://localhost:8080/finance/port-data?port_records_q=QA261112-CD01",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "QA261112-CD01",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n全部",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\nQA261112-CD01\tQA261112-CR01\t出口\tQA261112 验收测试围巾\t未匹配\t-\t2026-11-12\tUSD 205.00",
+        "buttons": []
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data?port_records_q=UIQA-PORT-NOMATCH",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "UIQA-PORT-NOMATCH",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n全部",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+        "buttons": [
+          "清空筛选"
+        ]
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n全部",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\nQA261112-CD01\tQA261112-CR01\t出口\tQA261112 验收测试围巾\t未匹配\t-\t2026-11-12\tUSD 205.00",
+        "buttons": []
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data?port_records_receipt=QA261112-CR01",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "QA261112-CR01",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n全部",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\nQA261112-CD01\tQA261112-CR01\t出口\tQA261112 验收测试围巾\t未匹配\t-\t2026-11-12\tUSD 205.00",
+        "buttons": []
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data?port_records_receipt=UIQA-PORT-NOMATCH",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "UIQA-PORT-NOMATCH",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n全部",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+        "buttons": [
+          "清空筛选"
+        ]
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n全部",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\nQA261112-CD01\tQA261112-CR01\t出口\tQA261112 验收测试围巾\t未匹配\t-\t2026-11-12\tUSD 205.00",
+        "buttons": []
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data?port_records_trade_type=import",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n进口\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n进口",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+        "buttons": [
+          "清空筛选"
+        ]
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data?port_records_trade_type=export",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n出口\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n出口",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\nQA261112-CD01\tQA261112-CR01\t出口\tQA261112 验收测试围巾\t未匹配\t-\t2026-11-12\tUSD 205.00",
+        "buttons": []
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:8080/finance/port-data",
+    "forms": [
+      {
+        "i": 0,
+        "dialog": null,
+        "visible": true,
+        "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+        "controls": [
+          {
+            "j": 0,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 281,
+              "y": 176.6484375,
+              "width": 377.2265625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 658.2265625,
+              "bottom": 212.6484375,
+              "left": 281
+            }
+          },
+          {
+            "j": 1,
+            "tag": "INPUT",
+            "type": "text",
+            "id": "",
+            "label": "报关回单号",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": false,
+            "required": false,
+            "rect": {
+              "x": 670.2265625,
+              "y": 176.6484375,
+              "width": 237.34375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 907.5703125,
+              "bottom": 212.6484375,
+              "left": 670.2265625
+            }
+          },
+          {
+            "j": 2,
+            "tag": "INPUT",
+            "type": "search",
+            "id": "_r_a_",
+            "label": "进出口\n全部",
+            "text": "",
+            "value": "",
+            "checked": false,
+            "disabled": false,
+            "readonly": true,
+            "required": false,
+            "rect": {
+              "x": 930.5703125,
+              "y": 181.6484375,
+              "width": 197.34375,
+              "height": 26,
+              "top": 181.6484375,
+              "right": 1127.9140625,
+              "bottom": 207.6484375,
+              "left": 930.5703125
+            }
+          },
+          {
+            "j": 3,
+            "tag": "BUTTON",
+            "type": "submit",
+            "id": "",
+            "text": "查询",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1168.9140625,
+              "y": 176.6484375,
+              "width": 84.5234375,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1253.4375,
+              "bottom": 212.6484375,
+              "left": 1168.9140625
+            }
+          },
+          {
+            "j": 4,
+            "tag": "BUTTON",
+            "type": "button",
+            "id": "",
+            "text": "自动匹配回单",
+            "value": "",
+            "disabled": false,
+            "rect": {
+              "x": 1261.4375,
+              "y": 176.6484375,
+              "width": 137.5625,
+              "height": 36,
+              "top": 176.6484375,
+              "right": 1399,
+              "bottom": 212.6484375,
+              "left": 1261.4375
+            }
+          }
+        ]
+      }
+    ],
+    "tables": [
+      {
+        "i": 0,
+        "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\nQA261112-CD01\tQA261112-CR01\t出口\tQA261112 验收测试围巾\t未匹配\t-\t2026-11-12\tUSD 205.00",
+        "buttons": []
+      },
+      {
+        "i": 1,
+        "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+        "buttons": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,256 @@
+[
+  {
+    "requestId": "79503.3540",
+    "url": "http://localhost:8080/api/v1/sales/shipments/reminders",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "shipment_id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+            "shipment_no": "SP-DAEPEG",
+            "reminder_date": "2026-11-18",
+            "message": "SP-DAEPEG 计划于 2026-11-25 出运",
+            "status": "done"
+          }
+        ],
+        "total": 1
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3539",
+    "url": "http://localhost:8080/api/v1/sales/shipments?limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+            "code": "SP-DAEPEG",
+            "shipment_date": "2026-11-12",
+            "planned_ship_date": "2026-11-25",
+            "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+            "customer_name": "QA261112 测试客户",
+            "currency": "USD",
+            "shipping_method": "sea",
+            "port_of_loading": "Ningbo",
+            "port_of_destination": "Hamburg",
+            "vessel_name": null,
+            "container_no": null,
+            "booking_no": null,
+            "document_owner_name": null,
+            "approval_status": "approved",
+            "submitted_at": "2026-11-12",
+            "approved_at": "2026-11-12",
+            "rejected_at": null,
+            "rejection_reason": null,
+            "reviewer_id": "u-001",
+            "reviewer_name": "演示业务主管",
+            "remarks": "QA261112 出货测试",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "finance_overview": {
+              "receivable_amount": "205.00",
+              "payable_amount": "0.00",
+              "profit_amount": "210.00",
+              "profit_rate": "102.44",
+              "currency": "USD"
+            },
+            "reminder": {
+              "shipment_id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+              "shipment_no": "SP-DAEPEG",
+              "reminder_date": "2026-11-18",
+              "message": "SP-DAEPEG 计划于 2026-11-25 出运",
+              "status": "done"
+            },
+            "lines": [
+              {
+                "id": "6d1d8e8f-4204-45e8-8ce6-2e9e6211cfd9",
+                "shipment_id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+                "contract_id": "34817a9e-a058-4438-ba51-3e8b311bda58",
+                "contract_no": "EC-F8D7RX",
+                "contract_line_id": "8efd947a-2a00-4ddb-bb6c-d74dce67a909",
+                "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                "product_code": "QA261112-P01",
+                "product_name": "QA261112 验收测试围巾",
+                "specification": null,
+                "model": null,
+                "quantity": "20",
+                "unit": "pcs",
+                "unit_price": "10.25",
+                "amount": "205.00",
+                "planned_ship_date": "2026-11-25"
+              }
+            ],
+            "contract_progresses": [
+              {
+                "contract_id": "34817a9e-a058-4438-ba51-3e8b311bda58",
+                "contract_no": "EC-F8D7RX",
+                "purchase_statuses": [
+                  {
+                    "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                    "product_code": "QA261112-P01",
+                    "product_name": "QA261112 验收测试围巾",
+                    "total_quantity": "50",
+                    "purchased_quantity": "0",
+                    "unpurchased_quantity": "50",
+                    "unit": "pcs",
+                    "status": "pending"
+                  }
+                ],
+                "shipment_statuses": [
+                  {
+                    "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                    "product_code": "QA261112-P01",
+                    "product_name": "QA261112 验收测试围巾",
+                    "planned_ship_date": "2026-11-25",
+                    "total_quantity": "50",
+                    "shipped_quantity": "20",
+                    "unshipped_quantity": "30",
+                    "shipped_amount": "205.00",
+                    "unshipped_amount": "307.50",
+                    "unit": "pcs",
+                    "status": "partial"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "submitted_count": 0,
+          "approved_count": 1,
+          "receivable_amount": "205.00",
+          "profit_amount": "210.00",
+          "currency": "USD"
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.3541",
+    "url": "http://localhost:8080/api/v1/sales/shipments?contract_no=EC-F8D7RX&limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+            "code": "SP-DAEPEG",
+            "shipment_date": "2026-11-12",
+            "planned_ship_date": "2026-11-25",
+            "customer_id": "9d46eb62-a60a-49c1-92e2-bf4f4240884d",
+            "customer_name": "QA261112 测试客户",
+            "currency": "USD",
+            "shipping_method": "sea",
+            "port_of_loading": "Ningbo",
+            "port_of_destination": "Hamburg",
+            "vessel_name": null,
+            "container_no": null,
+            "booking_no": null,
+            "document_owner_name": null,
+            "approval_status": "approved",
+            "submitted_at": "2026-11-12",
+            "approved_at": "2026-11-12",
+            "rejected_at": null,
+            "rejection_reason": null,
+            "reviewer_id": "u-001",
+            "reviewer_name": "演示业务主管",
+            "remarks": "QA261112 出货测试",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "finance_overview": {
+              "receivable_amount": "205.00",
+              "payable_amount": "0.00",
+              "profit_amount": "210.00",
+              "profit_rate": "102.44",
+              "currency": "USD"
+            },
+            "reminder": {
+              "shipment_id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+              "shipment_no": "SP-DAEPEG",
+              "reminder_date": "2026-11-18",
+              "message": "SP-DAEPEG 计划于 2026-11-25 出运",
+              "status": "done"
+            },
+            "lines": [
+              {
+                "id": "6d1d8e8f-4204-45e8-8ce6-2e9e6211cfd9",
+                "shipment_id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+                "contract_id": "34817a9e-a058-4438-ba51-3e8b311bda58",
+                "contract_no": "EC-F8D7RX",
+                "contract_line_id": "8efd947a-2a00-4ddb-bb6c-d74dce67a909",
+                "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                "product_code": "QA261112-P01",
+                "product_name": "QA261112 验收测试围巾",
+                "specification": null,
+                "model": null,
+                "quantity": "20",
+                "unit": "pcs",
+                "unit_price": "10.25",
+                "amount": "205.00",
+                "planned_ship_date": "2026-11-25"
+              }
+            ],
+            "contract_progresses": [
+              {
+                "contract_id": "34817a9e-a058-4438-ba51-3e8b311bda58",
+                "contract_no": "EC-F8D7RX",
+                "purchase_statuses": [
+                  {
+                    "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                    "product_code": "QA261112-P01",
+                    "product_name": "QA261112 验收测试围巾",
+                    "total_quantity": "50",
+                    "purchased_quantity": "0",
+                    "unpurchased_quantity": "50",
+                    "unit": "pcs",
+                    "status": "pending"
+                  }
+                ],
+                "shipment_statuses": [
+                  {
+                    "product_id": "cc65c401-22e4-4a77-8b77-eab59be3e228",
+                    "product_code": "QA261112-P01",
+                    "product_name": "QA261112 验收测试围巾",
+                    "planned_ship_date": "2026-11-25",
+                    "total_quantity": "50",
+                    "shipped_quantity": "20",
+                    "unshipped_quantity": "30",
+                    "shipped_amount": "205.00",
+                    "unshipped_amount": "307.50",
+                    "unit": "pcs",
+                    "status": "partial"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "submitted_count": 0,
+          "approved_count": 1,
+          "receivable_amount": "205.00",
+          "profit_amount": "210.00",
+          "currency": "USD"
+        }
+      },
+      "error": null
+    }
+  }
+]

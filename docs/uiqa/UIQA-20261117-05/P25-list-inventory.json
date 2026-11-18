@@ -1,0 +1,469 @@
+{
+  "url": "http://localhost:8080/finance/fees",
+  "title": "付费管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "付费管理",
+    "合作伙伴费用发票",
+    "应付费用查询"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "费用发票搜索\n发票状态\n全部状态\n费用类型\n全部类型\n合作伙伴标识\n出运单号\n查询\n发票登记",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "费用发票搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 263.4765625,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 544.4765625,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_g9_",
+          "label": "发票状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 567.4765625,
+            "y": 181.6484375,
+            "width": 107.734375,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 675.2109375,
+            "bottom": 207.6484375,
+            "left": 567.4765625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_gb_",
+          "label": "费用类型\n全部类型",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 727.2109375,
+            "y": 181.6484375,
+            "width": 107.7421875,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 834.953125,
+            "bottom": 207.6484375,
+            "left": 727.2109375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合作伙伴标识",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 875.953125,
+            "y": 176.6484375,
+            "width": 147.734375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1023.6875,
+            "bottom": 212.6484375,
+            "left": 875.953125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1035.6875,
+            "y": 176.6484375,
+            "width": 147.7421875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1183.4296875,
+            "bottom": 212.6484375,
+            "left": 1035.6875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1195.4296875,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1279.953125,
+            "bottom": 212.6484375,
+            "left": 1195.4296875
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "发票登记",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 176.6484375,
+            "width": 111.046875,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1287.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "应付费用搜索\n应付状态\n全部状态\n费用类型\n全部类型\n合作伙伴标识\n出运单号\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "应付费用搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 515.6484375,
+            "width": 303.1640625,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 584.1640625,
+            "bottom": 551.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_gg_",
+          "label": "应付状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 607.1640625,
+            "y": 520.6484375,
+            "width": 127.578125,
+            "height": 26,
+            "top": 520.6484375,
+            "right": 734.7421875,
+            "bottom": 546.6484375,
+            "left": 607.1640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_gi_",
+          "label": "费用类型\n全部类型",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 786.7421875,
+            "y": 520.6484375,
+            "width": 127.578125,
+            "height": 26,
+            "top": 520.6484375,
+            "right": 914.3203125,
+            "bottom": 546.6484375,
+            "left": 786.7421875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合作伙伴标识",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 955.3203125,
+            "y": 515.6484375,
+            "width": 167.578125,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1122.8984375,
+            "bottom": 551.6484375,
+            "left": 955.3203125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出运单号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1134.8984375,
+            "y": 515.6484375,
+            "width": 167.578125,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1302.4765625,
+            "bottom": 551.6484375,
+            "left": 1134.8984375
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1314.4765625,
+            "y": 515.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 515.6484375,
+            "right": 1399,
+            "bottom": 551.6484375,
+            "left": 1314.4765625
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "费用发票\t状态\t合作伙伴\t出运单\t费用类型\t发票金额\t未付\nQA261112-FEE01\t已付清\tQA261112 测试货代\tSP-DAEPEG\t货代费\tUSD 20.00\tUSD 0.00",
+      "buttons": [
+        "QA261112-FEE01"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "费用发票\t合作伙伴\t出运单\t费用类型\t发票金额\t已付费\t应付余额\t状态\nQA261112-FEE01\tQA261112 测试货代\tSP-DAEPEG\t货代费\tUSD 20.00\tUSD 20.00\tUSD 0.00\t已付清",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

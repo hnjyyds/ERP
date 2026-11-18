@@ -1,0 +1,502 @@
+{
+  "url": "http://localhost:8080/finance/receipts/50b2abe7-16ec-489d-830f-c09d7e8572d6",
+  "title": "收款管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "收款管理",
+    "认领和分摊"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "水单认领\n认领日期\n业务员标识\n业务员姓名\n认领说明\n确认认领",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "认领日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 360.8203125,
+            "width": 551,
+            "height": 36,
+            "top": 360.8203125,
+            "right": 832,
+            "bottom": 396.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "业务员标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 360.8203125,
+            "width": 551,
+            "height": 36,
+            "top": 360.8203125,
+            "right": 1399,
+            "bottom": 396.8203125,
+            "left": 848
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "业务员姓名",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 430.8203125,
+            "width": 1118,
+            "height": 36,
+            "top": 430.8203125,
+            "right": 1399,
+            "bottom": 466.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "认领说明",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 500.8203125,
+            "width": 1118,
+            "height": 36,
+            "top": 500.8203125,
+            "right": 1399,
+            "bottom": 536.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "确认认领",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 281,
+            "y": 552.8203125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 552.8203125,
+            "right": 392.046875,
+            "bottom": 588.8203125,
+            "left": 281
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "收款分摊\n分摊类型\n合同分摊\n分摊日期\n出口合同标识\n出口合同号\n发票号\n分摊金额\n币种\n分摊备注\n保存分摊",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_4_",
+          "label": "分摊类型\n合同分摊",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 292,
+            "y": 696.1953125,
+            "width": 511,
+            "height": 26,
+            "top": 696.1953125,
+            "right": 803,
+            "bottom": 722.1953125,
+            "left": 292
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "分摊日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 691.1953125,
+            "width": 551,
+            "height": 36,
+            "top": 691.1953125,
+            "right": 1399,
+            "bottom": 727.1953125,
+            "left": 848
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出口合同标识",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 761.1953125,
+            "width": 551,
+            "height": 36,
+            "top": 761.1953125,
+            "right": 832,
+            "bottom": 797.1953125,
+            "left": 281
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "出口合同号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 848,
+            "y": 761.1953125,
+            "width": 551,
+            "height": 36,
+            "top": 761.1953125,
+            "right": 1399,
+            "bottom": 797.1953125,
+            "left": 848
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "发票号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 831.1953125,
+            "width": 362,
+            "height": 36,
+            "top": 831.1953125,
+            "right": 643,
+            "bottom": 867.1953125,
+            "left": 281
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "分摊金额",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659,
+            "y": 831.1953125,
+            "width": 362,
+            "height": 36,
+            "top": 831.1953125,
+            "right": 1021,
+            "bottom": 867.1953125,
+            "left": 659
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1037,
+            "y": 831.1953125,
+            "width": 362,
+            "height": 36,
+            "top": 831.1953125,
+            "right": 1399,
+            "bottom": 867.1953125,
+            "left": 1037
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "分摊备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 901.1953125,
+            "width": 1118,
+            "height": 36,
+            "top": 901.1953125,
+            "right": 1399,
+            "bottom": 937.1953125,
+            "left": 281
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存分摊",
+          "value": "",
+          "disabled": true,
+          "rect": {
+            "x": 281,
+            "y": 953.1953125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 953.1953125,
+            "right": 392.046875,
+            "bottom": 989.1953125,
+            "left": 281
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "类型\t合同号\t发票号\t金额\t日期\n合同分摊\tEC-F8D7RX\t-\tUSD 60.00\t2026-11-12\n合同分摊\tEC-F8D7RX\t-\tUSD 60.00\t2026-11-12",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "url": "http://localhost:8080/finance/reports",
+  "title": "财务报表",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "财务报表",
+    "财务统计报表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "起始日期\n结束日期\n币种\n供应商\n状态\n查询\n导出 CSV",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "起始日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 232.6484375,
+            "width": 260.8203125,
+            "height": 36,
+            "top": 232.6484375,
+            "right": 541.8203125,
+            "bottom": 268.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "结束日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 553.8203125,
+            "y": 232.6484375,
+            "width": 146.40625,
+            "height": 36,
+            "top": 232.6484375,
+            "right": 700.2265625,
+            "bottom": 268.6484375,
+            "left": 553.8203125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 712.2265625,
+            "y": 232.6484375,
+            "width": 146.4140625,
+            "height": 36,
+            "top": 232.6484375,
+            "right": 858.640625,
+            "bottom": 268.6484375,
+            "left": 712.2265625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 870.640625,
+            "y": 232.6484375,
+            "width": 146.40625,
+            "height": 36,
+            "top": 232.6484375,
+            "right": 1017.046875,
+            "bottom": 268.6484375,
+            "left": 870.640625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1029.046875,
+            "y": 232.6484375,
+            "width": 146.4140625,
+            "height": 36,
+            "top": 232.6484375,
+            "right": 1175.4609375,
+            "bottom": 268.6484375,
+            "left": 1029.046875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1187.4609375,
+            "y": 232.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 232.6484375,
+            "right": 1271.984375,
+            "bottom": 268.6484375,
+            "left": 1187.4609375
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "导出 CSV",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1283.984375,
+            "y": 232.6484375,
+            "width": 115.015625,
+            "height": 36,
+            "top": 232.6484375,
+            "right": 1399,
+            "bottom": 268.6484375,
+            "left": 1283.984375
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "付款单号\t日期\t供应商\t发票号\t申请金额\t已付\t未付\t状态\t下钻\nPR-PG3X2P\t2026-11-17\tQA261112 测试供应商\tUIQA-20261117-04-INV01\tCNY 0.01\tCNY 0.01\tCNY 0.00\tapproved\t\n来 源\n\nPR-GZN8H6\t2026-11-12\tQA261112 测试供应商\tQA261112-INV01\tRMB 60.00\tRMB 60.00\tRMB 0.00\tapproved\t\n来 源\n\nPR-ZAWWF6\t2026-11-12\tQA261112 测试供应商\tQA261112-INV01\tRMB 60.00\tRMB 60.00\tRMB 0.00\tapproved\t\n来 源",
+      "buttons": [
+        "来 源",
+        "来 源",
+        "来 源"
+      ]
+    }
+  ],
+  "dialogs": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,531 @@
+{
+  "url": "http://localhost:8080/finance/port-data?port_records_q=UIQA-PORT-NOMATCH",
+  "title": "口岸数据",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "口岸数据",
+    "进出口报关数据查询",
+    "导入批次记录",
+    "导入口岸数据"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "报关单号\n报关回单号\n进出口\n全部\n查询\n自动匹配回单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报关单号",
+          "text": "",
+          "value": "UIQA-PORT-NOMATCH",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 176.6484375,
+            "width": 377.2265625,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 658.2265625,
+            "bottom": 212.6484375,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报关回单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 670.2265625,
+            "y": 176.6484375,
+            "width": 237.34375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 907.5703125,
+            "bottom": 212.6484375,
+            "left": 670.2265625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_a_",
+          "label": "进出口\n全部",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 930.5703125,
+            "y": 181.6484375,
+            "width": 197.34375,
+            "height": 26,
+            "top": 181.6484375,
+            "right": 1127.9140625,
+            "bottom": 207.6484375,
+            "left": 930.5703125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1168.9140625,
+            "y": 176.6484375,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1253.4375,
+            "bottom": 212.6484375,
+            "left": 1168.9140625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "自动匹配回单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1261.4375,
+            "y": 176.6484375,
+            "width": 137.5625,
+            "height": 36,
+            "top": 176.6484375,
+            "right": 1399,
+            "bottom": 212.6484375,
+            "left": 1261.4375
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "批次号\n数据来源\n导入日期\n报关数据明细\n报关单号\n报关回单号\n进出口类型\n出口\n商品名称\n报关金额\n币种\n导入数据",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "批次号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 281,
+            "y": 899.4453125,
+            "width": 1118,
+            "height": 36,
+            "top": 899.4453125,
+            "right": 1399,
+            "bottom": 935.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "数据来源",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 281,
+            "y": 969.4453125,
+            "width": 1118,
+            "height": 36,
+            "top": 969.4453125,
+            "right": 1399,
+            "bottom": 1005.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "导入日期",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 281,
+            "y": 1039.4453125,
+            "width": 1118,
+            "height": 36,
+            "top": 1039.4453125,
+            "right": 1399,
+            "bottom": 1075.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报关单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 281,
+            "y": 1159.8203125,
+            "width": 1118,
+            "height": 36,
+            "top": 1159.8203125,
+            "right": 1399,
+            "bottom": 1195.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报关回单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 1229.8203125,
+            "width": 1118,
+            "height": 36,
+            "top": 1229.8203125,
+            "right": 1399,
+            "bottom": 1265.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_g_",
+          "label": "进出口类型\n出口",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 292,
+            "y": 1304.8203125,
+            "width": 1078,
+            "height": 26,
+            "top": 1304.8203125,
+            "right": 1370,
+            "bottom": 1330.8203125,
+            "left": 292
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "商品名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 281,
+            "y": 1369.8203125,
+            "width": 1118,
+            "height": 36,
+            "top": 1369.8203125,
+            "right": 1399,
+            "bottom": 1405.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报关金额",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 281,
+            "y": 1439.8203125,
+            "width": 1118,
+            "height": 36,
+            "top": 1439.8203125,
+            "right": 1399,
+            "bottom": 1475.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 281,
+            "y": 1509.8203125,
+            "width": 1118,
+            "height": 36,
+            "top": 1509.8203125,
+            "right": 1399,
+            "bottom": 1545.8203125,
+            "left": 281
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "导入数据",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 281,
+            "y": 1561.8203125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 1561.8203125,
+            "right": 392.046875,
+            "bottom": 1597.8203125,
+            "left": 281
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "报关单号\t回单号\t进出口\t商品\t匹配\t核销单\t报关日期\t金额\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "buttons": [
+        "清空筛选"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "批次号\t来源\t导入日期\t记录数\t状态\nQA261112-PORT01\tQA261112\t2026-11-12\t1\t已导入",
+      "buttons": []
+    }
+  ],
+  "dialogs": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "经营总览",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "收款管理",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "付款管理",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "付费管理",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "核销退税",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "杂费管理",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "结算核算",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "报销管理",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "口岸数据",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "财务报表",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "老板看板",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+[
+  {
+    "label": "样品分类",
+    "options": [
+      "来样",
+      "确认样",
+      "大货样",
+      "留样"
+    ],
+    "steps": [
+      {
+        "expected": "来样",
+        "selected": "来样",
+        "fields": [
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类\n来样",
+            "value": ""
+          },
+          {
+            "label": "样品状态\n已登记\n已登记",
+            "value": ""
+          },
+          {
+            "label": "收样数量",
+            "value": "1"
+          },
+          {
+            "label": "收样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "提交日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "产品",
+            "value": ""
+          },
+          {
+            "label": "客户货号",
+            "value": ""
+          },
+          {
+            "label": "供应商货号",
+            "value": ""
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "采购合同号",
+            "value": ""
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "样品来源\n打样单",
+            "value": ""
+          },
+          {
+            "label": "来源单号",
+            "value": ""
+          },
+          {
+            "label": "样品说明",
+            "value": ""
+          },
+          {
+            "label": "图片说明",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "expected": "确认样",
+        "selected": "确认样",
+        "fields": [
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类\n确认样",
+            "value": ""
+          },
+          {
+            "label": "样品状态\n已登记\n已登记",
+            "value": ""
+          },
+          {
+            "label": "收样数量",
+            "value": "1"
+          },
+          {
+            "label": "收样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "提交日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "产品",
+            "value": ""
+          },
+          {
+            "label": "客户货号",
+            "value": ""
+          },
+          {
+            "label": "供应商货号",
+            "value": ""
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "采购合同号",
+            "value": ""
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "样品来源\n打样单",
+            "value": ""
+          },
+          {
+            "label": "来源单号",
+            "value": ""
+          },
+          {
+            "label": "样品说明",
+            "value": ""
+          },
+          {
+            "label": "图片说明",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  }
+]

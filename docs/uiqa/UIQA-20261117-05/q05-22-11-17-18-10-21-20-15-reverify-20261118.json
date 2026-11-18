@@ -1,0 +1,114 @@
+{
+  "batch": "Q05-22/11/17/18/10/21/20/15 与 Q05-04 P17来源记录收尾",
+  "asset": "assets/index-BawyFJj7.js",
+  "css": "assets/index-BkkHiJbh.css",
+  "backend": "b370c0fe + 工作区补丁（合作伙伴 country、商品 status、审计导出时区）",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "超级管理员",
+  "viewport": ["1440x900", "390x844"],
+  "results": {
+    "Q05-22": {
+      "page": "/organization/users",
+      "checks": [
+        "选中演示 QC 专员后，入口文案为“编辑所属角色权限”",
+        "弹窗“配置角色”直接显示 QC 专员，而非默认 QC 角色配置或空值",
+        "弹窗说明明确为角色级授权，实际修改范围与入口一致"
+      ],
+      "screenshot": "screenshots/Q05-22-user-role-modal-Ew3T-1440.png",
+      "result": "通过"
+    },
+    "Q05-11": {
+      "page": "/masterdata/partners",
+      "checks": [
+        "高级筛选输入“中国”后，GET /masterdata/partners 携带 country=中国",
+        "列表仅剩 1 行：UI261114-B01 演示伙伴｜远帆国际物流",
+        "URL 带 country 参数直接打开时同样按国家过滤，汇总与列表范围一致"
+      ],
+      "screenshot": "screenshots/Q05-11-country-filter-Bawy-1440.png",
+      "result": "通过"
+    },
+    "Q05-17": {
+      "page": "/sample/records",
+      "checks": [
+        "概览标签明确为“图片（当前列表）”“留样（当前列表，按单位分列）”",
+        "当前 2 条样品：图片合计 1，留样按单位显示 5 pcs",
+        "列表总数、确认样数与列表数据同范围，不再混入选中记录"
+      ],
+      "screenshot": "screenshots/Q05-17-sample-metrics-Bawy-1440.png",
+      "result": "通过"
+    },
+    "Q05-18": {
+      "page": "/finance/reports",
+      "checks": [
+        "来源面板显示可点击链接“来源单据：BR-MWYV53”",
+        "链接 href=/finance/receipts?q=BR-MWYV53，点击后收款列表本次列表 1 条，来源对象保留"
+      ],
+      "screenshot": "screenshots/Q05-18-report-source-link-Bawy-1440.png",
+      "result": "通过"
+    },
+    "Q05-10": {
+      "page": "/masterdata/products",
+      "checks": [
+        "工具栏新增状态筛选：全部状态/启用/停用",
+        "停用筛选显示 UIQA-20261117-05-P02 停用商品并可进入详情",
+        "全部状态 51 条，停用 1 条；筛选与导出均携带 status"
+      ],
+      "screenshot": "screenshots/Q05-10-products-inactive-Bawy-1440.png",
+      "result": "通过"
+    },
+    "Q05-21": {
+      "page": "/system/audit-logs",
+      "checks": [
+        "导出文件名含本地时间；CSV 表头为“时间（Asia/Shanghai）”",
+        "时间列带 +08:00 偏移，例如 2026-11-18 01:36:03+08:00"
+      ],
+      "download": "/tmp/qa-downloads/audit-logs-20261118105527.csv",
+      "result": "通过"
+    },
+    "Q05-20": {
+      "page": "/system/audit-logs",
+      "checks": [
+        "390×844 下打开开始日期，双月面板改为上下单列",
+        "浮层 left=31、right=359、width=328，完整落在 390 视口内，无左侧裁切"
+      ],
+      "screenshot": "screenshots/Q05-20-mobile-date-popover-Bawy-390.png",
+      "result": "通过"
+    },
+    "Q05-15": {
+      "page": "/sample/requests",
+      "checks": [
+        "390×844 下新增打样单弹窗宽 374，产品等选择器宽 270",
+        "所有选择器 right=330，未超出弹窗与视口，页面无横向溢出"
+      ],
+      "screenshot": "screenshots/Q05-15-mobile-sample-request-Bawy-390.png",
+      "result": "通过"
+    },
+    "Q05-04-P17": {
+      "page": "/purchase/followup",
+      "checks": [
+        "业务来源回写的“来源记录”改为按来源类型检索的业务选择器",
+        "来源类型=入库单时可选 XP-IN-MVU9CU，选择后来源摘要同步为 XP-IN-MVU9CU",
+        "清空来源记录后选择器恢复占位、摘要同步清空",
+        "切换来源类型为 QC 查验后，已选来源记录与摘要一并清空"
+      ],
+      "screenshot": "screenshots/P17-source-record-Ew3T-1440.png",
+      "result": "通过"
+    }
+  },
+  "automation": {
+    "vitest": "423 passed / 50 files",
+    "tsc": "passed",
+    "eslint": "passed",
+    "backend_compile": "py_compile passed"
+  },
+  "boundaries": {
+    "business_writes": "本轮未保存用户、合作伙伴、商品、样品、打样单、跟单计划、报表或审计筛选",
+    "new_data": 0
+  },
+  "closure": {
+    "closed": ["Q05-04", "Q05-10", "Q05-11", "Q05-15", "Q05-17", "Q05-18", "Q05-20", "Q05-21", "Q05-22"],
+    "rule": "Q05-04 按原缺陷全部影响面修复并复验通过关闭；D02 其余未测场景继续保留，不折算为规范整项通过",
+    "counts": {"total": 29, "closed": 23, "pending_reverify": 0, "open": 6, "whole_pages_passed": 0}
+  },
+  "verified_at": "2026-11-18"
+}

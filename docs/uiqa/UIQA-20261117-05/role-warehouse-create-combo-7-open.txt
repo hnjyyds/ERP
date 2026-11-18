@@ -1,0 +1,300 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          container "D-DUTCH"
+            text "D-DUTCH"
+          container
+            text "新裴贸易"
+            text "业务管理系统"
+        container "主导航"
+          anchor [ref=6252, loc=href:/, url=http://localhost:8080/]
+            svg_root
+            text "工作台"
+          container "业务模块"
+            container
+              container [ref=6253]
+                svg_root
+                text "基础资料"
+                svg_root
+              anchor [ref=6278, loc=href:/masterdata/products, url=http://localhost:8080/masterdata/products]
+                svg_root
+                text "商品资料"
+            container
+              container [ref=6254]
+                svg_root
+                text "仓库"
+                svg_root
+              container
+                anchor [ref=6273, loc=href:/warehouse/inbound-orders, url=http://localhost:8080/warehouse/inbound-orders]
+                  svg_root
+                  text "入仓"
+                anchor [ref=6274, loc=href:/warehouse/inbound-plans, url=http://localhost:8080/warehouse/inbound-plans]
+                  svg_root
+                  text "入库计划"
+                anchor [ref=6275, loc=href:/warehouse/outbound-plans, url=http://localhost:8080/warehouse/outbound-plans]
+                  svg_root
+                  text "出库计划"
+                anchor [ref=6276, loc=href:/warehouse/outbound-orders, url=http://localhost:8080/warehouse/outbound-orders]
+                  svg_root
+                  text "货物出库"
+                anchor [ref=6277, loc=href:/warehouse/stocktakes, url=http://localhost:8080/warehouse/stocktakes]
+                  svg_root
+                  text "库存盘点"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "入仓和库存确认"
+          container
+            button "通知" [ref=6255, loc=css:button[aria-label="通知"]]
+              svg_root
+            button "系统设置" [ref=6256, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "货物入库概览"
+            container
+              text "入库单"
+              text "1"
+            container
+              text "草稿"
+              text "0"
+            container
+              text "待审批"
+              text "0"
+            container
+              text "已审批"
+              text "1"
+            container
+              text "可用库存"
+              text "59.00"
+            container
+              text "待检库存"
+              text "0.00"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "入库单"
+              form
+                container
+                  text "入库搜索"
+                  textbox [ref=6279, loc=css:input[placeholder="入库单 / 采购合同 / 商品"]]
+                    text "入库单 / 采购合同 / 商品"
+                container
+                  text "单据状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=6280]
+                    image "down"
+                      svg_root
+                container
+                  text "入库模式"
+                  container
+                    container
+                      text "全部模式"
+                      comboboxgrouping [ref=6281]
+                    image "down"
+                      svg_root
+                container
+                  text "供应商"
+                  container
+                    container
+                      text "输入供应商编号或名称"
+                      comboboxgrouping "供应商筛选" [ref=6282, loc=css:input[aria-label="供应商筛选"]]
+                    image "down"
+                      svg_root
+                container
+                  text "采购合同"
+                  container
+                    container
+                      text "输入合同号或供应商"
+                      comboboxgrouping "采购合同筛选" [ref=6283, loc=css:input[aria-label="采购合同筛选"]]
+                    image "down"
+                      svg_root
+                button [ref=6284]
+                  svg_root
+                  text "查询"
+                button [ref=6285]
+                  svg_root
+                  text "生成/审批入库单"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=6286]
+                  table
+                    table_row
+                      table_cell
+                        text "入库单"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "模式"
+                      table_cell
+                        text "采购合同"
+                      table_cell
+                        text "供应商"
+                      table_cell
+                        text "入库日"
+                      table_cell
+                        text "库位"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=6287]
+                          text "XP-IN-MVU9CU"
+                      table_cell
+                        text "已审批"
+                      table_cell
+                        text "正式入库"
+                      table_cell
+                        text "PC-HR36RU"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "QA261112 测试仓库 / QA261112-A01"
+                      table_cell
+                        button [ref=6288]
+                          text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=6289]
+                      image "left"
+                        svg_root
+                  list_item [ref=6290]
+                    anchor [ref=6291]
+                      text "1"
+                  list_item
+                    button [ref=6292]
+                      image "right"
+                        svg_root
+                  list_item
+                    container
+                      text "50 条/页"
+                      comboboxgrouping "页码" [ref=6293, loc=css:input[aria-label="页码"]]
+                    image "down"
+                      svg_root
+              table
+                table_row
+                  table_cell
+    dialog "入库单生成和审批"
+      button "Close" [ref=6294, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "入库单生成和审批"
+      container [ref=6295]
+        container
+          svg_root
+          heading
+            text "入库登记"
+        form
+          text "从入库计划生成"
+          container
+            text "采购订单号"
+            container
+              container
+                text "输入采购订单号或供应商"
+                comboboxgrouping "采购订单号" [ref=6296, loc=css:input[aria-label="采购订单号"]]
+              image "down"
+                svg_root
+          container
+            text "入库单"
+            textbox [ref=6297, loc=css:input[placeholder="系统自动生成"]]
+              text "系统自动生成"
+          container
+            container
+              text "入库模式"
+              container
+                container
+                  text "待检入库"
+                  comboboxgrouping [ref=6298]
+                image "down"
+                  svg_root
+            container
+              text "入库日期"
+              textbox [ref=6299]
+                spinbutton "年" [ref=6300]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=6301]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=6302]
+                  text "12"
+          container
+            container
+              text "仓库"
+              container
+                container
+                  text "公司仓库"
+                  comboboxgrouping [ref=6303]
+                image "down"
+                  svg_root
+            container
+              text "库位"
+              textbox [ref=6304, loc=css:input[placeholder="填写实际库位名称，例如 A-01"]]
+                text "QA261112-A01"
+          container
+            text "经办人"
+            textbox [ref=6305]
+              text "QA261112 测试经办"
+          button [ref=6306]
+            svg_root
+            text "生成入库单"
+        form
+          text "提交和审批"
+          button [ref=6307]
+            svg_root
+            text "提交审批"
+          container
+            container
+              text "审批人"
+              container
+                container
+                  text "演示业务主管 / demo / 业务部"
+                  comboboxgrouping "审批人" [ref=6308, loc=css:input[aria-label="审批人"]]
+                image "down"
+                  svg_root
+            container
+              text "审批日期"
+              textbox [ref=6309]
+                spinbutton "年" [ref=6310]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=6311]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=6312]
+                  text "12"
+          button [ref=6313]
+            svg_root
+            text "审批入库"
+    container
+      listbox
+        listboxoption "工厂"
+          text "wh-factory"
+        listboxoption "公司仓库"
+          text "wh-company"
+      container
+        text "工厂"
+        text "公司仓库"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

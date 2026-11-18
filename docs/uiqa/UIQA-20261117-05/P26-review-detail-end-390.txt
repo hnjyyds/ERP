@@ -1,0 +1,139 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=9025, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "核销退税"
+        button "通知" [ref=8996, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=8997, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        button [ref=8998]
+          svg_root
+          text "核销退税"
+        container "核销退税"
+          container
+            svg_root
+            heading
+              text "回单、核销和退税登记"
+            unordered_list
+              list_item
+                text "当前核销单"
+              list_item
+                text "VD-DZAUMQ"
+              list_item
+                text "状态"
+              list_item
+                text "已退税"
+              list_item
+                text "未退税"
+              list_item
+                text "USD 0.00"
+              list_item
+                text "提醒日"
+              list_item
+                text "2026-12-05"
+            container
+              form
+                text "报关回单登记"
+                container
+                  text "报关单号"
+                  textbox [ref=8999]
+                container
+                  text "回单号"
+                  textbox [ref=9000]
+                container
+                  text "回单日期"
+                  textbox [ref=9001]
+                    spinbutton "年" [ref=9002]
+                      text "2026"
+                    text "/"
+                    spinbutton "月" [ref=9003]
+                      text "11"
+                    text "/"
+                    spinbutton "日" [ref=9004]
+                      text "18"
+                container
+                  text "回单备注"
+                  textbox [ref=9005]
+                button [ref=9006]
+                  svg_root
+                  text "登记回单"
+              form
+                text "核销登记"
+                container
+                  container
+                    text "核销编号"
+                    textbox [ref=9007]
+                      text "保存后自动生成"
+                  container
+                    text "核销日期"
+                    textbox [ref=9008]
+                      spinbutton "年" [ref=9009]
+                        text "2026"
+                      text "/"
+                      spinbutton "月" [ref=9010]
+                        text "11"
+                      text "/"
+                      spinbutton "日" [ref=9011]
+                        text "18"
+                container
+                  text "核销备注"
+                  textbox [ref=9012]
+                button [ref=9013]
+                  svg_root
+                  text "登记核销"
+              form
+                text "退税登记"
+                container
+                  container
+                    text "退税编号"
+                    textbox [ref=9014]
+                      text "保存后自动生成"
+                  container
+                    text "退税日期"
+                    textbox [ref=9015]
+                      spinbutton "年" [ref=9016]
+                        text "2026"
+                      text "/"
+                      spinbutton "月" [ref=9017]
+                        text "11"
+                      text "/"
+                      spinbutton "日" [ref=9018]
+                        text "18"
+                container
+                  container
+                    text "退税金额"
+                    textbox [ref=9019]
+                      text "0.00"
+                  container
+                    text "币种"
+                    textbox [ref=9020]
+                      text "USD"
+                  container
+                    text "银行水单号"
+                    textbox [ref=9021]
+                container
+                  text "退税备注"
+                  textbox [ref=9022]
+                button [ref=9023]
+                  svg_root
+                  text "登记退税"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

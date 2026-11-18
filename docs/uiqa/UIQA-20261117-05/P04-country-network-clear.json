@@ -1,0 +1,102 @@
+[
+  {
+    "requestId": "79503.2071",
+    "url": "http://localhost:8080/api/v1/masterdata/partners?limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "3e4df6ca-23ff-41b4-a522-6afc9f2b8d3e",
+            "code": "UIQA-20261117-05-B01",
+            "cn_name": "UIQA全量验收停用合作伙伴样本",
+            "en_name": "UIQA Inactive P04 Test Record",
+            "partner_type": "insurer",
+            "country": "CN",
+            "address": "UIQA测试资料，非真实地址",
+            "website": null,
+            "status": "inactive",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "55639aef-5dd4-40c5-8093-7ae3c76b5d06",
+                "partner_id": "3e4df6ca-23ff-41b4-a522-6afc9f2b8d3e",
+                "name": "UIQA测试联系人",
+                "title": null,
+                "email": "uiqa-p04@example.invalid",
+                "phone": null,
+                "is_primary": true
+              }
+            ],
+            "primary_contact": {
+              "id": "55639aef-5dd4-40c5-8093-7ae3c76b5d06",
+              "partner_id": "3e4df6ca-23ff-41b4-a522-6afc9f2b8d3e",
+              "name": "UIQA测试联系人",
+              "title": null,
+              "email": "uiqa-p04@example.invalid",
+              "phone": null,
+              "is_primary": true
+            }
+          },
+          {
+            "id": "2baef7fa-b6e2-492e-b0bf-4f0db7f4f7b4",
+            "code": "UI261114-B01",
+            "cn_name": "演示伙伴｜远帆国际物流",
+            "en_name": "Demo Far Sail Logistics",
+            "partner_type": "freight_forwarder",
+            "country": "中国",
+            "address": "演示地址：上海市物流大道66号",
+            "website": "https://logistics.example.com",
+            "status": "active",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "ad7a109f-eb1b-4f7d-add6-f980a62a6304",
+                "partner_id": "2baef7fa-b6e2-492e-b0bf-4f0db7f4f7b4",
+                "name": "演示联系人王女士",
+                "title": "货代客服",
+                "email": "logistics@example.com",
+                "phone": "000-00000002",
+                "is_primary": true
+              }
+            ],
+            "primary_contact": {
+              "id": "ad7a109f-eb1b-4f7d-add6-f980a62a6304",
+              "partner_id": "2baef7fa-b6e2-492e-b0bf-4f0db7f4f7b4",
+              "name": "演示联系人王女士",
+              "title": "货代客服",
+              "email": "logistics@example.com",
+              "phone": "000-00000002",
+              "is_primary": true
+            }
+          },
+          {
+            "id": "e1aa38fd-bd00-4da9-80dc-494bd9749e02",
+            "code": "QA261112-F01",
+            "cn_name": "QA261112 测试货代",
+            "en_name": "QA261112 Forwarder",
+            "partner_type": "freight_forwarder",
+            "country": "CN",
+            "address": null,
+            "website": null,
+            "status": "active",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [],
+            "primary_contact": null
+          }
+        ],
+        "total": 3,
+        "summary": {
+          "active_count": 2,
+          "contact_count": 2,
+          "partner_type_count": 2
+        }
+      },
+      "error": null
+    }
+  }
+]

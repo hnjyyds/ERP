@@ -1,0 +1,176 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=8869, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "付费管理"
+        container
+          button "通知" [ref=8843, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=8844, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        button [ref=8845]
+          svg_root
+          text "付费管理"
+        container "付费管理"
+          container
+            container
+              svg_root
+              heading
+                text "付费申请和审批"
+            unordered_list
+              container
+                list_item
+                  text "当前费用发票"
+                list_item
+                  text "QA261112-FEE01"
+              container
+                list_item
+                  text "费用类型"
+                list_item
+                  text "货代费"
+              container
+                list_item
+                  text "已付"
+                list_item
+                  text "USD 20.00"
+              container
+                list_item
+                  text "未付"
+                list_item
+                  text "USD 0.00"
+            container
+              form
+                text "付费申请新增"
+                container
+                  container
+                    text "付费申请号"
+                    textbox [ref=8846, loc=css:input[placeholder="保存后自动生成"]]
+                      text "保存后自动生成"
+                  container
+                    text "费用发票标识"
+                    textbox [ref=8847]
+                      text "75ef17ef-1a7d-42a9-b16d-3bc0ef341993"
+                  container
+                    text "申请日期"
+                    textbox [ref=8848]
+                      spinbutton "年" [ref=8849]
+                        text "2026"
+                      text "/"
+                      spinbutton "月" [ref=8850]
+                        text "11"
+                      text "/"
+                      spinbutton "日" [ref=8851]
+                        text "18"
+                  container
+                    text "申请金额"
+                    textbox [ref=8852]
+                      text "0.00"
+                  container
+                    text "币种"
+                    textbox [ref=8853]
+                      text "USD"
+                  container
+                    text "申请备注"
+                    textbox [ref=8854]
+                  container
+                    text "审批人"
+                    container
+                      text "选择审批人"
+                      comboboxgrouping "审批人" [ref=8855, loc=css:input[aria-label="审批人"]]
+                      svg_root
+                button [ref=8856]
+                  svg_root
+                  text "新增付费申请"
+              form
+                text "付费审批"
+                container
+                  text "审批金额"
+                  textbox [ref=8857]
+                    text "20.00"
+                container
+                  text "审批日期"
+                  textbox [ref=8858]
+                    spinbutton "年" [ref=8859]
+                      text "2026"
+                    text "/"
+                    spinbutton "月" [ref=8860]
+                      text "11"
+                    text "/"
+                    spinbutton "日" [ref=8861]
+                      text "18"
+                container
+                  text "审批人"
+                  textbox [ref=8862]
+                    text "演示财务主管"
+                container
+                  text "付款账号"
+                  textbox [ref=8863]
+                container
+                  text "审批备注"
+                  textbox [ref=8864]
+                button [ref=8865]
+                  svg_root
+                  text "审批付费"
+            container
+              text "付费申请列表"
+              container
+                table
+                  table_row
+                    table_cell
+                container [ref=8866]
+                  container [ref=8870]
+                    table
+                      table_row
+                        table_cell
+                          text "申请号"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "费用类型"
+                        table_cell
+                          text "合作伙伴"
+                        table_cell
+                          text "出运单"
+                        table_cell
+                          text "申请金额"
+                        table_cell
+                          text "已付"
+                      table_row
+                        table_cell
+                          button [ref=8867]
+                            text "FPR-G7WTAX"
+                        table_cell
+                          text "已审批"
+                        table_cell
+                          text "货代费"
+                        table_cell
+                          text "QA261112 测试货代"
+                        table_cell
+                          text "SP-DAEPEG"
+                        table_cell
+                          text "USD 20.00"
+                        table_cell
+                          text "USD 20.00"
+                table
+                  table_row
+                    table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,370 @@
+{
+  "url": "http://localhost:8080/sample/deliveries",
+  "title": "寄样管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "寄样管理",
+    "寄样单列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "寄样搜索\n审核状态\n全部状态\n客户标识\n快递公司\n寄样起始日期\n寄样截止日期\n查询\n导出寄样\n新增寄样单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "寄样搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 257.4453125,
+            "width": 242.2421875,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 525.2421875,
+            "bottom": 293.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "sample-delivery-status-filter",
+          "label": "审核状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 548.2421875,
+            "y": 262.4453125,
+            "width": 122.3515625,
+            "height": 26,
+            "top": 262.4453125,
+            "right": 670.59375,
+            "bottom": 288.4453125,
+            "left": 548.2421875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户标识",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 711.59375,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 873.9453125,
+            "bottom": 293.4453125,
+            "left": 711.59375
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "快递公司",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 885.9453125,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1048.296875,
+            "bottom": 293.4453125,
+            "left": 885.9453125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "寄样起始日期",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1060.296875,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1222.6484375,
+            "bottom": 293.4453125,
+            "left": 1060.296875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "寄样截止日期",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1234.6484375,
+            "y": 257.4453125,
+            "width": 162.3515625,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1397,
+            "bottom": 293.4453125,
+            "left": 1234.6484375
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1085.125,
+            "y": 305.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 305.4453125,
+            "right": 1169.6484375,
+            "bottom": 341.4453125,
+            "left": 1085.125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "导出寄样",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1177.6484375,
+            "y": 305.4453125,
+            "width": 87.046875,
+            "height": 36,
+            "top": 305.4453125,
+            "right": 1264.6953125,
+            "bottom": 341.4453125,
+            "left": 1177.6484375
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增寄样单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1272.6953125,
+            "y": 305.4453125,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 305.4453125,
+            "right": 1397,
+            "bottom": 341.4453125,
+            "left": 1272.6953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "寄样单号\t状态\t客户\t快递\t报价单\t费用\t入口\nSD-CXE849\t已寄出\tQA261112 测试客户\tQA261112-MOCK / QA261112-NOT-SHIPPED\t-\tUSD 0.00\t\n查看详情",
+      "buttons": [
+        "SD-CXE849",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+[
+  {
+    "requestId": "79503.2126",
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers?limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "3a96df3a-848e-41be-b08a-6460a458024d",
+            "code": "UIQA-20261117-05-S01",
+            "cn_name": "UIQA全量验收停用供应商样本",
+            "en_name": "UIQA Inactive Supplier Test Record",
+            "country": "CN",
+            "address": "UIQA测试资料，非真实地址",
+            "website": null,
+            "status": "inactive",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "7df1d11a-6b04-4082-aa2d-59ca2a13390b",
+                "supplier_id": "3a96df3a-848e-41be-b08a-6460a458024d",
+                "name": "UIQA测试联系人",
+                "title": null,
+                "email": "uiqa-supplier@example.invalid",
+                "phone": null,
+                "is_primary": true
+              },
+              {
+                "id": "955e03a9-7292-4130-b492-10620f1d9f84",
+                "supplier_id": "3a96df3a-848e-41be-b08a-6460a458024d",
+                "name": "UIQA-20261117-05-S01 联系人二",
+                "title": "UIQA测试职务",
+                "email": "uiqa-s01-02@example.invalid",
+                "phone": "00000000002",
+                "is_primary": false
+              }
+            ],
+            "primary_contact": {
+              "id": "7df1d11a-6b04-4082-aa2d-59ca2a13390b",
+              "supplier_id": "3a96df3a-848e-41be-b08a-6460a458024d",
+              "name": "UIQA测试联系人",
+              "title": null,
+              "email": "uiqa-supplier@example.invalid",
+              "phone": null,
+              "is_primary": true
+            },
+            "credit_profile": {
+              "credit_grade": "A",
+              "credit_limit": "0.00",
+              "currency": "USD",
+              "payment_terms": "",
+              "risk_note": null
+            }
+          },
+          {
+            "id": "c9318639-55ac-431e-ab5b-01c53bbfb087",
+            "code": "UI261114-S01",
+            "cn_name": "演示供应商｜江南织造",
+            "en_name": "Demo Jiangnan Textile",
+            "country": "中国",
+            "address": "演示地址：浙江省杭州市样品路88号",
+            "website": "https://supplier.example.com",
+            "status": "active",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "f1498289-4bca-44e8-afdc-50ac3ed5dbaf",
+                "supplier_id": "c9318639-55ac-431e-ab5b-01c53bbfb087",
+                "name": "演示联系人李先生",
+                "title": "业务经理",
+                "email": "sales@example.com",
+                "phone": "000-00000001",
+                "is_primary": true
+              }
+            ],
+            "primary_contact": {
+              "id": "f1498289-4bca-44e8-afdc-50ac3ed5dbaf",
+              "supplier_id": "c9318639-55ac-431e-ab5b-01c53bbfb087",
+              "name": "演示联系人李先生",
+              "title": "业务经理",
+              "email": "sales@example.com",
+              "phone": "000-00000001",
+              "is_primary": true
+            },
+            "credit_profile": {
+              "credit_grade": "A",
+              "credit_limit": "0.00",
+              "currency": "RMB",
+              "payment_terms": "验收后30天",
+              "risk_note": "前端演示资料，不用于真实采购。"
+            }
+          },
+          {
+            "id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+            "code": "QA261112-S01",
+            "cn_name": "QA261112 测试供应商",
+            "en_name": "QA261112 Supplier",
+            "country": "CN",
+            "address": "QA261112 测试地址",
+            "website": null,
+            "status": "active",
+            "owner_user_id": "u-baeac30b5127ebdb",
+            "contacts": [
+              {
+                "id": "503c261c-d776-4398-9398-3895594581d3",
+                "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+                "name": "QA261112 联系人",
+                "title": null,
+                "email": "qa261112@example.invalid",
+                "phone": null,
+                "is_primary": true
+              }
+            ],
+            "primary_contact": {
+              "id": "503c261c-d776-4398-9398-3895594581d3",
+              "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+              "name": "QA261112 联系人",
+              "title": null,
+              "email": "qa261112@example.invalid",
+              "phone": null,
+              "is_primary": true
+            },
+            "credit_profile": {
+              "credit_grade": "A",
+              "credit_limit": "10000.00",
+              "currency": "USD",
+              "payment_terms": "",
+              "risk_note": null
+            }
+          }
+        ],
+        "total": 3,
+        "summary": {
+          "active_count": 2,
+          "contact_count": 4,
+          "credit_profile_count": 3
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.2128",
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers/3a96df3a-848e-41be-b08a-6460a458024d/transactions",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0
+      },
+      "error": null
+    }
+  }
+]

@@ -1,0 +1,236 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=3164, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "客户资料和订单要求"
+          container
+            button "通知" [ref=3156, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=3157, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "客户概览"
+            container
+              text "客户"
+              text "3"
+            container
+              text "启用"
+              text "2"
+            container
+              text "联系人"
+              text "3"
+            container
+              text "有信用资料"
+              text "3"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "客户资料"
+              form
+                container
+                  text "搜索"
+                  textbox [ref=3412, loc=css:input[placeholder="客户编号 / 中英文名称 / 联系人"]]
+                    text "客户编号 / 中英文名称 / 联系人"
+                container
+                  button "查询客户" [ref=3413, loc=css:button[aria-label="查询客户"]]
+                    svg_root
+                  button [ref=3414]
+                    svg_root
+                    text "新增客户"
+                  button "高级筛选" [ref=3415, loc=css:button[aria-label="高级筛选"]]
+                    svg_root
+                  button "设置列视图" [ref=3416, loc=css:button[aria-label="设置列视图"]]
+                    svg_root
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=3417]
+                  container [ref=3450]
+                    table
+                      table_row
+                        table_cell
+                          text "编号"
+                        table_cell
+                          text "中文名称"
+                        table_cell
+                          text "英文名称"
+                        table_cell
+                          text "国家/地区"
+                        table_cell
+                          text "联系人"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=3418]
+                            text "UIQA-20261117-05-C01"
+                        table_cell
+                          text "UIQA全量验收停用客户样本"
+                        table_cell
+                          text "UIQA Inactive P03 Test Record"
+                        table_cell
+                          text "CN"
+                        table_cell
+                          text "UIQA测试联系人"
+                        table_cell
+                          text "停用"
+                        table_cell
+                          button [ref=3419]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          button [ref=3420]
+                            text "UI261114-C01"
+                        table_cell
+                          text "演示客户｜海湾家居贸易"
+                        table_cell
+                          text "Demo Bay Home Trading"
+                        table_cell
+                          text "荷兰"
+                        table_cell
+                          text "演示联系人陈女士"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          button [ref=3421]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          button [ref=3422]
+                            text "QA261112-C01"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "QA261112 Customer"
+                        table_cell
+                          text "DE"
+                        table_cell
+                          text "QA261112 联系人"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          button [ref=3423]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 3 条"
+                  list_item
+                    button [ref=3424]
+                      image "left"
+                        svg_root
+                  list_item [ref=3425]
+                    anchor [ref=3426]
+                      text "1"
+                  list_item
+                    button [ref=3427]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    dialog "新增客户"
+      button "Close" [ref=3429, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "新增客户"
+      form [ref=3430]
+        container
+          text "编号"
+          textbox [ref=3431]
+        container
+          text "中文名称"
+          textbox [ref=3432]
+        container
+          text "英文名称"
+          textbox [ref=3433]
+        container
+          text "国家/地区"
+          textbox [ref=3434]
+        container
+          text "状态"
+          container
+            text "启用"
+            comboboxgrouping [ref=3435]
+            svg_root
+        container
+          text "网站"
+          textbox [ref=3436]
+        container
+          text "地址"
+          textbox [ref=3437]
+        container
+          text "信用资料"
+          container
+            container
+              text "信用等级"
+              container
+                text "A"
+                comboboxgrouping [ref=3438]
+                svg_root
+            container
+              text "授信额度"
+              spinbutton [ref=3439]
+            container
+              text "币种"
+              textbox [ref=3440]
+                text "USD"
+            container
+              text "账期"
+              textbox [ref=3441]
+            container
+              text "风险备注"
+              textbox [ref=3442]
+        container
+          text "首个联系人"
+          container
+            container
+              text "姓名"
+              textbox [ref=3443]
+            container
+              text "职务"
+              textbox [ref=3444]
+            container
+              text "邮箱"
+              textbox [ref=3445]
+            container
+              text "电话"
+              textbox [ref=3446]
+            container
+              container
+                checkbox [ref=3447]
+                table
+                  table_row
+                    table_cell
+              text "主要联系人"
+        container
+          button [ref=3448]
+            text "取消"
+          button [ref=3449]
+            text "新增客户"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

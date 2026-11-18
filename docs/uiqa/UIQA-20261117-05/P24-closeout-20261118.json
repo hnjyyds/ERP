@@ -1,0 +1,52 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "page": "PAGE-24",
+  "route": "http://localhost:8080/finance/payments",
+  "role": "admin",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P24付款管理：两张发票与三个既有申请的只读切换、键盘与焦点、浮层边缘、加载与安全失败恢复；未付款",
+  "invoice_switch": {
+    "method": "列表发票号键盘聚焦后Enter进入独立详情路由",
+    "routes": [
+      {"invoice": "UIQA-20261117-04-INV01", "url": "http://localhost:8080/finance/payments/489f9619-6f86-433c-a412-47236257892a", "paid": "CNY 0.01", "unpaid": "CNY 0.00", "over": "CNY 0.00", "actions": {"新增付款申请": "disabled", "审批付款": "disabled"}},
+      {"invoice": "QA261112-INV01", "url": "http://localhost:8080/finance/payments/015bcc0d-58cf-47cb-a10d-a0747860fd18", "paid": "RMB 120.00", "unpaid": "RMB 0.00", "over": "RMB 20.00", "note": "该发票已付款超过发票金额 RMB 20.00，应付余额按 0 显示；超付部分请在付款分配中核对。", "actions": {"新增付款申请": "disabled", "审批付款": "disabled"}}
+    ],
+    "applications_list": ["PR-PG3X2P 已审批 货款 QA261112 测试供应商 UIQA-20261117-04-INV01 CNY 0.01 CNY 0.01", "PR-GZN8H6 已审批 货款 QA261112 测试供应商 QA261112-INV01 RMB 60.00 RMB 60.00", "PR-ZAWWF6 已审批 货款 QA261112 测试供应商 QA261112-INV01 RMB 60.00 RMB 60.00"],
+    "conclusion": "两张发票详情金额与状态一致、均有三个既有申请；均已付清，操作按钮禁用，未发生任何付款"
+  },
+  "keyboard_and_focus": {
+    "invoice_open": {"trigger": "发票号按钮键盘Enter", "result": "进入详情路由", "active_after_load": "BODY"},
+    "focus_observation": "进入详情后焦点落在BODY，未移动到详情标题或主区域；键盘用户需重新Tab定位。本轮记为观察，不新增编号",
+    "application_rows": {
+      "controls": ["PR-PG3X2P", "PR-GZN8H6", "PR-ZAWWF6"],
+      "Enter": "申请号按钮仅获得焦点，未切换详情",
+      "mouse_click_on_button": "不切换；源码绑定的是行点击，申请号按钮不是切换目标",
+      "row_click": "按行点击后selected-row依次0→1→2→0；详见 P24-application-switch-recheck-20261118.json",
+      "conclusion": "原“申请号按钮不切换”判断基于错误点击目标，已作废；行点击切换另行复核，审批金额两条60.00显示0.00待复核"
+    },
+    "disabled_actions": "新增付款申请、审批付款均为disabled，未提交"
+  },
+  "overlay_edges": {
+    "1440x900": {"control": "发票供应商筛选下拉", "dropdown": {"x": 790, "y": 216, "w": 208, "h": 166, "right": 998, "bottom": 382}, "options": 3, "all_options_in_view": true},
+    "390x844": {"control": "发票供应商筛选下拉", "dropdown": {"x": 31, "y": 442, "w": 328, "h": 166, "right": 359, "bottom": 608}, "options": 3, "all_options_in_view": true, "page_horizontal_overflow": false},
+    "conclusion": "两档浮层完整位于视口内，三项均可见"
+  },
+  "loading_and_failure": {
+    "loading": {"method": "CDP网络延迟4000ms后刷新", "spinner_count": 1, "conclusion": "有加载指示"},
+    "failure": {
+      "method": "CDP阻断finance/supplier-invoices请求后刷新",
+      "observed": ["供应商发票表格显示“暂无数据”“完成首次录入后，这里会显示对应记录”", "同页应付账款查询仍显示2行（该区请求正常）", "暴露原始文本Failed to fetch", "无重试入口"],
+      "conclusion": "单区加载失败被展示为首次录入空态；同页应付区正常本身不矛盾，错误是把失败区表述为“没有数据”。已登记Q05-28并关联A05，不计入D09保存失败"
+    },
+    "recovery": {"method": "解除阻断后刷新", "tables_rows": [2, 2], "conclusion": "可恢复"}
+  },
+  "screenshots": [
+    "screenshots/P24-390-supplier-dropdown.png",
+    "screenshots/P24-list-load-error.png"
+  ],
+  "business_writes": "无；未新增付款申请、未审批、未付款、未修改发票或分配",
+  "not_covered": "审批弹窗/付款分配浮层因两发票均已付清且按钮禁用未打开；1280档未重复；权限拒绝态未构造",
+  "related_previous": "P24-request-ab-switch-20261118.json（已撤回通过）；P24-application-switch-recheck-20261118.json（行点击复核）"
+}

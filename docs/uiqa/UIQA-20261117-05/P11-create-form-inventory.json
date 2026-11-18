@@ -1,0 +1,1041 @@
+{
+  "url": "http://localhost:8080/purchase/invoice-notices",
+  "title": "开票通知",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "开票通知",
+    "开票通知列表",
+    "从报关单证生成"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "通知搜索\n通知状态\n全部状态\n供应商标识\n报关单证 ID\n查询\n生成开票通知",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "通知搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 285.4453125,
+            "width": 282.21875,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 565.21875,
+            "bottom": 321.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_ck_",
+          "label": "通知状态\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 588.21875,
+            "y": 290.4453125,
+            "width": 144.5703125,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 732.7890625,
+            "bottom": 316.4453125,
+            "left": 588.21875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "供应商标识",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 773.7890625,
+            "y": 285.4453125,
+            "width": 184.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 958.3515625,
+            "bottom": 321.4453125,
+            "left": 773.7890625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "报关单证 ID",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 970.3515625,
+            "y": 285.4453125,
+            "width": 184.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1154.9140625,
+            "bottom": 321.4453125,
+            "left": 970.3515625
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1166.9140625,
+            "y": 285.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1251.4375,
+            "bottom": 321.4453125,
+            "left": 1166.9140625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "生成开票通知",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1259.4375,
+            "y": 285.4453125,
+            "width": 137.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1397,
+            "bottom": 321.4453125,
+            "left": 1259.4375
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "text": "报关单证 ID\n报关单号\n报关日期\n通知日期\n币种\n生成备注\n供应商 A 开票要求\n供应商标识\n供应商\n采购合同号\n商品编号\n采购合同 ID\n商品 ID\n商品名称\n报关品名\n开票品名\n开票数量\n单位\n金额\n行备注\n供应商 B 开票要求\n供应商标识\n供应商\n采购合同号\n商品编号\n采购合同 ID\n商品 ID\n商品名称\n报关品名\n开票品名\n开票数量\n单位\n金额\n行备注\n生成开票通知",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-customs-id",
+          "label": "报关单证 ID",
+          "text": "",
+          "value": "e4170877-f1ff-45b6-bdc7-e46c6e82be0f",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 201.2265625,
+            "width": 460,
+            "height": 36,
+            "top": 201.2265625,
+            "right": 712,
+            "bottom": 237.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-customs-no",
+          "label": "报关单号",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 728,
+            "y": 201.2265625,
+            "width": 460,
+            "height": 36,
+            "top": 201.2265625,
+            "right": 1188,
+            "bottom": 237.2265625,
+            "left": 728
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "purchase-invoice-declaration-date",
+          "label": "报关日期",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 252,
+            "y": 271.2265625,
+            "width": 301.328125,
+            "height": 36,
+            "top": 271.2265625,
+            "right": 553.328125,
+            "bottom": 307.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "purchase-invoice-notice-date",
+          "label": "通知日期",
+          "text": "",
+          "value": "2026-11-17",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 569.328125,
+            "y": 271.2265625,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 271.2265625,
+            "right": 870.6640625,
+            "bottom": 307.2265625,
+            "left": 569.328125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-currency",
+          "label": "币种",
+          "text": "",
+          "value": "CNY",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 886.6640625,
+            "y": 271.2265625,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 271.2265625,
+            "right": 1188,
+            "bottom": 307.2265625,
+            "left": 886.6640625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-remarks",
+          "label": "生成备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 341.2265625,
+            "width": 936,
+            "height": 36,
+            "top": 341.2265625,
+            "right": 1188,
+            "bottom": 377.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-supplier-id-a",
+          "label": "供应商标识",
+          "text": "",
+          "value": "supplier-pack-a",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 471.078125,
+            "width": 460,
+            "height": 36,
+            "top": 471.078125,
+            "right": 712,
+            "bottom": 507.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-supplier-name-a",
+          "label": "供应商",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 728,
+            "y": 471.078125,
+            "width": 460,
+            "height": 36,
+            "top": 471.078125,
+            "right": 1188,
+            "bottom": 507.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-contract-no-a",
+          "label": "采购合同号",
+          "text": "",
+          "value": "PC-2026-PACK-A",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 541.078125,
+            "width": 460,
+            "height": 36,
+            "top": 541.078125,
+            "right": 712,
+            "bottom": 577.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-product-code-a",
+          "label": "商品编号",
+          "text": "",
+          "value": "BAG-40",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 541.078125,
+            "width": 460,
+            "height": 36,
+            "top": 541.078125,
+            "right": 1188,
+            "bottom": 577.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-contract-id-a",
+          "label": "采购合同 ID",
+          "text": "",
+          "value": "pc-pack-a",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 273.2265625,
+            "width": 22,
+            "height": 36,
+            "top": 273.2265625,
+            "right": 274,
+            "bottom": 309.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-product-id-a",
+          "label": "商品 ID",
+          "text": "",
+          "value": "product-bag",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 367.2265625,
+            "width": 22,
+            "height": 36,
+            "top": 367.2265625,
+            "right": 274,
+            "bottom": 403.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-product-name-a",
+          "label": "商品名称",
+          "text": "",
+          "value": "Eco Shopping Bag",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 252,
+            "y": 611.078125,
+            "width": 301.328125,
+            "height": 36,
+            "top": 611.078125,
+            "right": 553.328125,
+            "bottom": 647.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-customs-name-a",
+          "label": "报关品名",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 569.328125,
+            "y": 611.078125,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 611.078125,
+            "right": 870.6640625,
+            "bottom": 647.078125,
+            "left": 569.328125
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-name-a",
+          "label": "开票品名",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 886.6640625,
+            "y": 611.078125,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 611.078125,
+            "right": 1188,
+            "bottom": 647.078125,
+            "left": 886.6640625
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "purchase-invoice-quantity-a",
+          "label": "开票数量",
+          "text": "",
+          "value": "1000",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 252,
+            "y": 681.078125,
+            "width": 301.328125,
+            "height": 36,
+            "top": 681.078125,
+            "right": 553.328125,
+            "bottom": 717.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 16,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-unit-a",
+          "label": "单位",
+          "text": "",
+          "value": "pcs",
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 569.328125,
+            "y": 681.078125,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 681.078125,
+            "right": 870.6640625,
+            "bottom": 717.078125,
+            "left": 569.328125
+          }
+        },
+        {
+          "j": 17,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "purchase-invoice-amount-a",
+          "label": "金额",
+          "text": "",
+          "value": "5200.00",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 886.6640625,
+            "y": 681.078125,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 681.078125,
+            "right": 1188,
+            "bottom": 717.078125,
+            "left": 886.6640625
+          }
+        },
+        {
+          "j": 18,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-remark-a",
+          "label": "行备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 751.078125,
+            "width": 936,
+            "height": 36,
+            "top": 751.078125,
+            "right": 1188,
+            "bottom": 787.078125,
+            "left": 252
+          }
+        },
+        {
+          "j": 19,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-supplier-id-b",
+          "label": "供应商标识",
+          "text": "",
+          "value": "supplier-label-a",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 880.9296875,
+            "width": 460,
+            "height": 36,
+            "top": 880.9296875,
+            "right": 712,
+            "bottom": 916.9296875,
+            "left": 252
+          }
+        },
+        {
+          "j": 20,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-supplier-name-b",
+          "label": "供应商",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 880.9296875,
+            "width": 460,
+            "height": 36,
+            "top": 880.9296875,
+            "right": 1188,
+            "bottom": 916.9296875,
+            "left": 728
+          }
+        },
+        {
+          "j": 21,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-contract-no-b",
+          "label": "采购合同号",
+          "text": "",
+          "value": "PC-2026-LABEL-A",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 950.9296875,
+            "width": 460,
+            "height": 36,
+            "top": 950.9296875,
+            "right": 712,
+            "bottom": 986.9296875,
+            "left": 252
+          }
+        },
+        {
+          "j": 22,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-product-code-b",
+          "label": "商品编号",
+          "text": "",
+          "value": "LABEL-01",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 950.9296875,
+            "width": 460,
+            "height": 36,
+            "top": 950.9296875,
+            "right": 1188,
+            "bottom": 986.9296875,
+            "left": 728
+          }
+        },
+        {
+          "j": 23,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-contract-id-b",
+          "label": "采购合同 ID",
+          "text": "",
+          "value": "pc-label-a",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 273.2265625,
+            "width": 22,
+            "height": 36,
+            "top": 273.2265625,
+            "right": 274,
+            "bottom": 309.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 24,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-product-id-b",
+          "label": "商品 ID",
+          "text": "",
+          "value": "product-label",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 367.2265625,
+            "width": 22,
+            "height": 36,
+            "top": 367.2265625,
+            "right": 274,
+            "bottom": 403.2265625,
+            "left": 252
+          }
+        },
+        {
+          "j": 25,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-product-name-b",
+          "label": "商品名称",
+          "text": "",
+          "value": "Hang Tag",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 1020.9296875,
+            "width": 301.328125,
+            "height": 36,
+            "top": 1020.9296875,
+            "right": 553.328125,
+            "bottom": 1056.9296875,
+            "left": 252
+          }
+        },
+        {
+          "j": 26,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-customs-name-b",
+          "label": "报关品名",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 569.328125,
+            "y": 1020.9296875,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 1020.9296875,
+            "right": 870.6640625,
+            "bottom": 1056.9296875,
+            "left": 569.328125
+          }
+        },
+        {
+          "j": 27,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-name-b",
+          "label": "开票品名",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 886.6640625,
+            "y": 1020.9296875,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 1020.9296875,
+            "right": 1188,
+            "bottom": 1056.9296875,
+            "left": 886.6640625
+          }
+        },
+        {
+          "j": 28,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "purchase-invoice-quantity-b",
+          "label": "开票数量",
+          "text": "",
+          "value": "450",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 1090.9296875,
+            "width": 301.328125,
+            "height": 36,
+            "top": 1090.9296875,
+            "right": 553.328125,
+            "bottom": 1126.9296875,
+            "left": 252
+          }
+        },
+        {
+          "j": 29,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-unit-b",
+          "label": "单位",
+          "text": "",
+          "value": "pcs",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 569.328125,
+            "y": 1090.9296875,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 1090.9296875,
+            "right": 870.6640625,
+            "bottom": 1126.9296875,
+            "left": 569.328125
+          }
+        },
+        {
+          "j": 30,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "purchase-invoice-amount-b",
+          "label": "金额",
+          "text": "",
+          "value": "360.00",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 886.6640625,
+            "y": 1090.9296875,
+            "width": 301.3359375,
+            "height": 36,
+            "top": 1090.9296875,
+            "right": 1188,
+            "bottom": 1126.9296875,
+            "left": 886.6640625
+          }
+        },
+        {
+          "j": 31,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "purchase-invoice-remark-b",
+          "label": "行备注",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 252,
+            "y": 1160.9296875,
+            "width": 936,
+            "height": 36,
+            "top": 1160.9296875,
+            "right": 1188,
+            "bottom": 1196.9296875,
+            "left": 252
+          }
+        },
+        {
+          "j": 32,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "生成开票通知",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 252,
+            "y": 1212.9296875,
+            "width": 117.5625,
+            "height": 36,
+            "top": 1212.9296875,
+            "right": 369.5625,
+            "bottom": 1248.9296875,
+            "left": 252
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "开票通知\t状态\t供应商\t报关单\t金额\t提醒\t入口\nPIN-UIQA-20261117-02-01\t草稿\tUIQA-20261117-02 测试供应商A\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-02-02\t草稿\tUIQA-20261117-02 测试供应商B\tUIQA-20261117-02\tCNY 0.00\t0 个\t\n查看详情\n\nPIN-UIQA-20261117-04-01\t已收票\tQA261112 测试供应商\tUIQA-20261117-04\tCNY 0.01\t0 个\t\n查看详情",
+      "buttons": [
+        "PIN-UIQA-20261117-02-01",
+        "查看详情",
+        "PIN-UIQA-20261117-02-02",
+        "查看详情",
+        "PIN-UIQA-20261117-04-01",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "采购询价",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "开票通知",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

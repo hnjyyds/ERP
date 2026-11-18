@@ -1,0 +1,74 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "executed_at": "2026-11-18T06:20:00+08:00",
+  "scope": "P12 /sample/records 新增样品表单：产品A/B切换、清空、单位回填、远程选择器聚焦态；未提交任何单据",
+  "viewport_probes": [1512, 1440, 390],
+  "steps": [
+    {
+      "id": "P12-unit-A-B-clear",
+      "states": [
+        { "action": "选择 UIQA-20261117-05-P03（单位pcs）", "unit_field": "pcs", "product_displayed": "UIQA-20261117-05-P03 / UIQA分页验收商品03" },
+        { "action": "改选 UIQA-20261117-05-P17（单位box）", "unit_field": "pcs", "product_displayed": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17", "expected_if_backfill": "box" },
+        { "action": "取消后重开，首个即选 UIQA-20261117-05-P17", "unit_field": "pcs", "expected_if_backfill": "box" },
+        { "action": "点击产品清空按钮", "product_displayed": "输入关键词搜索（占位符）", "product_value": "", "unit_field": "pcs", "leftover": "无残留产品编号/名称" }
+      ],
+      "unit_field_properties": { "readOnly": false, "disabled": false, "value": "pcs" },
+      "source_check": {
+        "file": "frontend/src/app/pages/sample/views/SampleRecordFormModal.tsx",
+        "note": "单位是普通 Input，仅 onChange 写表单；applyProduct 不同步单位",
+        "helper": "frontend/src/app/pages/sample/sampleRecordFormHelpers.ts:91 仅在从打样单导入时取 line.unit"
+      }
+    },
+    {
+      "id": "P12-remote-select-focus-visibility",
+      "defect": "Q05-24",
+      "product": {
+        "focused": true,
+        "dom_value": "UIQA-20261117-05-P17 / UIQA跨日审计与单位回填样本17",
+        "inner_input_width_px": 365,
+        "inner_input_background": "rgb(255, 255, 255)",
+        "content_background": "rgba(0, 0, 0, 0)",
+        "visible_to_user": false
+      },
+      "customer": {
+        "focused": true,
+        "dom_value": "QA261112 测试客户",
+        "inner_input_width_px": 264,
+        "inner_input_background": "rgb(255, 255, 255)",
+        "visible_to_user": false,
+        "clear_icon": { "exists": true, "width_px": 12, "opacity": "0（悬停后显示）" }
+      },
+      "blurred": {
+        "inner_input_background": "rgba(0, 0, 0, 0)",
+        "visible_to_user": true,
+        "text_overflow": "产品长名在 365px 内省略号截断，title 属性保留完整值"
+      },
+      "viewport_390": {
+        "dialog": { "x": 8, "y": 28, "w": 374, "h": 788 },
+        "document_scroll_width": 390,
+        "horizontal_overflow": false,
+        "focused_value_visible": false
+      },
+      "root_cause": {
+        "file": "frontend/src/styles/design-system-apply.css",
+        "lines": "694（body .record-form input:focus 未排除 .ant-select-input，background:var(--ui-bg-surface)!important）与 352（.ant-select-input 背景透明规则）特异性相同，靠后的聚焦规则胜出",
+        "deployed_css": "assets/index-DI-tQavy.css 同样包含该顺序，非旧构建差异"
+      }
+    }
+  ],
+  "screenshots": [
+    "screenshots/P12-product-dropdown-p17.png",
+    "screenshots/P12-form-1440-p17.png",
+    "screenshots/P12-form-1440-blur.png",
+    "screenshots/P12-customer-focused.png",
+    "screenshots/P12-form-390.png",
+    "screenshots/P12-form-390-check.png",
+    "screenshots/P12-form-390-p17-focused.png",
+    "screenshots/P12-form-390-p17-blur.png"
+  ],
+  "business_writes": "无；未保存样品，未新增/修改任何数据",
+  "unresolved": "单位是否应随产品自动回填属产品口径，待确认；本轮仅记录实际行为"
+}

@@ -1,0 +1,35 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P32 /finance/reports：报关回单催收“包含已登记”正例/反例；390档页签条实际滚动并切到末项；只读",
+  "include_registered": {
+    "tab": "报关回单催收",
+    "viewport": "1440×900",
+    "before_check": {"checked": false, "rows": 0, "empty": "暂无数据"},
+    "checked_after_query": {
+      "checked": true,
+      "rows": 1,
+      "row": "VD-DZAUMQ / 2026-11-12 / - / SP-DAEPEG / QA261112-CD01 / 2026-12-05 / done / USD 10.00 / 来 源",
+      "headers": ["核销单号", "领用日期", "业务员", "出运单", "报关单号", "提醒日期", "催收状态", "可退税额", "下钻"]
+    },
+    "unchecked_after_query": {"checked": false, "rows": 0, "empty": "暂无数据"},
+    "conclusion": "默认不包含已登记为空；勾选并查询后出现已登记回单；取消后恢复空，正反例成立"
+  },
+  "mobile_tab_rail": {
+    "viewport": "390×844",
+    "rail": {"selector": ".finance-tab-rail", "scrollWidth": 695, "clientWidth": 326, "documentScrollWidth": 390, "horizontal_page_overflow": false},
+    "wheel": {"deltaX": 500, "scrollLeft_after": 197, "max": 369},
+    "after_click_last": {
+      "scrollLeft": 369.5,
+      "active_tab": "申报退税统计",
+      "headers": ["币种", "核销单数", "可退税额", "已退税额", "待退税额"],
+      "rows": ["USD 1 USD 10.00 USD 10.00 USD 0.00"]
+    },
+    "conclusion": "页签条可横向滚动到末项并激活，内容与页签对应；页面本身无横向溢出"
+  },
+  "screenshots": ["screenshots/P32-include-registered-1440.png", "screenshots/P32-mobile-last-tab-390.png"],
+  "business_writes": "无；仅查询与页签切换，未导出或修改报表数据"
+}

@@ -1,0 +1,598 @@
+{
+  "url": "http://localhost:8080/warehouse/inbound-plans",
+  "title": "入库计划",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "入库计划",
+    "待入库计划",
+    "计划生成和排库位"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "计划搜索\n入库状态\n全部状态\n入库类型\n全部类型\n供应商标识\n输入供应商编号或名称\n采购合同 ID\n查询\n生成/排库位",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "计划搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 285.4453125,
+            "width": 224.0234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 507.0234375,
+            "bottom": 321.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "inbound-status-filter",
+          "label": "入库状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 530.0234375,
+            "y": 290.4453125,
+            "width": 112.234375,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 642.2578125,
+            "bottom": 316.4453125,
+            "left": 530.0234375
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "inbound-type-filter",
+          "label": "入库类型\n全部类型",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 694.2578125,
+            "y": 290.4453125,
+            "width": 112.234375,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 806.4921875,
+            "bottom": 316.4453125,
+            "left": 694.2578125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_a_",
+          "label": "供应商筛选",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 858.4921875,
+            "y": 290.4453125,
+            "width": 112.234375,
+            "height": 26,
+            "top": 290.4453125,
+            "right": 970.7265625,
+            "bottom": 316.4453125,
+            "left": 858.4921875
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "采购合同 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1011.7265625,
+            "y": 285.4453125,
+            "width": 152.234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1163.9609375,
+            "bottom": 321.4453125,
+            "left": 1011.7265625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1175.9609375,
+            "y": 285.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1260.484375,
+            "bottom": 321.4453125,
+            "left": 1175.9609375
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "生成/排库位",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1268.484375,
+            "y": 285.4453125,
+            "width": 128.515625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1397,
+            "bottom": 321.4453125,
+            "left": 1268.484375
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_e_",
+      "visible": true,
+      "text": "从采购合同生成\n采购合同\nPC-HR36RU / QA261112 测试供应商\n入库类型\n采购入库\n计划入库日\n生成入库计划",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "inbound-plan-contract-id",
+          "label": "采购合同",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 293,
+            "y": 266.078125,
+            "width": 836,
+            "height": 26,
+            "top": 266.078125,
+            "right": 1129,
+            "bottom": 292.078125,
+            "left": 293
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "inbound-plan-type",
+          "label": "入库类型\n采购入库",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 293,
+            "y": 336.078125,
+            "width": 390,
+            "height": 26,
+            "top": 336.078125,
+            "right": 683,
+            "bottom": 362.078125,
+            "left": 293
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "inbound-plan-date",
+          "label": "计划入库日",
+          "text": "",
+          "value": "2026-11-12",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 728,
+            "y": 331.078125,
+            "width": 430,
+            "height": 36,
+            "top": 331.078125,
+            "right": 1158,
+            "bottom": 367.078125,
+            "left": 728
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "生成入库计划",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 282,
+            "y": 383.078125,
+            "width": 141.5625,
+            "height": 36,
+            "top": 383.078125,
+            "right": 423.5625,
+            "bottom": 419.078125,
+            "left": 282
+          }
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "dialog": "_r_e_",
+      "visible": true,
+      "text": "库位预安排\n计划入库日\n仓库 ID\n仓库\n库位 ID\n库位\n经办人\n保存库位安排",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "inbound-schedule-date",
+          "label": "计划入库日",
+          "text": "",
+          "value": "2026-11-12",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 531.9296875,
+            "width": 874,
+            "height": 36,
+            "top": 531.9296875,
+            "right": 1157,
+            "bottom": 567.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "inbound-warehouse-id",
+          "label": "仓库 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 601.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 601.9296875,
+            "right": 712,
+            "bottom": 637.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "inbound-warehouse-name",
+          "label": "仓库",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 728,
+            "y": 601.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 601.9296875,
+            "right": 1157,
+            "bottom": 637.9296875,
+            "left": 728
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "inbound-location-id",
+          "label": "库位 ID",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 671.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 671.9296875,
+            "right": 712,
+            "bottom": 707.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "inbound-location-name",
+          "label": "库位",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 728,
+            "y": 671.9296875,
+            "width": 429,
+            "height": 36,
+            "top": 671.9296875,
+            "right": 1157,
+            "bottom": 707.9296875,
+            "left": 728
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "inbound-operator-name",
+          "label": "经办人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 283,
+            "y": 741.9296875,
+            "width": 874,
+            "height": 36,
+            "top": 741.9296875,
+            "right": 1157,
+            "bottom": 777.9296875,
+            "left": 283
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存库位安排",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 283,
+            "y": 793.9296875,
+            "width": 141.5625,
+            "height": 36,
+            "top": 793.9296875,
+            "right": 424.5625,
+            "bottom": 829.9296875,
+            "left": 283
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "计划号\t状态\t类型\t采购合同\t供应商\t计划入库日\t数量\t入口\nIP-PC-HR36RU\t已关闭\t采购入库\tPC-HR36RU\tQA261112 测试供应商\t2026-11-12\t100.00\t\n查看详情",
+      "buttons": [
+        "IP-PC-HR36RU",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "入仓",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "入库计划",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "出库计划",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "货物出库",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "库存盘点",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

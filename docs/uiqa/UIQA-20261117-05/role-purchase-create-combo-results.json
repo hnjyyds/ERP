@@ -1,0 +1,771 @@
+[
+  {
+    "control": {
+      "i": 4,
+      "id": "_r_t_",
+      "label": "选择供应商\n从供应商资料选择",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 0,
+        "label": "UI261114-S01 / 演示供应商｜江南织造 / Demo Jiangnan Textile",
+        "title": "UI261114-S01 / 演示供应商｜江南织造 / Demo Jiangnan Textile",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 1,
+        "label": "QA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+        "title": "QA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "UI261114-S01 / 演示供应商｜江南织造 / Demo Jiangnan Textile",
+        "state": {
+          "selected": "UI261114-S01 / 演示供应商｜江南织造 / Demo Jiangnan Textile",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nUI261114-S01 / 演示供应商｜江南织造 / Demo Jiangnan Textile",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "演示供应商｜江南织造"
+            },
+            {
+              "label": "采购员\n选择采购员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n从系统用户选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n手工采购",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "QA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+        "state": {
+          "selected": "QA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "QA261112 测试供应商"
+            },
+            {
+              "label": "采购员\n选择采购员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n从系统用户选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n手工采购",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  },
+  {
+    "control": {
+      "i": 5,
+      "id": "_r_v_",
+      "label": "采购员\n选择采购员",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 2,
+        "label": "系统管理员 / admin / 管理部",
+        "title": "系统管理员 / admin / 管理部",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 3,
+        "label": "演示业务主管 / demo / 业务部",
+        "title": "演示业务主管 / demo / 业务部",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 4,
+        "label": "演示 QC 专员 / qc / 品质部",
+        "title": "演示 QC 专员 / qc / 品质部",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "系统管理员 / admin / 管理部",
+        "state": {
+          "selected": "系统管理员 / admin / 管理部",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "QA261112 测试供应商"
+            },
+            {
+              "label": "采购员\n系统管理员 / admin / 管理部",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n从系统用户选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n手工采购",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "演示业务主管 / demo / 业务部",
+        "state": {
+          "selected": "演示业务主管 / demo / 业务部",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "QA261112 测试供应商"
+            },
+            {
+              "label": "采购员\n演示业务主管 / demo / 业务部",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n从系统用户选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n手工采购",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "选择采购员",
+      "fields": [
+        {
+          "label": "合同号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "合同日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "供应商名称",
+          "type": "text",
+          "value": "QA261112 测试供应商"
+        },
+        {
+          "label": "采购员\n选择采购员",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "QC 负责人\n从系统用户选择",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "币种",
+          "type": "text",
+          "value": "RMB"
+        },
+        {
+          "label": "交货日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "来源\n手工采购",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "付款条款",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "合同备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 6,
+      "id": "_r_11_",
+      "label": "QC 负责人\n从系统用户选择",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 5,
+        "label": "系统管理员 / admin / 管理部",
+        "title": "系统管理员 / admin / 管理部",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 6,
+        "label": "演示业务主管 / demo / 业务部",
+        "title": "演示业务主管 / demo / 业务部",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 7,
+        "label": "演示 QC 专员 / qc / 品质部",
+        "title": "演示 QC 专员 / qc / 品质部",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "系统管理员 / admin / 管理部",
+        "state": {
+          "selected": "系统管理员 / admin / 管理部",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "QA261112 测试供应商"
+            },
+            {
+              "label": "采购员\n选择采购员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n系统管理员 / admin / 管理部",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n手工采购",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "演示业务主管 / demo / 业务部",
+        "state": {
+          "selected": "演示业务主管 / demo / 业务部",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "QA261112 测试供应商"
+            },
+            {
+              "label": "采购员\n选择采购员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n演示业务主管 / demo / 业务部",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n手工采购",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "从系统用户选择",
+      "fields": [
+        {
+          "label": "合同号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "合同日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "供应商名称",
+          "type": "text",
+          "value": "QA261112 测试供应商"
+        },
+        {
+          "label": "采购员\n选择采购员",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "QC 负责人\n从系统用户选择",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "币种",
+          "type": "text",
+          "value": "RMB"
+        },
+        {
+          "label": "交货日期",
+          "type": "date",
+          "value": "2026-11-17"
+        },
+        {
+          "label": "来源\n手工采购",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "付款条款",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "合同备注",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 7,
+      "id": "_r_13_",
+      "label": "来源\n手工采购",
+      "readonly": true,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 8,
+        "label": "出口合同生成",
+        "title": "出口合同生成",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 9,
+        "label": "库存采购",
+        "title": "库存采购",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 10,
+        "label": "手工采购",
+        "title": "手工采购",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "出口合同生成",
+        "state": {
+          "selected": "出口合同生成",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "QA261112 测试供应商"
+            },
+            {
+              "label": "采购员\n选择采购员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n从系统用户选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n出口合同生成",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "库存采购",
+        "state": {
+          "selected": "库存采购",
+          "fields": [
+            {
+              "label": "合同号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "选择供应商\nQA261112-S01 / QA261112 测试供应商 / QA261112 Supplier",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "供应商名称",
+              "type": "text",
+              "value": "QA261112 测试供应商"
+            },
+            {
+              "label": "采购员\n选择采购员",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "QC 负责人\n从系统用户选择",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "币种",
+              "type": "text",
+              "value": "RMB"
+            },
+            {
+              "label": "交货日期",
+              "type": "date",
+              "value": "2026-11-17"
+            },
+            {
+              "label": "来源\n库存采购",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "付款条款",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "合同备注",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  }
+]

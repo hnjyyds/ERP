@@ -1,0 +1,66 @@
+{
+  "defect": "Q05-13",
+  "asset": "assets/index-0SPe5fY1.js",
+  "reverified_on": "assets/index-BTFsUnZ2.js",
+  "final_asset_evidence": {
+    "buyer_search_purchase": ["演示采购专员 / purchase / 采购部"],
+    "qc_options": ["系统管理员 / admin / 管理部", "演示业务主管 / demo / 业务部", "演示 QC 专员 / qc / 品质部"],
+    "qc_contains_purchase_account": false,
+    "screenshots": [
+      "screenshots/P08-purchase-buyer-options-BTFsUnZ2-1440.png",
+      "screenshots/P08-qc-candidates-BTFsUnZ2-1440.png"
+    ]
+  },
+  "css": "assets/index-CVMx6kR8.css",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "purchase（演示采购专员，采购部）",
+  "path": "/purchase/contracts → 新增采购合同 / 从出口合同生成",
+  "network": {
+    "buyer_request": "/api/v1/auth/users?required_permission=purchase%3Acontract%3Aedit",
+    "qc_request": "/api/v1/auth/users?required_permission=quality%3Ainspection%3Aedit"
+  },
+  "manual_form": {
+    "buyer_options": [
+      "系统管理员 / admin / 管理部",
+      "演示业务主管 / demo / 业务部",
+      "演示采购专员 / purchase / 采购部"
+    ],
+    "buyer_search_purchase": ["演示采购专员 / purchase / 采购部"],
+    "buyer_selected_name": "演示采购专员 / purchase / 采购部",
+    "qc_options": [
+      "系统管理员 / admin / 管理部",
+      "演示业务主管 / demo / 业务部",
+      "演示 QC 专员 / qc / 品质部"
+    ],
+    "qc_contains_purchase_account": false,
+    "viewports": {
+      "1440x900": {
+        "buyer_search_purchase": ["演示采购专员 / purchase / 采购部"],
+        "screenshot": "screenshots/P08-purchase-buyer-options-0SPe5fY1-1440.png"
+      },
+      "1280x720": {
+        "buyer_search_purchase": ["演示采购专员 / purchase / 采购部"],
+        "screenshot": "screenshots/P08-purchase-buyer-options-0SPe5fY1-1280.png"
+      },
+      "390x844": {
+        "buyer_search_purchase": ["演示采购专员 / purchase / 采购部"],
+        "screenshot": "screenshots/P08-purchase-buyer-options-0SPe5fY1-390.png"
+      }
+    },
+    "qc_screenshot": "screenshots/P08-qc-candidates-0SPe5fY1-1440.png"
+  },
+  "generate_form": {
+    "buyer_search_purchase": ["演示采购专员 / purchase / 采购部"],
+    "screenshot": "screenshots/P08-generate-buyer-options-0SPe5fY1-1440.png"
+  },
+  "business_writes": "未保存采购合同，未新增数据，未调整账号权限",
+  "result": "passed",
+  "automation": {
+    "test_file": "frontend/src/app/pages/__tests__/PurchaseContractsPage.test.tsx",
+    "test_case": "采购员与QC负责人按各自权限加载候选，互不复用质检名单",
+    "vitest": "419 passed / 50 files",
+    "tsc": "passed",
+    "eslint": "passed"
+  },
+  "verified_at": "2026-11-18"
+}

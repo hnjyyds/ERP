@@ -1,0 +1,101 @@
+[
+  {
+    "requestId": "79503.4109",
+    "url": "http://localhost:8080/api/v1/masterdata/products",
+    "status": 201,
+    "method": "POST",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "id": "c46a02d4-a4a3-4b50-833d-dfcbfe6ca4d1",
+        "code": "UIQA-20261117-05-P17",
+        "cn_name": "UIQA跨日审计与单位回填样本17",
+        "en_name": "UIQA Date Boundary and Unit Sample 17",
+        "specification": "UIQA-AUDIT-BOX-17",
+        "model": "UIQA-M17",
+        "customs_code": "0000000000",
+        "tax_rate": "0",
+        "rebate_rate": "0",
+        "package_info": "UIQA测试包装，仅验收使用",
+        "unit": "box",
+        "image_url": null,
+        "image_urls": [],
+        "status": "active",
+        "accessories": []
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.4110",
+    "url": "http://localhost:8080/api/v1/masterdata/products?q=UIQA-20261117-05-P17&limit=50&offset=0",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [
+          {
+            "id": "c46a02d4-a4a3-4b50-833d-dfcbfe6ca4d1",
+            "code": "UIQA-20261117-05-P17",
+            "cn_name": "UIQA跨日审计与单位回填样本17",
+            "en_name": "UIQA Date Boundary and Unit Sample 17",
+            "specification": "UIQA-AUDIT-BOX-17",
+            "model": "UIQA-M17",
+            "customs_code": "0000000000",
+            "tax_rate": "0.0000",
+            "rebate_rate": "0.0000",
+            "package_info": "UIQA测试包装，仅验收使用",
+            "unit": "box",
+            "image_url": null,
+            "image_urls": [],
+            "status": "active",
+            "accessories": []
+          }
+        ],
+        "total": 1,
+        "summary": {
+          "with_image_count": 0,
+          "accessory_count": 0
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.4111",
+    "url": "http://localhost:8080/api/v1/masterdata/products/c46a02d4-a4a3-4b50-833d-dfcbfe6ca4d1/customers",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0
+      },
+      "error": null
+    }
+  },
+  {
+    "requestId": "79503.4112",
+    "url": "http://localhost:8080/api/v1/masterdata/products/c46a02d4-a4a3-4b50-833d-dfcbfe6ca4d1/transactions",
+    "status": 200,
+    "method": "GET",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "items": [],
+        "total": 0
+      },
+      "error": null
+    }
+  }
+]

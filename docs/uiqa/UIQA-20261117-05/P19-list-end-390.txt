@@ -1,0 +1,151 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "入仓和库存确认"
+        button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        container "货物入库概览"
+          text "入库单"
+          text "1"
+          text "草稿"
+          text "0"
+          text "待审批"
+          text "0"
+          text "已审批"
+          text "1"
+          text "可用库存"
+          text "59.00"
+          text "待检库存"
+          text "0.00"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "入库单"
+            form
+              container
+                text "入库搜索"
+                textbox [ref=2610, loc=css:input[placeholder="入库单 / 采购合同 / 商品"]]
+                  text "入库单 / 采购合同 / 商品"
+              container
+                text "单据状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=2611]
+                  image "down"
+                    svg_root
+              container
+                text "入库模式"
+                container
+                  container
+                    text "全部模式"
+                    comboboxgrouping [ref=2612]
+                  image "down"
+                    svg_root
+              container
+                text "供应商"
+                container
+                  container
+                    text "输入供应商编号或名称"
+                    comboboxgrouping "供应商筛选" [ref=2613, loc=css:input[aria-label="供应商筛选"]]
+                  image "down"
+                    svg_root
+              container
+                text "采购合同"
+                container
+                  container
+                    text "输入合同号或供应商"
+                    comboboxgrouping "采购合同筛选" [ref=2614, loc=css:input[aria-label="采购合同筛选"]]
+                  image "down"
+                    svg_root
+              button [ref=2615]
+                svg_root
+                text "查询"
+              button [ref=2616]
+                svg_root
+                text "生成/审批入库单"
+          container [ref=2625]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=2617]
+                container [ref=2626]
+                  table
+                    table_row
+                      table_cell
+                        text "入库单"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "模式"
+                      table_cell
+                        text "采购合同"
+                      table_cell
+                        text "供应商"
+                      table_cell
+                        text "入库日"
+                      table_cell
+                        text "库位"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=2618]
+                          text "XP-IN-MVU9CU"
+                      table_cell
+                        text "已审批"
+                      table_cell
+                        text "正式入库"
+                      table_cell
+                        text "PC-HR36RU"
+                      table_cell
+                        text "QA261112 测试供应商"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "QA261112 测试仓库 / QA261112-A01"
+                      table_cell
+                        button [ref=2619]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=2620]
+                    image "left"
+                      svg_root
+                list_item [ref=2621]
+                  anchor [ref=2622]
+                    text "1"
+                list_item
+                  button [ref=2623]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

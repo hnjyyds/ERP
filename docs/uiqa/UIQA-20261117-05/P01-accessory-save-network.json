@@ -1,0 +1,23 @@
+[
+  {
+    "requestId": "79503.1959",
+    "url": "http://localhost:8080/api/v1/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac/accessories",
+    "status": 201,
+    "method": "POST",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "id": "f2d6cdc9-a599-4b4b-aed1-2033266d2529",
+        "product_id": "0de270b6-67e9-41fc-be47-6da47f8703ac",
+        "accessory_name": "UIQA-20261117-05-A01 测试配件",
+        "unit_consumption": "1.25",
+        "unit": "pcs",
+        "default_supplier_name": "QA261112 测试供应商",
+        "purchase_split_rule": "by_supplier"
+      },
+      "error": null
+    }
+  }
+]

@@ -1,0 +1,440 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        container "D-DUTCH"
+          text "D-DUTCH"
+        container
+          text "新裴贸易"
+          text "业务管理系统"
+      container "主导航"
+        anchor [ref=9425, loc=href:/, url=http://localhost:8080/]
+          svg_root
+          text "工作台"
+        container "业务模块"
+          container
+            container [ref=9426]
+              svg_root
+              text "基础资料"
+              svg_root
+            container
+              anchor [ref=9427, loc=href:/masterdata/products, url=http://localhost:8080/masterdata/products]
+                svg_root
+                text "商品资料"
+              anchor [ref=9428, loc=href:/masterdata/suppliers, url=http://localhost:8080/masterdata/suppliers]
+                svg_root
+                text "供应商资料"
+              anchor [ref=9429, loc=href:/masterdata/customers, url=http://localhost:8080/masterdata/customers]
+                svg_root
+                text "客户资料"
+              anchor [ref=9430, loc=href:/masterdata/partners, url=http://localhost:8080/masterdata/partners]
+                svg_root
+                text "合作伙伴"
+              anchor [ref=9431, loc=href:/masterdata/document-parties, url=http://localhost:8080/masterdata/document-parties]
+                svg_root
+                text "单证资料"
+          container
+            container [ref=9432]
+              svg_root
+              text "订单流程"
+              svg_root
+            container
+              anchor [ref=9433, loc=href:/sales/contracts, url=http://localhost:8080/sales/contracts]
+                svg_root
+                text "出口合同"
+              anchor [ref=9434, loc=href:/purchase/contracts, url=http://localhost:8080/purchase/contracts]
+                svg_root
+                text "采购合同"
+              anchor [ref=9435, loc=href:/sales/quotations, url=http://localhost:8080/sales/quotations]
+                svg_root
+                text "出口报价"
+              anchor [ref=9436, loc=href:/sales/shipments, url=http://localhost:8080/sales/shipments]
+                svg_root
+                text "出货明细"
+          container
+            container [ref=9437]
+              svg_root
+              text "QC / 跟单"
+              svg_root
+            container
+              anchor [ref=9438, loc=href:/quality/inspections, url=http://localhost:8080/quality/inspections]
+                svg_root
+                text "QC 中心"
+              anchor [ref=9439, loc=href:/quality/tasks, url=http://localhost:8080/quality/tasks]
+                svg_root
+                text "我的 QC 任务"
+              anchor [ref=9440, loc=href:/purchase/followup, url=http://localhost:8080/purchase/followup]
+                svg_root
+                text "跟单中心"
+              anchor [ref=9441, loc=href:/sample/records, url=http://localhost:8080/sample/records]
+                svg_root
+                text "样品登记"
+              anchor [ref=9442, loc=href:/sample/requests, url=http://localhost:8080/sample/requests]
+                svg_root
+                text "打样管理"
+              anchor [ref=9443, loc=href:/sample/deliveries, url=http://localhost:8080/sample/deliveries]
+                svg_root
+                text "寄样管理"
+          container
+            container [ref=9444]
+              svg_root
+              text "仓库"
+              svg_root
+            container
+              anchor [ref=9445, loc=href:/warehouse/inbound-orders, url=http://localhost:8080/warehouse/inbound-orders]
+                svg_root
+                text "入仓"
+              anchor [ref=9446, loc=href:/warehouse/inbound-plans, url=http://localhost:8080/warehouse/inbound-plans]
+                svg_root
+                text "入库计划"
+              anchor [ref=9447, loc=href:/warehouse/outbound-plans, url=http://localhost:8080/warehouse/outbound-plans]
+                svg_root
+                text "出库计划"
+              anchor [ref=9448, loc=href:/warehouse/outbound-orders, url=http://localhost:8080/warehouse/outbound-orders]
+                svg_root
+                text "货物出库"
+              anchor [ref=9449, loc=href:/warehouse/stocktakes, url=http://localhost:8080/warehouse/stocktakes]
+                svg_root
+                text "库存盘点"
+          container
+            container [ref=9450]
+              svg_root
+              text "财务经营"
+              svg_root
+            container
+              container
+                svg_root
+                text "财务摘要"
+                svg_root
+              container
+                anchor [ref=9452, loc=href:/finance/overview, url=http://localhost:8080/finance/overview]
+                  text "经营总览"
+                anchor [ref=9453, loc=href:/finance/receipts, url=http://localhost:8080/finance/receipts]
+                  text "收款管理"
+                anchor [ref=9454, loc=href:/finance/payments, url=http://localhost:8080/finance/payments]
+                  text "付款管理"
+                anchor [ref=9455, loc=href:/finance/fees, url=http://localhost:8080/finance/fees]
+                  text "付费管理"
+                anchor [ref=9456, loc=href:/finance/tax, url=http://localhost:8080/finance/tax]
+                  text "核销退税"
+                anchor [ref=9457, loc=href:/finance/misc, url=http://localhost:8080/finance/misc]
+                  text "杂费管理"
+                anchor [ref=9458, loc=href:/finance/settlement, url=http://localhost:8080/finance/settlement]
+                  text "结算核算"
+                anchor [ref=9459, loc=href:/finance/reimbursements, url=http://localhost:8080/finance/reimbursements]
+                  text "报销管理"
+                anchor [ref=9460, loc=href:/finance/port-data, url=http://localhost:8080/finance/port-data]
+                  text "口岸数据"
+                anchor [ref=9461, loc=href:/finance/reports, url=http://localhost:8080/finance/reports]
+                  text "财务报表"
+              anchor [ref=9462, loc=href:/reporting, url=http://localhost:8080/reporting]
+                svg_root
+                text "老板看板"
+          container
+            container [ref=9463]
+              svg_root
+              text "系统设置"
+              svg_root
+            container
+              anchor [ref=9464, loc=href:/organization/users, url=http://localhost:8080/organization/users]
+                svg_root
+                text "组织管理"
+              anchor [ref=9465, loc=href:/system/mcp, url=http://localhost:8080/system/mcp]
+                svg_root
+                text "MCP 接入"
+              anchor [ref=9466, loc=href:/system/audit-logs, url=http://localhost:8080/system/audit-logs]
+                svg_root
+                text "审计日志"
+          container
+            container [ref=9467]
+              svg_root
+              text "采购单据"
+              svg_root
+            container
+              anchor [ref=9468, loc=href:/purchase/inquiries, url=http://localhost:8080/purchase/inquiries]
+                svg_root
+                text "采购询价"
+              anchor [ref=9469, loc=href:/purchase/invoice-notices, url=http://localhost:8080/purchase/invoice-notices]
+                svg_root
+                text "开票通知"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "组织管理"
+        container
+          button "通知" [ref=9470, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=9471, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "组织概览"
+          container
+            svg_root
+            text "用户"
+            text "7"
+          container
+            svg_root
+            text "启用"
+            text "7"
+          container
+            svg_root
+            text "停用"
+            text "0"
+          container
+            svg_root
+            text "部门"
+            text "7"
+          container
+            svg_root
+            text "角色"
+            text "6"
+        container
+          container
+            svg_root
+            textbox "搜索用户、部门或角色" [ref=10028, loc=css:input[placeholder="搜索用户、部门或角色"]]
+              text "搜索用户、部门或角色"
+          button [ref=10029]
+            svg_root
+            text "新增用户"
+        container "公司信息"
+          container
+            container
+              svg_root
+              container
+                heading
+                  text "公司信息"
+                paragraph
+                  text "公司抬头、银行信息用于单证和对外文件。"
+            button [ref=10030]
+              svg_root
+              text "编辑公司信息"
+          container
+            container
+              text "当前抬头"
+              text "新裴贸易"
+              text "暂无英文名称或单证抬头"
+            container
+              container
+                text "电话"
+                text "-"
+              container
+                text "邮箱"
+                text "-"
+              container
+                text "开户行"
+                text "-"
+              container
+                text "银行账号"
+                text "-"
+        container
+          tablist
+            container
+              tab [ref=10031]
+                text "用户管理"
+              tab [ref=10032]
+                text "部门与角色"
+          tabpanel "部门与角色" [ref=10045, loc=role:tabpanel[name="部门与角色"]]
+            container "部门管理"
+              container
+                container
+                  svg_root
+                  container
+                    heading
+                      text "部门管理"
+                    paragraph
+                      text "统一维护组织部门；新增成员时需关联一个有效部门。"
+                button [ref=10046]
+                  svg_root
+                  text "新增部门"
+              container
+                container
+                  button [ref=10047]
+                    text "QA261112 测试部门"
+                    container
+                      text "一级部门"
+                      text "·"
+                      text "0 人"
+                  button "编辑 QA261112 测试部门" [ref=10048, loc=css:button[aria-label="编辑 QA261112 测试部门"]]
+                    svg_root
+                  button "删除 QA261112 测试部门" [ref=10049, loc=css:button[aria-label="删除 QA261112 测试部门"]]
+                    svg_root
+                container
+                  button [ref=10050]
+                    text "管理部"
+                    container
+                      text "一级部门"
+                      text "·"
+                      text "1 人"
+                  button "编辑 管理部" [ref=10051, loc=css:button[aria-label="编辑 管理部"]]
+                    svg_root
+                  button "删除 管理部" [ref=10052, loc=css:button[aria-label="删除 管理部"]]
+                    svg_root
+                container
+                  button [ref=10053]
+                    text "业务部"
+                    container
+                      text "一级部门"
+                      text "·"
+                      text "1 人"
+                  button "编辑 业务部" [ref=10054, loc=css:button[aria-label="编辑 业务部"]]
+                    svg_root
+                  button "删除 业务部" [ref=10055, loc=css:button[aria-label="删除 业务部"]]
+                    svg_root
+                container
+                  button [ref=10056]
+                    text "采购部"
+                    container
+                      text "一级部门"
+                      text "·"
+                      text "1 人"
+                  button "编辑 采购部" [ref=10057, loc=css:button[aria-label="编辑 采购部"]]
+                    svg_root
+                  button "删除 采购部" [ref=10058, loc=css:button[aria-label="删除 采购部"]]
+                    svg_root
+                container
+                  button [ref=10059]
+                    text "财务部"
+                    container
+                      text "一级部门"
+                      text "·"
+                      text "2 人"
+                  button "编辑 财务部" [ref=10060, loc=css:button[aria-label="编辑 财务部"]]
+                    svg_root
+                  button "删除 财务部" [ref=10061, loc=css:button[aria-label="删除 财务部"]]
+                    svg_root
+                container
+                  button [ref=10062]
+                    text "仓储部"
+                    container
+                      text "一级部门"
+                      text "·"
+                      text "1 人"
+                  button "编辑 仓储部" [ref=10063, loc=css:button[aria-label="编辑 仓储部"]]
+                    svg_root
+                  button "删除 仓储部" [ref=10064, loc=css:button[aria-label="删除 仓储部"]]
+                    svg_root
+                container
+                  button [ref=10065]
+                    text "品质部"
+                    container
+                      text "一级部门"
+                      text "·"
+                      text "1 人"
+                  button "编辑 品质部" [ref=10066, loc=css:button[aria-label="编辑 品质部"]]
+                    svg_root
+                  button "删除 品质部" [ref=10067, loc=css:button[aria-label="删除 品质部"]]
+                    svg_root
+            container "角色管理"
+              container
+                container
+                  svg_root
+                  container
+                    heading
+                      text "角色管理"
+                    paragraph
+                      text "新增、改名或删除角色；已分配给用户的角色需先解除关联才能删除。"
+                button [ref=10068]
+                  svg_root
+                  text "新增角色"
+              container
+                container
+                  button [ref=10069]
+                    text "QC 专员"
+                    container
+                      text "qc"
+                      text "·"
+                      text "9 项权限"
+                      text "·"
+                      text "1 人"
+                      text "·"
+                      text "全部数据"
+                  button "编辑 QC 专员" [ref=10070, loc=css:button[aria-label="编辑 QC 专员"]]
+                    svg_root
+                  button "删除 QC 专员" [ref=10071, loc=css:button[aria-label="删除 QC 专员"]]
+                    svg_root
+                container
+                  button [ref=10072]
+                    text "业务主管"
+                    container
+                      text "sales_manager"
+                      text "·"
+                      text "87 项权限"
+                      text "·"
+                      text "1 人"
+                      text "·"
+                      text "全部数据"
+                  button "编辑 业务主管" [ref=10073, loc=css:button[aria-label="编辑 业务主管"]]
+                    svg_root
+                  button "删除 业务主管" [ref=10074, loc=css:button[aria-label="删除 业务主管"]]
+                    svg_root
+                container
+                  button [ref=10075]
+                    text "仓库专员"
+                    container
+                      text "warehouse"
+                      text "·"
+                      text "20 项权限"
+                      text "·"
+                      text "1 人"
+                      text "·"
+                      text "全部数据"
+                  button "编辑 仓库专员" [ref=10076, loc=css:button[aria-label="编辑 仓库专员"]]
+                    svg_root
+                  button "删除 仓库专员" [ref=10077, loc=css:button[aria-label="删除 仓库专员"]]
+                    svg_root
+                container
+                  button [ref=10078]
+                    text "财务"
+                    container
+                      text "finance"
+                      text "·"
+                      text "3 项权限"
+                      text "·"
+                      text "2 人"
+                      text "·"
+                      text "全部数据"
+                  button "编辑 财务" [ref=10079, loc=css:button[aria-label="编辑 财务"]]
+                    svg_root
+                  button "删除 财务" [ref=10080, loc=css:button[aria-label="删除 财务"]]
+                    svg_root
+                container
+                  button [ref=10081]
+                    text "超级管理员"
+                    container
+                      text "super_admin"
+                      text "·"
+                      text "3 项权限"
+                      text "·"
+                      text "1 人"
+                      text "·"
+                      text "全部数据"
+                  button "编辑 超级管理员" [ref=10082, loc=css:button[aria-label="编辑 超级管理员"]]
+                    svg_root
+                  button "删除 超级管理员" [ref=10083, loc=css:button[aria-label="删除 超级管理员"]]
+                    svg_root
+                container
+                  button [ref=10084]
+                    text "采购专员"
+                    container
+                      text "purchase"
+                      text "·"
+                      text "23 项权限"
+                      text "·"
+                      text "1 人"
+                      text "·"
+                      text "全部数据"
+                  button "编辑 采购专员" [ref=10085, loc=css:button[aria-label="编辑 采购专员"]]
+                    svg_root
+                  button "删除 采购专员" [ref=10086, loc=css:button[aria-label="删除 采购专员"]]
+                    svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

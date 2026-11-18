@@ -1,0 +1,263 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "viewport": "1440×900",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P19 /warehouse/inbound-orders：默认单据列表、详情库存列表与统计；库存搜索；单据状态/模式/供应商/合同筛选；组合条件；URL刷新对照；清空恢复。仅只读，未生成或审批入库单。",
+  "baseline": {
+    "list_url": "http://localhost:8080/warehouse/inbound-orders",
+    "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 59.00", "待检库存 0.00"],
+    "list_rows": [
+      "XP-IN-MVU9CU / 已审批 / 正式入库 / PC-HR36RU / QA261112 测试供应商 / 2026-11-12 / QA261112 测试仓库 / QA261112-A01"
+    ],
+    "selected_row": "XP-IN-MVU9CU",
+    "detail_url": "http://localhost:8080/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa",
+    "detail_headings": ["入仓和库存确认", "明细和库存"],
+    "detail_tables": {
+      "入库明细": ["QA261112-P01 QA261112 验收测试围巾 / 180×70cm / 含中文与符号 / 100 pcs / 可用"],
+      "库存余额": ["QA261112-P01 QA261112 验收测试围巾 / QA261112 测试仓库 / QA261112-A01 / 59 pcs / 0 pcs / 0 pcs"],
+      "库存流水": ["2026-11-12 / 入库 / 可用 / QA261112-P01 QA261112 验收测试围巾 / 100 pcs / XP-IN-MVU9CU"]
+    }
+  },
+  "inventory_search": [
+    {
+      "label": "known product QA261112-P01",
+      "input": "QA261112-P01",
+      "stats_unchanged": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 59.00", "待检库存 0.00"],
+      "入库明细": "1 条（不随库存搜索变化）",
+      "库存余额": "1 条",
+      "库存流水": "1 条",
+      "url": "http://localhost:8080/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa"
+    },
+    {
+      "label": "other product UIQA-20261117-05-P01",
+      "库存余额": "0 条（暂无库存余额）",
+      "库存流水": "0 条（暂无库存流水）",
+      "stats_unchanged": ["可用库存 59.00", "待检库存 0.00"]
+    },
+    {
+      "label": "no-match NO-SUCH-INVENTORY-XYZ",
+      "库存余额": "0 条",
+      "库存流水": "0 条",
+      "stats_unchanged": ["可用库存 59.00", "待检库存 0.00"]
+    },
+    {
+      "label": "cleared",
+      "input": "",
+      "库存余额": "1 条",
+      "库存流水": "1 条",
+      "stats_unchanged": ["可用库存 59.00", "待检库存 0.00"],
+      "note": "库存搜索只影响详情内库存余额/流水两表，不影响顶部统计，也不写入URL"
+    }
+  ],
+  "order_filters": [
+    {
+      "label": "status=draft",
+      "url": "http://localhost:8080/warehouse/inbound-orders?status=draft",
+      "rows": 0,
+      "stats": ["入库单 0", "草稿 0", "待审批 0", "已审批 0", "可用库存 59.00", "待检库存 0.00"],
+      "empty": "没有匹配的结果，请调整关键词或筛选条件后再试；清空筛选"
+    },
+    {
+      "label": "status=approved",
+      "url": "http://localhost:8080/warehouse/inbound-orders?status=approved",
+      "rows": 1,
+      "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 59.00", "待检库存 0.00"]
+    },
+    {
+      "label": "mode=正式入库",
+      "url": "http://localhost:8080/warehouse/inbound-orders",
+      "rows": 1,
+      "note": "URL未包含入库模式"
+    },
+    {
+      "label": "mode=待检入库",
+      "url": "http://localhost:8080/warehouse/inbound-orders",
+      "rows": 0,
+      "stats": ["入库单 0", "草稿 0", "待审批 0", "已审批 0", "可用库存 59.00", "待检库存 0.00"],
+      "note": "URL未包含入库模式"
+    },
+    {
+      "label": "supplier=QA261112 测试供应商",
+      "url": "http://localhost:8080/warehouse/inbound-orders",
+      "rows": 1,
+      "selected_label": "QA261112 测试供应商",
+      "note": "URL未包含供应商"
+    },
+    {
+      "label": "contract=PC-HR36RU",
+      "url": "http://localhost:8080/warehouse/inbound-orders",
+      "rows": 1,
+      "selected_label": "PC-HR36RU",
+      "note": "URL未包含采购合同；改选供应商后合同条件被清空"
+    },
+    {
+      "label": "q=XP-IN-MVU9CU",
+      "url": "http://localhost:8080/warehouse/inbound-orders?q=XP-IN-MVU9CU",
+      "rows": 1,
+      "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 0.00", "待检库存 0.00"],
+      "defect": "Q05-26",
+      "note": "单据命中1条，但可用库存被关键词连带过滤为0.00"
+    },
+    {
+      "label": "q=XP-IN partial",
+      "url": "http://localhost:8080/warehouse/inbound-orders?q=XP-IN",
+      "rows": 1,
+      "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 0.00", "待检库存 0.00"],
+      "defect": "Q05-26"
+    },
+    {
+      "label": "q=NO-SUCH-ORDER-XYZ",
+      "url": "http://localhost:8080/warehouse/inbound-orders?q=NO-SUCH-ORDER-XYZ",
+      "rows": 0,
+      "stats": ["入库单 0", "草稿 0", "待审批 0", "已审批 0", "可用库存 0.00", "待检库存 0.00"],
+      "empty": "没有匹配的结果，请调整关键词或筛选条件后再试；清空筛选"
+    }
+  ],
+  "combined": [
+    {
+      "label": "q=XP-IN + status=approved",
+      "url": "http://localhost:8080/warehouse/inbound-orders?q=XP-IN&status=approved",
+      "rows": 1,
+      "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 0.00", "待检库存 0.00"],
+      "defect": "Q05-26"
+    },
+    {
+      "label": "q=XP-IN + status=draft",
+      "url": "http://localhost:8080/warehouse/inbound-orders?q=XP-IN&status=draft",
+      "rows": 0,
+      "stats": ["入库单 0", "草稿 0", "待审批 0", "已审批 0", "可用库存 0.00", "待检库存 0.00"]
+    },
+    {
+      "label": "contract=PC-HR36RU + status=draft",
+      "url": "http://localhost:8080/warehouse/inbound-orders?status=draft",
+      "rows": 0,
+      "note": "合同条件未进入URL；清空状态后合同仍保留，需另清"
+    }
+  ],
+  "url_refresh": {
+    "case_q_status": {
+      "before": {
+        "url": "http://localhost:8080/warehouse/inbound-orders?status=approved&q=XP-IN-MVU9CU",
+        "q_input": "XP-IN-MVU9CU",
+        "status_label": "已审批",
+        "rows": 1,
+        "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 0.00", "待检库存 0.00"],
+        "selected_row": "XP-IN-MVU9CU"
+      },
+      "after_reload": {
+        "url": "http://localhost:8080/warehouse/inbound-orders?status=approved&q=XP-IN-MVU9CU",
+        "q_input": "XP-IN-MVU9CU",
+        "status_label": "已审批",
+        "rows": 1,
+        "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 0.00", "待检库存 0.00"],
+        "selected_row": "XP-IN-MVU9CU"
+      },
+      "conclusion": "q与status正常保留；可用库存0.00的统计错误随刷新保留（Q05-26）"
+    },
+    "case_mode_status": {
+      "before": {
+        "url": "http://localhost:8080/warehouse/inbound-orders?status=approved&q=XP-IN-MVU9CU",
+        "mode_label": "待检入库",
+        "status_label": "已审批",
+        "rows": 0,
+        "stats": ["入库单 0", "草稿 0", "待审批 0", "已审批 0", "可用库存 0.00", "待检库存 0.00"],
+        "selected_row": null
+      },
+      "after_reload": {
+        "url": "http://localhost:8080/warehouse/inbound-orders?status=approved&q=XP-IN-MVU9CU",
+        "mode_label": "全部模式",
+        "status_label": "已审批",
+        "rows": 1,
+        "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 0.00", "待检库存 0.00"],
+        "selected_row": "XP-IN-MVU9CU"
+      },
+      "conclusion": "URL未包含待检入库；刷新后模式被重置，列表由0条变为1条（Q05-27）"
+    },
+    "case_supplier_contract": {
+      "before": {
+        "url": "http://localhost:8080/warehouse/inbound-orders",
+        "supplier_label": "QA261112 测试供应商",
+        "contract_label": null,
+        "note": "合同PC-HR36RU选择后改选供应商时被清空，符合联动预期"
+      },
+      "after_reload": {
+        "supplier_label": null,
+        "contract_label": null
+      },
+      "conclusion": "供应商/合同条件均未写入URL，刷新即丢失（Q05-27）"
+    }
+  },
+  "detail_from_filtered_list": {
+    "from_url": "http://localhost:8080/warehouse/inbound-orders?status=approved&q=XP-IN-MVU9CU",
+    "detail_url": "http://localhost:8080/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa",
+    "stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 59.00", "待检库存 0.00"],
+    "库存余额": "0 条（暂无库存余额）",
+    "库存流水": "1 条（XP-IN-MVU9CU）",
+    "stable_after_seconds": 10.5,
+    "after_detail_reload": {
+      "库存余额": "1 条：QA261112-P01 / 59 pcs",
+      "库存流水": "1 条",
+      "inventory_search_input": ""
+    },
+    "defect": "Q05-26",
+    "conclusion": "顶部可用库存59.00，但详情余额空表；刷新详情后恢复59 pcs"
+  },
+  "back_to_list": {
+    "detail_url": "http://localhost:8080/warehouse/inbound-orders/5bf1413c-53e6-466a-805d-199a515a81aa",
+    "list_url_after_back": "http://localhost:8080/warehouse/inbound-orders",
+    "q_input": "",
+    "status_label": "全部状态",
+    "rows": 1,
+    "defect": "Q05-27",
+    "conclusion": "从详情返回列表时原q/status条件未保留"
+  },
+  "api_scope": {
+    "token_present": true,
+    "inventory_balances_q_order_code": {"status": 200, "total": 0, "summary": {"available_quantity": "0", "pending_inspection_quantity": "0"}},
+    "inventory_balances_q_product": {"status": 200, "total": 1, "summary": {"available_quantity": "59.0000", "pending_inspection_quantity": "0"}},
+    "inventory_balances_no_q": {"status": 200, "total": 1, "summary": {"available_quantity": "59.0000", "pending_inspection_quantity": "0"}},
+    "orders_q_status": {"status": 200, "total": 1, "summary": {"draft_count": 0, "submitted_count": 0, "approved_count": 1}},
+    "conclusion": "库存余额接口按q过滤；单据编号q不匹配任何库存行，因此统计为0"
+  },
+  "clear_restore": {
+    "method": "空结果时点击“清空筛选”；组合条件另用查询前手动清空q/status核对",
+    "final_url": "http://localhost:8080/warehouse/inbound-orders",
+    "final_stats": ["入库单 1", "草稿 0", "待审批 0", "已审批 1", "可用库存 59.00", "待检库存 0.00"],
+    "final_rows": 1,
+    "final_selected_row": "XP-IN-MVU9CU"
+  },
+  "root_cause": {
+    "Q05-26": {
+      "file": "frontend/src/app/pages/warehouse/hooks/useInboundOrdersList.ts",
+      "lines": "151 summaryInventoryQuery = inventorySearch.trim() || resolvedQuery.trim() || undefined；165 listInventoryBalances({q: summaryInventoryQuery, limit:1})；182 loadInventorySnapshotForOrder(nextOrder, inventoryQuery, search)",
+      "detail_file": "frontend/src/app/pages/warehouse/hooks/useInboundInventory.ts",
+      "detail_lines": "27-33 query优先取inventorySearch，其次fallbackSearch（列表关键词），最后才用当前单据首个商品编码",
+      "summary": "列表关键词被直接当成库存查询条件；从筛选列表进入详情时又把列表关键词作为库存回退条件，导致余额查询无匹配"
+    },
+    "Q05-27": {
+      "file": "frontend/src/app/pages/warehouse/hooks/useInboundOrdersList.ts",
+      "lines": "221-233 submitFilters只写q/status/page；模式/供应商/合同仅保存在组件状态",
+      "back_file": "frontend/src/app/pages/warehouse/InboundOrdersPage.tsx",
+      "back_lines": "91 onBack={() => onNavigate(warehouseInboundOrderPath)}，返回时未带查询串",
+      "summary": "URL只承载q/status，刷新或返回列表后其余筛选条件丢失"
+    }
+  },
+  "defects": ["Q05-26", "Q05-27"],
+  "screenshots": [
+    "screenshots/P19-default-1440.png",
+    "screenshots/P19-detail-1440.png",
+    "screenshots/P19-inventory-search-cleared-1440.png",
+    "screenshots/P19-filter-no-match-1440.png",
+    "screenshots/P19-supplier-filter-1440.png",
+    "screenshots/P19-q-known-stats-zero-1440.png",
+    "screenshots/P19-mode-status-after-refresh-1440.png",
+    "screenshots/P19-detail-empty-balances-from-filter-1440.png",
+    "screenshots/P19-detail-after-refresh-1440.png",
+    "screenshots/P19-restored-1440.png"
+  ],
+  "business_writes": "无。未点击“生成/审批入库单”，未新增、审批、作废或调整任何库存。",
+  "unresolved": "库存搜索在详情只影响余额/流水两表、不影响顶部统计，是否属预期未在需求中明确；本轮只记录行为。"
+}

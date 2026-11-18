@@ -1,0 +1,23 @@
+[
+  {
+    "requestId": "79503.2137",
+    "url": "http://localhost:8080/api/v1/masterdata/customers/451c5b86-de27-4970-8219-5bdd0573e126/contacts",
+    "status": 201,
+    "method": "POST",
+    "body": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "id": "35ddfbda-8e7e-42bc-a2f2-713c636df0d1",
+        "customer_id": "451c5b86-de27-4970-8219-5bdd0573e126",
+        "name": "UIQA-20261117-05-C01 联系人二",
+        "title": "UIQA测试职务",
+        "email": "uiqa-c01-02@example.invalid",
+        "phone": "00000000002",
+        "is_primary": false
+      },
+      "error": null
+    }
+  }
+]

@@ -1,0 +1,329 @@
+{
+  "url": "http://localhost:8080/sample/requests",
+  "title": "打样管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "打样管理",
+    "打样单列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "text": "打样搜索\n打样状态筛选\n全部状态\n打样客户筛选\n打样起始日期\n打样截止日期\n查询\n新增打样单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "打样搜索",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 257.4453125,
+            "width": 225.328125,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 508.328125,
+            "bottom": 293.4453125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_8h_",
+          "label": "打样状态筛选\n全部状态",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 531.328125,
+            "y": 262.4453125,
+            "width": 112.9609375,
+            "height": 26,
+            "top": 262.4453125,
+            "right": 644.2890625,
+            "bottom": 288.4453125,
+            "left": 531.328125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "打样客户筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 685.2890625,
+            "y": 257.4453125,
+            "width": 152.9609375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 838.25,
+            "bottom": 293.4453125,
+            "left": 685.2890625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "打样起始日期",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 850.25,
+            "y": 257.4453125,
+            "width": 152.9609375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1003.2109375,
+            "bottom": 293.4453125,
+            "left": 850.25
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "打样截止日期",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1015.2109375,
+            "y": 257.4453125,
+            "width": 152.9609375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1168.171875,
+            "bottom": 293.4453125,
+            "left": 1015.2109375
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1180.171875,
+            "y": 257.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1264.6953125,
+            "bottom": 293.4453125,
+            "left": 1180.171875
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增打样单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1272.6953125,
+            "y": 257.4453125,
+            "width": 124.3046875,
+            "height": 36,
+            "top": 257.4453125,
+            "right": 1397,
+            "bottom": 293.4453125,
+            "left": 1272.6953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "打样单号\t报价号\t客户\t产品\t去向\t状态\t要求完成\t入口\nSR-W3C3DV\t-\tQA261112 测试客户\tQA261112 验收测试围巾\t内部打样\t已完成\t2026-11-20\t\n查看详情",
+      "buttons": [
+        "SR-W3C3DV",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

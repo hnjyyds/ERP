@@ -1,0 +1,246 @@
+{
+  "url": "http://localhost:8080/workspace/schedules",
+  "title": "工作台",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "工作台",
+    "我的日程"
+  ],
+  "forms": [],
+  "tables": [],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "日程详情\nQA261112 测试日程\n2026-11-12 19:00 至 2026-11-12 19:30\n开始\n2026-11-12 19:00\n结束\n2026-11-12 19:30\n创建时间\n2026-11-12 19:28\n备注\n\nQA261112\n\n编辑日程\n删除日程\n关闭",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 956,
+            "y": 281.03125,
+            "width": 32,
+            "height": 32,
+            "top": 281.03125,
+            "right": 988,
+            "bottom": 313.03125,
+            "left": 956
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "编辑日程",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 464,
+            "y": 574.96875,
+            "width": 106.125,
+            "height": 36,
+            "top": 574.96875,
+            "right": 570.125,
+            "bottom": 610.96875,
+            "left": 464
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "删除日程",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 578.125,
+            "y": 574.96875,
+            "width": 109.125,
+            "height": 36,
+            "top": 574.96875,
+            "right": 687.25,
+            "bottom": 610.96875,
+            "left": 578.125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "关闭",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 913.4375,
+            "y": 570.96875,
+            "width": 62.5625,
+            "height": 40,
+            "top": 570.96875,
+            "right": 976,
+            "bottom": 610.96875,
+            "left": 913.4375
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

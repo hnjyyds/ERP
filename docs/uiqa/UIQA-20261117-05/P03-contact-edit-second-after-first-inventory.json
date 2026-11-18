@@ -1,0 +1,331 @@
+{
+  "url": "http://localhost:8080/masterdata/customers/451c5b86-de27-4970-8219-5bdd0573e126",
+  "title": "客户资料和订单要求",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "客户资料和订单要求",
+    "客户资料",
+    "UIQA全量验收停用客户样本",
+    "联系人",
+    "业务记录"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_8_",
+      "visible": true,
+      "text": "姓名\n职务\n邮箱\n电话\n设为主要联系人\n取消\n保存联系人",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "姓名",
+          "text": "",
+          "value": "UIQA-20261117-05-C01 联系人二",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 392,
+            "y": 368.7265625,
+            "width": 318,
+            "height": 36,
+            "top": 368.7265625,
+            "right": 710,
+            "bottom": 404.7265625,
+            "left": 392
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "职务",
+          "text": "",
+          "value": "UIQA C01 职务已更新",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 730,
+            "y": 368.7265625,
+            "width": 318,
+            "height": 36,
+            "top": 368.7265625,
+            "right": 1048,
+            "bottom": 404.7265625,
+            "left": 730
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "邮箱",
+          "text": "",
+          "value": "uiqa-c01-02@example.invalid",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 392,
+            "y": 444.7265625,
+            "width": 318,
+            "height": 36,
+            "top": 444.7265625,
+            "right": 710,
+            "bottom": 480.7265625,
+            "left": 392
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "电话",
+          "text": "",
+          "value": "00000000002",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 730,
+            "y": 444.7265625,
+            "width": 318,
+            "height": 36,
+            "top": 444.7265625,
+            "right": 1048,
+            "bottom": 480.7265625,
+            "left": 730
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "",
+          "label": "",
+          "text": "",
+          "value": "on",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 392,
+            "y": 499.7265625,
+            "width": 16,
+            "height": 16,
+            "top": 499.7265625,
+            "right": 408,
+            "bottom": 515.7265625,
+            "left": 392
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 844.6328125,
+            "y": 571.7265625,
+            "width": 70.5625,
+            "height": 36,
+            "top": 571.7265625,
+            "right": 915.1953125,
+            "bottom": 607.7265625,
+            "left": 844.6328125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存联系人",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 927.1953125,
+            "y": 571.7265625,
+            "width": 120.8046875,
+            "height": 36,
+            "top": 571.7265625,
+            "right": 1048,
+            "bottom": 607.7265625,
+            "left": 927.1953125
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "来源\t编号\t摘要\t金额\t时间\n\n\n暂无数据",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

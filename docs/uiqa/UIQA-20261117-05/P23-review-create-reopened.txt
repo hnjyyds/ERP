@@ -1,0 +1,440 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          container "D-DUTCH"
+            text "D-DUTCH"
+          container
+            text "新裴贸易"
+            text "业务管理系统"
+        container "主导航"
+          anchor [ref=8660, loc=href:/, url=http://localhost:8080/]
+            svg_root
+            text "工作台"
+          container "业务模块"
+            container
+              container [ref=8661]
+                svg_root
+                text "基础资料"
+                svg_root
+              container
+                anchor [ref=8662, loc=href:/masterdata/products, url=http://localhost:8080/masterdata/products]
+                  svg_root
+                  text "商品资料"
+                anchor [ref=8663, loc=href:/masterdata/suppliers, url=http://localhost:8080/masterdata/suppliers]
+                  svg_root
+                  text "供应商资料"
+                anchor [ref=8664, loc=href:/masterdata/customers, url=http://localhost:8080/masterdata/customers]
+                  svg_root
+                  text "客户资料"
+                anchor [ref=8665, loc=href:/masterdata/partners, url=http://localhost:8080/masterdata/partners]
+                  svg_root
+                  text "合作伙伴"
+                anchor [ref=8666, loc=href:/masterdata/document-parties, url=http://localhost:8080/masterdata/document-parties]
+                  svg_root
+                  text "单证资料"
+            container
+              container [ref=8667]
+                svg_root
+                text "订单流程"
+                svg_root
+              container
+                anchor [ref=8668, loc=href:/sales/contracts, url=http://localhost:8080/sales/contracts]
+                  svg_root
+                  text "出口合同"
+                anchor [ref=8669, loc=href:/purchase/contracts, url=http://localhost:8080/purchase/contracts]
+                  svg_root
+                  text "采购合同"
+                anchor [ref=8670, loc=href:/sales/quotations, url=http://localhost:8080/sales/quotations]
+                  svg_root
+                  text "出口报价"
+                anchor [ref=8671, loc=href:/sales/shipments, url=http://localhost:8080/sales/shipments]
+                  svg_root
+                  text "出货明细"
+            container
+              container [ref=8672]
+                svg_root
+                text "QC / 跟单"
+                svg_root
+              container
+                anchor [ref=8673, loc=href:/quality/inspections, url=http://localhost:8080/quality/inspections]
+                  svg_root
+                  text "QC 中心"
+                anchor [ref=8674, loc=href:/quality/tasks, url=http://localhost:8080/quality/tasks]
+                  svg_root
+                  text "我的 QC 任务"
+                anchor [ref=8675, loc=href:/purchase/followup, url=http://localhost:8080/purchase/followup]
+                  svg_root
+                  text "跟单中心"
+                anchor [ref=8676, loc=href:/sample/records, url=http://localhost:8080/sample/records]
+                  svg_root
+                  text "样品登记"
+                anchor [ref=8677, loc=href:/sample/requests, url=http://localhost:8080/sample/requests]
+                  svg_root
+                  text "打样管理"
+                anchor [ref=8678, loc=href:/sample/deliveries, url=http://localhost:8080/sample/deliveries]
+                  svg_root
+                  text "寄样管理"
+            container
+              container [ref=8679]
+                svg_root
+                text "仓库"
+                svg_root
+              container
+                anchor [ref=8680, loc=href:/warehouse/inbound-orders, url=http://localhost:8080/warehouse/inbound-orders]
+                  svg_root
+                  text "入仓"
+                anchor [ref=8681, loc=href:/warehouse/inbound-plans, url=http://localhost:8080/warehouse/inbound-plans]
+                  svg_root
+                  text "入库计划"
+                anchor [ref=8682, loc=href:/warehouse/outbound-plans, url=http://localhost:8080/warehouse/outbound-plans]
+                  svg_root
+                  text "出库计划"
+                anchor [ref=8683, loc=href:/warehouse/outbound-orders, url=http://localhost:8080/warehouse/outbound-orders]
+                  svg_root
+                  text "货物出库"
+                anchor [ref=8684, loc=href:/warehouse/stocktakes, url=http://localhost:8080/warehouse/stocktakes]
+                  svg_root
+                  text "库存盘点"
+            container
+              container [ref=8685]
+                svg_root
+                text "财务经营"
+                svg_root
+              container
+                container
+                  container [ref=8686]
+                    svg_root
+                    text "财务摘要"
+                    svg_root
+                  container
+                    anchor [ref=8687, loc=href:/finance/overview, url=http://localhost:8080/finance/overview]
+                      text "经营总览"
+                    anchor [ref=8688, loc=href:/finance/receipts, url=http://localhost:8080/finance/receipts]
+                      text "收款管理"
+                    anchor [ref=8689, loc=href:/finance/payments, url=http://localhost:8080/finance/payments]
+                      text "付款管理"
+                    anchor [ref=8690, loc=href:/finance/fees, url=http://localhost:8080/finance/fees]
+                      text "付费管理"
+                    anchor [ref=8691, loc=href:/finance/tax, url=http://localhost:8080/finance/tax]
+                      text "核销退税"
+                    anchor [ref=8692, loc=href:/finance/misc, url=http://localhost:8080/finance/misc]
+                      text "杂费管理"
+                    anchor [ref=8693, loc=href:/finance/settlement, url=http://localhost:8080/finance/settlement]
+                      text "结算核算"
+                    anchor [ref=8694, loc=href:/finance/reimbursements, url=http://localhost:8080/finance/reimbursements]
+                      text "报销管理"
+                    anchor [ref=8695, loc=href:/finance/port-data, url=http://localhost:8080/finance/port-data]
+                      text "口岸数据"
+                    anchor [ref=8696, loc=href:/finance/reports, url=http://localhost:8080/finance/reports]
+                      text "财务报表"
+                anchor [ref=8697, loc=href:/reporting, url=http://localhost:8080/reporting]
+                  svg_root
+                  text "老板看板"
+            container
+              container [ref=8698]
+                svg_root
+                text "系统设置"
+                svg_root
+              container
+                anchor [ref=8699, loc=href:/organization/users, url=http://localhost:8080/organization/users]
+                  svg_root
+                  text "组织管理"
+                anchor [ref=8700, loc=href:/system/mcp, url=http://localhost:8080/system/mcp]
+                  svg_root
+                  text "MCP 接入"
+                anchor [ref=8701, loc=href:/system/audit-logs, url=http://localhost:8080/system/audit-logs]
+                  svg_root
+                  text "审计日志"
+            container
+              container [ref=8702]
+                svg_root
+                text "采购单据"
+                svg_root
+              container
+                anchor [ref=8703, loc=href:/purchase/inquiries, url=http://localhost:8080/purchase/inquiries]
+                  svg_root
+                  text "采购询价"
+                anchor [ref=8704, loc=href:/purchase/invoice-notices, url=http://localhost:8080/purchase/invoice-notices]
+                  svg_root
+                  text "开票通知"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "收款管理"
+          container
+            button "通知" [ref=8705, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=8706, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container "收款管理"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "银行水单列表"
+              form
+                container
+                  text "水单搜索"
+                  textbox [ref=8731, loc=css:input[placeholder="水单号 / 付款人 / 客户"]]
+                    text "水单号 / 付款人 / 客户"
+                container
+                  text "水单状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=8732]
+                    image "down"
+                      svg_root
+                container
+                  text "客户标识"
+                  container
+                    container
+                      text "输入客户编号或名称"
+                      comboboxgrouping "客户标识" [ref=8733, loc=css:input[aria-label="客户标识"]]
+                    image "down"
+                      svg_root
+                container
+                  button [ref=8734]
+                    svg_root
+                    text "查询"
+                  button [ref=8735]
+                    svg_root
+                    text "水单录入"
+            container
+              text "本次列表 1 条"
+              text "USD 100.00"
+              container
+                text "未分摊"
+                text "USD -20.00"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=8736]
+                  table
+                    table_row
+                      table_cell
+                        text "水单号"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "性质"
+                      table_cell
+                        text "收款日"
+                      table_cell
+                        text "付款人"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "金额"
+                      table_cell
+                        text "未分摊"
+                    table_row
+                      table_cell
+                        button [ref=8737]
+                          text "BR-MWYV53"
+                      table_cell
+                        text "已分摊"
+                      table_cell
+                        text "普通收款"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "USD 100.00"
+                      table_cell
+                        text "USD -20.00"
+                        text "超额分摊"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=8738]
+                      image "left"
+                        svg_root
+                  list_item [ref=8739]
+                    anchor [ref=8740]
+                      text "1"
+                  list_item
+                    button [ref=8741]
+                      image "right"
+                        svg_root
+                  list_item
+                    container
+                      text "50 条/页"
+                      comboboxgrouping "页码" [ref=8742]
+                    image "down"
+                      svg_root
+              table
+                table_row
+                  table_cell
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "应收账款查询"
+              form
+                container
+                  text "应收搜索"
+                  textbox [ref=8743, loc=css:input[placeholder="合同号 / 客户 / 报价号"]]
+                    text "合同号 / 客户 / 报价号"
+                container
+                  text "出口合同号"
+                  textbox [ref=8744]
+                container
+                  text "发票号"
+                  textbox [ref=8745]
+                button [ref=8746]
+                  svg_root
+                  text "查询"
+            container
+              text "本次列表 1 条"
+              text "USD 392.50"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=8747]
+                  table
+                    table_row
+                      table_cell
+                        text "出口合同"
+                      table_cell
+                        text "客户"
+                      table_cell
+                        text "业务员"
+                      table_cell
+                        text "合同金额"
+                      table_cell
+                        text "已收款"
+                      table_cell
+                        text "应收余额"
+                      table_cell
+                        text "状态"
+                    table_row
+                      table_cell
+                        text "EC-F8D7RX"
+                      table_cell
+                        text "QA261112 测试客户"
+                      table_cell
+                        text "系统管理员"
+                      table_cell
+                        text "USD 512.50"
+                      table_cell
+                        text "USD 120.00"
+                      table_cell
+                        text "USD 392.50"
+                      table_cell
+                        text "部分收款"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=8748]
+                      image "left"
+                        svg_root
+                  list_item [ref=8749]
+                    anchor [ref=8750]
+                      text "1"
+                  list_item
+                    button [ref=8751]
+                      image "right"
+                        svg_root
+                  list_item
+                    container
+                      text "50 条/页"
+                      comboboxgrouping "页码" [ref=8752]
+                    image "down"
+                      svg_root
+              table
+                table_row
+                  table_cell
+    dialog "水单录入"
+      button "Close" [ref=8753, loc=css:button[aria-label="Close"]]
+        container "关闭"
+          image "close"
+            svg_root
+      text "水单录入"
+      form
+        container
+          container
+            text "银行水单号"
+            textbox [ref=8754, loc=css:input[placeholder="保存后自动生成"]]
+              text "保存后自动生成"
+          container
+            text "收款日期"
+            textbox [ref=8755]
+              spinbutton "年" [ref=8756]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=8757]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=8758]
+                text "18"
+        container
+          text "付款人"
+          textbox [ref=8759]
+        container
+          container
+            text "客户"
+            container
+              container
+                text "搜索客户编号或名称"
+                comboboxgrouping "客户" [ref=8760, loc=css:input[aria-label="客户"]]
+              image "down"
+                svg_root
+          container
+            text "客户名称"
+            textbox [ref=8761, loc=css:input[placeholder="选择客户后自动带出"]]
+              text "选择客户后自动带出"
+        container
+          container
+            text "收款金额"
+            textbox [ref=8762]
+          container
+            text "币种"
+            textbox [ref=8763]
+              text "USD"
+          container
+            text "收款性质"
+            container
+              container
+                text "预收款"
+                comboboxgrouping [ref=8764]
+              image "down"
+                svg_root
+        container
+          text "收款银行账号"
+          textbox [ref=8765]
+        container
+          text "银行流水号"
+          textbox [ref=8766]
+        container
+          text "备注"
+          textbox [ref=8767]
+        container
+          button [ref=8768]
+            text "取消"
+          button [ref=8769]
+            text "保存水单"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

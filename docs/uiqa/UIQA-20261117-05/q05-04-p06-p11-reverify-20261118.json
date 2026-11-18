@@ -1,0 +1,61 @@
+{
+  "defect": "Q05-04",
+  "batch": "P06 出口报价商品选择 + P11 开票通知业务来源选择（D02）",
+  "asset": "assets/index-CPKfkvPZ.js",
+  "css": "assets/index-CVMx6kR8.css",
+  "base_url": "http://127.0.0.1:8080",
+  "account": "admin",
+  "p06_quotations": {
+    "form_layout": "移除商品标识/商品编号/商品名称三个手填框，改为按商品编号或名称检索的“商品”选择器",
+    "search_query": "QA261112-P01",
+    "options": ["QA261112 验收测试围巾 / QA261112-P01"],
+    "selection": "选中后显示商品名称，派生 product_id/product_code/product_name 由同一结果写入，规格/型号清空待按实际资料填写",
+    "viewports": ["1440x900", "390x844"],
+    "overflow_x": false,
+    "screenshots": [
+      "screenshots/P06-product-select-CPKfkvPZ-1440.png",
+      "screenshots/P06-product-select-CPKfkvPZ-390.png"
+    ]
+  },
+  "p11_invoice_notice": {
+    "form_layout": "供应商标识/名称改为供应商选择器；采购合同号改为采购合同选择器；采购合同ID与商品ID隐藏输入移除；商品编号/名称改为商品选择器",
+    "supplier_options": [
+      "UIQA全量验收停用供应商样本 / UIQA-20261117-05-S01",
+      "演示供应商｜江南织造 / UI261114-S01",
+      "QA261112 测试供应商 / QA261112-S01"
+    ],
+    "contract_options": ["PC-HR36RU / QA261112 测试供应商"],
+    "product_options": ["QA261112 验收测试围巾 / QA261112-P01"],
+    "selected": {
+      "supplier": "QA261112 测试供应商",
+      "purchase_contract": "PC-HR36RU",
+      "product": "QA261112 验收测试围巾"
+    },
+    "clear": "清空采购合同后派生合同号一并清空，选择器恢复占位提示；供应商与商品保持各自选择",
+    "hidden_internal_ids": 0,
+    "viewports": ["1440x900", "390x844"],
+    "overflow_x": false,
+    "screenshots": [
+      "screenshots/P11-supplier-contract-product-CPKfkvPZ-1440.png",
+      "screenshots/P11-supplier-contract-product-CPKfkvPZ-390.png"
+    ]
+  },
+  "remaining": [
+    "P17 跟单中心仍要求采购合同ID并预填演示来源",
+    "P18/P20 库位预安排仍要求仓库/库位内部ID",
+    "P23 收款分摊仍分列业务员/合同标识与名称",
+    "P25 费用发票登记仍分列合作伙伴/出运单/业务员标识"
+  ],
+  "business_writes": "未提交出口报价或开票通知，未新增业务数据",
+  "automation": {
+    "test_cases": [
+      "新增报价失败时保留弹窗和已填写的产品信息（改为选择商品并校验id/code/name）",
+      "从报关单证生成开票通知并提交行项目（改为选择供应商/商品并校验派生字段）",
+      "生成开票通知不再预置演示供应商、合同和商品"
+    ],
+    "vitest": "422 passed / 50 files",
+    "tsc": "passed",
+    "eslint": "passed"
+  },
+  "verified_at": "2026-11-18"
+}

@@ -1,0 +1,41 @@
+{
+  "values": [
+    {
+      "label": "发货计划\nSP-DAEPEG / QA261112 测试客户 / 2026-11-25",
+      "value": ""
+    },
+    {
+      "label": "出库类型\n成品出库",
+      "value": ""
+    },
+    {
+      "label": "计划出库日",
+      "value": "2026-11-12"
+    },
+    {
+      "label": "计划出库日",
+      "value": "2026-11-12"
+    },
+    {
+      "label": "仓库 ID",
+      "value": ""
+    },
+    {
+      "label": "仓库",
+      "value": ""
+    },
+    {
+      "label": "库位 ID",
+      "value": ""
+    },
+    {
+      "label": "库位",
+      "value": ""
+    },
+    {
+      "label": "经办人",
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

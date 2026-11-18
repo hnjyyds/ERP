@@ -1,0 +1,20 @@
+{
+  "run": "UIQA-20261117-05",
+  "deploy": "index-By6s5oGf.js",
+  "space": 8,
+  "role": "admin",
+  "viewport": "1440×900",
+  "executed_at": "2026-11-18，空间8续测；未逐分钟记录",
+  "scope": "P01 商品编辑：超2MB图片与不支持类型被拒后，未保存文本草稿是否保留；原图是否保持；取消重开是否清空草稿。未保存商品。",
+  "product": {"code": "UIQA-20261117-05-P01", "url": "http://localhost:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac"},
+  "steps": [
+    {"label": "marker-typed", "field": "型号", "value": "DRAFT-MARK-20261118", "thumbs": 2},
+    {"label": "oversize-3MB-png", "error": "图片需小于 2MB", "model_value_after": "DRAFT-MARK-20261118", "thumbs": 2},
+    {"label": "unsupported-txt", "error": "请选择图片文件", "model_value_after": "DRAFT-MARK-20261118", "thumbs": 2},
+    {"label": "cancel-and-reopen", "model_value": "", "thumbs": 2, "errors": []}
+  ],
+  "conclusion": "两种被拒文件都未新增图片，原2张缩略图保留；失败后型号中的未保存文本仍在；取消重开后草稿清空、图片仍2张。",
+  "screenshots": ["screenshots/P01-negative-upload-draft-1440.png"],
+  "business_writes": "无；未保存商品，未上传成功任何图片",
+  "tool_note": "首次page.setInputFiles未触发React change且files被清空；改用页面内DataTransfer构造File并派发change，错误提示与草稿保留据此采证。"
+}

@@ -1,0 +1,108 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "出货搜索",
+    "before": {
+      "url": "http://localhost:8080/sales/shipments",
+      "form": "出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细",
+      "inputs": [
+        {
+          "label": "出货搜索",
+          "value": ""
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户编号",
+          "value": ""
+        },
+        {
+          "label": "出口合同编号",
+          "value": ""
+        }
+      ],
+      "text": "出货计划列表\n出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细\n出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情"
+    },
+    "positive": "SP-DAEPEG",
+    "hit": {
+      "url": "http://localhost:8080/sales/shipments?q=SP-DAEPEG",
+      "form": "出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细",
+      "inputs": [
+        {
+          "label": "出货搜索",
+          "value": "SP-DAEPEG"
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户编号",
+          "value": ""
+        },
+        {
+          "label": "出口合同编号",
+          "value": ""
+        }
+      ],
+      "text": "出货计划列表\n出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细\n出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/sales/shipments?q=UIQA-20261117-05-NOMATCH",
+      "form": "出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细",
+      "inputs": [
+        {
+          "label": "出货搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户编号",
+          "value": ""
+        },
+        {
+          "label": "出口合同编号",
+          "value": ""
+        }
+      ],
+      "text": "出货计划列表\n出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细\n出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/sales/shipments",
+      "form": "出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细",
+      "inputs": [
+        {
+          "label": "出货搜索",
+          "value": ""
+        },
+        {
+          "label": "审批状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "客户编号",
+          "value": ""
+        },
+        {
+          "label": "出口合同编号",
+          "value": ""
+        }
+      ],
+      "text": "出货计划列表\n出货搜索\n审批状态\n全部状态\n客户编号\n输入客户编号\n出口合同编号\n查询\n生成出货明细\n出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "出货单号\t状态\t客户\t出货日期\t计划出运日\t应收\t入口\nSP-DAEPEG\t已审批\tQA261112 测试客户\t2026-11-12\t2026-11-25\tUSD 205.00\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

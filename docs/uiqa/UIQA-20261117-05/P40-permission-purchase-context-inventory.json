@@ -1,0 +1,3640 @@
+{
+  "url": "http://localhost:8080/organization/users",
+  "title": "组织管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "组织管理",
+    "公司信息",
+    "演示采购专员",
+    "工作桌面",
+    "系统管理",
+    "基础资料",
+    "样品业务",
+    "销售出口",
+    "采购业务",
+    "质检仓库",
+    "财务报表",
+    "其他权限"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": "_r_19_",
+      "visible": false,
+      "text": "公司名称 *英文名称单证抬头地址英文地址电话传真邮箱网站税号开户行银行账号SWIFT取消保存公司信息",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "公司名称",
+          "text": "",
+          "value": "新裴贸易",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "英文名称",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "单证抬头",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "地址",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "英文地址",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "电话",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "传真",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "邮箱",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "网站",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "税号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "开户行",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "银行账号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "SWIFT",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 13,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 14,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存公司信息",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_1b_",
+      "visible": false,
+      "text": "头像短发眼镜用户名姓名部门财务部角色QC 专员业务主管仓库专员财务超级管理员采购专员账号启用取消保存修改",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "头像短发眼镜",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "用户名",
+          "text": "",
+          "value": "finance_manager",
+          "checked": false,
+          "disabled": true,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "姓名",
+          "text": "",
+          "value": "演示财务主管",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1d_",
+          "label": "部门财务部",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "QC 专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "业务主管",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "仓库专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "财务",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 8,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "超级管理员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 9,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "采购专员",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "id": "",
+          "label": "账号启用",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 11,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "j": 12,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "保存修改",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [],
+  "dialogs": [
+    {
+      "i": 0,
+      "text": "按侧边栏功能授权\n权限配置\n\n先选择角色，再按左侧导航对应的功能勾选权限；没有勾选的板块不会出现在该角色用户的侧边栏。\n\n配置角色\nQC 专员\n保存权限\n侧边栏模块\n工作桌面\n1/3\n工作桌面\n工作桌面\n1/3\n查看工作桌面\n功能\ndashboard:view\n发布公司公告\n功能\nannouncement:create\n新增个人日程\n功能\nschedule:create\n侧边栏模块\n系统管理\n0/1\n系统管理\n组织管理\n0/1\n超级管理员\n功能\nsystem:super_admin\n侧边栏模块\n基础资料\n1/19\n基础资料\n商品资料\n1/3\n查看商品资料\n功能\nmasterdata:product:view\n维护商品资料\n功能\nmasterdata:product:edit\n导出商品资料\n功能\nmasterdata:product:export\n基础资料\n客户资料\n0/5\n查看客户资料\n功能\nmasterdata:customer:view\n查看全部客户\n数据\nmasterdata:customer:view_all\n维护客户资料\n功能\nmasterdata:customer:edit\n查看客户授信额度\n字段\nmasterdata:customer:credit:view\n维护客户信用信息\n字段\nmasterdata:customer:credit:edit\n基础资料\n供应商资料\n0/5\n查看供应商资料\n功能\nmasterdata:supplier:view\n查看全部供应商\n数据\nmasterdata:supplier:view_all\n维护供应商资料\n功能\nmasterdata:supplier:edit\n查看供应商授信额度\n字段\nmasterdata:supplier:credit:view\n维护供应商信用信息\n字段\nmasterdata:supplier:credit:edit\n基础资料\n合作伙伴\n0/3\n查看合作伙伴\n功能\nmasterdata:partner:view\n查看全部合作伙伴\n数据\nmasterdata:partner:view_all\n维护合作伙伴\n功能\nmasterdata:partner:edit\n基础资料\n单证资料\n0/3\n查看单证资料\n功能\nmasterdata:document_party:view\n查看全部单证资料\n数据\nmasterdata:document_party:view_all\n维护单证资料\n功能\nmasterdata:document_party:edit\n侧边栏模块\n样品业务\n0/12\n样品业务\n打样管理\n0/4\n查看打样管理\n功能\nsample:request:view\n查看全部打样单\n数据\nsample:request:view_all\n维护打样管理\n功能\nsample:request:edit\n维护打样费用\n功能\nsample:request:fee:edit\n样品业务\n样品登记\n0/3\n查看样品登记\n功能\nsample:record:view\n查看全部样品\n数据\nsample:record:view_all\n维护样品登记\n功能\nsample:record:edit\n样品业务\n寄样管理\n0/5\n查看寄样管理\n功能\nsample:delivery:view\n查看全部寄样单\n数据\nsample:delivery:view_all\n维护寄样管理\n功能\nsample:delivery:edit\n审核寄样单\n流程\nsample:delivery:approve\n查看寄样费用统计\n功能\nsample:delivery:fee:view\n侧边栏模块\n销售出口\n0/14\n销售出口\n出口报价\n0/5\n查看出口报价\n功能\nsales:quotation:view\n查看全部出口报价\n数据\nsales:quotation:view_all\n维护出口报价\n功能\nsales:quotation:edit\n审批出口报价\n流程\nsales:quotation:approve\n导出出口报价\n功能\nsales:quotation:export\n销售出口\n出口合同\n0/5\n查看出口合同\n功能\nsales:contract:view\n查看全部出口合同\n数据\nsales:contract:view_all\n维护出口合同\n功能\nsales:contract:edit\n审批出口合同\n流程\nsales:contract:approve\n导出出口合同\n功能\nsales:contract:export\n销售出口\n出货明细\n0/4\n查看出货明细\n功能\nsales:shipment:view\n查看全部出货明细\n数据\nsales:shipment:view_all\n维护出货明细\n功能\nsales:shipment:edit\n审批出货明细\n流程\nsales:shipment:approve\n侧边栏模块\n采购业务\n2/18\n采购业务\n采购询价\n0/4\n查看采购询价\n功能\npurchase:inquiry:view\n查看全部采购询价\n数据\npurchase:inquiry:view_all\n维护采购询价\n功能\npurchase:inquiry:edit\n导出采购询价模板\n功能\npurchase:inquiry:export\n采购业务\n采购合同\n2/4\n查看采购合同\n功能\npurchase:contract:view\n查看全部采购合同\n数据\npurchase:contract:view_all\n维护采购合同\n功能\npurchase:contract:edit\n审批采购合同\n流程\npurchase:contract:approve\n采购业务\n开票通知\n0/4\n查看开票通知\n功能\npurchase:invoice_notice:view\n查看全部开票通知\n数据\npurchase:invoice_notice:view_all\n维护开票通知\n功能\npurchase:invoice_notice:edit\n发送开票通知\n流程\npurchase:invoice_notice:send\n采购业务\n采购跟单\n0/6\n查看采购跟单计划\n功能\nfollowup:plan:view\n查看跟单模板\n功能\nfollowup:template:view\n查看采购跟单\n功能\npurchase:followup:view\n查看全部采购跟单计划\n数据\nfollowup:plan:view_all\n维护采购跟单计划\n功能\nfollowup:plan:edit\n维护跟单模板\n功能\nfollowup:template:edit\n侧边栏模块\n质检仓库\n5/18\n质检仓库\nQC 查验\n3/3\n查看 QC 查验\n功能\nquality:inspection:view\n查看全部 QC 查验\n数据\nquality:inspection:view_all\n维护 QC 查验\n功能\nquality:inspection:edit\n质检仓库\n入库计划\n2/3\n查看入库计划\n功能\nwarehouse:inbound_plan:view\n查看全部入库计划\n数据\nwarehouse:inbound_plan:view_all\n维护入库计划\n功能\nwarehouse:inbound_plan:edit\n质检仓库\n货物入库\n0/4\n查看货物入库\n功能\nwarehouse:inbound_order:view\n查看全部货物入库\n数据\nwarehouse:inbound_order:view_all\n维护货物入库\n功能\nwarehouse:inbound_order:edit\n审批货物入库\n流程\nwarehouse:inbound_order:approve\n质检仓库\n出库计划\n0/3\n查看出库计划\n功能\nwarehouse:outbound_plan:view\n查看全部出库计划\n数据\nwarehouse:outbound_plan:view_all\n维护出库计划\n功能\nwarehouse:outbound_plan:edit\n质检仓库\n货物出库\n0/5\n查看货物出库\n功能\nwarehouse:outbound_order:view\n查看全部货物出库\n数据\nwarehouse:outbound_order:view_all\n维护货物出库\n功能\nwarehouse:outbound_order:edit\n审批货物出库\n流程\nwarehouse:outbound_order:approve\n授权负库存出库\n流程\nwarehouse:outbound_order:allow_negative\n侧边栏模块\n财务报表\n0/3\n财务报表\n财务管理\n0/2\n查看财务管理\n功能\nfinance:view\n导出财务报表\n功能\nfinance:report:export\n财务报表\n经理查询\n0/1\n查看经理查询\n功能\nreporting:view\n侧边栏模块\n其他权限\n0/4\n其他权限\nStocktake\n0/4\n查看库存盘点\n功能\nwarehouse:stocktake:view\n查看全部库存盘点\n数据\nwarehouse:stocktake:view_all\n维护库存盘点\n功能\nwarehouse:stocktake:edit\n审批库存盘点\n流程\nwarehouse:stocktake:approve",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "BUTTON",
+          "type": "button",
+          "label": "Close",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1156,
+            "y": 118.8359375,
+            "width": 32,
+            "height": 32,
+            "top": 118.8359375,
+            "right": 1188,
+            "bottom": 150.8359375,
+            "left": 1156
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "label": "配置角色\nQC 专员",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 882.875,
+            "y": 186.171875,
+            "width": 140.3046875,
+            "height": 26,
+            "top": 186.171875,
+            "right": 1023.1796875,
+            "bottom": 212.171875,
+            "left": 882.875
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "button",
+          "text": "保存权限",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1063.875,
+            "y": 181.171875,
+            "width": 112.125,
+            "height": 36,
+            "top": 181.171875,
+            "right": 1176,
+            "bottom": 217.171875,
+            "left": 1063.875
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "工作桌面权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1105.078125,
+            "y": -3418.9609375,
+            "width": 15,
+            "height": 15,
+            "top": -3418.9609375,
+            "right": 1120.078125,
+            "bottom": -3403.9609375,
+            "left": 1105.078125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "工作桌面权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1103.1796875,
+            "y": -3358.5859375,
+            "width": 15,
+            "height": 15,
+            "top": -3358.5859375,
+            "right": 1118.1796875,
+            "bottom": -3343.5859375,
+            "left": 1103.1796875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看工作桌面",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -3293.4375,
+            "width": 16,
+            "height": 16,
+            "top": -3293.4375,
+            "right": 320,
+            "bottom": -3277.4375,
+            "left": 304
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "发布公司公告",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 588.328125,
+            "y": -3293.4375,
+            "width": 16,
+            "height": 16,
+            "top": -3293.4375,
+            "right": 604.328125,
+            "bottom": -3277.4375,
+            "left": 588.328125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "新增个人日程",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 872.6640625,
+            "y": -3293.4375,
+            "width": 16,
+            "height": 16,
+            "top": -3293.4375,
+            "right": 888.6640625,
+            "bottom": -3277.4375,
+            "left": 872.6640625
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "系统管理权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1104.7890625,
+            "y": -3190.7109375,
+            "width": 15,
+            "height": 15,
+            "top": -3190.7109375,
+            "right": 1119.7890625,
+            "bottom": -3175.7109375,
+            "left": 1104.7890625
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "组织管理权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1102.8984375,
+            "y": -3130.3359375,
+            "width": 15,
+            "height": 15,
+            "top": -3130.3359375,
+            "right": 1117.8984375,
+            "bottom": -3115.3359375,
+            "left": 1102.8984375
+          }
+        },
+        {
+          "j": 10,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "超级管理员",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -3065.1875,
+            "width": 16,
+            "height": 16,
+            "top": -3065.1875,
+            "right": 320,
+            "bottom": -3049.1875,
+            "left": 304
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "基础资料权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1099.09375,
+            "y": -2962.4609375,
+            "width": 15,
+            "height": 15,
+            "top": -2962.4609375,
+            "right": 1114.09375,
+            "bottom": -2947.4609375,
+            "left": 1099.09375
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "商品资料权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 513.84375,
+            "y": -2902.0859375,
+            "width": 15,
+            "height": 15,
+            "top": -2902.0859375,
+            "right": 528.84375,
+            "bottom": -2887.0859375,
+            "left": 513.84375
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看商品资料",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2766.1015625,
+            "width": 16,
+            "height": 16,
+            "top": -2766.1015625,
+            "right": 320,
+            "bottom": -2750.1015625,
+            "left": 304
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护商品资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2685.1484375,
+            "width": 16,
+            "height": 16,
+            "top": -2685.1484375,
+            "right": 320,
+            "bottom": -2669.1484375,
+            "left": 304
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "导出商品资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2604.1875,
+            "width": 16,
+            "height": 16,
+            "top": -2604.1875,
+            "right": 320,
+            "bottom": -2588.1875,
+            "left": 304
+          }
+        },
+        {
+          "j": 16,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "客户资料权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 806.8125,
+            "y": -2902.0859375,
+            "width": 15,
+            "height": 15,
+            "top": -2902.0859375,
+            "right": 821.8125,
+            "bottom": -2887.0859375,
+            "left": 806.8125
+          }
+        },
+        {
+          "j": 17,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看客户资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2836.9375,
+            "width": 16,
+            "height": 16,
+            "top": -2836.9375,
+            "right": 614.6640625,
+            "bottom": -2820.9375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 18,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部客户",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2776.21875,
+            "width": 16,
+            "height": 16,
+            "top": -2776.21875,
+            "right": 614.6640625,
+            "bottom": -2760.21875,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 19,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护客户资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2715.5,
+            "width": 16,
+            "height": 16,
+            "top": -2715.5,
+            "right": 614.6640625,
+            "bottom": -2699.5,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 20,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看客户授信额度",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2654.78125,
+            "width": 16,
+            "height": 16,
+            "top": -2654.78125,
+            "right": 614.6640625,
+            "bottom": -2638.78125,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 21,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护客户信用信息",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2594.0625,
+            "width": 16,
+            "height": 16,
+            "top": -2594.0625,
+            "right": 614.6640625,
+            "bottom": -2578.0625,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 22,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "供应商资料权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1101.4765625,
+            "y": -2902.0859375,
+            "width": 15,
+            "height": 15,
+            "top": -2902.0859375,
+            "right": 1116.4765625,
+            "bottom": -2887.0859375,
+            "left": 1101.4765625
+          }
+        },
+        {
+          "j": 23,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看供应商资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -2836.9375,
+            "width": 16,
+            "height": 16,
+            "top": -2836.9375,
+            "right": 909.328125,
+            "bottom": -2820.9375,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 24,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部供应商",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -2776.21875,
+            "width": 16,
+            "height": 16,
+            "top": -2776.21875,
+            "right": 909.328125,
+            "bottom": -2760.21875,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 25,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护供应商资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -2715.5,
+            "width": 16,
+            "height": 16,
+            "top": -2715.5,
+            "right": 909.328125,
+            "bottom": -2699.5,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 26,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看供应商授信额度",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -2654.78125,
+            "width": 16,
+            "height": 16,
+            "top": -2654.78125,
+            "right": 909.328125,
+            "bottom": -2638.78125,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 27,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护供应商信用信息",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -2594.0625,
+            "width": 16,
+            "height": 16,
+            "top": -2594.0625,
+            "right": 909.328125,
+            "bottom": -2578.0625,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 28,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "合作伙伴权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 512.109375,
+            "y": -2520.9453125,
+            "width": 15,
+            "height": 15,
+            "top": -2520.9453125,
+            "right": 527.109375,
+            "bottom": -2505.9453125,
+            "left": 512.109375
+          }
+        },
+        {
+          "j": 29,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看合作伙伴",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2455.796875,
+            "width": 16,
+            "height": 16,
+            "top": -2455.796875,
+            "right": 320,
+            "bottom": -2439.796875,
+            "left": 304
+          }
+        },
+        {
+          "j": 30,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部合作伙伴",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2395.078125,
+            "width": 16,
+            "height": 16,
+            "top": -2395.078125,
+            "right": 320,
+            "bottom": -2379.078125,
+            "left": 304
+          }
+        },
+        {
+          "j": 31,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护合作伙伴",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2334.359375,
+            "width": 16,
+            "height": 16,
+            "top": -2334.359375,
+            "right": 320,
+            "bottom": -2318.359375,
+            "left": 304
+          }
+        },
+        {
+          "j": 32,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "单证资料权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 806.7734375,
+            "y": -2520.9453125,
+            "width": 15,
+            "height": 15,
+            "top": -2520.9453125,
+            "right": 821.7734375,
+            "bottom": -2505.9453125,
+            "left": 806.7734375
+          }
+        },
+        {
+          "j": 33,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看单证资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2455.796875,
+            "width": 16,
+            "height": 16,
+            "top": -2455.796875,
+            "right": 614.6640625,
+            "bottom": -2439.796875,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 34,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部单证资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2395.078125,
+            "width": 16,
+            "height": 16,
+            "top": -2395.078125,
+            "right": 614.6640625,
+            "bottom": -2379.078125,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 35,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护单证资料",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2334.359375,
+            "width": 16,
+            "height": 16,
+            "top": -2334.359375,
+            "right": 614.6640625,
+            "bottom": -2318.359375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 36,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "样品业务权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1097.6796875,
+            "y": -2231.6328125,
+            "width": 15,
+            "height": 15,
+            "top": -2231.6328125,
+            "right": 1112.6796875,
+            "bottom": -2216.6328125,
+            "left": 1097.6796875
+          }
+        },
+        {
+          "j": 37,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "打样管理权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 511.9765625,
+            "y": -2171.2578125,
+            "width": 15,
+            "height": 15,
+            "top": -2171.2578125,
+            "right": 526.9765625,
+            "bottom": -2156.2578125,
+            "left": 511.9765625
+          }
+        },
+        {
+          "j": 38,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看打样管理",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2071.9609375,
+            "width": 16,
+            "height": 16,
+            "top": -2071.9609375,
+            "right": 320,
+            "bottom": -2055.9609375,
+            "left": 304
+          }
+        },
+        {
+          "j": 39,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部打样单",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -2003.65625,
+            "width": 16,
+            "height": 16,
+            "top": -2003.65625,
+            "right": 320,
+            "bottom": -1987.65625,
+            "left": 304
+          }
+        },
+        {
+          "j": 40,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护打样管理",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1935.34375,
+            "width": 16,
+            "height": 16,
+            "top": -1935.34375,
+            "right": 320,
+            "bottom": -1919.34375,
+            "left": 304
+          }
+        },
+        {
+          "j": 41,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护打样费用",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1867.03125,
+            "width": 16,
+            "height": 16,
+            "top": -1867.03125,
+            "right": 320,
+            "bottom": -1851.03125,
+            "left": 304
+          }
+        },
+        {
+          "j": 42,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "样品登记权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 806.7734375,
+            "y": -2171.2578125,
+            "width": 15,
+            "height": 15,
+            "top": -2171.2578125,
+            "right": 821.7734375,
+            "bottom": -2156.2578125,
+            "left": 806.7734375
+          }
+        },
+        {
+          "j": 43,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看样品登记",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -2035.2734375,
+            "width": 16,
+            "height": 16,
+            "top": -2035.2734375,
+            "right": 614.6640625,
+            "bottom": -2019.2734375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 44,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部样品",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1954.3203125,
+            "width": 16,
+            "height": 16,
+            "top": -1954.3203125,
+            "right": 614.6640625,
+            "bottom": -1938.3203125,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 45,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护样品登记",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1873.359375,
+            "width": 16,
+            "height": 16,
+            "top": -1873.359375,
+            "right": 614.6640625,
+            "bottom": -1857.359375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 46,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "寄样管理权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1101.4765625,
+            "y": -2171.2578125,
+            "width": 15,
+            "height": 15,
+            "top": -2171.2578125,
+            "right": 1116.4765625,
+            "bottom": -2156.2578125,
+            "left": 1101.4765625
+          }
+        },
+        {
+          "j": 47,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看寄样管理",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -2106.109375,
+            "width": 16,
+            "height": 16,
+            "top": -2106.109375,
+            "right": 909.328125,
+            "bottom": -2090.109375,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 48,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部寄样单",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -2045.390625,
+            "width": 16,
+            "height": 16,
+            "top": -2045.390625,
+            "right": 909.328125,
+            "bottom": -2029.390625,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 49,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护寄样管理",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1984.671875,
+            "width": 16,
+            "height": 16,
+            "top": -1984.671875,
+            "right": 909.328125,
+            "bottom": -1968.671875,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 50,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审核寄样单",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1923.953125,
+            "width": 16,
+            "height": 16,
+            "top": -1923.953125,
+            "right": 909.328125,
+            "bottom": -1907.953125,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 51,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看寄样费用统计",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1863.234375,
+            "width": 16,
+            "height": 16,
+            "top": -1863.234375,
+            "right": 909.328125,
+            "bottom": -1847.234375,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 52,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "销售出口权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1097.1875,
+            "y": -1760.5078125,
+            "width": 15,
+            "height": 15,
+            "top": -1760.5078125,
+            "right": 1112.1875,
+            "bottom": -1745.5078125,
+            "left": 1097.1875
+          }
+        },
+        {
+          "j": 53,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "出口报价权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 512.1484375,
+            "y": -1700.1328125,
+            "width": 15,
+            "height": 15,
+            "top": -1700.1328125,
+            "right": 527.1484375,
+            "bottom": -1685.1328125,
+            "left": 512.1484375
+          }
+        },
+        {
+          "j": 54,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看出口报价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1634.984375,
+            "width": 16,
+            "height": 16,
+            "top": -1634.984375,
+            "right": 320,
+            "bottom": -1618.984375,
+            "left": 304
+          }
+        },
+        {
+          "j": 55,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部出口报价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1574.265625,
+            "width": 16,
+            "height": 16,
+            "top": -1574.265625,
+            "right": 320,
+            "bottom": -1558.265625,
+            "left": 304
+          }
+        },
+        {
+          "j": 56,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护出口报价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1513.546875,
+            "width": 16,
+            "height": 16,
+            "top": -1513.546875,
+            "right": 320,
+            "bottom": -1497.546875,
+            "left": 304
+          }
+        },
+        {
+          "j": 57,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审批出口报价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1452.828125,
+            "width": 16,
+            "height": 16,
+            "top": -1452.828125,
+            "right": 320,
+            "bottom": -1436.828125,
+            "left": 304
+          }
+        },
+        {
+          "j": 58,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "导出出口报价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1392.109375,
+            "width": 16,
+            "height": 16,
+            "top": -1392.109375,
+            "right": 320,
+            "bottom": -1376.109375,
+            "left": 304
+          }
+        },
+        {
+          "j": 59,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "出口合同权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 806.8125,
+            "y": -1700.1328125,
+            "width": 15,
+            "height": 15,
+            "top": -1700.1328125,
+            "right": 821.8125,
+            "bottom": -1685.1328125,
+            "left": 806.8125
+          }
+        },
+        {
+          "j": 60,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看出口合同",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1634.984375,
+            "width": 16,
+            "height": 16,
+            "top": -1634.984375,
+            "right": 614.6640625,
+            "bottom": -1618.984375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 61,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部出口合同",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1574.265625,
+            "width": 16,
+            "height": 16,
+            "top": -1574.265625,
+            "right": 614.6640625,
+            "bottom": -1558.265625,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 62,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护出口合同",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1513.546875,
+            "width": 16,
+            "height": 16,
+            "top": -1513.546875,
+            "right": 614.6640625,
+            "bottom": -1497.546875,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 63,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审批出口合同",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1452.828125,
+            "width": 16,
+            "height": 16,
+            "top": -1452.828125,
+            "right": 614.6640625,
+            "bottom": -1436.828125,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 64,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "导出出口合同",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1392.109375,
+            "width": 16,
+            "height": 16,
+            "top": -1392.109375,
+            "right": 614.6640625,
+            "bottom": -1376.109375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 65,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "出货明细权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1101.3046875,
+            "y": -1700.1328125,
+            "width": 15,
+            "height": 15,
+            "top": -1700.1328125,
+            "right": 1116.3046875,
+            "bottom": -1685.1328125,
+            "left": 1101.3046875
+          }
+        },
+        {
+          "j": 66,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看出货明细",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1600.8359375,
+            "width": 16,
+            "height": 16,
+            "top": -1600.8359375,
+            "right": 909.328125,
+            "bottom": -1584.8359375,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 67,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部出货明细",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1532.53125,
+            "width": 16,
+            "height": 16,
+            "top": -1532.53125,
+            "right": 909.328125,
+            "bottom": -1516.53125,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 68,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护出货明细",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1464.21875,
+            "width": 16,
+            "height": 16,
+            "top": -1464.21875,
+            "right": 909.328125,
+            "bottom": -1448.21875,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 69,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审批出货明细",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1395.90625,
+            "width": 16,
+            "height": 16,
+            "top": -1395.90625,
+            "right": 909.328125,
+            "bottom": -1379.90625,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 70,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "采购业务权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1097.578125,
+            "y": -1289.3828125,
+            "width": 15,
+            "height": 15,
+            "top": -1289.3828125,
+            "right": 1112.578125,
+            "bottom": -1274.3828125,
+            "left": 1097.578125
+          }
+        },
+        {
+          "j": 71,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "采购询价权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 511.9765625,
+            "y": -1229.0078125,
+            "width": 15,
+            "height": 15,
+            "top": -1229.0078125,
+            "right": 526.9765625,
+            "bottom": -1214.0078125,
+            "left": 511.9765625
+          }
+        },
+        {
+          "j": 72,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看采购询价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1163.859375,
+            "width": 16,
+            "height": 16,
+            "top": -1163.859375,
+            "right": 320,
+            "bottom": -1147.859375,
+            "left": 304
+          }
+        },
+        {
+          "j": 73,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部采购询价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1103.140625,
+            "width": 16,
+            "height": 16,
+            "top": -1103.140625,
+            "right": 320,
+            "bottom": -1087.140625,
+            "left": 304
+          }
+        },
+        {
+          "j": 74,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护采购询价",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -1042.421875,
+            "width": 16,
+            "height": 16,
+            "top": -1042.421875,
+            "right": 320,
+            "bottom": -1026.421875,
+            "left": 304
+          }
+        },
+        {
+          "j": 75,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "导出采购询价模板",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -981.703125,
+            "width": 16,
+            "height": 16,
+            "top": -981.703125,
+            "right": 320,
+            "bottom": -965.703125,
+            "left": 304
+          }
+        },
+        {
+          "j": 76,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "采购合同权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 807.1171875,
+            "y": -1229.0078125,
+            "width": 15,
+            "height": 15,
+            "top": -1229.0078125,
+            "right": 822.1171875,
+            "bottom": -1214.0078125,
+            "left": 807.1171875
+          }
+        },
+        {
+          "j": 77,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看采购合同",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1163.859375,
+            "width": 16,
+            "height": 16,
+            "top": -1163.859375,
+            "right": 614.6640625,
+            "bottom": -1147.859375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 78,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部采购合同",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1103.140625,
+            "width": 16,
+            "height": 16,
+            "top": -1103.140625,
+            "right": 614.6640625,
+            "bottom": -1087.140625,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 79,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护采购合同",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -1042.421875,
+            "width": 16,
+            "height": 16,
+            "top": -1042.421875,
+            "right": 614.6640625,
+            "bottom": -1026.421875,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 80,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审批采购合同",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -981.703125,
+            "width": 16,
+            "height": 16,
+            "top": -981.703125,
+            "right": 614.6640625,
+            "bottom": -965.703125,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 81,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "开票通知权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1101.3046875,
+            "y": -1229.0078125,
+            "width": 15,
+            "height": 15,
+            "top": -1229.0078125,
+            "right": 1116.3046875,
+            "bottom": -1214.0078125,
+            "left": 1101.3046875
+          }
+        },
+        {
+          "j": 82,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看开票通知",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1163.859375,
+            "width": 16,
+            "height": 16,
+            "top": -1163.859375,
+            "right": 909.328125,
+            "bottom": -1147.859375,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 83,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部开票通知",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1103.140625,
+            "width": 16,
+            "height": 16,
+            "top": -1103.140625,
+            "right": 909.328125,
+            "bottom": -1087.140625,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 84,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护开票通知",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -1042.421875,
+            "width": 16,
+            "height": 16,
+            "top": -1042.421875,
+            "right": 909.328125,
+            "bottom": -1026.421875,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 85,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "发送开票通知",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -981.703125,
+            "width": 16,
+            "height": 16,
+            "top": -981.703125,
+            "right": 909.328125,
+            "bottom": -965.703125,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 86,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "采购跟单权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 511.9453125,
+            "y": -908.5859375,
+            "width": 15,
+            "height": 15,
+            "top": -908.5859375,
+            "right": 526.9453125,
+            "bottom": -893.5859375,
+            "left": 511.9453125
+          }
+        },
+        {
+          "j": 87,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看采购跟单计划",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -843.4375,
+            "width": 16,
+            "height": 16,
+            "top": -843.4375,
+            "right": 320,
+            "bottom": -827.4375,
+            "left": 304
+          }
+        },
+        {
+          "j": 88,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看跟单模板",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -782.71875,
+            "width": 16,
+            "height": 16,
+            "top": -782.71875,
+            "right": 320,
+            "bottom": -766.71875,
+            "left": 304
+          }
+        },
+        {
+          "j": 89,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看采购跟单",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -722,
+            "width": 16,
+            "height": 16,
+            "top": -722,
+            "right": 320,
+            "bottom": -706,
+            "left": 304
+          }
+        },
+        {
+          "j": 90,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部采购跟单计划",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -661.28125,
+            "width": 16,
+            "height": 16,
+            "top": -661.28125,
+            "right": 320,
+            "bottom": -645.28125,
+            "left": 304
+          }
+        },
+        {
+          "j": 91,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护采购跟单计划",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -600.5625,
+            "width": 16,
+            "height": 16,
+            "top": -600.5625,
+            "right": 320,
+            "bottom": -584.5625,
+            "left": 304
+          }
+        },
+        {
+          "j": 92,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护跟单模板",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -539.84375,
+            "width": 16,
+            "height": 16,
+            "top": -539.84375,
+            "right": 320,
+            "bottom": -523.84375,
+            "left": 304
+          }
+        },
+        {
+          "j": 93,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "质检仓库权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1097.3359375,
+            "y": -437.1171875,
+            "width": 15,
+            "height": 15,
+            "top": -437.1171875,
+            "right": 1112.3359375,
+            "bottom": -422.1171875,
+            "left": 1097.3359375
+          }
+        },
+        {
+          "j": 94,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "QC 查验权限全选",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 512.3203125,
+            "y": -376.7421875,
+            "width": 15,
+            "height": 15,
+            "top": -376.7421875,
+            "right": 527.3203125,
+            "bottom": -361.7421875,
+            "left": 512.3203125
+          }
+        },
+        {
+          "j": 95,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看 QC 查验",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -276.1796875,
+            "width": 16,
+            "height": 16,
+            "top": -276.1796875,
+            "right": 320,
+            "bottom": -260.1796875,
+            "left": 304
+          }
+        },
+        {
+          "j": 96,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部 QC 查验",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -205.34375,
+            "width": 16,
+            "height": 16,
+            "top": -205.34375,
+            "right": 320,
+            "bottom": -189.34375,
+            "left": 304
+          }
+        },
+        {
+          "j": 97,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护 QC 查验",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": -134.5,
+            "width": 16,
+            "height": 16,
+            "top": -134.5,
+            "right": 320,
+            "bottom": -118.5,
+            "left": 304
+          }
+        },
+        {
+          "j": 98,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "入库计划权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 807.25,
+            "y": -376.7421875,
+            "width": 15,
+            "height": 15,
+            "top": -376.7421875,
+            "right": 822.25,
+            "bottom": -361.7421875,
+            "left": 807.25
+          }
+        },
+        {
+          "j": 99,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看入库计划",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -276.1796875,
+            "width": 16,
+            "height": 16,
+            "top": -276.1796875,
+            "right": 614.6640625,
+            "bottom": -260.1796875,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 100,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部入库计划",
+          "text": "",
+          "value": "on",
+          "checked": true,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -205.34375,
+            "width": 16,
+            "height": 16,
+            "top": -205.34375,
+            "right": 614.6640625,
+            "bottom": -189.34375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 101,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护入库计划",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": -134.5,
+            "width": 16,
+            "height": 16,
+            "top": -134.5,
+            "right": 614.6640625,
+            "bottom": -118.5,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 102,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "货物入库权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1101.3046875,
+            "y": -376.7421875,
+            "width": 15,
+            "height": 15,
+            "top": -376.7421875,
+            "right": 1116.3046875,
+            "bottom": -361.7421875,
+            "left": 1101.3046875
+          }
+        },
+        {
+          "j": 103,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看货物入库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -311.59375,
+            "width": 16,
+            "height": 16,
+            "top": -311.59375,
+            "right": 909.328125,
+            "bottom": -295.59375,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 104,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部货物入库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -250.875,
+            "width": 16,
+            "height": 16,
+            "top": -250.875,
+            "right": 909.328125,
+            "bottom": -234.875,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 105,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护货物入库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -190.15625,
+            "width": 16,
+            "height": 16,
+            "top": -190.15625,
+            "right": 909.328125,
+            "bottom": -174.15625,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 106,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审批货物入库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 893.328125,
+            "y": -129.4375,
+            "width": 16,
+            "height": 16,
+            "top": -129.4375,
+            "right": 909.328125,
+            "bottom": -113.4375,
+            "left": 893.328125
+          }
+        },
+        {
+          "j": 107,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "出库计划权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 512.109375,
+            "y": -56.3203125,
+            "width": 15,
+            "height": 15,
+            "top": -56.3203125,
+            "right": 527.109375,
+            "bottom": -41.3203125,
+            "left": 512.109375
+          }
+        },
+        {
+          "j": 108,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看出库计划",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 79.6640625,
+            "width": 16,
+            "height": 16,
+            "top": 79.6640625,
+            "right": 320,
+            "bottom": 95.6640625,
+            "left": 304
+          }
+        },
+        {
+          "j": 109,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部出库计划",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 160.6171875,
+            "width": 16,
+            "height": 16,
+            "top": 160.6171875,
+            "right": 320,
+            "bottom": 176.6171875,
+            "left": 304
+          }
+        },
+        {
+          "j": 110,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护出库计划",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 241.578125,
+            "width": 16,
+            "height": 16,
+            "top": 241.578125,
+            "right": 320,
+            "bottom": 257.578125,
+            "left": 304
+          }
+        },
+        {
+          "j": 111,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "货物出库权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 806.8125,
+            "y": -56.3203125,
+            "width": 15,
+            "height": 15,
+            "top": -56.3203125,
+            "right": 821.8125,
+            "bottom": -41.3203125,
+            "left": 806.8125
+          }
+        },
+        {
+          "j": 112,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看货物出库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": 8.828125,
+            "width": 16,
+            "height": 16,
+            "top": 8.828125,
+            "right": 614.6640625,
+            "bottom": 24.828125,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 113,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部货物出库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": 69.546875,
+            "width": 16,
+            "height": 16,
+            "top": 69.546875,
+            "right": 614.6640625,
+            "bottom": 85.546875,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 114,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护货物出库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": 130.265625,
+            "width": 16,
+            "height": 16,
+            "top": 130.265625,
+            "right": 614.6640625,
+            "bottom": 146.265625,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 115,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审批货物出库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": 190.984375,
+            "width": 16,
+            "height": 16,
+            "top": 190.984375,
+            "right": 614.6640625,
+            "bottom": 206.984375,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 116,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "授权负库存出库",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 598.6640625,
+            "y": 251.703125,
+            "width": 16,
+            "height": 16,
+            "top": 251.703125,
+            "right": 614.6640625,
+            "bottom": 267.703125,
+            "left": 598.6640625
+          }
+        },
+        {
+          "j": 117,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "财务报表权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1103.203125,
+            "y": 354.4296875,
+            "width": 15,
+            "height": 15,
+            "top": 354.4296875,
+            "right": 1118.203125,
+            "bottom": 369.4296875,
+            "left": 1103.203125
+          }
+        },
+        {
+          "j": 118,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "财务管理权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659.7109375,
+            "y": 414.8046875,
+            "width": 15,
+            "height": 15,
+            "top": 414.8046875,
+            "right": 674.7109375,
+            "bottom": 429.8046875,
+            "left": 659.7109375
+          }
+        },
+        {
+          "j": 119,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看财务管理",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 479.953125,
+            "width": 16,
+            "height": 16,
+            "top": 479.953125,
+            "right": 320,
+            "bottom": 495.953125,
+            "left": 304
+          }
+        },
+        {
+          "j": 120,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "导出财务报表",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 509.5,
+            "y": 479.953125,
+            "width": 16,
+            "height": 16,
+            "top": 479.953125,
+            "right": 525.5,
+            "bottom": 495.953125,
+            "left": 509.5
+          }
+        },
+        {
+          "j": 121,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "经理查询权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1102.8984375,
+            "y": 414.8046875,
+            "width": 15,
+            "height": 15,
+            "top": 414.8046875,
+            "right": 1117.8984375,
+            "bottom": 429.8046875,
+            "left": 1102.8984375
+          }
+        },
+        {
+          "j": 122,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看经理查询",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 746,
+            "y": 479.953125,
+            "width": 16,
+            "height": 16,
+            "top": 479.953125,
+            "right": 762,
+            "bottom": 495.953125,
+            "left": 746
+          }
+        },
+        {
+          "j": 123,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "其他权限权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1103.0625,
+            "y": 582.6796875,
+            "width": 15,
+            "height": 15,
+            "top": 582.6796875,
+            "right": 1118.0625,
+            "bottom": 597.6796875,
+            "left": 1103.0625
+          }
+        },
+        {
+          "j": 124,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "Stocktake权限全选",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1101.3125,
+            "y": 643.0546875,
+            "width": 15,
+            "height": 15,
+            "top": 643.0546875,
+            "right": 1116.3125,
+            "bottom": 658.0546875,
+            "left": 1101.3125
+          }
+        },
+        {
+          "j": 125,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看库存盘点",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 304,
+            "y": 708.203125,
+            "width": 16,
+            "height": 16,
+            "top": 708.203125,
+            "right": 320,
+            "bottom": 724.203125,
+            "left": 304
+          }
+        },
+        {
+          "j": 126,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "查看全部库存盘点",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 517.25,
+            "y": 708.203125,
+            "width": 16,
+            "height": 16,
+            "top": 708.203125,
+            "right": 533.25,
+            "bottom": 724.203125,
+            "left": 517.25
+          }
+        },
+        {
+          "j": 127,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "维护库存盘点",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 730.5,
+            "y": 708.203125,
+            "width": 16,
+            "height": 16,
+            "top": 708.203125,
+            "right": 746.5,
+            "bottom": 724.203125,
+            "left": 730.5
+          }
+        },
+        {
+          "j": 128,
+          "tag": "INPUT",
+          "type": "checkbox",
+          "label": "审批库存盘点",
+          "text": "",
+          "value": "on",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 943.75,
+            "y": 708.203125,
+            "width": 16,
+            "height": 16,
+            "top": 708.203125,
+            "right": 959.75,
+            "bottom": 724.203125,
+            "left": 943.75
+          }
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "text": "用户管理",
+      "selected": "true"
+    },
+    {
+      "text": "部门与角色",
+      "selected": "false"
+    }
+  ],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "组织管理",
+      "href": "/organization/users"
+    },
+    {
+      "text": "MCP 接入",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "审计日志",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=8869, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "付费管理"
+          container
+            button "通知" [ref=8843, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=8844, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container "付费管理"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "合作伙伴费用发票"
+              form
+                container
+                  text "费用发票搜索"
+                  textbox [ref=8871]
+                container
+                  text "发票状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=8872]
+                    image "down"
+                      svg_root
+                container
+                  text "费用类型"
+                  container
+                    container
+                      text "全部类型"
+                      comboboxgrouping [ref=8873]
+                    image "down"
+                      svg_root
+                container
+                  text "合作伙伴标识"
+                  textbox [ref=8874]
+                container
+                  text "出运单号"
+                  textbox [ref=8875]
+                container
+                  button [ref=8876]
+                    svg_root
+                    text "查询"
+                  button [ref=8877]
+                    svg_root
+                    text "发票登记"
+            container [ref=8920]
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=8878]
+                  container [ref=8921]
+                    table
+                      table_row
+                        table_cell
+                          text "费用发票"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "合作伙伴"
+                        table_cell
+                          text "出运单"
+                        table_cell
+                          text "费用类型"
+                        table_cell
+                          text "发票金额"
+                        table_cell
+                          text "未付"
+                      table_row
+                        table_cell
+                          button [ref=8879]
+                            text "QA261112-FEE01"
+                        table_cell
+                          text "已付清"
+                        table_cell
+                          text "QA261112 测试货代"
+                        table_cell
+                          text "SP-DAEPEG"
+                        table_cell
+                          text "货代费"
+                        table_cell
+                          text "USD 20.00"
+                        table_cell
+                          text "USD 0.00"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=8880]
+                      image "left"
+                        svg_root
+                  list_item [ref=8881]
+                    anchor [ref=8882]
+                      text "1"
+                  list_item
+                    button [ref=8883]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+          container
+            svg_root
+            heading
+              text "应付费用查询"
+            form
+              container
+                text "应付费用搜索"
+                textbox [ref=8885]
+              container
+                text "应付状态"
+                container
+                  text "全部状态"
+                  comboboxgrouping [ref=8886]
+                  svg_root
+              container
+                text "费用类型"
+                container
+                  text "全部类型"
+                  comboboxgrouping [ref=8887]
+                  svg_root
+              container
+                text "合作伙伴标识"
+                textbox [ref=8888]
+              container
+                text "出运单号"
+                textbox [ref=8889]
+              button [ref=8890]
+                svg_root
+                text "查询"
+            container [ref=8923]
+              table
+                table_row
+                  table_cell
+              container [ref=8891]
+                container [ref=8924]
+                  table
+                    table_row
+                      table_cell
+                        text "费用发票"
+                      table_cell
+                        text "合作伙伴"
+                      table_cell
+                        text "出运单"
+                      table_cell
+                        text "费用类型"
+                      table_cell
+                        text "发票金额"
+                      table_cell
+                        text "已付费"
+                      table_cell
+                        text "应付余额"
+                      table_cell
+                        text "状态"
+                    table_row
+                      table_cell
+                        text "QA261112-FEE01"
+                      table_cell
+                        text "QA261112 测试货代"
+                      table_cell
+                        text "SP-DAEPEG"
+                      table_cell
+                        text "货代费"
+                      table_cell
+                        text "USD 20.00"
+                      table_cell
+                        text "USD 20.00"
+                      table_cell
+                        text "USD 0.00"
+                      table_cell
+                        text "已付清"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=8892]
+                    image "left"
+                      svg_root
+                list_item [ref=8893]
+                  anchor [ref=8894]
+                    text "1"
+                list_item
+                  button [ref=8895]
+                    image "right"
+                      svg_root
+              table
+                table_row
+                  table_cell
+    container [ref=8922]
+      dialog "费用发票登记"
+        button "Close" [ref=8897, loc=css:button[aria-label="Close"]]
+          svg_root
+        text "费用发票登记"
+        form
+          container
+            text "费用发票号"
+            textbox [ref=8898]
+          container
+            text "发票日期"
+            textbox [ref=8899]
+              spinbutton "年" [ref=8900]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=8901]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=8902]
+                text "18"
+          container
+            text "合作伙伴标识"
+            textbox [ref=8903]
+          container
+            text "合作伙伴名称"
+            textbox [ref=8904]
+          container
+            container
+              text "合作伙伴类型"
+              container
+                container
+                  text "货代公司"
+                  comboboxgrouping [ref=8905]
+                image "down"
+                  svg_root
+            container
+              text "费用类型"
+              container
+                container
+                  text "货代费"
+                  comboboxgrouping [ref=8906]
+                image "down"
+                  svg_root
+          container
+            container
+              text "出运单标识"
+              textbox [ref=8907]
+            container
+              text "出运单号"
+              textbox [ref=8908]
+          container
+            container
+              text "业务员标识"
+              textbox [ref=8909]
+            container
+              text "业务员姓名"
+              textbox [ref=8910]
+          container
+            container
+              text "发票金额"
+              textbox [ref=8911]
+            container
+              text "币种"
+              textbox [ref=8912]
+                text "USD"
+            container
+              text "到期日"
+              textbox [ref=8913]
+                spinbutton "年" [ref=8914]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=8915]
+                  text "12"
+                text "/"
+                spinbutton "日" [ref=8916]
+                  text "18"
+          container
+            text "备注"
+            textbox [ref=8917]
+          container
+            button [ref=8918]
+              text "取消"
+            button [ref=8919]
+              text "登记费用发票"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

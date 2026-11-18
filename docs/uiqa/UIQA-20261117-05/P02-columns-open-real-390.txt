@@ -1,0 +1,186 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=5442, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "供应商资料"
+          container
+            button "通知" [ref=5394, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=5395, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "供应商概览"
+            container
+              text "供应商"
+              text "3"
+            container
+              text "启用"
+              text "2"
+            container
+              text "联系人"
+              text "4"
+            container
+              text "有信用资料"
+              text "3"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "供应商资料"
+              form
+                container
+                  text "搜索"
+                  textbox [ref=5412, loc=css:input[placeholder="供应商编号 / 中英文名称 / 联系人"]]
+                    text "供应商编号 / 中英文名称 / 联系人"
+                container
+                  button "查询供应商" [ref=5413, loc=css:button[aria-label="查询供应商"]]
+                    svg_root
+                  button [ref=5414]
+                    svg_root
+                    text "新增供应商"
+                  button "高级筛选" [ref=5415, loc=css:button[aria-label="高级筛选"]]
+                    svg_root
+                  button "设置列视图" [ref=5416, loc=css:button[aria-label="设置列视图"]]
+                    svg_root
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=5417]
+                  container [ref=5443]
+                    table
+                      table_row
+                        table_cell
+                          text "编号"
+                        table_cell
+                          text "中文名称"
+                        table_cell
+                          text "英文名称"
+                        table_cell
+                          text "国家/地区"
+                        table_cell
+                          text "联系人"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=5418]
+                            text "UIQA-20261117-05-S01"
+                        table_cell
+                          text "UIQA全量验收停用供应商样本"
+                        table_cell
+                          text "UIQA Inactive Supplier Test Record"
+                        table_cell
+                          text "CN"
+                        table_cell
+                          text "UIQA测试联系人"
+                        table_cell
+                          text "停用"
+                        table_cell
+                          button [ref=5419]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          button [ref=5420]
+                            text "UI261114-S01"
+                        table_cell
+                          text "演示供应商｜江南织造"
+                        table_cell
+                          text "Demo Jiangnan Textile"
+                        table_cell
+                          text "中国"
+                        table_cell
+                          text "演示联系人李先生"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          button [ref=5421]
+                            text "查看详情"
+                      table_row
+                        table_cell
+                          button [ref=5422]
+                            text "QA261112-S01"
+                        table_cell
+                          text "QA261112 测试供应商"
+                        table_cell
+                          text "QA261112 Supplier"
+                        table_cell
+                          text "CN"
+                        table_cell
+                          text "QA261112 联系人"
+                        table_cell
+                          text "启用"
+                        table_cell
+                          button [ref=5423]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 3 条"
+                  list_item
+                    button [ref=5424]
+                      image "left"
+                        svg_root
+                  list_item [ref=5425]
+                    anchor [ref=5426]
+                      text "1"
+                  list_item
+                    button [ref=5427]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    menu [ref=5429]
+      menuitem
+        text "✓"
+        button [ref=5430]
+          text "编号"
+      menuitem [ref=5431]
+        text "✓"
+        button [ref=5432]
+          text "中文名称"
+      menuitem [ref=5433]
+        text "✓"
+        button [ref=5434]
+          text "英文名称"
+      menuitem [ref=5435]
+        text "✓"
+        button [ref=5436]
+          text "国家/地区"
+      menuitem [ref=5437]
+        text "✓"
+        button [ref=5438]
+          text "联系人"
+      menuitem [ref=5439]
+        text "✓"
+        button [ref=5440]
+          text "状态"
+      splitter
+      menuitem [ref=5441]
+        text "恢复默认"
+    tooltip
+      text "设置列视图"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

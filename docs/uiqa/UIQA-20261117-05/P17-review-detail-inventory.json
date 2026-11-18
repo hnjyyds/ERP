@@ -1,0 +1,234 @@
+{
+  "url": "http://localhost:8080/purchase/followup/f4189d03-0570-4cd2-9a30-6818446320e3",
+  "title": "跟单任务中心",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "跟单任务中心",
+    "节点进度查询"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "截至日期\n查询",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "截至日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 796.15625,
+            "width": 355.328125,
+            "height": 36,
+            "top": 796.15625,
+            "right": 638.328125,
+            "bottom": 832.15625,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 743.4765625,
+            "y": 796.15625,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 796.15625,
+            "right": 828,
+            "bottom": 832.15625,
+            "left": 743.4765625
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "节点\t预计\t提醒\t实际\t状态\t来源\t操作\n下单日期\t2026-11-12\t2026-11-12\t2026-11-12\t已完成\t采购合同\t\n查看来源\n\n确认样提交日期\t2026-11-15\t2026-11-14\t待回写\t已逾期\t未回写\t\n登记提交\n\n大货样提交日期\t2026-11-19\t2026-11-17\t待回写\t待完成\t未回写\t\n登记提交\n\nQC查验日期\t2026-11-26\t2026-11-24\t2026-11-12\t已完成\tQC 查验\nQC-8TXV57 QC 查验通过\n\t\n查看来源\n\n入库日期\t2026-12-02\t2026-11-29\t2026-11-12\t已完成\t入库单\nXP-IN-MVU9CU 正式入库\n\t\n查看来源\n\n出库日期\t2026-12-07\t2026-12-04\t待回写\t待完成\t未回写\t\n进入出库",
+      "buttons": [
+        "查看来源",
+        "登记提交",
+        "登记提交",
+        "查看来源",
+        "查看来源",
+        "进入出库"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "采购合同\t供应商\t节点\t预计\t逾期\nPC-HR36RU\tQA261112 测试供应商\t确认样提交日期\t2026-11-15\t3 天",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

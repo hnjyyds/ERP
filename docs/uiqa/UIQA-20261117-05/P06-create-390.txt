@@ -1,0 +1,252 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container
+        container "新裴贸易 业务管理系统"
+          text "新裴贸易"
+          text "业务管理系统"
+        button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+          svg_root
+          text "导航"
+      container
+        container
+          container
+            paragraph
+              text "业务模块"
+            heading
+              text "出口报价"
+          container
+            button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+              svg_root
+              text "3"
+            button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+              svg_root
+        container
+          container "出口报价概览"
+            container
+              text "报价单"
+              text "1"
+            container
+              text "待审批"
+              text "0"
+            container
+              text "已审批"
+              text "1"
+            container
+              text "报价金额"
+              text "USD 50.00"
+          container
+            container
+              container
+                svg_root
+                heading
+                  text "报价单列表"
+              form
+                container
+                  text "报价搜索"
+                  textbox [ref=2107, loc=css:input[placeholder="单号 / 客户 / 产品 / 条款"]]
+                    text "单号 / 客户 / 产品 / 条款"
+                container
+                  text "审批状态"
+                  container
+                    container
+                      text "全部状态"
+                      comboboxgrouping [ref=2108]
+                    image "down"
+                      svg_root
+                container
+                  text "客户筛选"
+                  container
+                    container
+                      text "从客户资料筛选"
+                      comboboxgrouping [ref=2109]
+                    image "down"
+                      svg_root
+                container
+                  button [ref=2110]
+                    svg_root
+                    text "查询"
+                  button [ref=2111]
+                    svg_root
+                    text "新增出口报价"
+            container
+              table
+                table_row
+                  table_cell
+              container
+                container [ref=2112]
+                  container [ref=2154]
+                    table
+                      table_row
+                        table_cell
+                          text "报价单号"
+                        table_cell
+                          text "状态"
+                        table_cell
+                          text "客户"
+                        table_cell
+                          text "贸易条款"
+                        table_cell
+                          text "金额"
+                        table_cell
+                          text "合同"
+                        table_cell
+                          text "入口"
+                      table_row
+                        table_cell
+                          button [ref=2113]
+                            text "QT-A33KVZ"
+                        table_cell
+                          text "已生成合同"
+                        table_cell
+                          text "QA261112 测试客户"
+                        table_cell
+                          text "FOB Ningbo"
+                        table_cell
+                          text "USD 50.00"
+                        table_cell
+                          text "EC-5FW46R"
+                        table_cell
+                          button [ref=2114]
+                            text "查看详情"
+                unordered_list
+                  list_item
+                    text "共 1 条"
+                  list_item
+                    button [ref=2115]
+                      image "left"
+                        svg_root
+                  list_item [ref=2116]
+                    anchor [ref=2117]
+                      text "1"
+                  list_item
+                    button [ref=2118]
+                      image "right"
+                        svg_root
+              table
+                table_row
+                  table_cell
+    container [ref=2120]
+      dialog "新增或编辑出口报价"
+        button "Close" [ref=2121, loc=css:button[aria-label="Close"]]
+          svg_root
+        text "新增或编辑出口报价"
+        form
+          container
+            text "报价单号"
+            textbox [ref=2122, loc=css:input[placeholder="系统自动生成"]]
+              text "系统自动生成"
+          container
+            text "报价日期"
+            textbox [ref=2123]
+              spinbutton "年" [ref=2124]
+                text "2026"
+              text "/"
+              spinbutton "月" [ref=2125]
+                text "11"
+              text "/"
+              spinbutton "日" [ref=2126]
+                text "17"
+          container
+            text "选择客户"
+            container
+              text "从客户资料选择"
+              comboboxgrouping [ref=2127]
+              svg_root
+          container
+            text "客户标识"
+            textbox [ref=2128]
+              text "选择客户后自动带出"
+          container
+            text "客户名称"
+            textbox [ref=2129]
+              text "选择客户后自动带出"
+          container
+            container
+              text "业务员"
+              textbox [ref=2130]
+            container
+              text "币种"
+              textbox [ref=2131]
+                text "USD"
+          container
+            container
+              text "贸易条款"
+              textbox [ref=2132]
+                text "FOB Ningbo"
+            container
+              text "有效期"
+              textbox [ref=2133]
+                spinbutton "年" [ref=2134]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=2135]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=2136]
+                  text "17"
+          container
+            text "报价描述"
+            textbox [ref=2137]
+          text "报价商品明细"
+          container
+            container
+              text "商品标识"
+              textbox [ref=2138]
+            container
+              text "商品编号"
+              textbox [ref=2139]
+          container
+            text "商品名称"
+            textbox [ref=2140]
+          container
+            container
+              text "规格"
+              textbox [ref=2141]
+            container
+              text "型号"
+              textbox [ref=2142]
+          container
+            text "数量"
+            spinbutton [ref=2143]
+              text "1"
+          container
+            text "单位"
+            textbox [ref=2144]
+              text "pcs"
+          container
+            text "销售单价"
+            spinbutton [ref=2145]
+              text "1.00"
+          container
+            text "货运方式"
+            container
+              text "海运"
+              comboboxgrouping [ref=2146]
+              svg_root
+          container
+            text "运费"
+            spinbutton [ref=2147]
+              text "0.00"
+          container
+            text "采购参考供应商"
+            textbox [ref=2148]
+          container
+            text "采购参考价"
+            spinbutton [ref=2149]
+          container
+            text "明细备注"
+            textbox [ref=2150]
+          button [ref=2151]
+            text "取 消"
+          button [ref=2152]
+            text "保存草稿编辑"
+          button [ref=2153]
+            text "新增出口报价"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

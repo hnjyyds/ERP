@@ -1,0 +1,306 @@
+{
+  "url": "http://localhost:8080/masterdata/products?q=UIQA-20261117-05-P17",
+  "title": "商品资料",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "商品资料",
+    "商品资料"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "搜索\n新增商品\n导入\n导出",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "搜索",
+          "text": "",
+          "value": "UIQA-20261117-05-P17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 312.640625,
+            "width": 721.90625,
+            "height": 36,
+            "top": 312.640625,
+            "right": 1002.90625,
+            "bottom": 348.640625,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "label": "查询商品",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1014.90625,
+            "y": 312.640625,
+            "width": 36,
+            "height": 36,
+            "top": 312.640625,
+            "right": 1050.90625,
+            "bottom": 348.640625,
+            "left": 1014.90625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增商品",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1058.90625,
+            "y": 312.640625,
+            "width": 111.046875,
+            "height": 36,
+            "top": 312.640625,
+            "right": 1169.953125,
+            "bottom": 348.640625,
+            "left": 1058.90625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "导入商品",
+          "text": "导入",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1177.953125,
+            "y": 312.640625,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 312.640625,
+            "right": 1262.4765625,
+            "bottom": 348.640625,
+            "left": 1177.953125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "导出全部商品",
+          "text": "导出",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1270.4765625,
+            "y": 312.640625,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 312.640625,
+            "right": 1355,
+            "bottom": 348.640625,
+            "left": 1270.4765625
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "设置列视图",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1363,
+            "y": 312.640625,
+            "width": 36,
+            "height": 36,
+            "top": 312.640625,
+            "right": 1399,
+            "bottom": 348.640625,
+            "left": 1363
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "\t编号\t中文名称\t英文名称\t海关编码\t单位\t状态\t配件\t入口\n\n\tUIQA-20261117-05-P17\tUIQA跨日审计与单位回填样本17\tUIQA Date Boundary and Unit Sample 17\t0000000000\tbox\t启用\t0\t\n查看详情",
+      "buttons": [
+        "UIQA-20261117-05-P17",
+        "查看详情"
+      ]
+    }
+  ],
+  "dialogs": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "供应商资料",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "客户资料",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "合作伙伴",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "单证资料",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

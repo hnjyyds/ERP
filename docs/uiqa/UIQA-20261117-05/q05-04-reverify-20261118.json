@@ -1,0 +1,64 @@
+{
+  "defect": "Q05-04",
+  "asset": "assets/index-BTFsUnZ2.js",
+  "css": "assets/index-CVMx6kR8.css",
+  "base_url": "http://127.0.0.1:8080",
+  "status": "第一批（P05、P11 D01）已复验；P06与P11 D02见 q05-04-p06-p11-reverify-20261118.json；P17/P18/P20/P23/P25仍待处理",
+  "account": "admin",
+  "p05_document_parties": {
+    "form_layout": "关联客户改为远程选择，移除“关联客户 ID/名称”两个手填框",
+    "search_query": "QA",
+    "options": [
+      "UIQA全量验收停用客户样本 / UIQA-20261117-05-C01",
+      "QA261112 测试客户 / QA261112-C01"
+    ],
+    "select_switch_clear": "A→B切换后回填B名称；清空后恢复占位提示",
+    "saved_test_record": "UIQA-20261117-05-DP01 / UIQA测试收货人01（测试资料，保持启用以备回读）",
+    "roundtrip": "列表与详情“关联客户”显示 QA261112 测试客户，非内部UUID",
+    "viewports": ["1440x900", "390x844"],
+    "screenshots": [
+      "screenshots/P05-customer-search-BTFsUnZ2-1440.png",
+      "screenshots/P05-customer-search-BTFsUnZ2-390.png",
+      "screenshots/P05-detail-customer-C3bgS5Cg-1440.png"
+    ]
+  },
+  "p11_invoice_notice": {
+    "d01_initial_values": {
+      "supplier_id_a": "",
+      "supplier_id_b": "",
+      "purchase_contract_no_a": "",
+      "purchase_contract_no_b": "",
+      "product_code_a": "",
+      "product_code_b": "",
+      "product_name_a": "",
+      "product_name_b": "",
+      "quantity_a": "",
+      "quantity_b": "",
+      "amount_a": "",
+      "amount_b": ""
+    },
+    "a_b_independence": "A填写供应商/商品/数量后B仍为空；清空A后A恢复空值",
+    "cancel_reopen": "关闭后重开A/B均空，单位保持通用默认pcs，报关单号为空",
+    "d02_remaining": "供应商标识、采购合同标识、商品标识仍需手填，没有业务选择器；本轮只解决D01演示默认值，D02未修复",
+    "viewports": ["1440x900", "390x844"],
+    "screenshots": [
+      "screenshots/P11-generate-empty-BTFsUnZ2-1440.png",
+      "screenshots/P11-generate-empty-BTFsUnZ2-390.png",
+      "screenshots/P11-generate-reopen-empty-C3bgS5Cg-1440.png"
+    ]
+  },
+  "remaining": [
+    "P11 D02 供应商/采购合同/商品标识仍需手填（后续批次已修复，见 q05-04-p06-p11-reverify-20261118.json）",
+    "P17 跟单配置/生成仍要求采购合同ID并预填演示来源",
+    "P18/P20 库位预安排仍要求仓库/库位内部ID",
+    "P23 收款分摊仍分列业务员/合同标识与名称",
+    "P25 费用发票登记仍分列合作伙伴/出运单/业务员标识"
+  ],
+  "business_writes": "仅新增测试单证资料DP01（当前启用，未停用）；未提交开票通知或其他业务单据",
+  "automation": {
+    "vitest": "422 passed / 50 files",
+    "tsc": "passed",
+    "eslint": "passed"
+  },
+  "verified_at": "2026-11-18"
+}

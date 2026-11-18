@@ -1,0 +1,92 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 1,
+    "label": "任务搜索",
+    "before": {
+      "url": "http://localhost:8080/quality/inspections",
+      "form": "任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单",
+      "inputs": [
+        {
+          "label": "任务搜索",
+          "value": ""
+        },
+        {
+          "label": "任务状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "查验结果\n全部结果",
+          "value": ""
+        }
+      ],
+      "text": "QC 任务列表\n任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单\nQC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "QC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情"
+    },
+    "positive": "QC-8TXV57",
+    "hit": {
+      "url": "http://localhost:8080/quality/inspections?q=QC-8TXV57",
+      "form": "任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单",
+      "inputs": [
+        {
+          "label": "任务搜索",
+          "value": "QC-8TXV57"
+        },
+        {
+          "label": "任务状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "查验结果\n全部结果",
+          "value": ""
+        }
+      ],
+      "text": "QC 任务列表\n任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单\nQC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "QC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/quality/inspections?q=UIQA-20261117-05-NOMATCH",
+      "form": "任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单",
+      "inputs": [
+        {
+          "label": "任务搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "任务状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "查验结果\n全部结果",
+          "value": ""
+        }
+      ],
+      "text": "QC 任务列表\n任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单\nQC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "QC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/quality/inspections",
+      "form": "任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单",
+      "inputs": [
+        {
+          "label": "任务搜索",
+          "value": ""
+        },
+        {
+          "label": "任务状态\n全部状态",
+          "value": ""
+        },
+        {
+          "label": "查验结果\n全部结果",
+          "value": ""
+        }
+      ],
+      "text": "QC 任务列表\n任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单\nQC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "QC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

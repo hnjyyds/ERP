@@ -1,0 +1,57 @@
+{
+  "values": [
+    {
+      "label": "出库计划\nOP-SP-DAEPEG / SP-DAEPEG / 已关闭",
+      "value": ""
+    },
+    {
+      "label": "出库单号",
+      "value": ""
+    },
+    {
+      "label": "出库模式\n正式出库",
+      "value": ""
+    },
+    {
+      "label": "出库日期",
+      "value": "2026-11-12"
+    },
+    {
+      "label": "仓库 ID",
+      "value": "wh-QA261112"
+    },
+    {
+      "label": "仓库",
+      "value": "QA261112 测试仓库"
+    },
+    {
+      "label": "库位 ID",
+      "value": "loc-QA261112-A01"
+    },
+    {
+      "label": "库位",
+      "value": "QA261112-A01"
+    },
+    {
+      "label": "经办人",
+      "value": "QA261112 测试经办"
+    },
+    {
+      "label": "异常原因",
+      "value": ""
+    },
+    {
+      "label": "审批人",
+      "value": "演示业务主管"
+    },
+    {
+      "label": "审批日期",
+      "value": "2026-11-12"
+    },
+    {
+      "label": "授权负库存出库",
+      "value": "on"
+    }
+  ],
+  "markerRemaining": false
+}

@@ -1,0 +1,45 @@
+[
+  {
+    "url": "http://localhost:8080/api/v1/masterdata/products",
+    "status": 422,
+    "method": "POST",
+    "request": {
+      "code": "UIQA-20261117-05-P01",
+      "cn_name": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本",
+      "en_name": "",
+      "specification": null,
+      "model": null,
+      "customs_code": "0000000000",
+      "tax_rate": "0.13",
+      "rebate_rate": "0.09",
+      "package_info": "",
+      "unit": "pcs",
+      "image_url": null,
+      "image_urls": [],
+      "status": "active",
+      "accessories": []
+    },
+    "response": {
+      "success": false,
+      "code": "VALIDATION_ERROR",
+      "message": "请求参数校验失败",
+      "data": null,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "请求参数校验失败",
+        "details": [
+          {
+            "field": "en_name",
+            "message": "不能为空或仅包含空白字符",
+            "type": "value_error"
+          },
+          {
+            "field": "package_info",
+            "message": "不能为空或仅包含空白字符",
+            "type": "value_error"
+          }
+        ]
+      }
+    }
+  }
+]

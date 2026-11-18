@@ -1,0 +1,804 @@
+{
+  "time": "2026-11-17T07:57:30.312Z",
+  "url": "http://localhost:8080/finance/payments/489f9619-6f86-433c-a412-47236257892a",
+  "viewport": [
+    1500,
+    803
+  ],
+  "scripts": [
+    "http://localhost:8080/assets/index-By6s5oGf.js"
+  ],
+  "language": "zh-CN",
+  "timeZone": "Asia/Shanghai",
+  "scroll": [
+    0,
+    313,
+    1500,
+    1213
+  ],
+  "focus": "<body>\n    <div id=\"app\"><main class=\"react-shell\"><aside class=\"react-sidebar\"><div class=\"sidebar-header\"><div class=\"brand\" aria-label=\"新裴贸易 业务管理系统\"><div class=\"brand-wordmark\" aria-label=\"D-DUTCH\">D-DUTCH</div><div><strong>新裴贸易</strong><span>业务管理系统</span></div></div><button aria-controls=\"app-primary-navigation\" aria-expanded=\"false\" aria-label=\"业务导航\" class=\"mobile-nav-toggle\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-menu\" aria-hidden=\"true\"><path d=\"M4 5h16\"></path><path d=\"M4 12h16\"></path><path d=\"M4 19h16\"></path></svg><span>导航</span></button></div><nav id=\"app-primary-navigation\" class=\"react-nav\" aria-label=\"主导航\"><a class=\"nav-link nav-dashboard\" href=\"/\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-layout-dashboard nav-link-icon\" aria-hidden=\"true\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"></rect></svg><span>工作台</span></a><div class=\"nav-groups\" aria-label=\"业务模块\"><details class=\"nav-group\" open=\"\"><summary class=\"nav-group-summary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chart-column\" aria-hidden=\"true\"><path d=\"M3 3v16a2 2 0 0 0 2 2h16\"></path><path d=\"M18 17V9\"></path><path d=\"M13 17V5\"></path><path d=\"M8 17v-3\"></path></svg><span>财务经营</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down nav-group-chevron\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"nav-group-items\"><details class=\"nav-submenu\" open=\"\"><summary class=\"nav-link nav-link-parent\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-wallet nav-link-icon\" aria-hidden=\"true\"><path d=\"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1\"></path><path d=\"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4\"></path></svg><span>财务摘要</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right nav-submenu-chevron\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></summary><div class=\"nav-submenu-items\"><a class=\"nav-link nav-child\" href=\"/finance/overview\"><span>经营总览</span></a><a class=\"nav-link nav-child\" href=\"/finance/receipts\"><span>收款管理</span></a><a class=\"nav-link nav-child active\" href=\"/finance/payments\"><span>付款管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/fees\"><span>付费管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/tax\"><span>核销退税</span></a><a class=\"nav-link nav-child\" href=\"/finance/misc\"><span>杂费管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/settlement\"><span>结算核算</span></a><a class=\"nav-link nav-child\" href=\"/finance/reimbursements\"><span>报销管理</span></a><a class=\"nav-link nav-child\" href=\"/finance/port-data\"><span>口岸数据</span></a><a class=\"nav-link nav-child\" href=\"/finance/reports\"><span>财务报表</span></a></div></details></div></details></div></nav></aside><section class=\"react-workspace\"><header class=\"react-topbar\"><div><p class=\"eyebrow\">业务模块</p><h1>付款管理</h1></div><div class=\"react-topbar-actions\"><button aria-label=\"通知\" class=\"topbar-settings-button topbar-bell-button\" title=\"通知\" type=\"button\"><span class=\"ant-badge css-xsuzon css-var-root\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-bell\" aria-hidden=\"true\"><path d=\"M10.268 21a2 2 0 0 0 3.464 0\"></path><path d=\"M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326\"></path></svg><sup data-show=\"true\" class=\"ant-scroll-number ant-badge-count ant-badge-count-sm\" title=\"5\" style=\"margin-top: 2px; inset-inline-end: 2px;\"><bdi><span class=\"ant-scroll-number-only\" style=\"transition: none;\"><span class=\"ant-scroll-number-only-unit current\">5</span></span></bdi></sup></span></button><button aria-label=\"系统设置\" class=\"topbar-settings-button\" title=\"系统设置\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-settings\" aria-hidden=\"true\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg></button></div></header><section class=\"finance-page finance-detail-page\"><div class=\"finance-subnav\"><button class=\"finance-back-button\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-arrow-left\" aria-hidden=\"true\"><path d=\"m12 19-7-7 7-7\"></path><path d=\"M19 12H5\"></path></svg>付款管理</button></div><div data-show=\"true\" class=\"ant-alert ant-alert-success ant-alert-outlined workspace-alert css-var-root css-xsuzon\" role=\"alert\"><span class=\"ant-alert-icon\"><span role=\"img\" aria-label=\"check-circle\" class=\"anticon anticon-check-circle\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"check-circle\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z\"></path></svg></span></span><div class=\"ant-alert-section\"><div class=\"ant-alert-title\">已审批付款申请 PR-PG3X2P</div></div></div><section class=\"finance-detail-grid\" aria-label=\"付款管理\"><section class=\"workspace-panel finance-payment-request-panel\"><div class=\"panel-title\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-circle-check\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m9 12 2 2 4-4\"></path></svg><h2 class=\"ant-typography css-xsuzon css-var-root\">付款申请和审批</h2></div><dl class=\"detail-list finance-payment-detail-list\"><div><dt>当前发票</dt><dd>UIQA-20261117-04-INV01</dd></div><div><dt>状态</dt><dd>已付清</dd></div><div><dt>已付</dt><dd>CNY 0.01</dd></div><div><dt>未付</dt><dd>CNY 0.00</dd></div><div><dt>超付</dt><dd>CNY 0.00</dd></div></dl><div class=\"finance-receipt-actions\"><form class=\"record-form compact-section\"><div class=\"form-divider\">付款申请新增</div><div class=\"finance-payment-fields\"><label>付款申请号<input readonly=\"\" placeholder=\"保存后自动生成\" class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"\"></label><label>供应商发票标识<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"489f9619-6f86-433c-a412-47236257892a\"></label><label>付款类别<div class=\"ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow\"><div class=\"ant-select-content ant-select-content-has-value\" title=\"货款\">货款<input id=\"_r_18_\" readonly=\"\" autocomplete=\"off\" class=\"ant-select-input\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-autocomplete=\"list\" type=\"search\" value=\"\"></div><div class=\"ant-select-suffix\"><span role=\"img\" aria-label=\"down\" class=\"anticon anticon-down\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"down\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z\"></path></svg></span></div></div></label><label>申请日期<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"date\" value=\"2026-11-17\"></label><label>申请金额<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"0.00\"></label><label>币种<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"CNY\"></label><label>申请备注<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"\"></label><label><span class=\"required-label\">审批人</span><div class=\"ant-select ant-select-outlined css-var-root ant-select-css-var css-xsuzon ant-select-single ant-select-show-arrow ant-select-show-search\"><div class=\"ant-select-content\"><div class=\"ant-select-placeholder\" style=\"visibility: visible;\">选择审批人</div><input id=\"_r_1a_\" aria-label=\"审批人\" autocomplete=\"off\" class=\"ant-select-input\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-autocomplete=\"list\" type=\"search\" value=\"\"></div><div class=\"ant-select-suffix\"><span role=\"img\" aria-label=\"down\" class=\"anticon anticon-down\"><svg viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"down\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z\"></path></svg></span></div></div></label></div><button type=\"submit\" class=\"ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined\" disabled=\"\"><span class=\"ant-btn-icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-save\" aria-hidden=\"true\"><path d=\"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z\"></path><path d=\"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7\"></path><path d=\"M7 3v4a1 1 0 0 0 1 1h7\"></path></svg></span><span>新增付款申请</span></button></form><form class=\"record-form compact-section\"><div class=\"form-divider\">付款审批</div><div class=\"finance-payment-fields\"><label>审批金额<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"0.01\"></label><label>审批日期<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"date\" value=\"2026-11-17\"></label><label>审批人<input disabled=\"\" class=\"ant-input ant-input-disabled css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"演示财务主管\"></label><label>付款账号<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"\"></label><label>审批备注<input class=\"ant-input css-xsuzon ant-input-outlined css-var-root ant-input-css-var\" type=\"text\" value=\"\"></label></div><button type=\"submit\" class=\"ant-btn css-xsuzon css-var-root ant-btn-default ant-btn-color-default ant-btn-variant-outlined\" disabled=\"\"><div style=\"position: absolute; left: 0px; top: 0px;\"><div class=\"ant-wave css-xsuzon wave-motion-appear wave-motion-appear-active wave-motion\" style=\"left: -1px; top: -1px; width: 111px; height: 36px; border-radius: 8px; --ant-wave-color: oklab(0.709489 -0.00222907 -0.0977074);\"></div></div><span class=\"ant-btn-icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-circle-check\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m9 12 2 2 4-4\"></path></svg></span><span>审批付款</span></button></form></div><section class=\"finance-allocation-history\"><strong>付款申请列表</strong><div class=\"css-var-root ant-table-css-var ant-table-wrapper css-xsuzon\"><div class=\"ant-spin css-xsuzon css-var-root\" aria-live=\"polite\" aria-busy=\"false\"><div class=\"ant-spin-container\"><div class=\"ant-table ant-table-small css-var-root ant-table-css-var css-xsuzon\"><div class=\"ant-table-container\"><div class=\"ant-table-content\"><table style=\"table-layout: auto;\"><thead class=\"ant-table-thead\"><tr><th class=\"ant-table-cell\" scope=\"col\">申请号</th><th class=\"ant-table-cell\" scope=\"col\">状态</th><th class=\"ant-table-cell\" scope=\"col\">类别</th><th class=\"ant-table-cell\" scope=\"col\">供应商</th><th class=\"ant-table-cell\" scope=\"col\">发票号</th><th class=\"ant-table-cell\" scope=\"col\">申请金额</th><th class=\"ant-table-cell\" scope=\"col\">已付</th></tr></thead><tbody class=\"ant-table-tbody\"><tr class=\"ant-table-row ant-table-row-level-0 selected-row\" data-row-key=\"3dd07bb3-457e-4483-b50b-16431e1627a3\"><td class=\"ant-table-cell\"><button class=\"row-button\" type=\"button\">PR-PG3X2P</button></td><td class=\"ant-table-cell\"><span class=\"ant-tag ant-tag-filled ant-tag-success css-xsuzon css-var-root\">已审批</span></td><td class=\"ant-table-cell\">货款</td><td class=\"ant-table-cell\">QA261112 测试供应商</td><td class=\"ant-table-cell\">UIQA-20261117-04-INV01</td><td class=\"ant-table-cell\">CNY 0.01</td><td class=\"ant-table-cell\">CNY 0.01</td></tr><tr class=\"ant-table-row ant-table-row-level-0\" data-row-key=\"30f75bb5-d709-496f-8f76-4d1be7652914\"><td class=\"ant-table-cell\"><button class=\"row-button\" type=\"button\">PR-GZN8H6</button></td><td class=\"ant-table-cell\"><span class=\"ant-tag ant-tag-filled ant-tag-success css-xsuzon css-var-root\">已审批</span></td><td class=\"ant-table-cell\">货款</td><td class=\"ant-table-cell\">QA261112 测试供应商</td><td class=\"ant-table-cell\">QA261112-INV01</td><td class=\"ant-table-cell\">RMB 60.00</td><td class=\"ant-table-cell\">RMB 60.00</td></tr><tr class=\"ant-table-row ant-table-row-level-0\" data-row-key=\"46c941cf-01bf-4a0f-8715-ca697f2dafab\"><td class=\"ant-table-cell\"><button class=\"row-button\" type=\"button\">PR-ZAWWF6</button></td><td class=\"ant-table-cell\"><span class=\"ant-tag ant-tag-filled ant-tag-success css-xsuzon css-var-root\">已审批</span></td><td class=\"ant-table-cell\">货款</td><td class=\"ant-table-cell\">QA261112 测试供应商</td><td class=\"ant-table-cell\">QA261112-INV01</td><td class=\"ant-table-cell\">RMB 60.00</td><td class=\"ant-table-cell\">RMB 60.00</td></tr></tbody></table></div></div></div></div></div></div></section></section></section></section></section></main></div>\n  \n\n<div><div class=\"ant-modal-root css-xsuzon css-var-root ant-modal-css-var\"><div class=\"ant-modal-wrap ant-modal-centered\" style=\"display: none;\"><div role=\"dialog\" aria-labelledby=\"_r_p_\" aria-modal=\"true\" class=\"ant-modal css-xsuzon\" tabindex=\"-1\" style=\"width: 720px; transform-origin: 1067px -53.6875px; display: none;\"><div class=\"ant-modal-container\"><button type=\"button\" aria-label=\"Close\" class=\"ant-modal-close\"><span class=\"ant-modal-close-x\" aria-label=\"关闭\"><span role=\"img\" aria-label=\"close\" class=\"anticon anticon-close ant-modal-close-icon\"><svg fill-rule=\"evenodd\" viewBox=\"64 64 896 896\" focusable=\"false\" data-icon=\"close\" width=\"1em\" height=\"1em\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z\"></path></svg></span></span></button><div class=\"ant-modal-header\"><div class=\"ant-modal-title\" id=\"_r_p_\">系统设置</div></div><div class=\"ant-modal-body\"><section class=\"settings-window\"><div class=\"settings-window-user\"><span aria-label=\"演示财务主管 的头像\" class=\"app-avatar app-avatar-sm app-avatar-person app-avatar-person-tech-01\" role=\"img\"><svg aria-hidden=\"true\" class=\"app-avatar-portrait\" focusable=\"false\" viewBox=\"0 0 64 64\"><path d=\"M13 57c2.8-10.8 10-17.2 19-17.2S48.2 46.2 51 57H13Z\" fill=\"currentColor\"></path><circle cx=\"32\" cy=\"29\" fill=\"#fffdf8\" r=\"11.5\" stroke=\"currentColor\" stroke-width=\"2\"></circle><circle cx=\"23.4\" cy=\"22.8\" fill=\"currentColor\" r=\"4.7\"></circle><circle cx=\"29\" cy=\"18.5\" fill=\"currentColor\" r=\"5\"></circle><circle cx=\"35.4\" cy=\"18.8\" fill=\"currentColor\" r=\"4.8\"></circle><circle cx=\"41\" cy=\"23.5\" fill=\"currentColor\" r=\"4.3\"></circle><path d=\"M27.6 30.3h.1M36.4 30.3h.1\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"3\"></path><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><circle cx=\"27.4\" cy=\"30\" r=\"4\"></circle><circle cx=\"36.6\" cy=\"30\" r=\"4\"></circle><path d=\"M31.5 30h1\"></path></g><path d=\"M29.3 35.6c1.8 1.4 3.8 1.4 5.6 0\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"2\"></path><path d=\"M23.4 47.6c4.5 2.9 12.6 2.9 17.2 0\" fill=\"none\" stroke=\"#fffdf8\" stroke-linecap=\"round\" stroke-width=\"2\"></path></svg></span><div class=\"user-meta\"><span>账号</span><strong>演示财务主管</strong><small>财务部 · 财务</small></div></div><div class=\"settings-avatar-editor\"><section class=\"user-avatar-picker\" aria-label=\"用户头像\"><button aria-expanded=\"false\" class=\"user-avatar-picker-current\" type=\"button\"><span aria-label=\"演示财务主管 的头像\" class=\"app-avatar app-avatar-lg app-avatar-person app-avatar-person-tech-01\" role=\"img\"><svg aria-hidden=\"true\" class=\"app-avatar-portrait\" focusable=\"false\" viewBox=\"0 0 64 64\"><path d=\"M13 57c2.8-10.8 10-17.2 19-17.2S48.2 46.2 51 57H13Z\" fill=\"currentColor\"></path><circle cx=\"32\" cy=\"29\" fill=\"#fffdf8\" r=\"11.5\" stroke=\"currentColor\" stroke-width=\"2\"></circle><circle cx=\"23.4\" cy=\"22.8\" fill=\"currentColor\" r=\"4.7\"></circle><circle cx=\"29\" cy=\"18.5\" fill=\"currentColor\" r=\"5\"></circle><circle cx=\"35.4\" cy=\"18.8\" fill=\"currentColor\" r=\"4.8\"></circle><circle cx=\"41\" cy=\"23.5\" fill=\"currentColor\" r=\"4.3\"></circle><path d=\"M27.6 30.3h.1M36.4 30.3h.1\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"3\"></path><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><circle cx=\"27.4\" cy=\"30\" r=\"4\"></circle><circle cx=\"36.6\" cy=\"30\" r=\"4\"></circle><path d=\"M31.5 30h1\"></path></g><path d=\"M29.3 35.6c1.8 1.4 3.8 1.4 5.6 0\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"2\"></path><path d=\"M23.4 47.6c4.5 2.9 12.6 2.9 17.2 0\" fill=\"none\" stroke=\"#fffdf8\" stroke-linecap=\"round\" stroke-width=\"2\"></path></svg></span><div><span>头像</span><strong>短发眼镜</strong></div><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down user-avatar-picker-toggle\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></section><button class=\"secondary-inline\" type=\"button\">保存头像</button></div><div class=\"settings-field\"><span>语言</span><div class=\"settings-language-options\"><button class=\"active\" type=\"button\"><strong>中文</strong><small>UTC+8 / Asia Shanghai</small></button><button class=\"\" type=\"button\"><strong>English</strong><small>UTC</small></button></div></div><div class=\"settings-field\"><span>时区</span><div class=\"settings-timezone\"><strong>UTC+8 / Asia Shanghai</strong><small>用于展示时间与提醒</small></div></div><div class=\"modal-actions split\"><button class=\"danger-inline\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-log-out\" aria-hidden=\"true\"><path d=\"m16 17 5-5-5-5\"></path><path d=\"M21 12H9\"></path><path d=\"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4\"></path></svg> 退出登录</button><button class=\"secondary-inline\" type=\"button\">关闭</button></div></section></div></div></div></div></div></div></body>",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "导航",
+      "label": "业务导航",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(239, 239, 239)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "A",
+      "text": "工作台",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        12,
+        76.6953125,
+        211,
+        36
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "经营总览",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        193.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "收款管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        230.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "付款管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        267.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(79, 110, 247, 0.08)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "付费管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        304.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "核销退税",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        341.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "杂费管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        378.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "结算核算",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        415.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "报销管理",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        452.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "口岸数据",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        489.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "A",
+      "text": "财务报表",
+      "label": null,
+      "placeholder": null,
+      "type": "",
+      "rect": [
+        41,
+        526.6953125,
+        175,
+        36
+      ],
+      "color": "rgb(90, 94, 105)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "5",
+      "label": "通知",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1400,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1438,
+        16.3203125,
+        38,
+        38
+      ],
+      "color": "rgb(140, 143, 156)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "付款管理",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        264,
+        -225.3515625,
+        105.046875,
+        32
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": "保存后自动生成",
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        281,
+        150.5078125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "489f9619-6f86-433c-a412-47236257892a",
+      "disabled": false,
+      "rect": [
+        679,
+        150.5078125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1088,
+        155.5078125,
+        342,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "date",
+      "value": "2026-11-17",
+      "disabled": false,
+      "rect": [
+        281,
+        220.5078125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "0.00",
+      "disabled": false,
+      "rect": [
+        679,
+        220.5078125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "CNY",
+      "disabled": false,
+      "rect": [
+        1077,
+        220.5078125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        281,
+        290.5078125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": "审批人",
+      "placeholder": null,
+      "type": "search",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        690,
+        295.5078125,
+        342,
+        26
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "新增付款申请",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        281,
+        342.5078125,
+        137.5625,
+        36
+      ],
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(49, 91, 214)",
+      "opacity": "0.72",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "0.01",
+      "disabled": false,
+      "rect": [
+        281,
+        480.8828125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "date",
+      "value": "2026-11-17",
+      "disabled": false,
+      "rect": [
+        679,
+        480.8828125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "演示财务主管",
+      "disabled": true,
+      "rect": [
+        1077,
+        480.8828125,
+        382,
+        36
+      ],
+      "color": "rgb(124, 133, 146)",
+      "background": "rgb(238, 241, 244)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        281,
+        550.8828125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "type": "text",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        679,
+        550.8828125,
+        382,
+        36
+      ],
+      "color": "rgb(32, 36, 44)",
+      "background": "rgb(255, 255, 255)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "审批付款",
+      "label": null,
+      "placeholder": null,
+      "type": "submit",
+      "value": "",
+      "disabled": true,
+      "rect": [
+        281,
+        602.8828125,
+        111.046875,
+        36
+      ],
+      "color": "rgb(40, 76, 184)",
+      "background": "rgb(247, 248, 250)",
+      "opacity": "0.72",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "PR-PG3X2P",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        289,
+        725.828125,
+        76.328125,
+        18.84375
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "PR-GZN8H6",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        289,
+        769.828125,
+        79.5078125,
+        18.84375
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "tag": "BUTTON",
+      "text": "PR-ZAWWF6",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        289,
+        813.828125,
+        82.78125,
+        18.84375
+      ],
+      "color": "rgb(49, 91, 214)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Close",
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgba(0, 0, 0, 0.45)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "头像短发眼镜",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgba(0, 0, 0, 0.88)",
+      "background": "rgba(0, 0, 0, 0)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "保存头像",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(95, 104, 117)",
+      "background": "rgba(255, 255, 255, 0.84)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "中文UTC+8 / Asia Shanghai",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(29, 33, 41)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "EnglishUTC",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(29, 33, 41)",
+      "background": "rgba(255, 254, 251, 0.8)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": " 退出登录",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(155, 48, 48)",
+      "background": "rgba(173, 52, 52, 0.08)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "关闭",
+      "label": null,
+      "placeholder": null,
+      "type": "button",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "color": "rgb(95, 104, 117)",
+      "background": "rgba(255, 255, 255, 0.84)",
+      "opacity": "1",
+      "fontSize": "14px",
+      "hit": false
+    }
+  ],
+  "tables": [
+    "申请号\t状态\t类别\t供应商\t发票号\t申请金额\t已付\nPR-PG3X2P\t已审批\t货款\tQA261112 测试供应商\tUIQA-20261117-04-INV01\tCNY 0.01\tCNY 0.01\nPR-GZN8H6\t已审批\t货款\tQA261112 测试供应商\tQA261112-INV01\tRMB 60.00\tRMB 60.00\nPR-ZAWWF6\t已审批\t货款\tQA261112 测试供应商\tQA261112-INV01\tRMB 60.00\tRMB 60.00"
+  ],
+  "scrollables": []
+}

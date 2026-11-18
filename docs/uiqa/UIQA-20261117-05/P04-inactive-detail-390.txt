@@ -1,0 +1,141 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "合作伙伴"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "合作伙伴概览"
+          container
+            text "合作伙伴"
+            text "3"
+          container
+            text "启用"
+            text "2"
+          container
+            text "联系人"
+            text "2"
+          container
+            text "类型数"
+            text "2"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "合作伙伴"
+            container
+              button [ref=1863]
+                svg_root
+                text "返回列表"
+              button [ref=1864]
+                svg_root
+                text "新增联系人"
+              button [ref=1865]
+                svg_root
+                text "编辑资料"
+              button [ref=1866]
+                svg_root
+                text "停用"
+          container
+            text "U"
+            container
+              text "UIQA-20261117-05-B01"
+              heading
+                text "UIQA全量验收停用合作伙伴样本"
+              paragraph
+                text "UIQA Inactive P04 Test Record"
+            text "停用"
+          unordered_list
+            container
+              list_item
+                text "国家/地区"
+              list_item
+                text "CN"
+            container
+              list_item
+                text "地址"
+              list_item
+                text "UIQA测试资料，非真实地址"
+            container
+              list_item
+                text "网站"
+              list_item
+                text "未维护"
+            container
+              list_item
+                text "伙伴类型"
+              list_item
+                text "保险公司"
+            container
+              list_item
+                text "负责人"
+              list_item
+                text "系统管理员"
+          container
+            svg_root
+            heading
+              text "联系人"
+            container
+              text "UIQA测试联系人"
+              text "未填写职务"
+              paragraph
+                text "uiqa-p04@example.invalid"
+              paragraph
+                text "未填写电话"
+              text "主要联系人"
+              button [ref=1867]
+                text "编 辑"
+              button [ref=1868]
+                text "删 除"
+          container
+            svg_root
+            heading
+              text "费用记录"
+            table
+              table_row
+                table_cell
+            container [ref=1880]
+              table
+                table_row
+                  table_cell
+                    text "来源"
+                  table_cell
+                    text "编号"
+                  table_cell
+                    text "摘要"
+                  table_cell
+                    text "金额"
+                  table_cell
+                    text "时间"
+                table_row
+                  table_cell
+                    svg_root
+                    paragraph
+                      text "暂无数据"
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

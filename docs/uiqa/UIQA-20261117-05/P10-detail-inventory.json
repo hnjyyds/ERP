@@ -1,0 +1,186 @@
+{
+  "url": "http://localhost:8080/purchase/inquiries/b4d57828-d264-489d-b196-989d07d911d0",
+  "title": "采购询价",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "采购询价",
+    "询价明细"
+  ],
+  "forms": [],
+  "tables": [
+    {
+      "i": 0,
+      "text": "商品\t规格/型号\t数量\t单位\nQA261112-P01 / QA261112 验收测试围巾\t未填 / 未填\t5\tpcs",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "供应商\t商品\t单价\t交期\t最小起订量\t样品\t备注\nQA261112 测试供应商\tQA261112-P01 / QA261112 验收测试围巾\tRMB 2.50\t未填\t未填\t有样品\tQA261112 报价",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "样品编号\t供应商\t商品\t收样日期\t数量\t状态\nSM-D45XDB\tQA261112 测试供应商\tQA261112-P01 / QA261112 验收测试围巾\t2026-11-12\t3 pcs\t已登记\nSM-ZB334N\tQA261112 测试供应商\tQA261112-P01 / QA261112 验收测试围巾\t2026-11-12\t3 pcs\t已登记",
+      "buttons": []
+    },
+    {
+      "i": 3,
+      "text": "询价单\t商品\t供应商\t参考价\t报价日\nPI-KTPXTU\tQA261112-P01 / QA261112 验收测试围巾\tQA261112 测试供应商\tRMB 2.50\t2026-11-12",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "采购询价",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "开票通知",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

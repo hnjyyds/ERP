@@ -1,0 +1,831 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=3164, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "写操作审计流水"
+        container
+          button "通知" [ref=3156, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=3157, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container
+          container
+            svg_root
+            heading
+              text "审计日志"
+          button [ref=3316]
+            svg_root
+            text "导出 CSV"
+        paragraph
+          text "仅记录写操作，查询与导出仅超级管理员可用。"
+        form
+          container
+            text "操作人"
+            textbox [ref=3317, loc=css:input[placeholder="操作人姓名或用户 ID"]]
+              text "操作人姓名或用户 ID"
+          container
+            text "模块"
+            container
+              container
+                text "全部模块"
+                comboboxgrouping [ref=3318]
+              image "down"
+                svg_root
+          container
+            text "动作"
+            container
+              container
+                text "全部动作"
+                comboboxgrouping [ref=3319]
+              image "down"
+                svg_root
+          container
+            text "单号 / 关键字"
+            textbox [ref=3320, loc=css:input[placeholder="输入单号关键字"]]
+              text "输入单号关键字"
+          container
+            text "日期范围"
+            container
+              textbox [ref=3321, loc=css:input[placeholder="开始日期"]]
+                text "开始日期"
+              container "to"
+                image "swap-right"
+                  svg_root
+              textbox [ref=3322, loc=css:input[placeholder="结束日期"]]
+                text "结束日期"
+              svg_root
+          container
+            button [ref=3323]
+              text "查 询"
+            button [ref=3324]
+              text "重 置"
+        container
+          table
+            table_row
+              table_cell
+          container
+            container [ref=3325]
+              container [ref=3331]
+                table
+                  table_row
+                    table_cell
+                      text "时间"
+                    table_cell
+                      text "操作人"
+                    table_cell
+                      text "模块"
+                    table_cell
+                      text "动作"
+                    table_cell
+                      text "单号"
+                    table_cell
+                      text "摘要"
+                  table_row
+                    table_cell
+                      text "时间"
+                    table_cell
+                      text "操作人"
+                    table_cell
+                      text "模块"
+                    table_cell
+                      text "动作"
+                    table_cell
+                      text "单号"
+                    table_cell
+                      text "摘要"
+                  table_row
+                    table_cell
+                      text "2026-11-17 16:51"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "合作伙伴"
+                    table_cell
+                      text "修改"
+                    table_cell
+                      text "UIQA-20261117-05-B01"
+                    table_cell
+                      text "修改合作伙伴"
+                  table_row
+                    table_cell
+                      text "2026-11-17 16:47"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "合作伙伴"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UIQA-20261117-05-B01"
+                    table_cell
+                      text "新增合作伙伴"
+                  table_row
+                    table_cell
+                      text "2026-11-17 16:47"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "客户"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UIQA-20261117-05-C01"
+                    table_cell
+                      text "新增客户"
+                  table_row
+                    table_cell
+                      text "2026-11-17 16:39"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UIQA-20261117-05-S01"
+                    table_cell
+                      text "新增供应商"
+                  table_row
+                    table_cell
+                      text "2026-11-17 15:57"
+                    table_cell
+                      text "演示财务主管"
+                      text "u-finance-manager"
+                    table_cell
+                      text "付款"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "PR-PG3X2P"
+                    table_cell
+                      text "审批通过付款申请"
+                  table_row
+                    table_cell
+                      text "2026-11-17 15:41"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "付款"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "PR-PG3X2P"
+                    table_cell
+                      text "提交付款申请"
+                  table_row
+                    table_cell
+                      text "2026-11-17 15:14"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "修改"
+                    table_cell
+                      text "UIQA-20261117-05-P01"
+                    table_cell
+                      text "修改商品"
+                  table_row
+                    table_cell
+                      text "2026-11-17 15:12"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "修改"
+                    table_cell
+                      text "UIQA-20261117-05-P01"
+                    table_cell
+                      text "修改商品"
+                  table_row
+                    table_cell
+                      text "2026-11-17 15:11"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "修改"
+                    table_cell
+                      text "UIQA-20261117-05-P01"
+                    table_cell
+                      text "修改商品"
+                  table_row
+                    table_cell
+                      text "2026-11-17 15:10"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "修改"
+                    table_cell
+                      text "UIQA-20261117-05-P01"
+                    table_cell
+                      text "修改商品"
+                  table_row
+                    table_cell
+                      text "2026-11-17 15:06"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UIQA-20261117-05-P01"
+                    table_cell
+                      text "新增商品"
+                  table_row
+                    table_cell
+                      text "2026-11-14 20:29"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "修改"
+                    table_cell
+                      text "UI261114-IMG01"
+                    table_cell
+                      text "修改商品"
+                  table_row
+                    table_cell
+                      text "2026-11-14 20:29"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "修改"
+                    table_cell
+                      text "UI261114-IMG01"
+                    table_cell
+                      text "修改商品"
+                  table_row
+                    table_cell
+                      text "2026-11-14 20:05"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UI261114-IMG"
+                    table_cell
+                      text "新增商品"
+                  table_row
+                    table_cell
+                      text "2026-11-14 18:58"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UI261114-IMG01"
+                    table_cell
+                      text "新增商品"
+                  table_row
+                    table_cell
+                      text "2026-11-14 18:16"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UI261114-P01"
+                    table_cell
+                      text "新增商品"
+                  table_row
+                    table_cell
+                      text "2026-11-14 18:14"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "合作伙伴"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UI261114-B01"
+                    table_cell
+                      text "新增合作伙伴"
+                  table_row
+                    table_cell
+                      text "2026-11-14 18:12"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UI261114-S01"
+                    table_cell
+                      text "新增供应商"
+                  table_row
+                    table_cell
+                      text "2026-11-14 18:11"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "客户"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "UI261114-C01"
+                    table_cell
+                      text "新增客户"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:28"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "报价"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "QT-A33KVZ"
+                    table_cell
+                      text "审批通过报价"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:28"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "报价"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "QT-A33KVZ"
+                    table_cell
+                      text "提交报价"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:28"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "报价"
+                    table_cell
+                      text "驳回"
+                    table_cell
+                      text "QT-A33KVZ"
+                    table_cell
+                      text "驳回报价"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:28"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "报价"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "QT-A33KVZ"
+                    table_cell
+                      text "提交报价"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:26"
+                    table_cell
+                      text "演示财务主管"
+                      text "u-finance-manager"
+                    table_cell
+                      text "报销"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "QA261112-RB01"
+                    table_cell
+                      text "审批通过报销单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:26"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "报销"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "QA261112-RB01"
+                    table_cell
+                      text "提交报销单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:26"
+                    table_cell
+                      text "演示财务主管"
+                      text "u-finance-manager"
+                    table_cell
+                      text "付费"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "FPR-G7WTAX"
+                    table_cell
+                      text "审批通过付费申请"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:26"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "付费"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "FPR-G7WTAX"
+                    table_cell
+                      text "提交付费申请"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:26"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "合作伙伴"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "QA261112-F01"
+                    table_cell
+                      text "新增合作伙伴"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:24"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "寄样"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "SD-CXE849"
+                    table_cell
+                      text "审批通过寄样单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:24"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "寄样"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "SD-CXE849"
+                    table_cell
+                      text "提交寄样单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:21"
+                    table_cell
+                      text "演示财务主管"
+                      text "u-finance-manager"
+                    table_cell
+                      text "付款"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "PR-ZAWWF6"
+                    table_cell
+                      text "审批通过付款申请"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:21"
+                    table_cell
+                      text "演示财务主管"
+                      text "u-finance-manager"
+                    table_cell
+                      text "付款"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "PR-GZN8H6"
+                    table_cell
+                      text "审批通过付款申请"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:21"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "付款"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "PR-ZAWWF6"
+                    table_cell
+                      text "提交付款申请"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:21"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "付款"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "PR-GZN8H6"
+                    table_cell
+                      text "提交付款申请"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:20"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "出库"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "XP-OUT-33A95C"
+                    table_cell
+                      text "审批通过出库单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:20"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "出库"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "XP-OUT-33A95C"
+                    table_cell
+                      text "提交出库单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:18"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "盘点单"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "ST-Z5VPWB"
+                    table_cell
+                      text "审批盘点单并调整库存"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:18"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "盘点单"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "ST-Z5VPWB"
+                    table_cell
+                      text "提交盘点单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:17"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "出货"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "SP-DAEPEG"
+                    table_cell
+                      text "审批通过出货明细"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:17"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "出货"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "SP-DAEPEG"
+                    table_cell
+                      text "提交出货明细"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:17"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "入库"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "XP-IN-MVU9CU"
+                    table_cell
+                      text "审批通过入库单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:17"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "入库"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "XP-IN-MVU9CU"
+                    table_cell
+                      text "提交入库单"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:14"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "采购合同"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "审批通过采购合同"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:14"
+                    table_cell
+                      text "演示业务主管"
+                      text "u-001"
+                    table_cell
+                      text "出口合同"
+                    table_cell
+                      text "通过"
+                    table_cell
+                      text "EC-F8D7RX"
+                    table_cell
+                      text "审批通过出口合同"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:14"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "出口合同"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "EC-F8D7RX"
+                    table_cell
+                      text "提交出口合同"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:14"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "采购合同"
+                    table_cell
+                      text "提交"
+                    table_cell
+                      text "PC-HR36RU"
+                    table_cell
+                      text "提交采购合同"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:12"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "新增"
+                    table_cell
+                    table_cell
+                      text "新增商品"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:10"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "客户"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "QA261112-C01"
+                    table_cell
+                      text "新增客户"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:10"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "供应商"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "QA261112-S01"
+                    table_cell
+                      text "新增供应商"
+                  table_row
+                    table_cell
+                      text "2026-11-12 19:08"
+                    table_cell
+                      text "系统管理员"
+                      text "u-baeac30b5127ebdb"
+                    table_cell
+                      text "商品"
+                    table_cell
+                      text "新增"
+                    table_cell
+                      text "QA261112-P01"
+                    table_cell
+                      text "新增商品"
+            unordered_list
+              list_item
+                text "共 50 条"
+              list_item
+                button [ref=3326]
+                  image "left"
+                    svg_root
+              list_item [ref=3327]
+                anchor [ref=3328]
+                  text "1"
+              list_item
+                button [ref=3329]
+                  image "right"
+                    svg_root
+          table
+            table_row
+              table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

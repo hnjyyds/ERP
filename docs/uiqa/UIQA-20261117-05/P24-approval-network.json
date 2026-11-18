@@ -1,0 +1,42 @@
+[
+  {
+    "url": "http://localhost:8080/api/v1/finance/payment-requests/3dd07bb3-457e-4483-b50b-16431e1627a3/approve",
+    "status": 200,
+    "request": {
+      "approved_amount": "0.01",
+      "approved_at": "2026-11-17",
+      "payment_account": "UIQA-TEST-ACCOUNT",
+      "remark": "UIQA-20261117-05 已授权CNY0.01付款闭环测试，仅此申请"
+    },
+    "response": {
+      "success": true,
+      "code": "SUCCESS",
+      "message": "请求成功",
+      "data": {
+        "id": "3dd07bb3-457e-4483-b50b-16431e1627a3",
+        "request_no": "PR-PG3X2P",
+        "supplier_invoice_id": "489f9619-6f86-433c-a412-47236257892a",
+        "supplier_invoice_no": "UIQA-20261117-04-INV01",
+        "supplier_id": "c6d43566-694f-41d0-85f0-6631c6478d52",
+        "supplier_name": "QA261112 测试供应商",
+        "purchase_contract_id": "56cd6434-f367-4553-8caf-092a96ab097d",
+        "purchase_contract_no": "PC-HR36RU",
+        "payment_type": "goods_payment",
+        "request_date": "2026-11-17",
+        "requested_amount": "0.01",
+        "approved_amount": "0.01",
+        "paid_amount": "0.01",
+        "currency": "CNY",
+        "status": "approved",
+        "requester_user_id": "u-baeac30b5127ebdb",
+        "requester_user_name": "系统管理员",
+        "reviewer_id": "u-finance-manager",
+        "reviewer_name": "演示财务主管",
+        "approved_at": "2026-11-17",
+        "payment_account": "UIQA-TEST-ACCOUNT",
+        "remark": "UIQA-20261117-05 已授权CNY0.01付款闭环测试，仅此申请"
+      },
+      "error": null
+    }
+  }
+]

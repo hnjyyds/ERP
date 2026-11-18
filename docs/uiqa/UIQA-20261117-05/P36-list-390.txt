@@ -1,0 +1,141 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=3164, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "工作台"
+        container
+          button "通知" [ref=3156, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=3157, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container
+          svg_root
+          heading
+            text "全局待办"
+        container
+          radiogroup "待办范围" [ref=3188, loc=role:radiogroup[name="待办范围"]]
+            container
+              radio [ref=3189]
+              text "全局业务待办 3"
+            container
+              radio [ref=3190]
+              text "我创建的 1"
+          container
+            container
+              svg_root
+              textbox "搜索任务、客户或供应商" [ref=3191, loc=css:input[placeholder="搜索任务、客户或供应商"]]
+                text "搜索任务、客户或供应商"
+            container
+              container
+                text "全部类型"
+                comboboxgrouping "任务类型筛选" [ref=3192, loc=css:input[aria-label="任务类型筛选"]]
+              image "down"
+                svg_root
+            container
+              container
+                text "全部时效"
+                comboboxgrouping "截止状态筛选" [ref=3193, loc=css:input[aria-label="截止状态筛选"]]
+              image "down"
+                svg_root
+        container
+          text "当前结果"
+          text "3"
+        container
+          table
+            table_row
+              table_cell
+          container [ref=3197]
+            table
+              table_row
+                table_cell
+                  text "任务"
+                table_cell
+                  text "类型"
+                table_cell
+                  text "负责人"
+                table_cell
+                  text "截止时间"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  text "任务"
+                table_cell
+                  text "类型"
+                table_cell
+                  text "负责人"
+                table_cell
+                  text "截止时间"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  text "采购跟单 PC-HR36RU · 确认样提交日期"
+                  text "QA261112 测试供应商"
+                table_cell
+                  text "跟单"
+                table_cell
+                  text "未分配"
+                table_cell
+                  text "2026-11-15"
+                  text "已逾期"
+                table_cell
+                  button [ref=3194]
+                    text "去处理"
+                    svg_root
+                  text "随单据状态自动关闭"
+              table_row
+                table_cell
+                  text "采购跟单 PC-HR36RU · 大货样提交日期"
+                  text "QA261112 测试供应商"
+                table_cell
+                  text "跟单"
+                table_cell
+                  text "未分配"
+                table_cell
+                  text "2026-11-19"
+                  text "未到期"
+                table_cell
+                  button [ref=3195]
+                    text "去处理"
+                    svg_root
+                  text "随单据状态自动关闭"
+              table_row
+                table_cell
+                  text "采购跟单 PC-HR36RU · 出库日期"
+                  text "QA261112 测试供应商"
+                table_cell
+                  text "跟单"
+                table_cell
+                  text "未分配"
+                table_cell
+                  text "2026-12-07"
+                  text "未到期"
+                table_cell
+                  button [ref=3196]
+                    text "去处理"
+                    svg_root
+                  text "随单据状态自动关闭"
+          table
+            table_row
+              table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

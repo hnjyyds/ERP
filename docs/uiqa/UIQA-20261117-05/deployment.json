@@ -1,0 +1,46 @@
+[
+  {
+    "service": "frontend",
+    "container_id": "e660d888a220940eef863a0a9c7cf4d011b6ec14d211d9a38f7e3e589e27ba55",
+    "image_id": "sha256:26c83445fb803a701aef2fc1b7d544fd4e37df70ad51c14865ba00aa5034076c",
+    "image_name": "xinpei-frontend:latest",
+    "revision": "449aaa0a",
+    "asset_entry": "assets/index-Bpsh7zKB.js",
+    "asset_css": "assets/index-aRStlGe6.css",
+    "asset_css_note": "2026-11-18整页验收前复核：容器内实际样式为index-aRStlGe6.css，原记录index-C-HlQaba.css有误，已更正；入口JS仍为index-Bpsh7zKB.js",
+    "built_at": "2026-11-18",
+    "note": "前九轮见历史；第十轮权限入口/国家筛选/样品范围/报表来源/商品状态/审计时区后BawyFJj7；第十一轮Q05-03/06/07/09/12/14与图片文件名持久化后Bpsh7zKB（449aaa0a）"
+  },
+  {
+    "service": "backend",
+    "container_id": "47e0d89cee193a88fd96ea5c46e7cb14567620052bc56094f7dfc33a5bfbbf86",
+    "image_id": "sha256:aa4b40377019876a60075e8f98e396cd93704d2d6021bf937e9c546506f7f10a",
+    "image_name": "xinpei-backend:latest",
+    "revision": "449aaa0a",
+    "built_at": "2026-11-18",
+    "note": "新增迁移 0021_product_image_names；费用摘要中文映射"
+  },
+  {
+    "service": "worker",
+    "container_id": "2adbea6f5caaebca4c7883dce5f8af0a0309242db32d3b41e31c65c7bbff628a",
+    "image_id": "sha256:08d23294cebbd51812473027dfdf6b65bf76fe7eb5f3a726ca8ed73c3bf31da8",
+    "image_name": "xinpei-backend:latest",
+    "revision": "449aaa0a",
+    "built_at": "2026-11-18"
+  },
+  {
+    "served_at": "http://127.0.0.1:8080",
+    "verified": {
+      "frontend_asset": "assets/index-Bpsh7zKB.js",
+      "q05_22_original_path": "q05-22-reverify-20261118.json",
+      "q05_03_contrast": "q05-03-contrast-reverify-20261118.json",
+      "q05_09_column_menu": "q05-09-column-menu-targets-20261118.json",
+      "q05_12_contact_label": "q05-12-contact-label-targets-20261118.json",
+      "q05_06_empty_states": "q05-06-empty-states-reverify-20261118.json",
+      "q05_07_image_names": "q05-07-image-names-reverify-20261118.json",
+      "q05_14_enum_labels": "q05-14-enum-labels-reverify-20261118.json",
+      "viewports": ["1440x900", "1280x720", "390x844"],
+      "matrix": "42页48项验收矩阵-index-Bpsh7zKB.csv"
+    }
+  }
+]

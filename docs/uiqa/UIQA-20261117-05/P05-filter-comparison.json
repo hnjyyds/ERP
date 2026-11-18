@@ -1,0 +1,18 @@
+[
+  {
+    "url": "http://localhost:8080/masterdata/document-parties?party_type=notify_party",
+    "table": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情"
+  },
+  {
+    "url": "http://localhost:8080/masterdata/document-parties?party_type=notify_party&status=active",
+    "table": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+  },
+  {
+    "url": "http://localhost:8080/masterdata/document-parties?status=inactive",
+    "table": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情"
+  },
+  {
+    "url": "http://localhost:8080/masterdata/document-parties?status=inactive&party_type=consignee",
+    "table": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+  }
+]

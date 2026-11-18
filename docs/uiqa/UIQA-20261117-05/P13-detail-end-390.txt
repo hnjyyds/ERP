@@ -1,0 +1,312 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=7427, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "打样管理"
+        button "通知" [ref=7388, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=7389, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        container "打样管理概览"
+          text "打样单"
+          text "1"
+          text "进行中"
+          text "0"
+          text "进度记录"
+          text "2"
+          text "费用记录"
+          text "0"
+        container
+          svg_root
+          heading
+            text "打样单明细"
+          button [ref=7390]
+            svg_root
+            text "返回列表"
+          unordered_list
+            list_item
+              text "打样单号"
+            list_item
+              text "SR-W3C3DV"
+            list_item
+              text "客户/产品"
+            list_item
+              text "QA261112 测试客户"
+              text "/"
+              text "QA261112 验收测试围巾"
+            list_item
+              text "去向/状态"
+            list_item
+              text "内部打样"
+              text "/"
+              text "已完成"
+            list_item
+              text "供应商"
+            list_item
+              text "QA261112 测试供应商"
+            list_item
+              text "打样日期"
+            list_item
+              text "2026-11-12"
+            list_item
+              text "要求完成"
+            list_item
+              text "2026-11-20"
+            list_item
+              text "客户要求"
+            list_item
+              text "QA261112 检查中文尺寸及色牢度"
+          button [ref=7391]
+            text "打印内部打样单"
+          button [ref=7392]
+            text "载入为样品"
+          container
+            svg_root
+            heading
+              text "内部打样单明细"
+            table
+              table_row
+                table_cell
+            container [ref=7429]
+              table
+                table_row
+                  table_cell
+                    text "产品编号"
+                  table_cell
+                    text "产品名称"
+                  table_cell
+                    text "规格"
+                  table_cell
+                    text "数量"
+                  table_cell
+                    text "单位"
+                  table_cell
+                    text "要求"
+                table_row
+                  table_cell
+                    text "QA261112-P01"
+                  table_cell
+                    text "QA261112 验收测试围巾"
+                  table_cell
+                    text "-"
+                  table_cell
+                    text "3"
+                  table_cell
+                    text "pcs"
+                  table_cell
+                    text "-"
+            table
+              table_row
+                table_cell
+          form
+            text "打样进度"
+            container
+              text "进度阶段"
+              container
+                text "外发工厂"
+                comboboxgrouping [ref=7393]
+                svg_root
+            container
+              text "进度状态"
+              container
+                text "进行中"
+                comboboxgrouping [ref=7394]
+                svg_root
+            container
+              text "进度日期"
+              textbox [ref=7395]
+                spinbutton "年" [ref=7396]
+                  text "2026"
+                text "/"
+                spinbutton "月" [ref=7397]
+                  text "11"
+                text "/"
+                spinbutton "日" [ref=7398]
+                  text "17"
+            container
+              text "进度经办人"
+              textbox [ref=7399]
+            container
+              text "进度说明"
+              textbox [ref=7400]
+            button [ref=7401]
+              text "更新打样进度"
+          table
+            table_row
+              table_cell
+          container [ref=7430]
+            table
+              table_row
+                table_cell
+                  text "阶段"
+                table_cell
+                  text "状态"
+                table_cell
+                  text "日期"
+                table_cell
+                  text "经办人"
+                table_cell
+                  text "说明"
+              table_row
+                table_cell
+                  text "客户确认"
+                table_cell
+                  text "已完成"
+                table_cell
+                  text "2026-11-12"
+                table_cell
+                  text "-"
+                table_cell
+                  text "QA261112 客户确认完成"
+              table_row
+                table_cell
+                  text "QA261112 制样"
+                table_cell
+                  text "进行中"
+                table_cell
+                  text "2026-11-12"
+                table_cell
+                  text "-"
+                table_cell
+                  text "QA261112 进度测试"
+          table
+            table_row
+              table_cell
+          form
+            text "打样费用"
+            container
+              text "打样费用类型"
+              container
+                text "打样费"
+                comboboxgrouping [ref=7402]
+                svg_root
+            container
+              text "打样费用金额"
+              spinbutton [ref=7403]
+                text "0"
+            container
+              text "打样费用币种"
+              textbox [ref=7404]
+                text "USD"
+            container
+              text "收款方类型"
+              container
+                text "供应商"
+                comboboxgrouping [ref=7405]
+                svg_root
+            container
+              text "收款方名称"
+              textbox [ref=7406]
+            container
+              text "打样费用备注"
+              textbox [ref=7407]
+            button [ref=7408]
+              text "登记打样费用"
+          table
+            table_row
+              table_cell
+          container [ref=7428]
+            table
+              table_row
+                table_cell
+                  text "费用类型"
+                table_cell
+                  text "金额"
+                table_cell
+                  text "收款方"
+                table_cell
+                  text "付款状态"
+                table_cell
+                  text "付款申请"
+                table_cell
+                  text "操作"
+              table_row
+                table_cell
+                  text "暂无打样费用"
+          table
+            table_row
+              table_cell
+          form
+            text "打样完成转样品登记"
+            container
+              container
+                text "样品编号"
+                textbox [ref=7409, loc=css:input[placeholder="系统自动生成"]]
+                  text "系统自动生成"
+              container
+                text "样品分类"
+                container
+                  container
+                    text "确认样"
+                    comboboxgrouping [ref=7410]
+                  image "down"
+                    svg_root
+              container
+                text "收样数量"
+                spinbutton [ref=7411]
+                  text "1"
+            container
+              container
+                text "收样日期"
+                textbox [ref=7412]
+                  spinbutton "年" [ref=7413]
+                    text "2026"
+                  text "/"
+                  spinbutton "月" [ref=7414]
+                    text "11"
+                  text "/"
+                  spinbutton "日" [ref=7415]
+                    text "17"
+              container
+                text "提交日期"
+                textbox [ref=7416]
+                  spinbutton "年" [ref=7417]
+                    text "2026"
+                  text "/"
+                  spinbutton "月" [ref=7418]
+                    text "11"
+                  text "/"
+                  spinbutton "日" [ref=7419]
+                    text "17"
+              container
+                text "单位"
+                textbox [ref=7420]
+                  text "pcs"
+            container
+              container
+                text "客户货号"
+                textbox [ref=7421]
+              container
+                text "供应商货号"
+                textbox [ref=7422]
+            container
+              container
+                text "采购合同标识"
+                textbox [ref=7423]
+              container
+                text "采购合同号"
+                textbox [ref=7424]
+            container
+              text "样品说明"
+              textbox [ref=7425]
+            button [ref=7426]
+              text "转为样品登记"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

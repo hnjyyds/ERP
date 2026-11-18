@@ -1,0 +1,30 @@
+{
+  "draftField": "备注",
+  "values": [
+    {
+      "label": "项目编码",
+      "value": ""
+    },
+    {
+      "label": "项目名称",
+      "value": ""
+    },
+    {
+      "label": "分类\n办公费用",
+      "value": ""
+    },
+    {
+      "label": "默认分摊方式\n手工分摊",
+      "value": ""
+    },
+    {
+      "label": "启用项目",
+      "value": "on"
+    },
+    {
+      "label": "备注",
+      "value": ""
+    }
+  ],
+  "markerRemaining": false
+}

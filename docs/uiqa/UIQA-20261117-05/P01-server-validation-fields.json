@@ -1,0 +1,14 @@
+[
+  {
+    "label": "英文名称",
+    "value": "",
+    "required": false,
+    "invalid": null
+  },
+  {
+    "label": "包装资料",
+    "value": "",
+    "required": false,
+    "invalid": null
+  }
+]

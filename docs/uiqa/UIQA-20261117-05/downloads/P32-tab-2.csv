@@ -1,0 +1,4 @@
+﻿付款单号,日期,供应商发票号,供应商,采购合同号,付款类型,币种,申请金额,审批金额,已付金额,未付金额,状态
+PR-PG3X2P,2026-11-17,UIQA-20261117-04-INV01,QA261112 测试供应商,PC-HR36RU,goods_payment,CNY,0.01,0.01,0.01,0.00,approved
+PR-GZN8H6,2026-11-12,QA261112-INV01,QA261112 测试供应商,PC-HR36RU,goods_payment,RMB,60.00,60.00,60.00,0.00,approved
+PR-ZAWWF6,2026-11-12,QA261112-INV01,QA261112 测试供应商,PC-HR36RU,goods_payment,RMB,60.00,60.00,60.00,0.00,approved

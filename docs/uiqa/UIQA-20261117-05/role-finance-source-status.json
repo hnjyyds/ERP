@@ -1,0 +1,196 @@
+[
+  {
+    "requestId": "79503.2725",
+    "url": "http://localhost:8080/api/v1/finance/payment-requests?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2723",
+    "url": "http://localhost:8080/api/v1/finance/receivables?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2722",
+    "url": "http://localhost:8080/api/v1/finance/receipts?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2726",
+    "url": "http://localhost:8080/api/v1/finance/payables?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2724",
+    "url": "http://localhost:8080/api/v1/finance/supplier-invoices?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2721",
+    "url": "http://localhost:8080/api/v1/finance/overview",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2728",
+    "url": "http://localhost:8080/api/v1/finance/fee-payment-requests?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2731",
+    "url": "http://localhost:8080/api/v1/finance/verification-usage",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2729",
+    "url": "http://localhost:8080/api/v1/finance/fee-payables?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2730",
+    "url": "http://localhost:8080/api/v1/finance/verification-documents?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2732",
+    "url": "http://localhost:8080/api/v1/finance/misc-fee-items?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2727",
+    "url": "http://localhost:8080/api/v1/finance/partner-fee-invoices?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2733",
+    "url": "http://localhost:8080/api/v1/finance/misc-fee-allocations?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2734",
+    "url": "http://localhost:8080/api/v1/finance/misc-fee-allocations/summary",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2738",
+    "url": "http://localhost:8080/api/v1/finance/port-import-batches?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2736",
+    "url": "http://localhost:8080/api/v1/finance/profit-calculations?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2737",
+    "url": "http://localhost:8080/api/v1/finance/reimbursements?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2735",
+    "url": "http://localhost:8080/api/v1/finance/settlements?status=locked&limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2739",
+    "url": "http://localhost:8080/api/v1/finance/customs-declaration-records?limit=50&offset=0",
+    "status": 200,
+    "method": "GET"
+  },
+  {
+    "requestId": "79503.2740",
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers?limit=20",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少供应商权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少供应商权限"
+      }
+    }
+  },
+  {
+    "requestId": "79503.2741",
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers?limit=20",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少供应商权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少供应商权限"
+      }
+    }
+  },
+  {
+    "requestId": "79503.2747",
+    "url": "http://localhost:8080/api/v1/purchase/contracts?limit=20",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购合同权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购合同权限"
+      }
+    }
+  },
+  {
+    "requestId": "79503.2745",
+    "url": "http://localhost:8080/api/v1/masterdata/suppliers?limit=20",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少供应商权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少供应商权限"
+      }
+    }
+  },
+  {
+    "requestId": "79503.2746",
+    "url": "http://localhost:8080/api/v1/purchase/invoice-notices?limit=20",
+    "status": 403,
+    "method": "GET",
+    "body": {
+      "success": false,
+      "code": "PERMISSION_DENIED",
+      "message": "缺少采购开票通知权限",
+      "data": null,
+      "error": {
+        "code": "PERMISSION_DENIED",
+        "message": "缺少采购开票通知权限"
+      }
+    }
+  }
+]

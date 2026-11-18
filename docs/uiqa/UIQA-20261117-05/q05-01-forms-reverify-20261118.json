@@ -1,0 +1,124 @@
+{
+  "case": "UIQA-20261117-05 / Q05-01 其余表单字段级必填与错误定位复验",
+  "date": "2026-11-18",
+  "deployment": {
+    "url": "http://127.0.0.1:8080",
+    "asset_entry": "assets/index-BAsZmyiU.js",
+    "asset_css": "assets/index-CVMx6kR8.css",
+    "container_id": "e2fa6c33f64a8ef8944da1c807567144a0a01f6d4c3c060c7a179e5f9cdcf56b",
+    "image_id": "sha256:c80afbc4eceb0ac06a74f5af99356d405b497e36d28f49e33e0da0cfca4b1e31",
+    "frontend_revision": "工作区（基线 f9e9e045 + Q05-01 表单校验补丁）",
+    "backend_revision": "b370c0fe",
+    "method": "ego-browser 真实浏览器，admin，1440/1512 桌面视口；在部署版本上按原失败路径空提交并逐字段补填，记录常驻错误、aria-invalid、aria-describedby 与焦点"
+  },
+  "results": {
+    "P02_supplier": {
+      "empty_submit": {
+        "persistent_error": "请填写编号",
+        "required_marks": 4,
+        "aria_invalid": ["partner-field-code"],
+        "focused": "partner-field-code",
+        "described_by": "partner-field-code-error"
+      },
+      "after_typing_code": { "persistent_error": null, "aria_invalid": [] },
+      "code_filled_submit": {
+        "persistent_error": "请填写中文名称",
+        "aria_invalid": ["partner-field-cn_name"],
+        "focused": "partner-field-cn_name"
+      },
+      "verdict": "pass"
+    },
+    "P03_customer": {
+      "empty_submit": {
+        "persistent_error": "请填写编号",
+        "required_marks": 4,
+        "aria_invalid": ["partner-field-code"],
+        "focused": "partner-field-code"
+      },
+      "after_typing_code": { "persistent_error": null, "aria_invalid": [] },
+      "code_filled_submit": {
+        "persistent_error": "请填写中文名称",
+        "aria_invalid": ["partner-field-cn_name"],
+        "focused": "partner-field-cn_name"
+      },
+      "verdict": "pass"
+    },
+    "P04_partner": {
+      "empty_submit": {
+        "persistent_error": "请填写编号",
+        "required_marks": 5,
+        "aria_invalid": ["partner-field-code"],
+        "focused": "partner-field-code"
+      },
+      "after_typing_code": { "persistent_error": null, "aria_invalid": [] },
+      "code_filled_submit": {
+        "persistent_error": "请填写中文名称",
+        "aria_invalid": ["partner-field-cn_name"],
+        "focused": "partner-field-cn_name"
+      },
+      "verdict": "pass"
+    },
+    "contact_create": {
+      "page": "/masterdata/suppliers/3a96df3a-848e-41be-b08a-6460a458024d",
+      "empty_submit": {
+        "persistent_error": "请填写联系人姓名",
+        "aria_invalid": "true",
+        "described_by": "partner-contact-field-name-error",
+        "focused": "partner-contact-field-name"
+      },
+      "after_typing_name": { "persistent_error": null, "aria_invalid": "false" },
+      "verdict": "pass"
+    },
+    "P05_document_party": {
+      "empty_submit": {
+        "persistent_error": "请填写编号",
+        "required_marks": 3,
+        "aria_invalid": ["document-party-field-code"],
+        "focused": "document-party-field-code"
+      },
+      "code_filled_submit": {
+        "persistent_error": "请填写显示名称",
+        "aria_invalid": ["document-party-field-display_name"],
+        "focused": "document-party-field-display_name"
+      },
+      "name_filled_submit": {
+        "persistent_error": "请填写国家/地区",
+        "aria_invalid": ["document-party-field-country"],
+        "focused": "document-party-field-country"
+      },
+      "country_filled": { "persistent_error": null, "aria_invalid": [] },
+      "verdict": "pass"
+    },
+    "product_accessory_modal": {
+      "page": "/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+      "empty_submit": {
+        "persistent_error": "请填写配件名称",
+        "aria_invalid": ["product-accessory-field-accessory_name"],
+        "focused": "product-accessory-field-accessory_name"
+      },
+      "empty_consumption_submit": {
+        "persistent_error": "请填写大于0的配件单耗",
+        "aria_invalid": ["product-accessory-field-unit_consumption"],
+        "focused": "product-accessory-field-unit_consumption"
+      },
+      "verdict": "pass"
+    },
+    "product_create_inline_accessory": {
+      "scenario": "主字段填齐，配件仅填单耗 1.25 而未填名称",
+      "persistent_error": "已填写配件信息，请补充配件名称或清空配件信息",
+      "aria_invalid": ["product-field-accessory_name"],
+      "focused": "product-field-accessory_name",
+      "previous_behavior": "旧实现会静默丢弃配件并创建商品；旧版空名称+其他配件字段则直接 422 仅toast",
+      "verdict": "pass"
+    }
+  },
+  "not_created": {
+    "note": "所有提交均被前端校验拦截，未发出新增业务请求；供应商列表仍为3条，未新增商品/配件/联系人/单证资料。表单均以 Escape 关闭，未保存草稿。"
+  },
+  "evidence": {
+    "supplier_screenshot": "screenshots/Q05-01-supplier-required-1440.png",
+    "product_inline_accessory_screenshot": "screenshots/Q05-01-product-inline-accessory-1440.png",
+    "automated_tests": "frontend vitest 418 passed / 50 files（含新增 TradingPartner、DocumentParties、ProductsPage 字段级错误用例）；tsc --noEmit 通过；eslint 改动文件无错误"
+  },
+  "residual_boundary": "本轮覆盖 Q05-01 已记录的全部必填路径（商品英文名/包装资料/配件，供货商/客户/合作伙伴编号与名称等，联系人姓名，单证资料编号/显示名称/国家）。服务端对客户端未覆盖的其他约束若返回字段错误，仍以全局提示呈现，不在本轮复验范围。"
+}

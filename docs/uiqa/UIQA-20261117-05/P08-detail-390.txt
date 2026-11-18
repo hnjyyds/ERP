@@ -1,0 +1,282 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "采购合同"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "采购合同概览"
+          container
+            text "采购合同"
+            text "1"
+          container
+            text "待审批"
+            text "0"
+          container
+            text "已审批"
+            text "1"
+          container
+            text "合同金额"
+            text "RMB 250.00"
+          container
+            text "待办提醒"
+            text "2"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "采购合同明细"
+            text "PC-HR36RU"
+            button [ref=2438]
+              svg_root
+              text "返回列表"
+          container
+            text "合同摘要"
+            text "快速确认合同来源、执行节点、责任人和付款进度。"
+          container
+            container
+              container
+                heading
+                  text "合同概况"
+                paragraph
+                  text "合同从哪里生成，以及当前处于哪个审批阶段"
+              unordered_list
+                container
+                  list_item
+                    text "合同状态"
+                  list_item
+                    text "已审批"
+                container
+                  list_item
+                    text "合同日期"
+                  list_item
+                    text "2026-11-12"
+                container
+                  list_item
+                    text "合同来源"
+                  list_item
+                    text "手工采购"
+                list_item
+                  text "供应商"
+                list_item
+                  text "QA261112 测试供应商"
+            container
+              heading
+                text "履约安排"
+              paragraph
+                text "负责采购与查验的人员，以及计划交货时间"
+              unordered_list
+                list_item
+                  text "采购负责人"
+                list_item
+                  text "未设置"
+                list_item
+                  text "QC 负责人"
+                list_item
+                  text "演示 QC 专员"
+                list_item
+                  text "预计交货日期"
+                list_item
+                  text "2026-11-12"
+            container
+              heading
+                text "金额与审批"
+              paragraph
+                text "金额均按合同币种显示，待付款金额为尚未支付的部分"
+              unordered_list
+                list_item
+                  text "合同金额"
+                list_item
+                  text "RMB 250.00"
+                list_item
+                  text "待付款金额"
+                list_item
+                  text "RMB 250.00"
+                list_item
+                  text "审批人"
+                list_item
+                  text "演示业务主管"
+          text "付款条款"
+          paragraph
+            text "QA261112 货到30天付款"
+          text "合同备注"
+          paragraph
+            text "QA261112 全流程测试采购合同"
+          button [ref=2439]
+            text "编辑合同"
+          button [ref=2440]
+            text "提交采购合同"
+          button [ref=2441]
+            text "审批采购合同"
+          button [ref=2442]
+            svg_root
+            text "用合同模板生成"
+          button [ref=2443]
+            text "作废合同"
+          text "合同商品明细"
+          text "1 行"
+          table
+            table_row
+              table_cell
+                text "商品"
+              table_cell
+                text "规格/型号"
+              table_cell
+                text "数量"
+              table_cell
+                text "单价"
+              table_cell
+                text "金额"
+              table_cell
+                text "未收"
+            table_row
+              table_cell
+                text "QA261112-P01"
+                text "/"
+                text "QA261112 验收测试围巾"
+              table_cell
+                text "180×70cm / 含中文与符号"
+                text "/"
+                text "QA-M01"
+              table_cell
+                text "100"
+                text "pcs"
+              table_cell
+                text "RMB 2.50"
+              table_cell
+                text "RMB 250.00"
+              table_cell
+                text "0"
+                text "pcs"
+          text "来源出口合同"
+          text "0 条"
+          table
+            table_row
+              table_cell
+                text "出口合同"
+              table_cell
+                text "客户"
+              table_cell
+                text "商品"
+              table_cell
+                text "需求数量"
+            table_row
+              table_cell
+                text "库存采购或手工采购，无来源出口合同"
+          text "付款和交货提醒"
+          text "2 条"
+          table
+            table_row
+              table_cell
+                text "类型"
+              table_cell
+                text "标题"
+              table_cell
+                text "到期日"
+              table_cell
+                text "金额"
+              table_cell
+                text "状态"
+            table_row
+              table_cell
+                text "交货提醒"
+              table_cell
+                text "PC-HR36RU 供应商交货提醒"
+              table_cell
+                text "2026-11-12"
+              table_cell
+                text "无金额"
+              table_cell
+                text "待处理"
+            table_row
+              table_cell
+                text "付款提醒"
+              table_cell
+                text "PC-HR36RU 供应商付款提醒"
+              table_cell
+                text "2026-11-19"
+              table_cell
+                text "RMB 75.00"
+              table_cell
+                text "待处理"
+          text "进度概览"
+          text "0 未收"
+          table
+            table_row
+              table_cell
+                text "总数量"
+              table_cell
+                text "已收"
+              table_cell
+                text "未收"
+              table_cell
+                text "已付"
+              table_cell
+                text "未付"
+            table_row
+              table_cell
+                text "100"
+              table_cell
+                text "100"
+              table_cell
+                text "0"
+              table_cell
+                text "RMB 0.00"
+              table_cell
+                text "RMB 250.00"
+          paragraph
+            text "已付/未付为采购合同自身记录的金额，不含供应商发票登记后的付款；发票维度的付款请查看付款管理。"
+          text "全局采购提醒"
+          text "2 条"
+          table
+            table_row
+              table_cell
+                text "类型"
+              table_cell
+                text "标题"
+              table_cell
+                text "到期日"
+              table_cell
+                text "金额"
+            table_row
+              table_cell
+                text "交货提醒"
+              table_cell
+                text "PC-HR36RU 供应商交货提醒"
+              table_cell
+                text "2026-11-12"
+              table_cell
+                text "无金额"
+            table_row
+              table_cell
+                text "付款提醒"
+              table_cell
+                text "PC-HR36RU 供应商付款提醒"
+              table_cell
+                text "2026-11-19"
+              table_cell
+                text "RMB 75.00"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

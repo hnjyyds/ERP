@@ -1,0 +1,1005 @@
+[
+  {
+    "label": "客户",
+    "options": [
+      "演示客户｜海湾家居贸易\nUI261114-C01 · 荷兰",
+      "QA261112 测试客户\nQA261112-C01 · DE"
+    ],
+    "steps": [
+      {
+        "expected": "演示客户｜海湾家居贸易\nUI261114-C01 · 荷兰",
+        "selected": "演示客户｜海湾家居贸易",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类",
+            "value": "确认样"
+          },
+          {
+            "label": "产品编号",
+            "value": ""
+          },
+          {
+            "label": "产品名称",
+            "value": ""
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n快递费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "expected": "QA261112 测试客户\nQA261112-C01 · DE",
+        "selected": "QA261112 测试客户",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类",
+            "value": "确认样"
+          },
+          {
+            "label": "产品编号",
+            "value": ""
+          },
+          {
+            "label": "产品名称",
+            "value": ""
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n快递费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      }
+    ],
+    "cleared": "搜索客户编号或名称"
+  },
+  {
+    "label": "关联报价",
+    "options": [
+      "QT-A33KVZ / QA261112 测试客户"
+    ],
+    "steps": [
+      {
+        "expected": "QT-A33KVZ / QA261112 测试客户",
+        "selected": "QT-A33KVZ / QA261112 测试客户",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类",
+            "value": "确认样"
+          },
+          {
+            "label": "产品编号",
+            "value": ""
+          },
+          {
+            "label": "产品名称",
+            "value": ""
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n快递费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      }
+    ],
+    "cleared": "输入关键词搜索"
+  },
+  {
+    "label": "样品登记",
+    "options": [
+      "SM-D45XDB / QA261112 验收测试围巾\nconfirm_sample · QA261112-P01 · pcs · 留样数量 3",
+      "SM-ZB334N / QA261112 验收测试围巾\nincoming · QA261112-P01 · pcs · 留样数量 2"
+    ],
+    "steps": [
+      {
+        "expected": "SM-D45XDB / QA261112 验收测试围巾\nconfirm_sample · QA261112-P01 · pcs · 留样数量 3",
+        "selected": "SM-D45XDB / QA261112 验收测试围巾",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": "SM-D45XDB"
+          },
+          {
+            "label": "样品分类",
+            "value": "确认样"
+          },
+          {
+            "label": "产品编号",
+            "value": "QA261112-P01"
+          },
+          {
+            "label": "产品名称",
+            "value": "QA261112 验收测试围巾"
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n快递费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "expected": "SM-ZB334N / QA261112 验收测试围巾\nincoming · QA261112-P01 · pcs · 留样数量 2",
+        "selected": "SM-ZB334N / QA261112 验收测试围巾",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": "SM-ZB334N"
+          },
+          {
+            "label": "样品分类",
+            "value": "来样"
+          },
+          {
+            "label": "产品编号",
+            "value": "QA261112-P01"
+          },
+          {
+            "label": "产品名称",
+            "value": "QA261112 验收测试围巾"
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n快递费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      }
+    ],
+    "cleared": "输入关键词搜索"
+  },
+  {
+    "label": "费用类型",
+    "options": [
+      "快递费",
+      "保险费",
+      "其他费用"
+    ],
+    "steps": [
+      {
+        "expected": "快递费",
+        "selected": "快递费",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类",
+            "value": "来样"
+          },
+          {
+            "label": "产品编号",
+            "value": ""
+          },
+          {
+            "label": "产品名称",
+            "value": ""
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n快递费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "expected": "保险费",
+        "selected": "保险费",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类",
+            "value": "来样"
+          },
+          {
+            "label": "产品编号",
+            "value": ""
+          },
+          {
+            "label": "产品名称",
+            "value": ""
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n保险费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "承担方",
+    "options": [
+      "公司承担",
+      "客户承担",
+      "供应商承担"
+    ],
+    "steps": [
+      {
+        "expected": "公司承担",
+        "selected": "公司承担",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类",
+            "value": "来样"
+          },
+          {
+            "label": "产品编号",
+            "value": ""
+          },
+          {
+            "label": "产品名称",
+            "value": ""
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n保险费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n公司承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "expected": "客户承担",
+        "selected": "客户承担",
+        "fields": [
+          {
+            "label": "寄样单号",
+            "value": ""
+          },
+          {
+            "label": "寄样日期",
+            "value": "2026-11-18"
+          },
+          {
+            "label": "客户",
+            "value": ""
+          },
+          {
+            "label": "供应商",
+            "value": ""
+          },
+          {
+            "label": "工厂",
+            "value": ""
+          },
+          {
+            "label": "收件人",
+            "value": ""
+          },
+          {
+            "label": "收件公司",
+            "value": ""
+          },
+          {
+            "label": "收件地址",
+            "value": ""
+          },
+          {
+            "label": "快递公司",
+            "value": "DHL"
+          },
+          {
+            "label": "快递单号",
+            "value": ""
+          },
+          {
+            "label": "关联报价",
+            "value": ""
+          },
+          {
+            "label": "样品登记",
+            "value": ""
+          },
+          {
+            "label": "样品编号",
+            "value": ""
+          },
+          {
+            "label": "样品分类",
+            "value": "来样"
+          },
+          {
+            "label": "产品编号",
+            "value": ""
+          },
+          {
+            "label": "产品名称",
+            "value": ""
+          },
+          {
+            "label": "寄样数量",
+            "value": "1"
+          },
+          {
+            "label": "单位",
+            "value": "pcs"
+          },
+          {
+            "label": "明细备注",
+            "value": ""
+          },
+          {
+            "label": "费用类型\n保险费",
+            "value": ""
+          },
+          {
+            "label": "金额",
+            "value": "0.00"
+          },
+          {
+            "label": "币种",
+            "value": "USD"
+          },
+          {
+            "label": "承担方\n客户承担",
+            "value": ""
+          },
+          {
+            "label": "费用备注",
+            "value": ""
+          },
+          {
+            "label": "寄样备注",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  }
+]

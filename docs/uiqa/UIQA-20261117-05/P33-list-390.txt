@@ -1,0 +1,217 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=2979, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "口岸数据"
+        container
+          button "通知" [ref=2967, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=2968, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container "口岸数据导入"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "进出口报关数据查询"
+            form
+              container
+                text "报关单号"
+                textbox [ref=3004]
+              container
+                text "报关回单号"
+                textbox [ref=3005]
+              container
+                text "进出口"
+                container
+                  container
+                    text "全部"
+                    comboboxgrouping [ref=3006]
+                  image "down"
+                    svg_root
+              container
+                button [ref=3007]
+                  svg_root
+                  text "查询"
+                button [ref=3008]
+                  svg_root
+                  text "自动匹配回单"
+          container [ref=3034]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=3009]
+                container [ref=3035]
+                  table
+                    table_row
+                      table_cell
+                        text "报关单号"
+                      table_cell
+                        text "回单号"
+                      table_cell
+                        text "进出口"
+                      table_cell
+                        text "商品"
+                      table_cell
+                        text "匹配"
+                      table_cell
+                        text "核销单"
+                      table_cell
+                        text "报关日期"
+                      table_cell
+                        text "金额"
+                    table_row
+                      table_cell
+                        text "QA261112-CD01"
+                      table_cell
+                        text "QA261112-CR01"
+                      table_cell
+                        text "出口"
+                      table_cell
+                        text "QA261112 验收测试围巾"
+                      table_cell
+                        text "未匹配"
+                      table_cell
+                        text "-"
+                      table_cell
+                        text "2026-11-12"
+                      table_cell
+                        text "USD 205.00"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=3010]
+                    image "left"
+                      svg_root
+                list_item [ref=3011]
+                  anchor [ref=3012]
+                    text "1"
+                list_item
+                  button [ref=3013]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+          text "报关数据 1 条"
+          container
+            svg_root
+            heading
+              text "导入批次记录"
+          container [ref=3036]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=3015]
+                table
+                  table_row
+                    table_cell
+                      text "批次号"
+                    table_cell
+                      text "来源"
+                    table_cell
+                      text "导入日期"
+                    table_cell
+                      text "记录数"
+                    table_cell
+                      text "状态"
+                  table_row
+                    table_cell
+                      text "QA261112-PORT01"
+                    table_cell
+                      text "QA261112"
+                    table_cell
+                      text "2026-11-12"
+                    table_cell
+                      text "1"
+                    table_cell
+                      text "已导入"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=3016]
+                    image "left"
+                      svg_root
+                list_item [ref=3017]
+                  anchor [ref=3018]
+                    text "1"
+                list_item
+                  button [ref=3019]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+        container
+          svg_root
+          heading
+            text "导入口岸数据"
+          form
+            container
+              text "批次号"
+              textbox [ref=3021]
+            container
+              text "数据来源"
+              textbox [ref=3022, loc=css:input[placeholder="如：电子口岸 / 海关"]]
+                text "如：电子口岸 / 海关"
+            container
+              text "导入日期"
+              textbox [ref=3023]
+                spinbutton "年" [ref=3024]
+                  text "年"
+                text "/"
+                spinbutton "月" [ref=3025]
+                  text "月"
+                text "/"
+                spinbutton "日" [ref=3026]
+                  text "日"
+            text "报关数据明细"
+            container
+              text "报关单号"
+              textbox [ref=3027]
+            container
+              text "报关回单号"
+              textbox [ref=3028]
+            container
+              text "进出口类型"
+              container
+                text "出口"
+                comboboxgrouping [ref=3029]
+                svg_root
+            container
+              text "商品名称"
+              textbox [ref=3030]
+            container
+              text "报关金额"
+              textbox [ref=3031]
+            container
+              text "币种"
+              textbox [ref=3032]
+                text "USD"
+            button [ref=3033]
+              svg_root
+              text "导入数据"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

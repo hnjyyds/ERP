@@ -1,0 +1,212 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1794, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "付费管理"
+        container
+          button "通知" [ref=1764, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1765, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container "付费管理"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "合作伙伴费用发票"
+            form
+              container
+                text "费用发票搜索"
+                textbox [ref=2740]
+              container
+                text "发票状态"
+                container
+                  container
+                    text "全部状态"
+                    comboboxgrouping [ref=2741]
+                  image "down"
+                    svg_root
+              container
+                text "费用类型"
+                container
+                  container
+                    text "全部类型"
+                    comboboxgrouping [ref=2742]
+                  image "down"
+                    svg_root
+              container
+                text "合作伙伴标识"
+                textbox [ref=2743]
+              container
+                text "出运单号"
+                textbox [ref=2744]
+              container
+                button [ref=2745]
+                  svg_root
+                  text "查询"
+                button [ref=2746]
+                  svg_root
+                  text "发票登记"
+          container [ref=2766]
+            table
+              table_row
+                table_cell
+            container
+              container [ref=2747]
+                container [ref=2767]
+                  table
+                    table_row
+                      table_cell
+                        text "费用发票"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "合作伙伴"
+                      table_cell
+                        text "出运单"
+                      table_cell
+                        text "费用类型"
+                      table_cell
+                        text "发票金额"
+                      table_cell
+                        text "未付"
+                    table_row
+                      table_cell
+                        button [ref=2748]
+                          text "QA261112-FEE01"
+                      table_cell
+                        text "已付清"
+                      table_cell
+                        text "QA261112 测试货代"
+                      table_cell
+                        text "SP-DAEPEG"
+                      table_cell
+                        text "货代费"
+                      table_cell
+                        text "USD 20.00"
+                      table_cell
+                        text "USD 0.00"
+              unordered_list
+                list_item
+                  text "共 1 条"
+                list_item
+                  button [ref=2749]
+                    image "left"
+                      svg_root
+                list_item [ref=2750]
+                  anchor [ref=2751]
+                    text "1"
+                list_item
+                  button [ref=2752]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+        container
+          svg_root
+          heading
+            text "应付费用查询"
+          form
+            container
+              text "应付费用搜索"
+              textbox [ref=2754]
+            container
+              text "应付状态"
+              container
+                text "全部状态"
+                comboboxgrouping [ref=2755]
+                svg_root
+            container
+              text "费用类型"
+              container
+                text "全部类型"
+                comboboxgrouping [ref=2756]
+                svg_root
+            container
+              text "合作伙伴标识"
+              textbox [ref=2757]
+            container
+              text "出运单号"
+              textbox [ref=2758]
+            button [ref=2759]
+              svg_root
+              text "查询"
+          container [ref=2768]
+            table
+              table_row
+                table_cell
+            container [ref=2760]
+              container [ref=2769]
+                table
+                  table_row
+                    table_cell
+                      text "费用发票"
+                    table_cell
+                      text "合作伙伴"
+                    table_cell
+                      text "出运单"
+                    table_cell
+                      text "费用类型"
+                    table_cell
+                      text "发票金额"
+                    table_cell
+                      text "已付费"
+                    table_cell
+                      text "应付余额"
+                    table_cell
+                      text "状态"
+                  table_row
+                    table_cell
+                      text "QA261112-FEE01"
+                    table_cell
+                      text "QA261112 测试货代"
+                    table_cell
+                      text "SP-DAEPEG"
+                    table_cell
+                      text "货代费"
+                    table_cell
+                      text "USD 20.00"
+                    table_cell
+                      text "USD 20.00"
+                    table_cell
+                      text "USD 0.00"
+                    table_cell
+                      text "已付清"
+            unordered_list
+              list_item
+                text "共 1 条"
+              list_item
+                button [ref=2761]
+                  image "left"
+                    svg_root
+              list_item [ref=2762]
+                anchor [ref=2763]
+                  text "1"
+              list_item
+                button [ref=2764]
+                  image "right"
+                    svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

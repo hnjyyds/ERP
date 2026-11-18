@@ -1,0 +1,2195 @@
+{
+  "url": "http://localhost:8080/masterdata/products",
+  "viewport": [
+    390,
+    844
+  ],
+  "scale": 1,
+  "controls": [
+    {
+      "label": "业务导航",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 292,
+        "y": 11.84375,
+        "width": 84,
+        "height": 44,
+        "top": 11.84375,
+        "right": 376,
+        "bottom": 55.84375,
+        "left": 292
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "16.1px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "通知",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 288,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 332,
+        "bottom": 122.6953125,
+        "left": 288
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "系统设置",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 332,
+        "y": 78.6953125,
+        "width": 44,
+        "height": 44,
+        "top": 78.6953125,
+        "right": 376,
+        "bottom": 122.6953125,
+        "left": 332
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "搜索",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 31,
+        "y": 392.484375,
+        "width": 328,
+        "height": 44,
+        "top": 392.484375,
+        "right": 359,
+        "bottom": 436.484375,
+        "left": 31
+      },
+      "padding": [
+        "4px",
+        "4px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "查询商品",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 31,
+        "y": 448.484375,
+        "width": 50,
+        "height": 44,
+        "top": 448.484375,
+        "right": 81,
+        "bottom": 492.484375,
+        "left": 31
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "新增商品",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 89,
+        "y": 448.484375,
+        "width": 111.046875,
+        "height": 44,
+        "top": 448.484375,
+        "right": 200.046875,
+        "bottom": 492.484375,
+        "left": 89
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "导入商品",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 208.046875,
+        "y": 448.484375,
+        "width": 84.5234375,
+        "height": 44,
+        "top": 448.484375,
+        "right": 292.5703125,
+        "bottom": 492.484375,
+        "left": 208.046875
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "导出全部商品",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 31,
+        "y": 500.484375,
+        "width": 84.5234375,
+        "height": 44,
+        "top": 500.484375,
+        "right": 115.5234375,
+        "bottom": 544.484375,
+        "left": 31
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "设置列视图",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 123.5234375,
+        "y": 500.484375,
+        "width": 50,
+        "height": 44,
+        "top": 500.484375,
+        "right": 173.5234375,
+        "bottom": 544.484375,
+        "left": 123.5234375
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14.95px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "Select all",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "on",
+      "rect": {
+        "x": 39,
+        "y": 479.984375,
+        "width": 16,
+        "height": 16,
+        "top": 479.984375,
+        "right": 55,
+        "bottom": 495.984375,
+        "left": 39
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14px",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "on",
+      "rect": {
+        "x": 39,
+        "y": 519.484375,
+        "width": 16,
+        "height": 16,
+        "top": 519.484375,
+        "right": 55,
+        "bottom": 535.484375,
+        "left": 39
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14px",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "label": "UIQA-20261117-05-P01",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 71,
+        "y": 516.484375,
+        "width": 152.859375,
+        "height": 44,
+        "top": 516.484375,
+        "right": 223.859375,
+        "bottom": 560.484375,
+        "left": 71
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "18.85px",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "label": "查看详情",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 699.6015625,
+        "y": 516.484375,
+        "width": 67.015625,
+        "height": 44,
+        "top": 516.484375,
+        "right": 766.6171875,
+        "bottom": 560.484375,
+        "left": 699.6015625
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "on",
+      "rect": {
+        "x": 39,
+        "y": 687.234375,
+        "width": 16,
+        "height": 16,
+        "top": 687.234375,
+        "right": 55,
+        "bottom": 703.234375,
+        "left": 39
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "UI261114-IMG",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 71,
+        "y": 684.234375,
+        "width": 90.3671875,
+        "height": 44,
+        "top": 684.234375,
+        "right": 161.3671875,
+        "bottom": 728.234375,
+        "left": 71
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "18.85px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "查看详情",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 699.6015625,
+        "y": 684.234375,
+        "width": 67.015625,
+        "height": 44,
+        "top": 684.234375,
+        "right": 766.6171875,
+        "bottom": 728.234375,
+        "left": 699.6015625
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "on",
+      "rect": {
+        "x": 39,
+        "y": 748.234375,
+        "width": 16,
+        "height": 16,
+        "top": 748.234375,
+        "right": 55,
+        "bottom": 764.234375,
+        "left": 39
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "UI261114-IMG01",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 71,
+        "y": 745.234375,
+        "width": 105.546875,
+        "height": 44,
+        "top": 745.234375,
+        "right": 176.546875,
+        "bottom": 789.234375,
+        "left": 71
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "18.85px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "查看详情",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 699.6015625,
+        "y": 745.234375,
+        "width": 67.015625,
+        "height": 44,
+        "top": 745.234375,
+        "right": 766.6171875,
+        "bottom": 789.234375,
+        "left": 699.6015625
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "on",
+      "rect": {
+        "x": 39,
+        "y": 821.765625,
+        "width": 16,
+        "height": 16,
+        "top": 821.765625,
+        "right": 55,
+        "bottom": 837.765625,
+        "left": 39
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14px",
+      "fontSize": "14px",
+      "hit": true
+    },
+    {
+      "label": "UI261114-P01",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 71,
+        "y": 818.765625,
+        "width": 88.7734375,
+        "height": 44,
+        "top": 818.765625,
+        "right": 159.7734375,
+        "bottom": 862.765625,
+        "left": 71
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "18.85px",
+      "fontSize": "13px",
+      "hit": true
+    },
+    {
+      "label": "查看详情",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 699.6015625,
+        "y": 818.765625,
+        "width": 67.015625,
+        "height": 44,
+        "top": 818.765625,
+        "right": 766.6171875,
+        "bottom": 862.765625,
+        "left": 699.6015625
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "on",
+      "rect": {
+        "x": 39,
+        "y": 932.984375,
+        "width": 16,
+        "height": 16,
+        "top": 932.984375,
+        "right": 55,
+        "bottom": 948.984375,
+        "left": 39
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14px",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 71,
+        "y": 929.984375,
+        "width": 0,
+        "height": 44,
+        "top": 929.984375,
+        "right": 71,
+        "bottom": 973.984375,
+        "left": 71
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "18.85px",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "label": "查看详情",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 699.6015625,
+        "y": 929.984375,
+        "width": 67.015625,
+        "height": 44,
+        "top": 929.984375,
+        "right": 766.6171875,
+        "bottom": 973.984375,
+        "left": 699.6015625
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "INPUT",
+      "role": null,
+      "disabled": false,
+      "readOnly": false,
+      "value": "on",
+      "rect": {
+        "x": 39,
+        "y": 1006.515625,
+        "width": 16,
+        "height": 16,
+        "top": 1006.515625,
+        "right": 55,
+        "bottom": 1022.515625,
+        "left": 39
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "14px",
+      "fontSize": "14px",
+      "hit": false
+    },
+    {
+      "label": "QA261112-P01",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 71,
+        "y": 1003.515625,
+        "width": 93.515625,
+        "height": 44,
+        "top": 1003.515625,
+        "right": 164.515625,
+        "bottom": 1047.515625,
+        "left": 71
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "18.85px",
+      "fontSize": "13px",
+      "hit": false
+    },
+    {
+      "label": "查看详情",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": false,
+      "value": "",
+      "rect": {
+        "x": 699.6015625,
+        "y": 1003.515625,
+        "width": 67.015625,
+        "height": 44,
+        "top": 1003.515625,
+        "right": 766.6171875,
+        "bottom": 1047.515625,
+        "left": 699.6015625
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "17.4px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": true,
+      "value": "",
+      "rect": {
+        "x": 279,
+        "y": 909.203125,
+        "width": 24,
+        "height": 44,
+        "top": 909.203125,
+        "right": 303,
+        "bottom": 953.203125,
+        "left": 279
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "24px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "",
+      "tag": "BUTTON",
+      "role": null,
+      "disabled": true,
+      "value": "",
+      "rect": {
+        "x": 335,
+        "y": 909.203125,
+        "width": 24,
+        "height": 44,
+        "top": 909.203125,
+        "right": 359,
+        "bottom": 953.203125,
+        "left": 335
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "24px",
+      "fontSize": "12px",
+      "hit": false
+    },
+    {
+      "label": "页码",
+      "tag": "INPUT",
+      "role": "combobox",
+      "disabled": false,
+      "readOnly": false,
+      "value": "",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "padding": [
+        "0px",
+        "0px"
+      ],
+      "lineHeight": "20px",
+      "fontSize": "13px",
+      "hit": false
+    }
+  ],
+  "texts": [
+    {
+      "text": "业务管理系统",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.511976173162169,
+      "rect": {
+        "x": 16,
+        "y": 29.5,
+        "width": 73.515625,
+        "height": 16.1953125,
+        "top": 29.5,
+        "right": 89.515625,
+        "bottom": 45.6953125,
+        "left": 16
+      }
+    },
+    {
+      "text": "导航",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "14px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 332.21875,
+        "y": 25.796875,
+        "width": 28.5625,
+        "height": 16.09375,
+        "top": 25.796875,
+        "right": 360.78125,
+        "bottom": 41.890625,
+        "left": 332.21875
+      }
+    },
+    {
+      "text": "业务模块",
+      "color": "rgb(124, 133, 146)",
+      "bg": [
+        244,
+        246,
+        248
+      ],
+      "opacity": "1",
+      "fontSize": "11px",
+      "ratio": 3.444831529412615,
+      "rect": {
+        "x": 14,
+        "y": 79.3671875,
+        "width": 81.5234375,
+        "height": 12.6484375,
+        "top": 79.3671875,
+        "right": 95.5234375,
+        "bottom": 92.015625,
+        "left": 14
+      }
+    },
+    {
+      "text": "2",
+      "color": "rgb(255, 255, 255)",
+      "bg": [
+        255,
+        77,
+        79
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 3.267743233071127,
+      "rect": {
+        "x": 315.375,
+        "y": 84.6953125,
+        "width": 7.2421875,
+        "height": 14,
+        "top": 84.6953125,
+        "right": 322.6171875,
+        "bottom": 98.6953125,
+        "left": 315.375
+      }
+    },
+    {
+      "text": "商品",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 5.6397400089526695,
+      "rect": {
+        "x": 31,
+        "y": 159.6953125,
+        "width": 146.5,
+        "height": 13.796875,
+        "top": 159.6953125,
+        "right": 177.5,
+        "bottom": 173.4921875,
+        "left": 31
+      }
+    },
+    {
+      "text": "配件明细",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 5.6397400089526695,
+      "rect": {
+        "x": 211.5,
+        "y": 159.6953125,
+        "width": 146.5,
+        "height": 13.796875,
+        "top": 159.6953125,
+        "right": 358,
+        "bottom": 173.4921875,
+        "left": 211.5
+      }
+    },
+    {
+      "text": "有图商品",
+      "color": "rgb(95, 104, 117)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 5.6397400089526695,
+      "rect": {
+        "x": 31,
+        "y": 234.4921875,
+        "width": 147.5,
+        "height": 13.796875,
+        "top": 234.4921875,
+        "right": 178.5,
+        "bottom": 248.2890625,
+        "left": 31
+      }
+    },
+    {
+      "text": "新增商品",
+      "color": "rgb(255, 255, 255)",
+      "bg": [
+        49,
+        91,
+        214
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.836518013436252,
+      "rect": {
+        "x": 130,
+        "y": 463.0078125,
+        "width": 53.046875,
+        "height": 14.9453125,
+        "top": 463.0078125,
+        "right": 183.046875,
+        "bottom": 477.953125,
+        "left": 130
+      }
+    },
+    {
+      "text": "导入",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 249.046875,
+        "y": 463.0078125,
+        "width": 26.5234375,
+        "height": 14.9453125,
+        "top": 463.0078125,
+        "right": 275.5703125,
+        "bottom": 477.953125,
+        "left": 249.046875
+      }
+    },
+    {
+      "text": "导出",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 72,
+        "y": 515.0078125,
+        "width": 26.5234375,
+        "height": 14.9453125,
+        "top": 515.0078125,
+        "right": 98.5234375,
+        "bottom": 529.953125,
+        "left": 72
+      }
+    },
+    {
+      "text": "编号",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 63,
+        "y": 468.484375,
+        "width": 168.859375,
+        "height": 40,
+        "top": 468.484375,
+        "right": 231.859375,
+        "bottom": 508.484375,
+        "left": 63
+      }
+    },
+    {
+      "text": "中文名称",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 231.859375,
+        "y": 468.484375,
+        "width": 75.796875,
+        "height": 40,
+        "top": 468.484375,
+        "right": 307.65625,
+        "bottom": 508.484375,
+        "left": 231.859375
+      }
+    },
+    {
+      "text": "英文名称",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 307.65625,
+        "y": 468.484375,
+        "width": 87.7109375,
+        "height": 40,
+        "top": 468.484375,
+        "right": 395.3671875,
+        "bottom": 508.484375,
+        "left": 307.65625
+      }
+    },
+    {
+      "text": "海关编码",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 395.3671875,
+        "y": 468.484375,
+        "width": 97.125,
+        "height": 40,
+        "top": 468.484375,
+        "right": 492.4921875,
+        "bottom": 508.484375,
+        "left": 395.3671875
+      }
+    },
+    {
+      "text": "单位",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 492.4921875,
+        "y": 468.484375,
+        "width": 63.40625,
+        "height": 40,
+        "top": 468.484375,
+        "right": 555.8984375,
+        "bottom": 508.484375,
+        "left": 492.4921875
+      }
+    },
+    {
+      "text": "状态",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 555.8984375,
+        "y": 468.484375,
+        "width": 76.046875,
+        "height": 40,
+        "top": 468.484375,
+        "right": 631.9453125,
+        "bottom": 508.484375,
+        "left": 555.8984375
+      }
+    },
+    {
+      "text": "配件",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 631.9453125,
+        "y": 468.484375,
+        "width": 59.65625,
+        "height": 40,
+        "top": 468.484375,
+        "right": 691.6015625,
+        "bottom": 508.484375,
+        "left": 631.9453125
+      }
+    },
+    {
+      "text": "入口",
+      "color": "rgba(0, 0, 0, 0.88)",
+      "bg": [
+        247,
+        248,
+        250
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.732208011276706,
+      "rect": {
+        "x": 691.6015625,
+        "y": 468.484375,
+        "width": 99.3984375,
+        "height": 40,
+        "top": 468.484375,
+        "right": 791,
+        "bottom": 508.484375,
+        "left": 691.6015625
+      }
+    },
+    {
+      "text": "UIQA-20261117-05-P01",
+      "color": "rgb(49, 91, 214)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.183022202749855,
+      "rect": {
+        "x": 71,
+        "y": 516.484375,
+        "width": 152.859375,
+        "height": 44,
+        "top": 516.484375,
+        "right": 223.859375,
+        "bottom": 560.484375,
+        "left": 71
+      }
+    },
+    {
+      "text": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 231.859375,
+        "y": 508.484375,
+        "width": 75.796875,
+        "height": 167.75,
+        "top": 508.484375,
+        "right": 307.65625,
+        "bottom": 676.234375,
+        "left": 231.859375
+      }
+    },
+    {
+      "text": "UIQA Full Acceptance Cotton Linen Storage Bag",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 307.65625,
+        "y": 508.484375,
+        "width": 87.7109375,
+        "height": 167.75,
+        "top": 508.484375,
+        "right": 395.3671875,
+        "bottom": 676.234375,
+        "left": 307.65625
+      }
+    },
+    {
+      "text": "0000000000",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 395.3671875,
+        "y": 508.484375,
+        "width": 97.125,
+        "height": 167.75,
+        "top": 508.484375,
+        "right": 492.4921875,
+        "bottom": 676.234375,
+        "left": 395.3671875
+      }
+    },
+    {
+      "text": "pcs",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 492.4921875,
+        "y": 508.484375,
+        "width": 63.40625,
+        "height": 167.75,
+        "top": 508.484375,
+        "right": 555.8984375,
+        "bottom": 676.234375,
+        "left": 492.4921875
+      }
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 563.8984375,
+        "y": 516.484375,
+        "width": 38.5078125,
+        "height": 22,
+        "top": 516.484375,
+        "right": 602.40625,
+        "bottom": 538.484375,
+        "left": 563.8984375
+      }
+    },
+    {
+      "text": "0",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        238,
+        241,
+        254
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 14.325275710241979,
+      "rect": {
+        "x": 631.9453125,
+        "y": 508.484375,
+        "width": 59.65625,
+        "height": 167.75,
+        "top": 508.484375,
+        "right": 691.6015625,
+        "bottom": 676.234375,
+        "left": 631.9453125
+      }
+    },
+    {
+      "text": "查看详情",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 708.6015625,
+        "y": 529.78125,
+        "width": 49.015625,
+        "height": 17.3984375,
+        "top": 529.78125,
+        "right": 757.6171875,
+        "bottom": 547.1796875,
+        "left": 708.6015625
+      }
+    },
+    {
+      "text": "UI261114-IMG",
+      "color": "rgb(49, 91, 214)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.836518013436252,
+      "rect": {
+        "x": 71,
+        "y": 684.234375,
+        "width": 90.3671875,
+        "height": 44,
+        "top": 684.234375,
+        "right": 161.3671875,
+        "bottom": 728.234375,
+        "left": 71
+      }
+    },
+    {
+      "text": "多图验证商品",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 231.859375,
+        "y": 676.234375,
+        "width": 75.796875,
+        "height": 61,
+        "top": 676.234375,
+        "right": 307.65625,
+        "bottom": 737.234375,
+        "left": 231.859375
+      }
+    },
+    {
+      "text": "Multi Image Product",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 307.65625,
+        "y": 676.234375,
+        "width": 87.7109375,
+        "height": 61,
+        "top": 676.234375,
+        "right": 395.3671875,
+        "bottom": 737.234375,
+        "left": 307.65625
+      }
+    },
+    {
+      "text": "8481804090",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 395.3671875,
+        "y": 676.234375,
+        "width": 97.125,
+        "height": 61,
+        "top": 676.234375,
+        "right": 492.4921875,
+        "bottom": 737.234375,
+        "left": 395.3671875
+      }
+    },
+    {
+      "text": "pcs",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 492.4921875,
+        "y": 676.234375,
+        "width": 63.40625,
+        "height": 61,
+        "top": 676.234375,
+        "right": 555.8984375,
+        "bottom": 737.234375,
+        "left": 492.4921875
+      }
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 563.8984375,
+        "y": 684.234375,
+        "width": 38.5078125,
+        "height": 22,
+        "top": 684.234375,
+        "right": 602.40625,
+        "bottom": 706.234375,
+        "left": 563.8984375
+      }
+    },
+    {
+      "text": "0",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 631.9453125,
+        "y": 676.234375,
+        "width": 59.65625,
+        "height": 61,
+        "top": 676.234375,
+        "right": 691.6015625,
+        "bottom": 737.234375,
+        "left": 631.9453125
+      }
+    },
+    {
+      "text": "查看详情",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 708.6015625,
+        "y": 697.53125,
+        "width": 49.015625,
+        "height": 17.3984375,
+        "top": 697.53125,
+        "right": 757.6171875,
+        "bottom": 714.9296875,
+        "left": 708.6015625
+      }
+    },
+    {
+      "text": "UI261114-IMG01",
+      "color": "rgb(49, 91, 214)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.836518013436252,
+      "rect": {
+        "x": 71,
+        "y": 745.234375,
+        "width": 105.546875,
+        "height": 44,
+        "top": 745.234375,
+        "right": 176.546875,
+        "bottom": 789.234375,
+        "left": 71
+      }
+    },
+    {
+      "text": "演示商品｜图片上传测试袋",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 231.859375,
+        "y": 737.234375,
+        "width": 75.796875,
+        "height": 73.53125,
+        "top": 737.234375,
+        "right": 307.65625,
+        "bottom": 810.765625,
+        "left": 231.859375
+      }
+    },
+    {
+      "text": "Demo Image Upload Bag",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 307.65625,
+        "y": 737.234375,
+        "width": 87.7109375,
+        "height": 73.53125,
+        "top": 737.234375,
+        "right": 395.3671875,
+        "bottom": 810.765625,
+        "left": 307.65625
+      }
+    },
+    {
+      "text": "0000000000",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 395.3671875,
+        "y": 737.234375,
+        "width": 97.125,
+        "height": 73.53125,
+        "top": 737.234375,
+        "right": 492.4921875,
+        "bottom": 810.765625,
+        "left": 395.3671875
+      }
+    },
+    {
+      "text": "pcs",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 492.4921875,
+        "y": 737.234375,
+        "width": 63.40625,
+        "height": 73.53125,
+        "top": 737.234375,
+        "right": 555.8984375,
+        "bottom": 810.765625,
+        "left": 492.4921875
+      }
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 563.8984375,
+        "y": 745.234375,
+        "width": 38.5078125,
+        "height": 22,
+        "top": 745.234375,
+        "right": 602.40625,
+        "bottom": 767.234375,
+        "left": 563.8984375
+      }
+    },
+    {
+      "text": "0",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 631.9453125,
+        "y": 737.234375,
+        "width": 59.65625,
+        "height": 73.53125,
+        "top": 737.234375,
+        "right": 691.6015625,
+        "bottom": 810.765625,
+        "left": 631.9453125
+      }
+    },
+    {
+      "text": "查看详情",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 708.6015625,
+        "y": 758.53125,
+        "width": 49.015625,
+        "height": 17.3984375,
+        "top": 758.53125,
+        "right": 757.6171875,
+        "bottom": 775.9296875,
+        "left": 708.6015625
+      }
+    },
+    {
+      "text": "UI261114-P01",
+      "color": "rgb(49, 91, 214)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.836518013436252,
+      "rect": {
+        "x": 71,
+        "y": 818.765625,
+        "width": 88.7734375,
+        "height": 44,
+        "top": 818.765625,
+        "right": 159.7734375,
+        "bottom": 862.765625,
+        "left": 71
+      }
+    },
+    {
+      "text": "演示商品｜棉麻收纳袋",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 231.859375,
+        "y": 810.765625,
+        "width": 75.796875,
+        "height": 111.21875,
+        "top": 810.765625,
+        "right": 307.65625,
+        "bottom": 921.984375,
+        "left": 231.859375
+      }
+    },
+    {
+      "text": "Demo Cotton Linen Storage Bag",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 307.65625,
+        "y": 810.765625,
+        "width": 87.7109375,
+        "height": 111.21875,
+        "top": 810.765625,
+        "right": 395.3671875,
+        "bottom": 921.984375,
+        "left": 307.65625
+      }
+    },
+    {
+      "text": "0000000000",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 395.3671875,
+        "y": 810.765625,
+        "width": 97.125,
+        "height": 111.21875,
+        "top": 810.765625,
+        "right": 492.4921875,
+        "bottom": 921.984375,
+        "left": 395.3671875
+      }
+    },
+    {
+      "text": "pcs",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 492.4921875,
+        "y": 810.765625,
+        "width": 63.40625,
+        "height": 111.21875,
+        "top": 810.765625,
+        "right": 555.8984375,
+        "bottom": 921.984375,
+        "left": 492.4921875
+      }
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 563.8984375,
+        "y": 818.765625,
+        "width": 38.5078125,
+        "height": 22,
+        "top": 818.765625,
+        "right": 602.40625,
+        "bottom": 840.765625,
+        "left": 563.8984375
+      }
+    },
+    {
+      "text": "1",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 631.9453125,
+        "y": 810.765625,
+        "width": 59.65625,
+        "height": 111.21875,
+        "top": 810.765625,
+        "right": 691.6015625,
+        "bottom": 921.984375,
+        "left": 631.9453125
+      }
+    },
+    {
+      "text": "查看详情",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 708.6015625,
+        "y": 832.0625,
+        "width": 49.015625,
+        "height": 17.3984375,
+        "top": 832.0625,
+        "right": 757.6171875,
+        "bottom": 849.4609375,
+        "left": 708.6015625
+      }
+    },
+    {
+      "text": "QA261112 验收测试围巾",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 231.859375,
+        "y": 921.984375,
+        "width": 75.796875,
+        "height": 73.53125,
+        "top": 921.984375,
+        "right": 307.65625,
+        "bottom": 995.515625,
+        "left": 231.859375
+      }
+    },
+    {
+      "text": "QA261112 Audit Scarf",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 307.65625,
+        "y": 921.984375,
+        "width": 87.7109375,
+        "height": 73.53125,
+        "top": 921.984375,
+        "right": 395.3671875,
+        "bottom": 995.515625,
+        "left": 307.65625
+      }
+    },
+    {
+      "text": "6214300000",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 395.3671875,
+        "y": 921.984375,
+        "width": 97.125,
+        "height": 73.53125,
+        "top": 921.984375,
+        "right": 492.4921875,
+        "bottom": 995.515625,
+        "left": 395.3671875
+      }
+    },
+    {
+      "text": "pcs",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 492.4921875,
+        "y": 921.984375,
+        "width": 63.40625,
+        "height": 73.53125,
+        "top": 921.984375,
+        "right": 555.8984375,
+        "bottom": 995.515625,
+        "left": 492.4921875
+      }
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 563.8984375,
+        "y": 929.984375,
+        "width": 38.5078125,
+        "height": 22,
+        "top": 929.984375,
+        "right": 602.40625,
+        "bottom": 951.984375,
+        "left": 563.8984375
+      }
+    },
+    {
+      "text": "0",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 631.9453125,
+        "y": 921.984375,
+        "width": 59.65625,
+        "height": 73.53125,
+        "top": 921.984375,
+        "right": 691.6015625,
+        "bottom": 995.515625,
+        "left": 631.9453125
+      }
+    },
+    {
+      "text": "查看详情",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 708.6015625,
+        "y": 943.28125,
+        "width": 49.015625,
+        "height": 17.3984375,
+        "top": 943.28125,
+        "right": 757.6171875,
+        "bottom": 960.6796875,
+        "left": 708.6015625
+      }
+    },
+    {
+      "text": "QA261112-P01",
+      "color": "rgb(49, 91, 214)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 5.836518013436252,
+      "rect": {
+        "x": 71,
+        "y": 1003.515625,
+        "width": 93.515625,
+        "height": 44,
+        "top": 1003.515625,
+        "right": 164.515625,
+        "bottom": 1047.515625,
+        "left": 71
+      }
+    },
+    {
+      "text": "QA261112 验收测试围巾",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 231.859375,
+        "y": 995.515625,
+        "width": 75.796875,
+        "height": 73.53125,
+        "top": 995.515625,
+        "right": 307.65625,
+        "bottom": 1069.046875,
+        "left": 231.859375
+      }
+    },
+    {
+      "text": "QA261112 Audit Scarf",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 307.65625,
+        "y": 995.515625,
+        "width": 87.7109375,
+        "height": 73.53125,
+        "top": 995.515625,
+        "right": 395.3671875,
+        "bottom": 1069.046875,
+        "left": 307.65625
+      }
+    },
+    {
+      "text": "6214300000",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 395.3671875,
+        "y": 995.515625,
+        "width": 97.125,
+        "height": 73.53125,
+        "top": 995.515625,
+        "right": 492.4921875,
+        "bottom": 1069.046875,
+        "left": 395.3671875
+      }
+    },
+    {
+      "text": "pcs",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 492.4921875,
+        "y": 995.515625,
+        "width": 63.40625,
+        "height": 73.53125,
+        "top": 995.515625,
+        "right": 555.8984375,
+        "bottom": 1069.046875,
+        "left": 492.4921875
+      }
+    },
+    {
+      "text": "启用",
+      "color": "rgb(23, 96, 60)",
+      "bg": [
+        246,
+        255,
+        237
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 7.368184180027188,
+      "rect": {
+        "x": 563.8984375,
+        "y": 1003.515625,
+        "width": 38.5078125,
+        "height": 22,
+        "top": 1003.515625,
+        "right": 602.40625,
+        "bottom": 1025.515625,
+        "left": 563.8984375
+      }
+    },
+    {
+      "text": "1",
+      "color": "rgb(29, 33, 41)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "13px",
+      "ratio": 16.131462775889503,
+      "rect": {
+        "x": 631.9453125,
+        "y": 995.515625,
+        "width": 59.65625,
+        "height": 73.53125,
+        "top": 995.515625,
+        "right": 691.6015625,
+        "bottom": 1069.046875,
+        "left": 631.9453125
+      }
+    },
+    {
+      "text": "查看详情",
+      "color": "rgb(32, 36, 44)",
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "opacity": "1",
+      "fontSize": "12px",
+      "ratio": 15.55399364339602,
+      "rect": {
+        "x": 708.6015625,
+        "y": 1016.8125,
+        "width": 49.015625,
+        "height": 17.3984375,
+        "top": 1016.8125,
+        "right": 757.6171875,
+        "bottom": 1034.2109375,
+        "left": 708.6015625
+      }
+    }
+  ]
+}

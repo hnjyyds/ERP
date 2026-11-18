@@ -1,0 +1,495 @@
+{
+  "url": "http://localhost:8080/quality/inspections",
+  "title": "QC 任务中心",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "QC 任务中心",
+    "QC 任务列表",
+    "建立 QC 任务"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "任务搜索\n任务状态\n全部状态\n查验结果\n全部结果\n更多筛选\n查询\n新增 QC 单",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "任务搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 283.4453125,
+            "width": 287.4453125,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 568.4453125,
+            "bottom": 319.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_a_",
+          "label": "任务状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 591.4453125,
+            "y": 288.4453125,
+            "width": 147.46875,
+            "height": 26,
+            "top": 288.4453125,
+            "right": 738.9140625,
+            "bottom": 314.4453125,
+            "left": 591.4453125
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_c_",
+          "label": "查验结果\n全部结果",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 790.9140625,
+            "y": 288.4453125,
+            "width": 147.46875,
+            "height": 26,
+            "top": 288.4453125,
+            "right": 938.3828125,
+            "bottom": 314.4453125,
+            "left": 790.9140625
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "更多筛选",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 979.3828125,
+            "y": 283.4453125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 1090.4296875,
+            "bottom": 319.4453125,
+            "left": 979.3828125
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1098.4296875,
+            "y": 283.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 1182.953125,
+            "bottom": 319.4453125,
+            "left": 1098.4296875
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "重置筛选",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1190.953125,
+            "y": 283.4453125,
+            "width": 34,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 1224.953125,
+            "bottom": 319.4453125,
+            "left": 1190.953125
+          }
+        },
+        {
+          "j": 6,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "label": "刷新列表",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1232.953125,
+            "y": 283.4453125,
+            "width": 34,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 1266.953125,
+            "bottom": 319.4453125,
+            "left": 1232.953125
+          }
+        },
+        {
+          "j": 7,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增 QC 单",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1274.953125,
+            "y": 283.4453125,
+            "width": 124.046875,
+            "height": 36,
+            "top": 283.4453125,
+            "right": 1399,
+            "bottom": 319.4453125,
+            "left": 1274.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_g_",
+      "visible": true,
+      "text": "任务信息\nQC 任务单号\n采购合同\n*\n输入合同号或供应商搜索\n排期时间\n*\n负责人\n*\n系统管理员 / admin / 管理部\n任务说明\n附件组",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "quality-code",
+          "label": "QC 任务单号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 342,
+            "y": 483.7109375,
+            "width": 370,
+            "height": 36,
+            "top": 483.7109375,
+            "right": 712,
+            "bottom": 519.7109375,
+            "left": 342
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "quality-contract-id",
+          "label": "采购合同",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 739,
+            "y": 488.7109375,
+            "width": 330,
+            "height": 26,
+            "top": 488.7109375,
+            "right": 1069,
+            "bottom": 514.7109375,
+            "left": 739
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "id": "quality-scheduled-at",
+          "label": "排期时间\n*",
+          "text": "",
+          "value": "2026-11-19T09:00",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": true,
+          "rect": {
+            "x": 342,
+            "y": 553.7109375,
+            "width": 370,
+            "height": 36,
+            "top": 553.7109375,
+            "right": 712,
+            "bottom": 589.7109375,
+            "left": 342
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "quality-inspector-id",
+          "label": "负责人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 739,
+            "y": 558.7109375,
+            "width": 330,
+            "height": 26,
+            "top": 558.7109375,
+            "right": 1069,
+            "bottom": 584.7109375,
+            "left": 739
+          }
+        },
+        {
+          "j": 4,
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "id": "quality-task-note",
+          "label": "任务说明",
+          "text": "",
+          "value": "",
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 342,
+            "y": 623.7109375,
+            "width": 756,
+            "height": 78.4453125,
+            "top": 623.7109375,
+            "right": 1098,
+            "bottom": 702.15625,
+            "left": 342
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "quality-attachment-group",
+          "label": "附件组",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 342,
+            "y": 736.15625,
+            "width": 756,
+            "height": 36,
+            "top": 736.15625,
+            "right": 1098,
+            "bottom": 772.15625,
+            "left": 342
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "QC 任务单号\t任务状态\t查验结果\t采购合同\t供应商\t负责人\t排期时间\t下一步\t入口\nQC-8TXV57\t已完成\t通过\tPC-HR36RU\tQA261112 测试供应商\t系统管理员\t2026/11/13 09:00\t查看结果\t\n查看详情",
+      "buttons": [
+        "QC-8TXV57",
+        "查看详情"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

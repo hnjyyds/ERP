@@ -1,0 +1,50 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=3164, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "MCP 与 AI 数据接入"
+        container
+          button "通知" [ref=3156, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=3157, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container
+          svg_root
+          container
+            container
+              heading
+                text "MCP 服务未启用"
+              text "已关闭"
+            paragraph
+              text "允许受信任的 AI 客户端通过标准 MCP 协议查询和维护 ERP 数据。关闭后不会影响现有业务页面和 API。"
+          container
+            text "是否启用 MCP"
+            switch "是否启用 MCP" [ref=3315, loc=css:button[aria-label="是否启用 MCP"]]
+              svg_root
+        container
+          svg_root
+          container
+            heading
+              text "启用后即可查看 AI 连接信息"
+            paragraph
+              text "连接地址、鉴权令牌、客户端配置和全部可用工具只在 MCP 开启时展示。"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

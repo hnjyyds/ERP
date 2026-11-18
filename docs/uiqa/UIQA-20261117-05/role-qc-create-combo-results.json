@@ -1,0 +1,212 @@
+[
+  {
+    "control": {
+      "i": 3,
+      "id": "quality-contract-id",
+      "label": "采购合同\n*\n输入合同号或供应商搜索",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 0,
+        "label": "PC-HR36RU / QA261112 测试供应商\n下单 2026-11-12 交货 2026-11-12",
+        "title": "PC-HR36RU / QA261112 测试供应商",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "PC-HR36RU / QA261112 测试供应商\n下单 2026-11-12 交货 2026-11-12",
+        "state": {
+          "selected": "PC-HR36RU / QA261112 测试供应商",
+          "fields": [
+            {
+              "label": "QC 任务单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "采购合同\n*\nPC-HR36RU / QA261112 测试供应商",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "排期时间\n*",
+              "type": "datetime-local",
+              "value": "2026-11-18T09:00"
+            },
+            {
+              "label": "负责人\n*\n演示 QC 专员 / qc / 品质部",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "任务说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "附件组",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ],
+    "cleared": {
+      "selected": "输入合同号或供应商搜索",
+      "fields": [
+        {
+          "label": "QC 任务单号",
+          "type": "text",
+          "value": ""
+        },
+        {
+          "label": "采购合同\n*\n输入合同号或供应商搜索",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "排期时间\n*",
+          "type": "datetime-local",
+          "value": "2026-11-18T09:00"
+        },
+        {
+          "label": "负责人\n*\n演示 QC 专员 / qc / 品质部",
+          "type": "search",
+          "value": ""
+        },
+        {
+          "label": "任务说明",
+          "type": "textarea",
+          "value": ""
+        },
+        {
+          "label": "附件组",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  },
+  {
+    "control": {
+      "i": 4,
+      "id": "quality-inspector-id",
+      "label": "负责人\n*\n演示 QC 专员 / qc / 品质部",
+      "readonly": false,
+      "disabled": false,
+      "visible": true,
+      "inDialog": true
+    },
+    "options": [
+      {
+        "i": 1,
+        "label": "系统管理员 / admin / 管理部",
+        "title": "系统管理员 / admin / 管理部",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 2,
+        "label": "演示业务主管 / demo / 业务部",
+        "title": "演示业务主管 / demo / 业务部",
+        "visible": true,
+        "disabled": false
+      },
+      {
+        "i": 3,
+        "label": "演示 QC 专员 / qc / 品质部",
+        "title": "演示 QC 专员 / qc / 品质部",
+        "visible": true,
+        "disabled": false
+      }
+    ],
+    "steps": [
+      {
+        "expected": "系统管理员 / admin / 管理部",
+        "state": {
+          "selected": "系统管理员 / admin / 管理部",
+          "fields": [
+            {
+              "label": "QC 任务单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "采购合同\n*\n输入合同号或供应商搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "排期时间\n*",
+              "type": "datetime-local",
+              "value": "2026-11-18T09:00"
+            },
+            {
+              "label": "负责人\n*\n系统管理员 / admin / 管理部",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "任务说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "附件组",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      },
+      {
+        "expected": "演示业务主管 / demo / 业务部",
+        "state": {
+          "selected": "演示业务主管 / demo / 业务部",
+          "fields": [
+            {
+              "label": "QC 任务单号",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "label": "采购合同\n*\n输入合同号或供应商搜索",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "排期时间\n*",
+              "type": "datetime-local",
+              "value": "2026-11-18T09:00"
+            },
+            {
+              "label": "负责人\n*\n演示业务主管 / demo / 业务部",
+              "type": "search",
+              "value": ""
+            },
+            {
+              "label": "任务说明",
+              "type": "textarea",
+              "value": ""
+            },
+            {
+              "label": "附件组",
+              "type": "text",
+              "value": ""
+            }
+          ],
+          "focus": null
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,303 @@
+{
+  "url": "http://localhost:8080/sample/deliveries/06a298c2-6b07-4263-9ddc-1e67db6f6067",
+  "title": "寄样管理",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "寄样管理",
+    "寄样明细"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "物流跟踪\n快递公司\n快递单号\n物流状态\n已寄出\n更新物流",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "快递公司",
+          "text": "",
+          "value": "QA261112-MOCK",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 283,
+            "y": 631.6953125,
+            "width": 360.6640625,
+            "height": 36,
+            "top": 631.6953125,
+            "right": 643.6640625,
+            "bottom": 667.6953125,
+            "left": 283
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "快递单号",
+          "text": "",
+          "value": "QA261112-NOT-SHIPPED",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 659.6640625,
+            "y": 631.6953125,
+            "width": 360.6640625,
+            "height": 36,
+            "top": 631.6953125,
+            "right": 1020.328125,
+            "bottom": 667.6953125,
+            "left": 659.6640625
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_6_",
+          "label": "物流状态\n已寄出",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 1047.328125,
+            "y": 636.6953125,
+            "width": 320.6640625,
+            "height": 26,
+            "top": 636.6953125,
+            "right": 1367.9921875,
+            "bottom": 662.6953125,
+            "left": 1047.328125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "更新物流",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 283,
+            "y": 683.6953125,
+            "width": 132,
+            "height": 36,
+            "top": 683.6953125,
+            "right": 415,
+            "bottom": 719.6953125,
+            "left": 283
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "样品编号\t产品\t数量\t分类\t备注\nSM-ZB334N\tQA261112-P01 / QA261112 验收测试围巾\t1 pcs\t来样\t-",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "费用类型\t金额\t承担方\t备注\n暂无费用明细",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "客户\t快递公司\t寄样单数\t费用合计\n暂无已审核费用",
+      "buttons": []
+    },
+    {
+      "i": 3,
+      "text": "状态\t寄样单数\t寄样数量\n已寄出\t1\t1",
+      "buttons": []
+    },
+    {
+      "i": 4,
+      "text": "客户\t寄样单数\t寄样数量\nQA261112 测试客户\t1\t1",
+      "buttons": []
+    },
+    {
+      "i": 5,
+      "text": "快递公司\t寄样单数\t寄样数量\nQA261112-MOCK\t1\t1",
+      "buttons": []
+    },
+    {
+      "i": 6,
+      "text": "寄样单\t客户\t日期\t状态\t快递\nSD-CXE849\tQA261112 测试客户\t2026-11-12\t已寄出\tQA261112-MOCK / QA261112-NOT-SHIPPED",
+      "buttons": []
+    },
+    {
+      "i": 7,
+      "text": "报价单\t寄样单\t客户\t产品\t审核日期\n-\tSD-CXE849\tQA261112 测试客户\tQA261112 验收测试围巾\t2026-11-12",
+      "buttons": []
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "QC 中心",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "我的 QC 任务",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "跟单中心",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "样品登记",
+      "href": "/sample/records"
+    },
+    {
+      "text": "打样管理",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "寄样管理",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

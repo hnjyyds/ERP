@@ -1,0 +1,196 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=7883, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "QC 任务中心"
+        container
+          button "通知" [ref=7880, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=7881, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "QC 任务概览"
+          container
+            text "我的待处理"
+            text "0"
+          container
+            text "待查验"
+            text "0"
+          container
+            text "查验中"
+            text "0"
+          container
+            text "已逾期"
+            text "0"
+          container
+            text "异常待关闭"
+            text "0"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "QC 任务详情"
+            button [ref=7882]
+              svg_root
+              text "返回列表"
+          container
+            text "QC 已通过"
+            text "任务状态：已完成 / 查验结果：通过"
+          unordered_list
+            container
+              list_item
+                text "QC 任务单号"
+              list_item
+                text "QC-8TXV57"
+            container
+              list_item
+                text "任务状态"
+              list_item
+                text "已完成"
+            container
+              list_item
+                text "排期时间"
+              list_item
+                text "2026/11/13 09:00"
+            container
+              list_item
+                text "负责人"
+              list_item
+                text "系统管理员"
+            container
+              list_item
+                text "采购合同"
+              list_item
+                text "PC-HR36RU"
+            list_item
+              text "供应商"
+            list_item
+              text "QA261112 测试供应商"
+            list_item
+              text "实际查验日期"
+            list_item
+              text "2026-11-12"
+            list_item
+              text "查验结果"
+            list_item
+              text "通过"
+            list_item
+              text "任务说明"
+            list_item
+              text "QA261112 全流程查验"
+            list_item
+              text "附件组"
+            list_item
+              text "-"
+          text "商品查验明细"
+          text "1 行"
+          table
+            table_row
+              table_cell
+                text "商品"
+              table_cell
+                text "查验数量"
+              table_cell
+                text "不良数量"
+              table_cell
+                text "单位"
+              table_cell
+                text "结果"
+              table_cell
+                text "备注"
+            table_row
+              table_cell
+                text "QA261112 验收测试围巾"
+              table_cell
+                text "100"
+              table_cell
+                text "0"
+              table_cell
+                text "pcs"
+              table_cell
+                text "通过"
+              table_cell
+                text "-"
+          text "异常问题"
+          text "0 条"
+          table
+            table_row
+              table_cell
+                text "类型"
+              table_cell
+                text "严重度"
+              table_cell
+                text "描述"
+              table_cell
+                text "整改"
+              table_cell
+                text "状态"
+              table_cell
+                text "关闭说明"
+              table_cell
+                text "操作"
+            table_row
+              table_cell
+                text "暂无异常问题"
+          text "凭证附件"
+          text "0 个"
+          text "暂无凭证附件"
+          text "任务审计记录"
+          text "3 条"
+          table
+            table_row
+              table_cell
+                text "时间"
+              table_cell
+                text "动作"
+              table_cell
+                text "操作人"
+              table_cell
+                text "说明"
+            table_row
+              table_cell
+                text "2026/11/12 11:16"
+              table_cell
+                text "创建任务"
+              table_cell
+                text "系统管理员"
+              table_cell
+                text "未设置"
+            table_row
+              table_cell
+                text "2026/11/12 11:17"
+              table_cell
+                text "开始查验"
+              table_cell
+                text "系统管理员"
+              table_cell
+                text "未设置"
+            table_row
+              table_cell
+                text "2026/11/12 11:17"
+              table_cell
+                text "完成查验"
+              table_cell
+                text "系统管理员"
+              table_cell
+                text "未设置"
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

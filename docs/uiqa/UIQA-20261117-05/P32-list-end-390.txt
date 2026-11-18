@@ -1,0 +1,145 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=2979, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "财务报表"
+        button "通知" [ref=2967, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=2968, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container "财务统计报表"
+        container
+          container
+            svg_root
+            heading
+              text "财务统计报表"
+          form "财务报表筛选"
+            container
+              text "起始日期"
+              textbox [ref=2980]
+                spinbutton "年" [ref=2981]
+                  text "年"
+                text "/"
+                spinbutton "月" [ref=2982]
+                  text "月"
+                text "/"
+                spinbutton "日" [ref=2983]
+                  text "日"
+            container
+              text "结束日期"
+              textbox [ref=2984]
+                spinbutton "年" [ref=2985]
+                  text "年"
+                text "/"
+                spinbutton "月" [ref=2986]
+                  text "月"
+                text "/"
+                spinbutton "日" [ref=2987]
+                  text "日"
+            container
+              text "币种"
+              textbox [ref=2988, loc=css:input[placeholder="如 USD"]]
+                text "如 USD"
+            container
+              text "水单号"
+              textbox [ref=2989]
+            button [ref=2990]
+              svg_root
+              text "查询"
+            button [ref=2991]
+              svg_root
+              text "导出 CSV"
+        container "报表切换" [ref=3002]
+          button [ref=2992]
+            text "水单使用明细"
+          button [ref=2993]
+            text "银行水单汇总"
+          button [ref=2994]
+            text "货款支付情况"
+          button [ref=2995]
+            text "费用支付情况"
+          button [ref=2996]
+            text "报关回单催收"
+          button [ref=2997]
+            text "申报退税统计"
+        container
+          table
+            table_row
+              table_cell
+          container [ref=2998]
+            container [ref=3003]
+              table
+                table_row
+                  table_cell
+                    text "水单号"
+                  table_cell
+                    text "收款日期"
+                  table_cell
+                    text "付款方"
+                  table_cell
+                    text "分摊类型"
+                  table_cell
+                    text "合同号"
+                  table_cell
+                    text "发票号"
+                  table_cell
+                    text "分摊金额"
+                  table_cell
+                    text "下钻"
+                table_row
+                  table_cell
+                    text "BR-MWYV53"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试客户"
+                  table_cell
+                    text "合同分摊"
+                  table_cell
+                    text "EC-F8D7RX"
+                  table_cell
+                    text "-"
+                  table_cell
+                    text "USD 60.00"
+                  table_cell
+                    button [ref=2999]
+                      text "来 源"
+                table_row
+                  table_cell
+                    text "BR-MWYV53"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试客户"
+                  table_cell
+                    text "合同分摊"
+                  table_cell
+                    text "EC-F8D7RX"
+                  table_cell
+                    text "-"
+                  table_cell
+                    text "USD 60.00"
+                  table_cell
+                    button [ref=3000]
+                      text "来 源"
+          table
+            table_row
+              table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,92 @@
+[
+  {
+    "i": 0,
+    "input": 0,
+    "button": 0,
+    "label": "搜索",
+    "before": {
+      "url": "http://localhost:8080/masterdata/document-parties",
+      "form": "搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料",
+      "inputs": [
+        {
+          "label": "搜索",
+          "value": ""
+        },
+        {
+          "label": "类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "单证资料列表\n搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料\n编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情\n\nQA261112-D01\tQA261112 测试收货人\t收货人\tQA261112 测试客户\tDE\t启用\t\n查看详情\n共 2 条\n1\n50 条/页",
+      "tableText": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情\n\nQA261112-D01\tQA261112 测试收货人\t收货人\tQA261112 测试客户\tDE\t启用\t\n查看详情"
+    },
+    "positive": "UIQA-20261117-05-D01",
+    "hit": {
+      "url": "http://localhost:8080/masterdata/document-parties?q=UIQA-20261117-05-D01",
+      "form": "搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料",
+      "inputs": [
+        {
+          "label": "搜索",
+          "value": "UIQA-20261117-05-D01"
+        },
+        {
+          "label": "类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "单证资料列表\n搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料\n编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情\n共 1 条\n1\n50 条/页",
+      "tableText": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情"
+    },
+    "empty": {
+      "url": "http://localhost:8080/masterdata/document-parties?q=UIQA-20261117-05-NOMATCH",
+      "form": "搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料",
+      "inputs": [
+        {
+          "label": "搜索",
+          "value": "UIQA-20261117-05-NOMATCH"
+        },
+        {
+          "label": "类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "单证资料列表\n搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料\n编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选",
+      "tableText": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\n\n\n没有匹配的结果\n\n请调整关键词或筛选条件后再试\n\n清空筛选"
+    },
+    "clearMethod": "UI 清空筛选",
+    "reset": {
+      "url": "http://localhost:8080/masterdata/document-parties",
+      "form": "搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料",
+      "inputs": [
+        {
+          "label": "搜索",
+          "value": ""
+        },
+        {
+          "label": "类型\n全部类型",
+          "value": ""
+        },
+        {
+          "label": "状态\n全部状态",
+          "value": ""
+        }
+      ],
+      "text": "单证资料列表\n搜索\n类型\n全部类型\n状态\n全部状态\n查询\n新增单证资料\n编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情\n\nQA261112-D01\tQA261112 测试收货人\t收货人\tQA261112 测试客户\tDE\t启用\t\n查看详情\n共 2 条\n1\n50 条/页",
+      "tableText": "编号\t名称\t类型\t关联客户\t国家/地区\t状态\t入口\nUIQA-20261117-05-D01\tUIQA全量验收通知人\t通知人\tQA261112 测试客户\tCN\t停用\t\n查看详情\n\nQA261112-D01\tQA261112 测试收货人\t收货人\tQA261112 测试客户\tDE\t启用\t\n查看详情"
+    },
+    "emptyMessage": true,
+    "restoredTables": true
+  }
+]

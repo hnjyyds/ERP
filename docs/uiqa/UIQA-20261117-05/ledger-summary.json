@@ -1,0 +1,143 @@
+{
+  "raw_scene_records": 67,
+  "deduplicated_raw_records": 55,
+  "duplicates_merged": 12,
+  "scene_ledger_rows": 169,
+  "scene_record_natures": {
+    "实际场景": 119,
+    "采证覆盖记录": 42,
+    "身份核对记录": 7,
+    "待执行分支": 1
+  },
+  "scene_results": {
+    "通过": 101,
+    "失败": 21,
+    "未测": 47
+  },
+  "pages": 42,
+  "defects": 29,
+  "normative_rows": 2016,
+  "normative_results": {
+    "未测": 1870,
+    "失败": 126,
+    "不适用": 20
+  },
+  "untested_categories": {
+    "部分覆盖": 378,
+    "尚未执行": 987,
+    "尚未执行;缺数据": 82,
+    "部分覆盖;缺授权": 263,
+    "部分覆盖;缺数据": 84,
+    "尚未执行;缺授权": 76
+  },
+  "observed_form_controls": 1045,
+  "control_state_rows": 8360,
+  "control_results": {
+    "未测": 8106,
+    "失败": 8,
+    "不适用": 244,
+    "通过（仅限手动输入/显示）": 2
+  },
+  "whole_pages_passed": 0,
+  "status": "历史29项全部关闭：Q05-03/06/07/09/12/14及Q05-22原失败路径补测通过；缺陷关闭与新版规范项未测分开保留；0页签收",
+  "defect_status": {
+    "closed": 29,
+    "pending_reverify": 0,
+    "open": 0,
+    "total": 29
+  },
+  "deployment": {
+    "frontend_commit": "449aaa0a",
+    "backend_commit": "449aaa0a",
+    "frontend_asset": "assets/index-Bpsh7zKB.js",
+    "frontend_css": "assets/index-aRStlGe6.css",
+    "frontend_css_note": "容器内实际样式文件；原记index-C-HlQaba.css已更正，入口JS不变",
+    "previous_asset": "assets/index-BawyFJj7.js",
+    "base_url": "http://127.0.0.1:8080",
+    "reverify_evidence": [
+      "first-batch-reverify-20261118.json",
+      "second-batch-reverify-20261118.json",
+      "third-reverify-20261118.json",
+      "q05-01-forms-reverify-20261118.json",
+      "q05-13-reverify-20261118.json",
+      "q05-04-reverify-20261118.json",
+      "q05-04-p06-p11-reverify-20261118.json",
+      "q05-23-reverify-20261118.json",
+      "q05-28-payables-reverify-20261118.json",
+      "q05-28-regions-reverify-20261118.json",
+      "q05-04-regions-reverify-20261118.json",
+      "q05-22-11-17-18-10-21-20-15-reverify-20261118.json",
+      "q05-22-reverify-20261118.json",
+      "q05-03-contrast-reverify-20261118.json",
+      "q05-09-column-menu-targets-20261118.json",
+      "q05-12-contact-label-targets-20261118.json",
+      "q05-06-empty-states-reverify-20261118.json",
+      "q05-07-image-names-reverify-20261118.json",
+      "q05-14-enum-labels-reverify-20261118.json"
+    ]
+  },
+  "resume": {
+    "space": 12,
+    "resumed_at": "2026-11-18",
+    "scope": "第一、二批修复与部署复验：付款对象/历史回显、入仓筛选、单位、权限、统计、导出、聚焦样式、加载失败态、寄样分类、商品必填",
+    "business_writes": "仅测试数据；未在验收环境审批/付款/保存"
+  },
+  "outputs": [
+    {
+      "name": "场景实测台账.csv",
+      "rows": 169
+    },
+    {
+      "name": "页面与子区域矩阵.csv",
+      "rows": 42
+    },
+    {
+      "name": "控件八态矩阵.csv",
+      "rows": 8360
+    },
+    {
+      "name": "42页48项验收矩阵.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-DTcfpjkq.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-BAsZmyiU.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-0SPe5fY1.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-BTFsUnZ2.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-CPKfkvPZ.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-CCfyf6F1.csv",
+      "rows": 2016
+    },
+    {
+      "name": "权限与数据台账.csv",
+      "rows": 10
+    },
+    {
+      "name": "42页48项验收矩阵-index-DJFI-T9o.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-BawyFJj7.csv",
+      "rows": 2016
+    },
+    {
+      "name": "42页48项验收矩阵-index-Bpsh7zKB.csv",
+      "rows": 2016
+    }
+  ]
+}

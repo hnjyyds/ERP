@@ -1,0 +1,386 @@
+[
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "menu": [
+      {
+        "text": "✓\n编号",
+        "disabled": "true",
+        "rect": {
+          "x": 1290.875,
+          "y": 301,
+          "width": 103.125,
+          "height": 32,
+          "top": 301,
+          "right": 1394,
+          "bottom": 333,
+          "left": 1290.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n中文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1290.875,
+          "y": 333,
+          "width": 103.125,
+          "height": 32,
+          "top": 333,
+          "right": 1394,
+          "bottom": 365,
+          "left": 1290.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n英文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1290.875,
+          "y": 365,
+          "width": 103.125,
+          "height": 32,
+          "top": 365,
+          "right": 1394,
+          "bottom": 397,
+          "left": 1290.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n海关编码",
+        "disabled": null,
+        "rect": {
+          "x": 1290.875,
+          "y": 397,
+          "width": 103.125,
+          "height": 32,
+          "top": 397,
+          "right": 1394,
+          "bottom": 429,
+          "left": 1290.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n单位",
+        "disabled": null,
+        "rect": {
+          "x": 1290.875,
+          "y": 429,
+          "width": 103.125,
+          "height": 32,
+          "top": 429,
+          "right": 1394,
+          "bottom": 461,
+          "left": 1290.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n状态",
+        "disabled": null,
+        "rect": {
+          "x": 1290.875,
+          "y": 461,
+          "width": 103.125,
+          "height": 32,
+          "top": 461,
+          "right": 1394,
+          "bottom": 493,
+          "left": 1290.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n配件",
+        "disabled": null,
+        "rect": {
+          "x": 1290.875,
+          "y": 493,
+          "width": 103.125,
+          "height": 32,
+          "top": 493,
+          "right": 1394,
+          "bottom": 525,
+          "left": 1290.875
+        },
+        "hit": true
+      },
+      {
+        "text": "恢复默认",
+        "disabled": null,
+        "rect": {
+          "x": 1290.875,
+          "y": 534,
+          "width": 103.125,
+          "height": 32,
+          "top": 534,
+          "right": 1394,
+          "bottom": 566,
+          "left": 1290.875
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "viewport": [
+      1280,
+      720
+    ],
+    "menu": [
+      {
+        "text": "✓\n编号",
+        "disabled": "true",
+        "rect": {
+          "x": 1130.875,
+          "y": 301,
+          "width": 103.125,
+          "height": 32,
+          "top": 301,
+          "right": 1234,
+          "bottom": 333,
+          "left": 1130.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n中文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1130.875,
+          "y": 333,
+          "width": 103.125,
+          "height": 32,
+          "top": 333,
+          "right": 1234,
+          "bottom": 365,
+          "left": 1130.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n英文名称",
+        "disabled": null,
+        "rect": {
+          "x": 1130.875,
+          "y": 365,
+          "width": 103.125,
+          "height": 32,
+          "top": 365,
+          "right": 1234,
+          "bottom": 397,
+          "left": 1130.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n海关编码",
+        "disabled": null,
+        "rect": {
+          "x": 1130.875,
+          "y": 397,
+          "width": 103.125,
+          "height": 32,
+          "top": 397,
+          "right": 1234,
+          "bottom": 429,
+          "left": 1130.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n单位",
+        "disabled": null,
+        "rect": {
+          "x": 1130.875,
+          "y": 429,
+          "width": 103.125,
+          "height": 32,
+          "top": 429,
+          "right": 1234,
+          "bottom": 461,
+          "left": 1130.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n状态",
+        "disabled": null,
+        "rect": {
+          "x": 1130.875,
+          "y": 461,
+          "width": 103.125,
+          "height": 32,
+          "top": 461,
+          "right": 1234,
+          "bottom": 493,
+          "left": 1130.875
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n配件",
+        "disabled": null,
+        "rect": {
+          "x": 1130.875,
+          "y": 493,
+          "width": 103.125,
+          "height": 32,
+          "top": 493,
+          "right": 1234,
+          "bottom": 525,
+          "left": 1130.875
+        },
+        "hit": true
+      },
+      {
+        "text": "恢复默认",
+        "disabled": null,
+        "rect": {
+          "x": 1130.875,
+          "y": 534,
+          "width": 103.125,
+          "height": 32,
+          "top": 534,
+          "right": 1234,
+          "bottom": 566,
+          "left": 1130.875
+        },
+        "hit": true
+      }
+    ]
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "menu": [
+      {
+        "text": "✓\n编号",
+        "disabled": "true",
+        "rect": {
+          "x": 128,
+          "y": 553,
+          "width": 103.125,
+          "height": 32,
+          "top": 553,
+          "right": 231.125,
+          "bottom": 585,
+          "left": 128
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n中文名称",
+        "disabled": null,
+        "rect": {
+          "x": 128,
+          "y": 585,
+          "width": 103.125,
+          "height": 32,
+          "top": 585,
+          "right": 231.125,
+          "bottom": 617,
+          "left": 128
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n英文名称",
+        "disabled": null,
+        "rect": {
+          "x": 128,
+          "y": 617,
+          "width": 103.125,
+          "height": 32,
+          "top": 617,
+          "right": 231.125,
+          "bottom": 649,
+          "left": 128
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n海关编码",
+        "disabled": null,
+        "rect": {
+          "x": 128,
+          "y": 649,
+          "width": 103.125,
+          "height": 32,
+          "top": 649,
+          "right": 231.125,
+          "bottom": 681,
+          "left": 128
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n单位",
+        "disabled": null,
+        "rect": {
+          "x": 128,
+          "y": 681,
+          "width": 103.125,
+          "height": 32,
+          "top": 681,
+          "right": 231.125,
+          "bottom": 713,
+          "left": 128
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n状态",
+        "disabled": null,
+        "rect": {
+          "x": 128,
+          "y": 713,
+          "width": 103.125,
+          "height": 32,
+          "top": 713,
+          "right": 231.125,
+          "bottom": 745,
+          "left": 128
+        },
+        "hit": true
+      },
+      {
+        "text": "✓\n配件",
+        "disabled": null,
+        "rect": {
+          "x": 128,
+          "y": 745,
+          "width": 103.125,
+          "height": 32,
+          "top": 745,
+          "right": 231.125,
+          "bottom": 777,
+          "left": 128
+        },
+        "hit": true
+      },
+      {
+        "text": "恢复默认",
+        "disabled": null,
+        "rect": {
+          "x": 128,
+          "y": 786,
+          "width": 103.125,
+          "height": 32,
+          "top": 786,
+          "right": 231.125,
+          "bottom": 818,
+          "left": 128
+        },
+        "hit": true
+      }
+    ]
+  }
+]

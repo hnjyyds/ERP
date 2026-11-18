@@ -1,0 +1,40 @@
+{
+  "captured_at": "2026-11-18",
+  "deployed": {
+    "frontend_commit": "f9e9e045",
+    "backend_commit": "b370c0fe",
+    "frontend_asset": "assets/index-CWFbyr-R.js",
+    "base_url": "http://127.0.0.1:8080"
+  },
+  "Q05_24": {
+    "page": "/sample/records 新增样品",
+    "select_input": {"outline": "none", "boxShadow": "none", "border": "0px none rgba(0, 0, 0, 0.88)", "background": "rgba(0, 0, 0, 0)"},
+    "text_input": {"borderColor": "rgb(223, 227, 232)", "background": "rgb(255, 255, 255)"},
+    "matched_css": "body .record-form input:not(.ant-select-input):focus",
+    "result": "通过：选择器内部输入不再命中记录表单聚焦边框/光圈，焦点样式由容器承担"
+  },
+  "Q05_28": {
+    "page": "/masterdata/products",
+    "injection": "CDP Network.setBlockedURLs 拦截 */api/v1/masterdata/products*",
+    "failure_state": {"title": "加载失败", "description": "数据读取失败，请重试；当前筛选条件会保留", "retry_button": true, "misleading_no_data": false},
+    "recovery": {"retry_covered_by": "ProductsPage.test.tsx / ShipmentsPage.test.tsx / FinancePage.test.tsx，解除拦截后重试恢复列表"},
+    "applies_to": ["PAGE-01 商品", "PAGE-09 发货单", "PAGE-24 供应商发票"],
+    "result": "通过：加载失败显示独立错误态与重试，不再表述为首次未建档；重试恢复由自动化用例验证"
+  },
+  "Q05_01": {
+    "page": "商品新增表单",
+    "sequence": ["请填写商品中文名称", "请填写商品英文名称", "请填写包装资料"],
+    "aria": {"invalid": "true", "describedby": "product-field-package_info-error"},
+    "not_created": true,
+    "scope": "仅商品新建；供货商/客户/合作伙伴/联系人/单证/配件表单尚未同步",
+    "result": "部分修复"
+  },
+  "Q05_16": {
+    "page": "/sample/deliveries 新增寄样单",
+    "sample": "SM-ZB334N",
+    "type_before_clear": "来样",
+    "type_after_clear": "确认样",
+    "derived_cleared": ["样品登记", "样品编号", "产品编号"],
+    "result": "通过"
+  }
+}

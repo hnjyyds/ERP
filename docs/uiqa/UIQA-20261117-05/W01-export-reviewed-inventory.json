@@ -1,0 +1,751 @@
+{
+  "url": "http://localhost:8080/sales/contracts",
+  "title": "出口合同",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出口合同",
+    "合同列表"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "合同搜索\n审批状态\n全部状态\n客户筛选\n从客户资料筛选\n查询\n新增合同",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同搜索",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 281,
+            "y": 269.4453125,
+            "width": 421.2109375,
+            "height": 36,
+            "top": 269.4453125,
+            "right": 702.2109375,
+            "bottom": 305.4453125,
+            "left": 281
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "export-contract-status-filter",
+          "label": "审批状态\n全部状态",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 725.2109375,
+            "y": 274.4453125,
+            "width": 186.609375,
+            "height": 26,
+            "top": 274.4453125,
+            "right": 911.8203125,
+            "bottom": 300.4453125,
+            "left": 725.2109375
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1j_",
+          "label": "客户筛选\n从客户资料筛选",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 963.8203125,
+            "y": 274.4453125,
+            "width": 186.609375,
+            "height": 26,
+            "top": 274.4453125,
+            "right": 1150.4296875,
+            "bottom": 300.4453125,
+            "left": 963.8203125
+          }
+        },
+        {
+          "j": 3,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "查询",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1191.4296875,
+            "y": 269.4453125,
+            "width": 84.5234375,
+            "height": 36,
+            "top": 269.4453125,
+            "right": 1275.953125,
+            "bottom": 305.4453125,
+            "left": 1191.4296875
+          }
+        },
+        {
+          "j": 4,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "新增合同",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1287.953125,
+            "y": 269.4453125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 269.4453125,
+            "right": 1399,
+            "bottom": 305.4453125,
+            "left": 1287.953125
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": "_r_1p_",
+      "visible": true,
+      "text": "合同号\n合同日期\n业务员\n演示业务主管\n选择客户\nQA261112 测试客户\n客户名称\n币种\n贸易条款\n付款条款\n计划出运日\n合同备注\n合同商品明细\n\n已添加 1 个商品，可分别填写条形码并调整规格、数量和销售单价。\n\n添加商品\n商品\t条形码\t规格 / 型号\t数量\t单位\t销售单价\t金额\t操作\n\n商品\n\t\n条形码\n\t\n规格 / 型号\n\t\n数量\n\t\n单位\n\t\n销售单价\n\t\n金额\n\t\n操作\n\n\nUIQA分页验收商品03\nUIQA-20261117-05-P03\n\t\t\n\t\t\t\tUSD 0.01\t\n移 除\n取 消\n新增出口合同",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 189.296875,
+            "width": 340,
+            "height": 36,
+            "top": 189.296875,
+            "right": 532,
+            "bottom": 225.296875,
+            "left": 192
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "合同日期",
+          "text": "",
+          "value": "2026-11-17",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 550,
+            "y": 189.296875,
+            "width": 340,
+            "height": 36,
+            "top": 189.296875,
+            "right": 890,
+            "bottom": 225.296875,
+            "left": 550
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1r_",
+          "label": "业务员",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 919,
+            "y": 194.296875,
+            "width": 300,
+            "height": 26,
+            "top": 194.296875,
+            "right": 1219,
+            "bottom": 220.296875,
+            "left": 919
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "search",
+          "id": "_r_1t_",
+          "label": "选择客户\nQA261112 测试客户",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 203,
+            "y": 270.296875,
+            "width": 300,
+            "height": 26,
+            "top": 270.296875,
+            "right": 503,
+            "bottom": 296.296875,
+            "left": 203
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "客户名称",
+          "text": "",
+          "value": "QA261112 测试客户",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 550,
+            "y": 265.296875,
+            "width": 340,
+            "height": 36,
+            "top": 265.296875,
+            "right": 890,
+            "bottom": 301.296875,
+            "left": 550
+          }
+        },
+        {
+          "j": 5,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "币种",
+          "text": "",
+          "value": "USD",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 908,
+            "y": 265.296875,
+            "width": 340,
+            "height": 36,
+            "top": 265.296875,
+            "right": 1248,
+            "bottom": 301.296875,
+            "left": 908
+          }
+        },
+        {
+          "j": 6,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "贸易条款",
+          "text": "",
+          "value": "FOB Ningbo",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 341.296875,
+            "width": 340,
+            "height": 36,
+            "top": 341.296875,
+            "right": 532,
+            "bottom": 377.296875,
+            "left": 192
+          }
+        },
+        {
+          "j": 7,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "付款条款",
+          "text": "",
+          "value": "UIQA内部验收，不执行收款。",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 550,
+            "y": 341.296875,
+            "width": 340,
+            "height": 36,
+            "top": 341.296875,
+            "right": 890,
+            "bottom": 377.296875,
+            "left": 550
+          }
+        },
+        {
+          "j": 8,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "计划出运日",
+          "text": "",
+          "value": "2026-12-01",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 908,
+            "y": 341.296875,
+            "width": 340,
+            "height": 36,
+            "top": 341.296875,
+            "right": 1248,
+            "bottom": 377.296875,
+            "left": 908
+          }
+        },
+        {
+          "j": 9,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "合同备注",
+          "text": "",
+          "value": "UIQA-20261117-05-W01 销售测试。1 pcs，不用于真实交易。",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 192,
+            "y": 417.296875,
+            "width": 340,
+            "height": 36,
+            "top": 417.296875,
+            "right": 532,
+            "bottom": 453.296875,
+            "left": 192
+          }
+        },
+        {
+          "j": 10,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "添加商品",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1136.953125,
+            "y": 488.21875,
+            "width": 111.046875,
+            "height": 36,
+            "top": 488.21875,
+            "right": 1248,
+            "bottom": 524.21875,
+            "left": 1136.953125
+          }
+        },
+        {
+          "j": 11,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "UIQA分页验收商品03条形码",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 408.171875,
+            "y": 627.1484375,
+            "width": 195.9765625,
+            "height": 36,
+            "top": 627.1484375,
+            "right": 604.1484375,
+            "bottom": 663.1484375,
+            "left": 408.171875
+          }
+        },
+        {
+          "j": 12,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "UIQA分页验收商品03规格",
+          "text": "",
+          "value": "UIQA-SPEC-03",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 620.1484375,
+            "y": 606.1484375,
+            "width": 186.4140625,
+            "height": 36,
+            "top": 606.1484375,
+            "right": 806.5625,
+            "bottom": 642.1484375,
+            "left": 620.1484375
+          }
+        },
+        {
+          "j": 13,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "UIQA分页验收商品03型号",
+          "text": "",
+          "value": "UIQA-M03",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 620.1484375,
+            "y": 648.1484375,
+            "width": 186.4140625,
+            "height": 36,
+            "top": 648.1484375,
+            "right": 806.5625,
+            "bottom": 684.1484375,
+            "left": 620.1484375
+          }
+        },
+        {
+          "j": 14,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "UIQA分页验收商品03数量",
+          "text": "",
+          "value": "1",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 822.5625,
+            "y": 627.1484375,
+            "width": 109.9453125,
+            "height": 36,
+            "top": 627.1484375,
+            "right": 932.5078125,
+            "bottom": 663.1484375,
+            "left": 822.5625
+          }
+        },
+        {
+          "j": 15,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "UIQA分页验收商品03单位",
+          "text": "",
+          "value": "pcs",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 948.5078125,
+            "y": 627.1484375,
+            "width": 86.046875,
+            "height": 36,
+            "top": 627.1484375,
+            "right": 1034.5546875,
+            "bottom": 663.1484375,
+            "left": 948.5078125
+          }
+        },
+        {
+          "j": 16,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "UIQA分页验收商品03销售单价",
+          "text": "",
+          "value": "0.01",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1050.5546875,
+            "y": 627.1484375,
+            "width": 119.5,
+            "height": 36,
+            "top": 627.1484375,
+            "right": 1170.0546875,
+            "bottom": 663.1484375,
+            "left": 1050.5546875
+          }
+        },
+        {
+          "j": 17,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "移 除",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1321.78125,
+            "y": 631.1484375,
+            "width": 45.6484375,
+            "height": 28,
+            "top": 631.1484375,
+            "right": 1367.4296875,
+            "bottom": 659.1484375,
+            "left": 1321.78125
+          }
+        },
+        {
+          "j": 18,
+          "tag": "BUTTON",
+          "type": "button",
+          "id": "",
+          "text": "取 消",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1043.0234375,
+            "y": 753.1484375,
+            "width": 63.8515625,
+            "height": 36,
+            "top": 753.1484375,
+            "right": 1106.875,
+            "bottom": 789.1484375,
+            "left": 1043.0234375
+          }
+        },
+        {
+          "j": 19,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "新增出口合同",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 1118.875,
+            "y": 753.1484375,
+            "width": 129.125,
+            "height": 36,
+            "top": 753.1484375,
+            "right": 1248,
+            "bottom": 789.1484375,
+            "left": 1118.875
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "合同号\t状态\t客户\t计划出运日\t金额\t回签\t入口\nEC-5FW46R\t草稿\tQA261112 测试客户\t2026-11-12\tUSD 50.00\t未回签\t\n查看详情\n\nEC-F8D7RX\t已审批\tQA261112 测试客户\t2026-11-25\tUSD 512.50\t未回签\t\n查看详情",
+      "buttons": [
+        "EC-5FW46R",
+        "查看详情",
+        "EC-F8D7RX",
+        "查看详情"
+      ]
+    },
+    {
+      "i": 1,
+      "text": "商品\t条形码\t规格 / 型号\t数量\t单位\t销售单价\t金额\t操作\n\n商品\n\t\n条形码\n\t\n规格 / 型号\n\t\n数量\n\t\n单位\n\t\n销售单价\n\t\n金额\n\t\n操作\n\n\nUIQA分页验收商品03\nUIQA-20261117-05-P03\n\t\t\n\t\t\t\tUSD 0.01\t\n移 除",
+      "buttons": [
+        "移 除"
+      ]
+    }
+  ],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

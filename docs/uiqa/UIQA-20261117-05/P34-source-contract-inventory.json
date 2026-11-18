@@ -1,0 +1,482 @@
+{
+  "url": "http://localhost:8080/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58",
+  "title": "出口合同",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headings": [
+    "出口合同",
+    "合同明细"
+  ],
+  "forms": [
+    {
+      "i": 0,
+      "dialog": null,
+      "visible": true,
+      "text": "客户回签\n回签人\n回签日期\n回签方式\n回签文件号\n回签备注\n登记回签",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "回签人",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 296,
+            "y": 601.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 601.75,
+            "right": 548.5,
+            "bottom": 637.75,
+            "left": 296
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "回签日期",
+          "text": "",
+          "value": "2026-11-12",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 564.5,
+            "y": 601.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 601.75,
+            "right": 817,
+            "bottom": 637.75,
+            "left": 564.5
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "回签方式",
+          "text": "",
+          "value": "email_scan",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 296,
+            "y": 669.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 669.75,
+            "right": 548.5,
+            "bottom": 705.75,
+            "left": 296
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "回签文件号",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 564.5,
+            "y": 669.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 669.75,
+            "right": 817,
+            "bottom": 705.75,
+            "left": 564.5
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "回签备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 296,
+            "y": 737.75,
+            "width": 521,
+            "height": 36,
+            "top": 737.75,
+            "right": 817,
+            "bottom": 773.75,
+            "left": 296
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "登记回签",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 296,
+            "y": 787.75,
+            "width": 87.046875,
+            "height": 36,
+            "top": 787.75,
+            "right": 383.046875,
+            "bottom": 823.75,
+            "left": 296
+          }
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "dialog": null,
+      "visible": true,
+      "text": "预收款\n水单号\n收款日期\n金额\n付款方\n收款备注\n关联预收款",
+      "controls": [
+        {
+          "j": 0,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "水单号",
+          "text": "",
+          "value": "AR-EC-F8D7RX-1",
+          "checked": false,
+          "disabled": false,
+          "readonly": true,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 601.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 601.75,
+            "right": 1115.5,
+            "bottom": 637.75,
+            "left": 863
+          }
+        },
+        {
+          "j": 1,
+          "tag": "INPUT",
+          "type": "date",
+          "id": "",
+          "label": "收款日期",
+          "text": "",
+          "value": "2026-11-18",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1131.5,
+            "y": 601.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 601.75,
+            "right": 1384,
+            "bottom": 637.75,
+            "left": 1131.5
+          }
+        },
+        {
+          "j": 2,
+          "tag": "INPUT",
+          "type": "number",
+          "id": "",
+          "label": "金额",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 669.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 669.75,
+            "right": 1115.5,
+            "bottom": 705.75,
+            "left": 863
+          }
+        },
+        {
+          "j": 3,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "付款方",
+          "text": "",
+          "value": "QA261112 测试客户",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 1131.5,
+            "y": 669.75,
+            "width": 252.5,
+            "height": 36,
+            "top": 669.75,
+            "right": 1384,
+            "bottom": 705.75,
+            "left": 1131.5
+          }
+        },
+        {
+          "j": 4,
+          "tag": "INPUT",
+          "type": "text",
+          "id": "",
+          "label": "收款备注",
+          "text": "",
+          "value": "",
+          "checked": false,
+          "disabled": false,
+          "readonly": false,
+          "required": false,
+          "rect": {
+            "x": 863,
+            "y": 737.75,
+            "width": 521,
+            "height": 36,
+            "top": 737.75,
+            "right": 1384,
+            "bottom": 773.75,
+            "left": 863
+          }
+        },
+        {
+          "j": 5,
+          "tag": "BUTTON",
+          "type": "submit",
+          "id": "",
+          "text": "关联预收款",
+          "value": "",
+          "disabled": false,
+          "rect": {
+            "x": 863,
+            "y": 787.75,
+            "width": 100.3046875,
+            "height": 36,
+            "top": 787.75,
+            "right": 963.3046875,
+            "bottom": 823.75,
+            "left": 863
+          }
+        }
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "text": "商品编号\t商品名称\t条形码\t规格\t型号\t数量\t销售单价\t金额\t已采购\t已出货\nQA261112-P01\tQA261112 验收测试围巾\t-\t-\t-\t50 pcs\tUSD 10.25\tUSD 512.50\t0\t20",
+      "buttons": []
+    },
+    {
+      "i": 1,
+      "text": "报价单\t客户\t日期\t金额\nQT-A33KVZ\tQA261112 测试客户\t2026-11-12\tUSD 50.00",
+      "buttons": []
+    },
+    {
+      "i": 2,
+      "text": "商品编号\t商品名称\t合同数量\t已采购\t未采购\t状态\nQA261112-P01\tQA261112 验收测试围巾\t50\t0\t50\t未开始",
+      "buttons": []
+    },
+    {
+      "i": 3,
+      "text": "商品编号\t商品名称\t计划出运日\t合同数量\t已出货\t未出货\t未出货金额\t状态\nQA261112-P01\tQA261112 验收测试围巾\t2026-11-25\t50\t20\t30\tUSD 307.50\t部分完成",
+      "buttons": []
+    },
+    {
+      "i": 4,
+      "text": "回签人\t回签日期\t方式\t文件号\t备注\n暂无回签记录",
+      "buttons": []
+    },
+    {
+      "i": 5,
+      "text": "水单号\t收款日期\t付款方\t金额\t备注\n暂无预收款记录",
+      "buttons": []
+    }
+  ],
+  "dialogs": [],
+  "tabs": [],
+  "links": [
+    {
+      "text": "工作台",
+      "href": "/"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/products"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/suppliers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/customers"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/partners"
+    },
+    {
+      "text": "",
+      "href": "/masterdata/document-parties"
+    },
+    {
+      "text": "出口合同",
+      "href": "/sales/contracts"
+    },
+    {
+      "text": "采购合同",
+      "href": "/purchase/contracts"
+    },
+    {
+      "text": "出口报价",
+      "href": "/sales/quotations"
+    },
+    {
+      "text": "出货明细",
+      "href": "/sales/shipments"
+    },
+    {
+      "text": "",
+      "href": "/quality/inspections"
+    },
+    {
+      "text": "",
+      "href": "/quality/tasks"
+    },
+    {
+      "text": "",
+      "href": "/purchase/followup"
+    },
+    {
+      "text": "",
+      "href": "/sample/records"
+    },
+    {
+      "text": "",
+      "href": "/sample/requests"
+    },
+    {
+      "text": "",
+      "href": "/sample/deliveries"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/inbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-plans"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/outbound-orders"
+    },
+    {
+      "text": "",
+      "href": "/warehouse/stocktakes"
+    },
+    {
+      "text": "",
+      "href": "/finance/overview"
+    },
+    {
+      "text": "",
+      "href": "/finance/receipts"
+    },
+    {
+      "text": "",
+      "href": "/finance/payments"
+    },
+    {
+      "text": "",
+      "href": "/finance/fees"
+    },
+    {
+      "text": "",
+      "href": "/finance/tax"
+    },
+    {
+      "text": "",
+      "href": "/finance/misc"
+    },
+    {
+      "text": "",
+      "href": "/finance/settlement"
+    },
+    {
+      "text": "",
+      "href": "/finance/reimbursements"
+    },
+    {
+      "text": "",
+      "href": "/finance/port-data"
+    },
+    {
+      "text": "",
+      "href": "/finance/reports"
+    },
+    {
+      "text": "",
+      "href": "/reporting"
+    },
+    {
+      "text": "",
+      "href": "/organization/users"
+    },
+    {
+      "text": "",
+      "href": "/system/mcp"
+    },
+    {
+      "text": "",
+      "href": "/system/audit-logs"
+    },
+    {
+      "text": "",
+      "href": "/purchase/inquiries"
+    },
+    {
+      "text": "",
+      "href": "/purchase/invoice-notices"
+    }
+  ]
+}

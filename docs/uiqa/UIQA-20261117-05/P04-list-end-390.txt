@@ -1,0 +1,144 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=1220, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        container
+          paragraph
+            text "业务模块"
+          heading
+            text "合作伙伴"
+        container
+          button "通知" [ref=1100, loc=css:button[aria-label="通知"]]
+            svg_root
+            text "3"
+          button "系统设置" [ref=1101, loc=css:button[aria-label="系统设置"]]
+            svg_root
+      container
+        container "合作伙伴概览"
+          container
+            text "合作伙伴"
+            text "2"
+          container
+            text "启用"
+            text "2"
+          container
+            text "联系人"
+            text "1"
+          container
+            text "类型数"
+            text "1"
+        container
+          container
+            container
+              svg_root
+              heading
+                text "合作伙伴资料"
+            form
+              container
+                text "搜索"
+                textbox [ref=1238, loc=css:input[placeholder="编号 / 名称 / 国家 / 联系人"]]
+                  text "编号 / 名称 / 国家 / 联系人"
+              container
+                button "查询合作伙伴" [ref=1239, loc=css:button[aria-label="查询合作伙伴"]]
+                  svg_root
+                button [ref=1240]
+                  svg_root
+                  text "新增合作伙伴"
+                button "高级筛选" [ref=1241, loc=css:button[aria-label="高级筛选"]]
+                  svg_root
+                button "设置列视图" [ref=1242, loc=css:button[aria-label="设置列视图"]]
+                  svg_root
+          container
+            table
+              table_row
+                table_cell
+            container
+              container [ref=1243]
+                container [ref=1253]
+                  table
+                    table_row
+                      table_cell
+                        text "编号"
+                      table_cell
+                        text "中文名称"
+                      table_cell
+                        text "英文名称"
+                      table_cell
+                        text "类型"
+                      table_cell
+                        text "国家/地区"
+                      table_cell
+                        text "联系人"
+                      table_cell
+                        text "状态"
+                      table_cell
+                        text "入口"
+                    table_row
+                      table_cell
+                        button [ref=1244]
+                          text "UI261114-B01"
+                      table_cell
+                        text "演示伙伴｜远帆国际物流"
+                      table_cell
+                        text "Demo Far Sail Logistics"
+                      table_cell
+                        text "货代公司"
+                      table_cell
+                        text "中国"
+                      table_cell
+                        text "演示联系人王女士"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        button [ref=1245]
+                          text "查看详情"
+                    table_row
+                      table_cell
+                        button [ref=1246]
+                          text "QA261112-F01"
+                      table_cell
+                        text "QA261112 测试货代"
+                      table_cell
+                        text "QA261112 Forwarder"
+                      table_cell
+                        text "货代公司"
+                      table_cell
+                        text "CN"
+                      table_cell
+                        text "未维护"
+                      table_cell
+                        text "启用"
+                      table_cell
+                        button [ref=1247]
+                          text "查看详情"
+              unordered_list
+                list_item
+                  text "共 2 条"
+                list_item
+                  button [ref=1248]
+                    image "left"
+                      svg_root
+                list_item [ref=1249]
+                  anchor [ref=1250]
+                    text "1"
+                list_item
+                  button [ref=1251]
+                    image "right"
+                      svg_root
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root

@@ -1,0 +1,49 @@
+{
+  "url": "http://localhost:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+  "viewport": [
+    1500,
+    803
+  ],
+  "images": [
+    {
+      "src": "http://localhost:8080/uploads/images/b56e7859ef5b4c3c9f2ae5d35e71c620-39245e8609e4b0b9.png",
+      "alt": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 商品图片",
+      "title": "",
+      "complete": true,
+      "natural": [
+        640,
+        480
+      ],
+      "rect": {
+        "x": 295,
+        "y": 191.59375,
+        "width": 102.8671875,
+        "height": 102.8671875,
+        "top": 191.59375,
+        "right": 397.8671875,
+        "bottom": 294.4609375,
+        "left": 295
+      }
+    },
+    {
+      "src": "http://localhost:8080/uploads/images/fd132594164a4c2098df0cfbd5fdf3cb-b1d10b7f82aad09e.png",
+      "alt": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 商品图片",
+      "title": "",
+      "complete": true,
+      "natural": [
+        640,
+        480
+      ],
+      "rect": {
+        "x": 409.8671875,
+        "y": 191.59375,
+        "width": 102.875,
+        "height": 102.875,
+        "top": 191.59375,
+        "right": 512.7421875,
+        "bottom": 294.46875,
+        "left": 409.8671875
+      }
+    }
+  ]
+}

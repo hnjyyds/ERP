@@ -1,0 +1,85 @@
+{
+  "inquiryBuyers": [
+    {
+      "i": 0,
+      "label": "请选择",
+      "visible": true
+    },
+    {
+      "i": 1,
+      "label": "系统管理员（管理部）",
+      "visible": true
+    },
+    {
+      "i": 2,
+      "label": "演示业务主管（业务部）",
+      "visible": true
+    },
+    {
+      "i": 3,
+      "label": "演示采购专员（采购部）",
+      "visible": true
+    }
+  ],
+  "inquiryBuyerAfterProducts": "演示采购专员（采购部）",
+  "options": [
+    "系统管理员 / admin / 管理部",
+    "演示业务主管 / demo / 业务部",
+    "演示 QC 专员 / qc / 品质部"
+  ],
+  "captures": [
+    {
+      "url": "http://localhost:8080/api/v1/auth/users?required_permission=quality%3Ainspection%3Aedit",
+      "status": 200,
+      "users": [
+        {
+          "id": "u-baeac30b5127ebdb",
+          "username": "admin",
+          "display_name": "系统管理员",
+          "department_name": "管理部"
+        },
+        {
+          "id": "u-001",
+          "username": "demo",
+          "display_name": "演示业务主管",
+          "department_name": "业务部"
+        },
+        {
+          "id": "u-qc",
+          "username": "qc",
+          "display_name": "演示 QC 专员",
+          "department_name": "品质部"
+        }
+      ]
+    }
+  ],
+  "searches": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "dropdown": [
+        "暂无可选用户"
+      ]
+    },
+    {
+      "viewport": [
+        1280,
+        720
+      ],
+      "dropdown": [
+        "暂无可选用户"
+      ]
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "dropdown": [
+        "暂无可选用户"
+      ]
+    }
+  ]
+}

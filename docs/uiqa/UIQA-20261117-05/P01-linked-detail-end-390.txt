@@ -1,0 +1,306 @@
+[p1 "新裴贸易业务管理系统" | space "新裴贸易当前版本整体验收"(7): 1 managed, 0 untracked — p1* "新裴贸易业务管理系统"]
+root
+  container
+    container
+      container "新裴贸易 业务管理系统"
+        text "新裴贸易"
+        text "业务管理系统"
+      button "业务导航" [ref=4643, loc=css:button[aria-label="业务导航"]]
+        svg_root
+        text "导航"
+    container
+      container
+        paragraph
+          text "业务模块"
+        heading
+          text "商品资料"
+        button "通知" [ref=4588, loc=css:button[aria-label="通知"]]
+          svg_root
+          text "3"
+        button "系统设置" [ref=4589, loc=css:button[aria-label="系统设置"]]
+          svg_root
+      container
+        svg_root
+        heading
+          text "商品明细"
+        button [ref=4637]
+          svg_root
+          text "返回列表"
+        button [ref=4638]
+          svg_root
+          text "编辑商品"
+        button [ref=4639]
+          svg_root
+          text "停用"
+        text "商品图片"
+        text "共 0 张"
+        text "暂无图片"
+        unordered_list
+          list_item
+            text "中文名称"
+          list_item
+            text "QA261112 验收测试围巾"
+          list_item
+            text "英文名称"
+          list_item
+            text "QA261112 Audit Scarf"
+          list_item
+            text "规格/型号"
+          list_item
+            text "180×70cm / 含中文与符号"
+            text "/"
+            text "QA-M01"
+          list_item
+            text "海关编码"
+          list_item
+            text "6214300000"
+          list_item
+            text "税率/退税率"
+          list_item
+            text "13%"
+            text "/"
+            text "9%"
+          list_item
+            text "状态"
+          list_item
+            text "启用"
+          list_item
+            text "包装资料"
+          list_item
+            text "QA261112 临时测试资料 包装多行说明：12 pcs/carton"
+        button [ref=4640]
+          svg_root
+          text "追加配件"
+        table
+          table_row
+            table_cell
+        container [ref=4644]
+          table
+            table_row
+              table_cell
+                text "配件名称"
+              table_cell
+                text "单耗"
+              table_cell
+                text "单位"
+              table_cell
+                text "默认供应商"
+              table_cell
+                text "采购拆分"
+              table_cell
+                text "操作"
+            table_row
+              table_cell
+                text "QA261112 主面料"
+              table_cell
+                text "1.0000"
+              table_cell
+                text "pcs"
+              table_cell
+              table_cell
+                text "按供应商分单"
+              table_cell
+                button [ref=4641]
+                  text "编 辑"
+                button [ref=4642]
+                  text "删 除"
+        table
+          table_row
+            table_cell
+        svg_root
+        heading
+          text "相关客户与交易"
+        table
+          table_row
+            table_cell
+        container [ref=4645]
+          table
+            table_row
+              table_cell
+                text "客户"
+              table_cell
+                text "合同数"
+              table_cell
+                text "累计数量"
+              table_cell
+                text "累计金额"
+              table_cell
+                text "最近合同"
+            table_row
+              table_cell
+                text "QA261112 测试客户"
+              table_cell
+                text "2"
+              table_cell
+                text "55.0000"
+              table_cell
+                text "562.50"
+              table_cell
+                text "2026-11-12"
+        table
+          table_row
+            table_cell
+        container
+          svg_root
+          heading
+            text "业务记录"
+          container
+            table
+              table_row
+                table_cell
+            container [ref=4646]
+              table
+                table_row
+                  table_cell
+                    text "来源"
+                  table_cell
+                    text "单号"
+                  table_cell
+                    text "日期"
+                  table_cell
+                    text "往来方"
+                  table_cell
+                    text "数量"
+                  table_cell
+                    text "金额"
+                  table_cell
+                    text "摘要"
+                table_row
+                  table_cell
+                    text "出口报价"
+                  table_cell
+                    text "QT-A33KVZ"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试客户"
+                  table_cell
+                    text "5.0000 pcs"
+                  table_cell
+                    text "50.00"
+                  table_cell
+                    text "出口报价 QT-A33KVZ · QA261112 测试客户（USD）"
+                table_row
+                  table_cell
+                    text "出口合同"
+                  table_cell
+                    text "EC-5FW46R"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试客户"
+                  table_cell
+                    text "5.0000 pcs"
+                  table_cell
+                    text "50.00"
+                  table_cell
+                    text "出口合同 EC-5FW46R · QA261112 测试客户（USD）"
+                table_row
+                  table_cell
+                    text "出口合同"
+                  table_cell
+                    text "EC-F8D7RX"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试客户"
+                  table_cell
+                    text "50.0000 pcs"
+                  table_cell
+                    text "512.50"
+                  table_cell
+                    text "出口合同 EC-F8D7RX · QA261112 测试客户（USD）"
+                table_row
+                  table_cell
+                    text "出货明细"
+                  table_cell
+                    text "SP-DAEPEG"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试客户"
+                  table_cell
+                    text "20.0000 pcs"
+                  table_cell
+                    text "205.00"
+                  table_cell
+                    text "出货明细 SP-DAEPEG · QA261112 测试客户（USD）"
+                table_row
+                  table_cell
+                    text "采购询价"
+                  table_cell
+                    text "PI-KTPXTU"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                  table_cell
+                    text "5.0000 pcs"
+                  table_cell
+                  table_cell
+                    text "采购询价 PI-KTPXTU"
+                table_row
+                  table_cell
+                    text "采购合同"
+                  table_cell
+                    text "PC-HR36RU"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试供应商"
+                  table_cell
+                    text "100.0000 pcs"
+                  table_cell
+                    text "250.00"
+                  table_cell
+                    text "采购合同 PC-HR36RU · QA261112 测试供应商（RMB）"
+                table_row
+                  table_cell
+                    text "库存流水"
+                  table_cell
+                    text "XP-OUT-33A95C"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试仓库/QA261112-A01"
+                  table_cell
+                    text "20.0000 pcs"
+                  table_cell
+                  table_cell
+                    text "库存流水 XP-OUT-33A95C · 出库"
+                table_row
+                  table_cell
+                    text "库存流水"
+                  table_cell
+                    text "ST-Z5VPWB"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试仓库/QA261112-A01"
+                  table_cell
+                    text "21.0000 pcs"
+                  table_cell
+                  table_cell
+                    text "库存流水 ST-Z5VPWB · 出库"
+                table_row
+                  table_cell
+                    text "库存流水"
+                  table_cell
+                    text "XP-IN-MVU9CU"
+                  table_cell
+                    text "2026-11-12"
+                  table_cell
+                    text "QA261112 测试仓库/QA261112-A01"
+                  table_cell
+                    text "100.0000 pcs"
+                  table_cell
+                  table_cell
+                    text "库存流水 XP-IN-MVU9CU · 入库"
+            table
+              table_row
+                table_cell
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
+  svg_root
