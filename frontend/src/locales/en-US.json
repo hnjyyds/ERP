@@ -2242,6 +2242,8 @@
       "removeImage": "Remove image",
       "addImage": "Add image",
       "primaryImage": "Primary",
+      "imageFallbackName": "Image {index}",
+      "imageAccessibleName": "{name} image {index} {fileName}",
       "imageCount": "{count} in total",
       "imageUploading": "Uploading…",
       "imageReplaceFailed": "Replace failed; the original image was kept",
@@ -2437,6 +2439,16 @@
       "feeRecords": "Fee records",
       "businessRecords": "Business records",
       "transactionSource": "Source",
+      "sourceType": {
+        "export_quotation": "Export quotation",
+        "export_contract": "Export contract",
+        "shipment": "Shipment",
+        "supplier_invoice": "Supplier invoice",
+        "supplier_quotation": "Supplier quotation",
+        "purchase_contract": "Purchase contract",
+        "fee_invoice": "Fee invoice",
+        "fee_payment_request": "Fee payment request"
+      },
       "transactionCode": "Code",
       "transactionSummary": "Summary",
       "transactionAmount": "Amount",
@@ -4693,6 +4705,7 @@
         "inboundOrder": "Inbound Orders",
         "outboundPlan": "Outbound Plans",
         "outboundOrder": "Outbound Orders",
+        "stocktake": "Stocktake",
         "finance": "Finance",
         "reporting": "Management Reports"
       },

@@ -544,7 +544,7 @@
 }
 
 .organization-company-field span {
-  color: #8C8F9C;
+  color: var(--ui-text-secondary);
   font-size: 0.86rem;
   font-weight: 680;
 }

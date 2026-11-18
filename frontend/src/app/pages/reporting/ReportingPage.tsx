@@ -259,6 +259,19 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       })
   }
 
+  function clearApprovalFilters() {
+    setDocumentTypeFilter('')
+    setStatusFilter('')
+    setApplicantUserFilter('')
+    setDateFromFilter('')
+    setDateToFilter('')
+    void listApprovalDocuments({})
+      .then(setApprovals)
+      .catch((caught: unknown) => {
+        showError(caught, t('reporting.message.approvalLoadFailed'))
+      })
+  }
+
   function resetStatisticsFilters() {
     setStatisticsDateFromFilter('')
     setStatisticsDateToFilter('')
@@ -280,7 +293,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       applicantUserFilter.trim() ||
       dateFromFilter ||
       dateToFilter ||
-      statusFilter !== 'submitted',
+      statusFilter.trim() !== '',
   )
   const statisticsFiltered = Boolean(
     statisticsDateFromFilter ||
@@ -389,7 +402,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
                   filtered={approvalFiltered}
-                  onClearFilters={resetFilters}
+                  onClearFilters={clearApprovalFilters}
                 />
               ),
             }}
@@ -477,7 +490,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
                   filtered={approvalFiltered}
-                  onClearFilters={resetFilters}
+                  onClearFilters={clearApprovalFilters}
                 />
               ),
             }}

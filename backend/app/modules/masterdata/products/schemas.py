@@ -160,6 +160,11 @@ class ProductCreate(BaseModel):
         max_length=20,
         description="商品图片 URL 列表，顺序即展示顺序，第一张为主图。",
     )
+    image_names: list[str] | None = Field(
+        default=None,
+        max_length=20,
+        description="与 image_urls 顺序一致的原始文件名列表，用于刷新后辨识图片。",
+    )
     status: str = Field(
         default="active",
         min_length=1,
@@ -199,6 +204,13 @@ class ProductCreate(BaseModel):
         if not isinstance(value, list):
             return value
         return [item.strip() for item in value if isinstance(item, str) and item.strip()]
+
+    @field_validator("image_names", mode="before")
+    @classmethod
+    def _normalize_image_names(cls, value: object) -> object:
+        if value is None or not isinstance(value, list):
+            return value
+        return [item.strip() if isinstance(item, str) else "" for item in value]
 
 
 class ProductUpdate(BaseModel):
@@ -246,6 +258,11 @@ class ProductUpdate(BaseModel):
         max_length=20,
         description="商品图片 URL 列表；不传表示保留现有图片，传空数组表示清空。",
     )
+    image_names: list[str] | None = Field(
+        default=None,
+        max_length=20,
+        description="与 image_urls 顺序一致的原始文件名列表；不传表示不维护文件名。",
+    )
     status: str = Field(
         default="active",
         min_length=1,
@@ -280,6 +297,13 @@ class ProductUpdate(BaseModel):
         if not isinstance(value, list):
             return value
         return [item.strip() for item in value if isinstance(item, str) and item.strip()]
+
+    @field_validator("image_names", mode="before")
+    @classmethod
+    def _normalize_image_names(cls, value: object) -> object:
+        if value is None or not isinstance(value, list):
+            return value
+        return [item.strip() if isinstance(item, str) else "" for item in value]
 
 
 class ProductAccessoryResponse(BaseModel):
@@ -316,6 +340,10 @@ class ProductResponse(BaseModel):
     image_urls: list[str] = Field(
         default_factory=list,
         description="商品图片 URL 列表，顺序即展示顺序，第一张为主图。",
+    )
+    image_names: list[str] = Field(
+        default_factory=list,
+        description="与 image_urls 顺序一致的原始文件名列表。",
     )
     status: str = Field(description="商品状态。")
     accessories: list[ProductAccessoryResponse] = Field(description="商品配件清单。")

@@ -15,6 +15,7 @@ import {
 import { t } from '@/app/appI18n'
 import { showError } from '@/shared/errors'
 import type { RemoteSelectOption } from '@/shared/ui'
+import { sampleRecordTypeLabel } from '../sampleDeliveryHelpers'
 
 /** 下拉单次加载条数；更多数据由关键字搜索获取。 */
 const OPTION_LIMIT = 20
@@ -181,7 +182,7 @@ export function useSampleFormOptions(customerId?: string) {
             value: record.id,
             label: [record.code, record.product_name].filter(Boolean).join(' / '),
             description: [
-              record.sample_type,
+              sampleRecordTypeLabel(record.sample_type),
               record.product_code,
               record.unit,
               record.stock_summary?.retained_quantity

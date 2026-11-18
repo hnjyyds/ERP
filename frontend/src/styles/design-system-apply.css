@@ -1119,6 +1119,21 @@ body .ant-select-dropdown {
     height: var(--ui-touch-height);
   }
 
+  /* 列设置等下拉菜单的整行可点击区域达到触摸规格。 */
+  body .ant-dropdown-menu .ant-dropdown-menu-item {
+    display: flex;
+    min-height: calc(var(--ui-touch-height) + 1px);
+    align-items: center;
+  }
+
+  /* 联系人“设为主要联系人”等复选框标签，扩大外层文字点击范围。 */
+  body .record-form label.checkbox-label,
+  body .record-form label.checkbox-line,
+  body label.checkbox-label.entity-modal-span {
+    min-height: calc(var(--ui-touch-height) + 1px);
+    padding-block: var(--ui-space-1);
+  }
+
   /* 展开后的导航项同样按触摸目标高度，避免最后一项只有 36px。 */
   body .nav-link,
   body .nav-dashboard,

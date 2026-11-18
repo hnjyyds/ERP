@@ -363,6 +363,7 @@ describe('ProductsPage', () => {
         expect.objectContaining({
           image_url: 'https://example.test/front.png',
           image_urls: ['https://example.test/front.png', 'https://example.test/side.png'],
+          image_names: ['front.png', 'side.png'],
         }),
       )
     })

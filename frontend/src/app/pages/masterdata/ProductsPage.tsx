@@ -146,6 +146,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     setImageUploading(true)
     setAddImageError('')
     const uploadedUrls: string[] = []
+    const uploadedNames: string[] = []
     let failure = ''
     for (const file of files) {
       const invalid = imageFileError(file)
@@ -155,12 +156,17 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       }
       try {
         uploadedUrls.push(await uploadProductImage(file))
+        uploadedNames.push(file.name)
       } catch {
         failure = t('masterdata.product.imageUploadFailed')
       }
     }
     if (uploadedUrls.length > 0) {
-      setForm((current) => ({ ...current, images: [...current.images, ...uploadedUrls] }))
+      setForm((current) => ({
+        ...current,
+        images: [...current.images, ...uploadedUrls],
+        image_names: [...current.image_names, ...uploadedNames],
+      }))
     }
     setAddImageError(failure)
     setImageUploading(false)
@@ -184,8 +190,12 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       // 仅在替换成功后改写该位置，失败时保留原图。
       setForm((current) => {
         const images = [...current.images]
-        if (index < images.length) images[index] = url
-        return { ...current, images }
+        const imageNames = [...current.image_names]
+        if (index < images.length) {
+          images[index] = url
+          imageNames[index] = file.name
+        }
+        return { ...current, images, image_names: imageNames }
       })
     } catch {
       setImageErrors((current) => ({
@@ -201,6 +211,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     setForm((current) => ({
       ...current,
       images: current.images.filter((_, position) => position !== index),
+      image_names: current.image_names.filter((_, position) => position !== index),
     }))
     // 删除后下标会前移，清空旧错误避免挂到其他图片上。
     setImageErrors({})

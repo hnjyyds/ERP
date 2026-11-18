@@ -2,6 +2,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
+from urllib.parse import unquote
 
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,6 +35,36 @@ def _decode_image_urls(raw: str | None, fallback: str | None) -> list[str]:
             if urls:
                 return urls
     return [fallback] if fallback else []
+
+
+def _encode_image_names(names: list[str] | None, urls: list[str]) -> str | None:
+    """按图片顺序存文件名；长度截断/补齐到与 URL 列表一致。"""
+    if not urls:
+        return None
+    provided = [item.strip() for item in (names or []) if isinstance(item, str)]
+    aligned = provided[: len(urls)] + [""] * max(len(urls) - len(provided), 0)
+    if not any(aligned):
+        return None
+    return json.dumps(aligned, ensure_ascii=False)
+
+
+def _decode_image_names(raw: str | None, urls: list[str]) -> list[str]:
+    """读取文件名列表；历史数据回退为 URL 最后一段，刷新后仍可辨识。"""
+    parsed: list[str] = []
+    if raw:
+        try:
+            value = json.loads(raw)
+        except (TypeError, ValueError):
+            value = None
+        if isinstance(value, list):
+            parsed = [item if isinstance(item, str) else "" for item in value]
+    aligned = parsed[: len(urls)] + [""] * max(len(urls) - len(parsed), 0)
+    if not any(aligned):
+        return [unquote(url.rsplit("/", 1)[-1]) for url in urls]
+    return [
+        name or unquote(url.rsplit("/", 1)[-1])
+        for name, url in zip(aligned, urls, strict=False)
+    ]
 
 
 @dataclass(frozen=True)
@@ -73,6 +104,7 @@ class ProductRow:
     unit: str
     image_url: str | None
     image_urls: list[str]
+    image_names: list[str]
     status: str
     created_at: datetime
 
@@ -109,7 +141,11 @@ class ProductRepository:
         image_url: str | None,
         status: str = "active",
         image_urls: list[str] | None = None,
+        image_names: list[str] | None = None,
     ) -> ProductRow:
+        resolved_urls = (
+            image_urls if image_urls is not None else ([image_url] if image_url else [])
+        )
         product = Product(
             code=code,
             cn_name=cn_name,
@@ -122,9 +158,8 @@ class ProductRepository:
             package_info=package_info,
             unit=unit,
             image_url=image_url,
-            image_urls=_encode_image_urls(image_urls)
-            if image_urls is not None
-            else _encode_image_urls([image_url] if image_url else None),
+            image_urls=_encode_image_urls(resolved_urls),
+            image_names=_encode_image_names(image_names, resolved_urls),
             status=status,
         )
         self.session.add(product)
@@ -148,6 +183,7 @@ class ProductRepository:
         image_url: str | None,
         status: str,
         image_urls: list[str] | None = None,
+        image_names: list[str] | None = None,
     ) -> ProductRow | None:
         product = await self.session.scalar(select(Product).where(Product.id == product_id))
         if product is None:
@@ -167,6 +203,7 @@ class ProductRepository:
         # 传空数组则明确清空。
         if image_urls is not None:
             product.image_urls = _encode_image_urls(image_urls)
+            product.image_names = _encode_image_names(image_names, image_urls)
         product.status = status
         await self.session.flush()
         return self._map_product(product)
@@ -575,6 +612,7 @@ class ProductRepository:
         return list(result)
 
     def _map_product(self, product: Product) -> ProductRow:
+        image_urls = _decode_image_urls(product.image_urls, product.image_url)
         return ProductRow(
             id=product.id,
             code=product.code,
@@ -588,7 +626,8 @@ class ProductRepository:
             package_info=product.package_info,
             unit=product.unit,
             image_url=product.image_url,
-            image_urls=_decode_image_urls(product.image_urls, product.image_url),
+            image_urls=image_urls,
+            image_names=_decode_image_names(product.image_names, image_urls),
             status=product.status,
             created_at=product.created_at,
         )

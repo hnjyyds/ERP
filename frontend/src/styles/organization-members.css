@@ -532,7 +532,7 @@
 .organization-permissions-head p {
   max-width: 720px;
   margin: 0;
-  color: #8C8F9C;
+  color: var(--ui-text-secondary);
   font-size: 0.96rem;
   font-weight: 620;
   line-height: 1.6;
@@ -552,7 +552,7 @@
 }
 
 .organization-permission-role-select > span {
-  color: #8C8F9C;
+  color: var(--ui-text-secondary);
   font-size: 0.8rem;
   font-weight: 760;
 }

@@ -30,6 +30,8 @@ class Product(Base):
     # 商品图片 URL 的 JSON 数组，顺序即展示顺序，第一张为主图；
     # image_url 保留为主图 URL，供打印、合同行等既有调用方继续使用。
     image_urls: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # 与 image_urls 对齐的原始文件名 JSON 数组，便于刷新后仍能辨识上传文件。
+    image_names: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(40), default="active", nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

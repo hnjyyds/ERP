@@ -19,6 +19,23 @@ class PartnerFeeRecordRow:
     summary: str
 
 
+# 费用摘要面向业务阅读，不暴露内部枚举码；未知值回退原值。
+FEE_TYPE_LABELS: dict[str, str] = {
+    "freight": "货代费",
+    "insurance": "保险费",
+    "transport": "运输费",
+    "inspection": "查验费",
+    "express": "快递费",
+    "other": "其他费用",
+}
+
+
+def _fee_type_label(value: str | None) -> str:
+    if not value:
+        return ""
+    return FEE_TYPE_LABELS.get(value, value)
+
+
 @dataclass(frozen=True)
 class PartnerRow:
     id: str
@@ -356,7 +373,7 @@ class PartnerRepository:
                     source_code=invoice_no,
                     occurred_at=invoice_date.isoformat() if invoice_date else "",
                     amount=Decimal(str(amount or 0)),
-                    summary=f"费用发票 {invoice_no}（{fee_type} / {currency}）",
+                    summary=f"费用发票 {invoice_no}（{_fee_type_label(fee_type)} / {currency}）",
                 )
             )
 
@@ -379,7 +396,7 @@ class PartnerRepository:
                     source_code=request_no,
                     occurred_at=request_date.isoformat() if request_date else "",
                     amount=Decimal(str(amount or 0)),
-                    summary=f"费用付款申请 {request_no}（{fee_type} / {currency}）",
+                    summary=f"费用付款申请 {request_no}（{_fee_type_label(fee_type)} / {currency}）",
                 )
             )
 

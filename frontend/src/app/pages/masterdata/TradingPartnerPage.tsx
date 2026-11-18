@@ -40,6 +40,7 @@ import {
   partnerCreatePayload,
   partnerTypeLabel,
   partnerTypeOptions,
+  partnerTransactionSourceLabel,
   partnerUpdatePayload,
   statusOptions,
   validatePartnerForm,
@@ -1006,6 +1007,7 @@ export function TradingPartnerPage({
                       title: t('masterdata.tradingPartner.transactionSource'),
                       dataIndex: 'source_type',
                       width: 120,
+                      render: (value: string) => partnerTransactionSourceLabel(value),
                     },
                     {
                       title: t('masterdata.tradingPartner.transactionCode'),

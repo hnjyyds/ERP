@@ -204,6 +204,7 @@ const permissionSectionLabelKeys: Record<string, TranslationKey> = {
   'warehouse:inbound_order': 'organization.permission.section.inboundOrder',
   'warehouse:outbound_plan': 'organization.permission.section.outboundPlan',
   'warehouse:outbound_order': 'organization.permission.section.outboundOrder',
+  'warehouse:stocktake': 'organization.permission.section.stocktake',
   'finance:finance': 'organization.permission.section.finance',
   'finance:reporting': 'organization.permission.section.reporting',
 }
@@ -279,6 +280,7 @@ const sidebarPermissionCatalog: PermissionGroupDefinition[] = [
       { key: 'warehouse:inbound_order', labelKey: 'organization.permission.section.inboundOrder', prefixes: ['warehouse:inbound_order:'] },
       { key: 'warehouse:outbound_plan', labelKey: 'organization.permission.section.outboundPlan', prefixes: ['warehouse:outbound_plan:'] },
       { key: 'warehouse:outbound_order', labelKey: 'organization.permission.section.outboundOrder', prefixes: ['warehouse:outbound_order:'] },
+      { key: 'warehouse:stocktake', labelKey: 'organization.permission.section.stocktake', prefixes: ['warehouse:stocktake:'] },
     ],
   },
   {
@@ -320,6 +322,7 @@ const permissionSectionOrder = [
   'warehouse:inbound_order',
   'warehouse:outbound_plan',
   'warehouse:outbound_order',
+  'warehouse:stocktake',
   'finance:finance',
   'finance:reporting',
 ]

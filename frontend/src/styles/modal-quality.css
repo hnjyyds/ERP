@@ -314,6 +314,16 @@
   width: 104px;
 }
 
+.product-image-name {
+  display: block;
+  overflow: hidden;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-font-label);
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .product-image-thumb {
   position: relative;
   display: block;

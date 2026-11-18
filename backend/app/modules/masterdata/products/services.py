@@ -111,6 +111,7 @@ class ProductService:
                 ),
                 status=payload.status,
                 image_urls=image_urls,
+                image_names=payload.image_names,
             )
             accessories = [
                 await self._repository.add_accessory(
@@ -161,6 +162,7 @@ class ProductService:
                 ),
                 status=payload.status,
                 image_urls=image_urls,
+                image_names=payload.image_names,
             )
             if product is None:
                 raise ProductNotFoundError
@@ -528,6 +530,7 @@ class ProductService:
             unit=product.unit,
             image_url=product.image_url,
             image_urls=product.image_urls,
+            image_names=product.image_names,
             status=product.status,
             accessories=[self._accessory_response(item) for item in accessories],
         )

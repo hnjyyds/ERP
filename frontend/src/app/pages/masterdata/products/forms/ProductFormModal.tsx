@@ -254,6 +254,9 @@ export function ProductFormModal({
                         : t('masterdata.product.changeImage')}
                     </span>
                   </label>
+                  <span className="product-image-name" title={form.image_names[index] || undefined}>
+                    {form.image_names[index] || t('masterdata.product.imageFallbackName', { index: index + 1 })}
+                  </span>
                   {index === 0 ? (
                     <span className="product-image-primary">
                       {t('masterdata.product.primaryImage')}

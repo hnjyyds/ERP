@@ -271,6 +271,13 @@ export function partnerTypeLabel(value: string): string {
   return option ? translateMasterdata(option.labelKey) : value
 }
 
+/** 业务记录来源按业务名称展示，未知值回退原始码。 */
+export function partnerTransactionSourceLabel(value: string): string {
+  const key = `masterdata.tradingPartner.sourceType.${value}` as TranslationKey
+  const label = translate(getRuntimeSettings().language, key)
+  return label === key ? value : label
+}
+
 export function getContactEntityId(contact: PartnerContact): string {
   if ('customer_id' in contact) return contact.customer_id
   if ('supplier_id' in contact) return contact.supplier_id

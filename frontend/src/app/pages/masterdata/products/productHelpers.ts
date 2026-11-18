@@ -22,6 +22,7 @@ export type ProductFormState = {
   package_info: string
   unit: string
   images: string[]
+  image_names: string[]
   status: string
   accessory_name: string
   accessory_unit_consumption: string
@@ -166,6 +167,7 @@ export function initialProductForm(): ProductFormState {
     package_info: '',
     unit: 'pcs',
     images: [],
+    image_names: [],
     status: 'active',
     accessory_name: '',
     accessory_unit_consumption: '1',
@@ -198,6 +200,7 @@ export function productToForm(product: Product): ProductFormState {
     package_info: product.package_info,
     unit: product.unit,
     images: productImages(product),
+    image_names: productImageNames(product),
     status: product.status,
     accessory_name: '',
     accessory_unit_consumption: '1',
@@ -215,6 +218,23 @@ export function productImages(
   return product.image_url ? [product.image_url] : []
 }
 
+/** 与 productImages 顺序对齐的文件名；后端缺失时用 URL 末段兜底。 */
+export function productImageNames(
+  product: Pick<Product, 'image_url' | 'image_urls' | 'image_names'>,
+): string[] {
+  const names = product.image_names ?? []
+  return productImages(product).map((url, index) => {
+    const name = names[index]
+    if (name) return name
+    const segment = url.split('/').pop() ?? ''
+    try {
+      return decodeURIComponent(segment)
+    } catch {
+      return segment
+    }
+  })
+}
+
 export function productPayload(form: ProductFormState): ProductCreatePayload {
   const accessory = initialAccessoryPayload(form)
   return {
@@ -230,6 +250,7 @@ export function productPayload(form: ProductFormState): ProductCreatePayload {
     unit: form.unit.trim(),
     image_url: form.images[0] ?? null,
     image_urls: form.images,
+    image_names: form.image_names,
     status: form.status,
     accessories: accessory.accessory_name ? [accessory] : [],
   }
@@ -249,6 +270,7 @@ export function productUpdatePayload(form: ProductFormState): ProductUpdatePaylo
     unit: form.unit.trim(),
     image_url: form.images[0] ?? null,
     image_urls: form.images,
+    image_names: form.image_names,
     status: form.status,
   }
 }

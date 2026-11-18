@@ -100,6 +100,18 @@ describe('ReportingPage', () => {
     expect(screen.getByText('reporting.panel.approvalListTitle')).toBeTruthy()
   })
 
+  it('shows filtered empty state for the default pending status and can clear filters', async () => {
+    const user = userEvent.setup()
+    render(<ReportingPage onNavigate={onNavigate} />)
+
+    expect(screen.getAllByText('common.empty.noMatchTitle').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('common.empty.noMatchDescription').length).toBeGreaterThan(0)
+
+    await user.click(screen.getAllByText('common.empty.clearFilters')[0])
+
+    expect(listApprovalDocuments).toHaveBeenLastCalledWith({})
+  })
+
   it('opens pending documents for approval and approved documents for details', async () => {
     const user = userEvent.setup()
     vi.mocked(listApprovalDocuments).mockResolvedValue(

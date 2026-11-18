@@ -1,3 +1,5 @@
+import re
+
 from httpx import AsyncClient
 
 
@@ -102,6 +104,9 @@ async def test_audit_log_filters_and_export(
     assert "RB-AUDIT-002" in export["content"]
     assert "提交报销单" in export["content"]
     assert "RB-AUDIT-001" not in export["content"]
+    assert "时间（Asia/Shanghai）" in export["content"]
+    # 导出时间统一为 Asia/Shanghai 并带 +08:00 偏移，避免跨时区误读。
+    assert re.search(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\+08:00", export["content"])
 
 
 async def test_audit_logs_are_super_admin_only(

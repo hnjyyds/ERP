@@ -2242,6 +2242,8 @@
       "removeImage": "移除图片",
       "addImage": "添加图片",
       "primaryImage": "主图",
+      "imageFallbackName": "图片 {index}",
+      "imageAccessibleName": "{name} 图片 第 {index} 张 {fileName}",
       "imageCount": "共 {count} 张",
       "imageUploading": "上传中…",
       "imageReplaceFailed": "更换失败，已保留原图",
@@ -2437,6 +2439,16 @@
       "feeRecords": "费用记录",
       "businessRecords": "业务记录",
       "transactionSource": "来源",
+      "sourceType": {
+        "export_quotation": "出口报价",
+        "export_contract": "出口合同",
+        "shipment": "出货明细",
+        "supplier_invoice": "供应商发票",
+        "supplier_quotation": "供应商报价",
+        "purchase_contract": "采购合同",
+        "fee_invoice": "费用发票",
+        "fee_payment_request": "费用付款申请"
+      },
       "transactionCode": "编号",
       "transactionSummary": "摘要",
       "transactionAmount": "金额",
@@ -4693,6 +4705,7 @@
         "inboundOrder": "货物入库",
         "outboundPlan": "出库计划",
         "outboundOrder": "货物出库",
+        "stocktake": "库存盘点",
         "finance": "财务管理",
         "reporting": "经理查询"
       },

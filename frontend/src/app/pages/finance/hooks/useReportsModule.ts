@@ -94,14 +94,28 @@ export function useReportsModule(env: FinanceModuleEnv) {
     }
   }, [activeModule, activeReport])
 
-  function financeReportFilters(report: string) {
+  function financeReportFilters(
+    report: string,
+    overrides?: {
+      date_from?: string
+      date_to?: string
+      currency?: string
+      receipt_no?: string
+    },
+  ) {
+    const useOverrides = overrides !== undefined
     const base = {
-      date_from: reportDateFrom || undefined,
-      date_to: reportDateTo || undefined,
-      currency: reportCurrency.trim() || undefined,
+      date_from: useOverrides ? overrides.date_from : reportDateFrom || undefined,
+      date_to: useOverrides ? overrides.date_to : reportDateTo || undefined,
+      currency: useOverrides ? overrides.currency : reportCurrency.trim() || undefined,
     }
     if (report === 'receipt-usage') {
-      return { ...base, receipt_no: reportReceiptNo.trim() || undefined }
+      return {
+        ...base,
+        receipt_no: useOverrides
+          ? overrides.receipt_no
+          : reportReceiptNo.trim() || undefined,
+      }
     }
     if (report === 'bank-receipt-summary') {
       return { ...base, receipt_type: reportReceiptType.trim() || undefined }
@@ -134,11 +148,19 @@ export function useReportsModule(env: FinanceModuleEnv) {
     return { ...base, status: reportStatus.trim() || undefined }
   }
 
-  async function loadFinanceReport(report: string) {
+  async function loadFinanceReport(
+    report: string,
+    overrides?: {
+      date_from?: string
+      date_to?: string
+      currency?: string
+      receipt_no?: string
+    },
+  ) {
     setLoadingReport(true)
     setError('')
     setReportDrilldown(null)
-    const filters = financeReportFilters(report)
+    const filters = financeReportFilters(report, overrides)
     try {
       if (report === 'receipt-usage') {
         setReceiptUsageReport(await getReceiptUsageReport(filters))

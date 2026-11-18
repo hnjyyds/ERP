@@ -261,6 +261,87 @@ async def test_product_update_without_image_urls_preserves_images(
     assert updated["image_url"] == first
 
 
+async def test_product_image_names_are_persisted_and_aligned(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = _product_payload(code="P-NAME-001")
+    first = "https://example.com/images/UIQA-C.png"
+    second = "https://example.com/images/UIQA-A.png"
+    payload["image_urls"] = [first, second]
+    payload["image_names"] = ["UIQA-C.png", "UIQA-A.png"]
+
+    create_response = await api_client.post(
+        "/api/v1/masterdata/products", headers=headers, json=payload
+    )
+    assert create_response.status_code == 201
+    product = create_response.json()["data"]
+    assert product["image_names"] == ["UIQA-C.png", "UIQA-A.png"]
+
+    detail = await api_client.get(
+        f"/api/v1/masterdata/products/{product['id']}", headers=headers
+    )
+    assert detail.json()["data"]["image_names"] == ["UIQA-C.png", "UIQA-A.png"]
+
+    # 少传文件名时补齐空位，长度始终与图片列表一致。
+    update_payload = _product_payload(code="P-NAME-001")
+    update_payload.pop("accessories")
+    update_payload["image_urls"] = [first, second]
+    update_payload["image_names"] = ["UIQA-C.png"]
+    update_response = await api_client.put(
+        f"/api/v1/masterdata/products/{product['id']}", headers=headers, json=update_payload
+    )
+    assert update_response.status_code == 200
+    updated = update_response.json()["data"]
+    assert updated["image_names"] == ["UIQA-C.png", "UIQA-A.png"]
+
+
+async def test_product_status_filter(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    active = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        json=_product_payload(code="P-STATUS-ON"),
+    )
+    disabled = await api_client.post(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        json=_product_payload(code="P-STATUS-OFF"),
+    )
+    await api_client.delete(
+        f"/api/v1/masterdata/products/{disabled.json()['data']['id']}", headers=headers
+    )
+
+    active_list = await api_client.get(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        params={"q": "P-STATUS", "status": "active"},
+    )
+    assert [item["code"] for item in active_list.json()["data"]["items"]] == ["P-STATUS-ON"]
+
+    inactive_list = await api_client.get(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        params={"q": "P-STATUS", "status": "inactive"},
+    )
+    assert [item["code"] for item in inactive_list.json()["data"]["items"]] == ["P-STATUS-OFF"]
+
+    # 未传 status 时默认仅返回启用商品。
+    default_list = await api_client.get(
+        "/api/v1/masterdata/products",
+        headers=headers,
+        params={"q": "P-STATUS"},
+    )
+    assert [item["code"] for item in default_list.json()["data"]["items"]] == ["P-STATUS-ON"]
+    assert active.json()["data"]["status"] == "active"
+
+
 async def test_product_accessory_can_be_updated_and_deleted(
     api_client: AsyncClient,
     seeded_system: None,

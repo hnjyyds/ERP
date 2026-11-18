@@ -187,7 +187,7 @@
   align-items: center;
   min-height: 42px;
   gap: 9px;
-  color: #8C8F9C;
+  color: var(--ui-text-secondary);
   cursor: pointer;
   font-size: var(--sidebar-type-nav);
   font-weight: var(--sidebar-weight-primary);
@@ -205,7 +205,7 @@
 .nav-group-summary svg,
 .settings-summary svg {
   flex: 0 0 auto;
-  color: #8C8F9C;
+  color: var(--ui-text-secondary);
   width: 1.125rem;
   height: 1.125rem;
 }

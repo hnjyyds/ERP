@@ -101,6 +101,35 @@ async def test_partner_create_detail_search_update_and_fee_records(
     assert fees_response.json()["data"] == {"items": [], "total": 0}
 
 
+async def test_partner_country_filter_is_case_insensitive(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    token = await _login_token(api_client)
+    headers = {"Authorization": f"Bearer {token}"}
+    china = _partner_payload(code="P-CTY-CN")
+    other = _partner_payload(code="P-CTY-US")
+    other["country"] = "United States"
+    await api_client.post("/api/v1/masterdata/partners", headers=headers, json=china)
+    await api_client.post("/api/v1/masterdata/partners", headers=headers, json=other)
+
+    filtered = await api_client.get(
+        "/api/v1/masterdata/partners",
+        headers=headers,
+        params={"country": "  china  "},
+    )
+    assert filtered.status_code == 200
+    assert [item["code"] for item in filtered.json()["data"]["items"]] == ["P-CTY-CN"]
+
+    unfiltered = await api_client.get(
+        "/api/v1/masterdata/partners",
+        headers=headers,
+        params={"country": ""},
+    )
+    codes = {item["code"] for item in unfiltered.json()["data"]["items"]}
+    assert {"P-CTY-CN", "P-CTY-US"} <= codes
+
+
 async def test_partner_rejects_duplicate_code(
     api_client: AsyncClient,
     seeded_system: None,

@@ -8,7 +8,7 @@ import {
   type CustomsReceiptCollectionRow,
   type TaxRefundCurrencyTotal,
 } from '@/api'
-import { FormSelect, PanelTitle } from '@/shared/ui'
+import { FormSelect, ListEmptyState, PanelTitle } from '@/shared/ui'
 import { allocationTypeLabel } from '@/app/pages/finance/forms/receiptForms'
 import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import { t, type TranslationKey } from '@/app/appI18n'
@@ -33,6 +33,20 @@ function drilldownHref(reportKey: string, targetPath: string, sourceNo: string):
   if (!queryKey || !sourceNo) return targetPath
   const separator = targetPath.includes('?') ? '&' : '?'
   return `${targetPath}${separator}${queryKey}=${encodeURIComponent(sourceNo)}`
+}
+
+/** 报表中的审批状态按业务文案展示，未知值回退原始码。 */
+function reportStatusLabel(value: string): string {
+  const key = `finance.payment.requestStatus.${value}` as TranslationKey
+  const label = t(key)
+  return label === key ? value : label
+}
+
+/** 报表中的费用类型按业务文案展示，未知值回退原始码。 */
+function reportFeeTypeLabel(value: string): string {
+  const key = `finance.fee.type.${value}` as TranslationKey
+  const label = t(key)
+  return label === key ? value : label
 }
 
 export function ReportsView({ model, shell }: Props) {
@@ -79,6 +93,19 @@ export function ReportsView({ model, shell }: Props) {
     taxRefundStatisticsReport,
   } = model
   const { moduleAlerts, moduleHeader } = shell
+
+  function clearReportFilters() {
+    setReportDateFrom('')
+    setReportDateTo('')
+    setReportCurrency('')
+    setReportReceiptNo('')
+    // 状态更新是异步的，显式传空筛选，避免清空后仍按旧条件查询。
+    void loadFinanceReport(activeReport, {})
+  }
+
+  const reportFiltered = Boolean(
+    reportDateFrom || reportDateTo || reportCurrency || reportReceiptNo,
+  )
 
   const reportTabs: { key: string; labelKey: TranslationKey }[] = [
     { key: 'receipt-usage', labelKey: 'finance.report.tab.receiptUsage' },
@@ -300,6 +327,15 @@ export function ReportsView({ model, shell }: Props) {
             ]}
             dataSource={receiptUsageReport?.rows ?? []}
             loading={loadingReport}
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  filtered={reportFiltered}
+                  onClearFilters={clearReportFilters}
+                />
+              ),
+            }}
             pagination={false}
             rowKey={(record) =>
               `${record.receipt_no}-${record.invoice_no ?? record.contract_no ?? ''}-${record.allocated_at}`
@@ -359,7 +395,7 @@ export function ReportsView({ model, shell }: Props) {
                 dataIndex: 'outstanding_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
-              { title: t('finance.field.status'), dataIndex: 'status' },
+              { title: t('finance.field.status'), dataIndex: 'status', render: reportStatusLabel },
               {
                 title: t('finance.report.table.drilldown'),
                 render: (_, record) => (
@@ -386,7 +422,7 @@ export function ReportsView({ model, shell }: Props) {
               { title: t('finance.report.table.feeRequestNo'), dataIndex: 'request_no' },
               { title: t('finance.report.table.date'), dataIndex: 'request_date' },
               { title: t('finance.report.table.partner'), dataIndex: 'partner_name' },
-              { title: t('finance.report.table.feeType'), dataIndex: 'fee_type' },
+              { title: t('finance.report.table.feeType'), dataIndex: 'fee_type', render: reportFeeTypeLabel },
               {
                 title: t('finance.report.table.shipmentNo'),
                 dataIndex: 'shipment_no',
@@ -402,7 +438,7 @@ export function ReportsView({ model, shell }: Props) {
                 dataIndex: 'outstanding_amount',
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
-              { title: t('finance.field.status'), dataIndex: 'status' },
+              { title: t('finance.field.status'), dataIndex: 'status', render: reportStatusLabel },
               {
                 title: t('finance.report.table.drilldown'),
                 render: (_, record) => (

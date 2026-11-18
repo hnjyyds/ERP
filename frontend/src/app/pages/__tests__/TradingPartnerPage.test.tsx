@@ -6,6 +6,7 @@ import {
   type TradingPartnerPageProps,
 } from '@/app/pages/masterdata/TradingPartnerPage'
 import type { PartnerEntity } from '@/app/pages/masterdata/tradingPartnerModel'
+import { partnerTransactionSourceLabel } from '@/app/pages/masterdata/tradingPartnerModel'
 
 vi.mock('@/shared/ui', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/shared/ui')>()
@@ -83,6 +84,12 @@ describe('TradingPartnerPage', () => {
   it('renders trading partner list panel', () => {
     render(<TradingPartnerPage {...defaultProps} />)
     expect(screen.getByText('往来伙伴资料')).toBeTruthy()
+  })
+
+  it('shows business names instead of internal record source codes', () => {
+    const label = partnerTransactionSourceLabel('export_quotation')
+    expect(label).not.toBe('export_quotation')
+    expect(partnerTransactionSourceLabel('unknown_source')).toBe('unknown_source')
   })
 
   it('新建空表单提交后字段旁保留必填错误并聚焦编号', async () => {

@@ -11,7 +11,7 @@ import type {
 } from '@/api'
 import { t } from '@/app/appI18n'
 import { PanelTitle } from '@/shared/ui'
-import { accessoryRuleLabel, productImages, productTransactionSourceLabel } from '../productHelpers'
+import { accessoryRuleLabel, productImageNames, productImages, productTransactionSourceLabel } from '../productHelpers'
 import { formatRatePercent } from '../formatters'
 
 type Props = {
@@ -42,6 +42,7 @@ export function ProductDetailView({
   onDeleteAccessory,
 }: Props) {
   const images = product ? productImages(product) : []
+  const imageNames = product ? productImageNames(product) : []
 
   return (
     <section className="workspace-panel detail-panel product-standalone-detail">
@@ -80,10 +81,19 @@ export function ProductDetailView({
                         key={`${url}-${index}`}
                       >
                         <Image
-                          alt={t('masterdata.product.imageAlt', { name: product.cn_name })}
+                          alt={t('masterdata.product.imageAccessibleName', {
+                            name: product.cn_name,
+                            index: index + 1,
+                            fileName:
+                              imageNames[index] ||
+                              t('masterdata.product.imageFallbackName', { index: index + 1 }),
+                          })}
                           preview={{ mask: t('masterdata.product.viewLargeImage') }}
                           src={url}
                         />
+                        <span className="product-image-name" title={imageNames[index] || undefined}>
+                          {imageNames[index] || t('masterdata.product.imageFallbackName', { index: index + 1 })}
+                        </span>
                         {index === 0 ? (
                           <span className="product-image-primary">
                             {t('masterdata.product.primaryImage')}
