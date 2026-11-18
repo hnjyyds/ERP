@@ -275,6 +275,50 @@ async def test_finance_overview_aggregates_cross_module_amounts_for_finance_user
     assert data["shipment_profit_items"][0]["profit_amount"] == "80.00"
 
 
+async def test_finance_overview_pending_invoice_amount_excludes_received_notices(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    business_token = await _login_token(api_client)
+    notice = await _purchase_invoice_notice(api_client, business_token)
+    receive_response = await api_client.post(
+        f"/api/v1/purchase/invoice-notices/{notice['id']}/receive-tax-invoice",
+        headers={"Authorization": f"Bearer {business_token}"},
+        json={"tax_invoice_no": "VAT-OVERVIEW-001", "received_at": "2026-09-09"},
+    )
+    assert receive_response.status_code == 200
+
+    finance_token = await _login_token(api_client, "finance", "finance123")
+    response = await api_client.get(
+        "/api/v1/finance/overview",
+        headers={"Authorization": f"Bearer {finance_token}"},
+    )
+    assert response.status_code == 200
+    data = response.json()["data"]
+    # 已收票不再计入“待收税票金额”。
+    assert data["summary"]["invoice_notice_amount"] == "0.00"
+    assert data["invoice_notice_statuses"] == [
+        {"status": "received", "currency": "CNY", "count": 1, "amount": "300.00"}
+    ]
+
+
+async def test_finance_role_can_read_invoice_registration_sources(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    finance_token = await _login_token(api_client, "finance", "finance123")
+    for path in (
+        "/api/v1/masterdata/suppliers",
+        "/api/v1/purchase/invoice-notices",
+        "/api/v1/purchase/contracts",
+    ):
+        response = await api_client.get(
+            path,
+            headers={"Authorization": f"Bearer {finance_token}"},
+        )
+        assert response.status_code == 200, path
+
+
 async def test_finance_overview_requires_login_and_finance_permission(
     api_client: AsyncClient,
     seeded_system: None,

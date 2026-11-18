@@ -2200,6 +2200,7 @@
       "exportSelected_one": "Export {count} selected product",
       "exportSelected_other": "Export {count} selected products",
       "exportEmpty": "Select products to export, or export all",
+      "exportFailed": "Failed to export products",
       "exportSuccess_one": "Exported {count} product",
       "exportSuccess_other": "Exported {count} products",
       "exportFileName": "products.csv",
@@ -2613,6 +2614,7 @@
       "validation": {
         "reviewerRequired": "Please select an approver",
         "approverMismatch": "This payment request must be approved by {reviewer}",
+        "requestNotForInvoice": "The selected payment request does not belong to the current supplier invoice. Select another request.",
         "invoiceNoRequired": "Enter the supplier invoice number"
       }
     },

@@ -108,7 +108,10 @@ class PurchaseInvoiceNoticeService:
         supplier_id: str | None,
         customs_declaration_id: str | None,
     ) -> PurchaseInvoiceNoticeListResponse:
-        self._require(current_user, "purchase:invoice_notice:view")
+        self._require_any(
+            current_user,
+            ("purchase:invoice_notice:view", "masterdata:reference-option:view"),
+        )
         if status is not None:
             self._validate_status(status)
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
@@ -320,6 +323,14 @@ class PurchaseInvoiceNoticeService:
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:
+            raise PermissionDeniedError
+
+    def _require_any(
+        self,
+        current_user: CurrentUserResponse,
+        permissions: tuple[str, ...],
+    ) -> None:
+        if not any(permission in current_user.permissions for permission in permissions):
             raise PermissionDeniedError
 
     def _validate_status(self, status: str) -> None:

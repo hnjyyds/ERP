@@ -59,6 +59,8 @@ export function SampleRecordFormModal({
       product_id: productId,
       product_code: product?.code ?? '',
       product_name: product?.cn_name || product?.en_name || form.product_name,
+      // 切换商品时按商品资料带出单位；用户仍可手动改写。
+      unit: product?.unit?.trim() || form.unit,
     })
   }
 

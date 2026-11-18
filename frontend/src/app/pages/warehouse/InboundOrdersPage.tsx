@@ -86,9 +86,9 @@ export function InboundOrdersPage({ currentUser, detailId, onNavigate }: Inbound
             order={list.selectedOrder}
             inventory={inventory}
             onRefreshInventory={(event) =>
-              inventory.refreshInventorySnapshot(event, list.selectedOrder, list.search)
+              inventory.refreshInventorySnapshot(event, list.selectedOrder)
             }
-            onBack={() => onNavigate(warehouseInboundOrderPath)}
+            onBack={() => onNavigate(`${warehouseInboundOrderPath}${list.urlQuery.search}`)}
             onOpenCancel={workflow.openCancelModal}
           />
         ) : null}

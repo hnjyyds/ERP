@@ -113,6 +113,11 @@ def _base_permissions() -> list[Permission]:
             name="查看全部供应商",
         ),
         Permission(
+            id="perm-reference-option-view",
+            code="masterdata:reference-option:view",
+            name="读取关联业务选项",
+        ),
+        Permission(
             id="perm-partner-view",
             code="masterdata:partner:view",
             name="查看合作伙伴",

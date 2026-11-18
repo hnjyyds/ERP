@@ -350,27 +350,36 @@ describe('ProductsPage', () => {
     )
   })
 
-  it('导出：未选行导出当前页全部，选中后只导出选中行', async () => {
+  it('导出：未选行导出当前筛选的全部页，选中后只导出选中行', async () => {
     const user = userEvent.setup()
     vi.mocked(downloadCsv).mockClear()
-    vi.mocked(listProducts).mockResolvedValue({
-      items: [productFixture, { ...productFixture, id: 'product-2', code: 'P-002' }],
-      total: 2,
-      summary: { with_image_count: 0, accessory_count: 0 },
-    })
+    const thirdProduct = { ...productFixture, id: 'product-3', code: 'P-003' }
+    vi.mocked(listProducts).mockImplementation(
+      async (filters: { limit?: number } = {}) => ({
+        // 列表首屏只返回当前页 2 条，导出请求（limit 200）返回完整 3 条。
+        items:
+          filters.limit === 200
+            ? [productFixture, { ...productFixture, id: 'product-2', code: 'P-002' }, thirdProduct]
+            : [productFixture, { ...productFixture, id: 'product-2', code: 'P-002' }],
+        total: 3,
+        summary: { with_image_count: 0, accessory_count: 0 },
+      }),
+    )
 
     render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
     await waitFor(() => expect(listProducts).toHaveBeenCalled())
 
     await user.click(screen.getByRole('button', { name: '导出全部商品' }))
-    expect(downloadCsv).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(downloadCsv).toHaveBeenCalledTimes(1))
     expect(vi.mocked(downloadCsv).mock.calls[0][0]).toBe('商品资料.csv')
     expect(vi.mocked(downloadCsv).mock.calls[0][1]).toContain('P-001')
     expect(vi.mocked(downloadCsv).mock.calls[0][1]).toContain('P-002')
+    // 第二页记录也必须包含在“导出全部”中。
+    expect(vi.mocked(downloadCsv).mock.calls[0][1]).toContain('P-003')
 
     await user.click(screen.getAllByRole('checkbox')[1])
     await user.click(await screen.findByRole('button', { name: '导出已选 1 条商品' }))
-    expect(downloadCsv).toHaveBeenCalledTimes(2)
+    await waitFor(() => expect(downloadCsv).toHaveBeenCalledTimes(2))
     expect(vi.mocked(downloadCsv).mock.calls[1][1]).toContain('P-001')
     expect(vi.mocked(downloadCsv).mock.calls[1][1]).not.toContain('P-002')
   })

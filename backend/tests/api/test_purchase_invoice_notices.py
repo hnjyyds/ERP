@@ -136,4 +136,5 @@ async def test_purchase_invoice_notice_flow_generate_send_receive_and_permission
         "/api/v1/purchase/invoice-notices",
         headers={"Authorization": f"Bearer {finance_token}"},
     )
-    assert finance_response.status_code == 403
+    # 财务登记供应商发票时需要读取开票通知。
+    assert finance_response.status_code == 200

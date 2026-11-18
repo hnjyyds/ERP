@@ -85,6 +85,7 @@ import {
   listAssignableUsers,
   listInboundOrders,
   listInboundPlans,
+  listInventoryBalances,
   listPurchaseContracts,
   submitInboundOrder,
   type CurrentUser,
@@ -184,6 +185,37 @@ describe('InboundOrdersPage', () => {
         }),
       )
     })
+  })
+
+  it('单据关键词只筛选列表，不改变库存统计和详情库存查询', async () => {
+    const user = userEvent.setup()
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await waitFor(() => expect(listInboundOrders).toHaveBeenCalled())
+    const searchInput = screen.getByPlaceholderText('入库单 / 采购合同 / 商品')
+    await user.type(searchInput, 'IO-TEST-001')
+    await user.click(screen.getByRole('button', { name: '查询' }))
+
+    await waitFor(() => {
+      expect(listInboundOrders).toHaveBeenLastCalledWith(
+        expect.objectContaining({ q: 'IO-TEST-001' }),
+      )
+    })
+    expect(vi.mocked(listInventoryBalances).mock.calls.map(([args]) => args?.q)).not.toContain(
+      'IO-TEST-001',
+    )
+    expect(screen.getByText('12.50')).toBeTruthy()
+  })
+
+  it('进入详情时保留当前筛选查询串', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/warehouse/inbound-orders?q=IO-TEST-001&status=draft')
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    await user.click(await screen.findByText('IO-TEST-001'))
+    expect(onNavigate).toHaveBeenCalledWith(
+      '/warehouse/inbound-orders/inbound-order-1?q=IO-TEST-001&status=draft',
+    )
   })
 
   it('opens modal when 生成/审批入库单 button is clicked', async () => {

@@ -325,6 +325,7 @@ export function listPaymentRequests(filters: {
   status?: string
   payment_type?: string
   supplier_id?: string
+  supplier_invoice_id?: string
   limit?: number
   offset?: number
 } = {}): Promise<SupplierPaymentRequestList> {
@@ -333,6 +334,7 @@ export function listPaymentRequests(filters: {
   if (filters.status) params.set('status', filters.status)
   if (filters.payment_type) params.set('payment_type', filters.payment_type)
   if (filters.supplier_id) params.set('supplier_id', filters.supplier_id)
+  if (filters.supplier_invoice_id) params.set('supplier_invoice_id', filters.supplier_invoice_id)
   if (filters.limit !== undefined) params.set('limit', String(filters.limit))
   if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''

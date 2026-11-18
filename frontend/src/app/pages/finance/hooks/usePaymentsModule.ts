@@ -25,6 +25,7 @@ import {
   supplierInvoicePayload,
   paymentRequestPayload,
   paymentApprovalPayload,
+  paymentApprovalFormFromRequest,
 } from '@/app/pages/finance/financeHelpers'
 import { t } from '@/app/appI18n'
 
@@ -64,7 +65,7 @@ function payableSignature(params: URLSearchParams): string {
 }
 
 export function usePaymentsModule(env: FinanceModuleEnv) {
-  const { activeModule, detailId, currentUser, setMessage, setError } = env
+  const { activeModule, detailId, itemId, currentUser, setMessage, setError } = env
 
   const urlQuery = useUrlQuery()
 
@@ -145,30 +146,45 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     [paymentRequests, selectedPaymentRequestId],
   )
 
+  // 审批区只接受属于当前发票的申请；跨发票对象不得复用发票金额。
+  const selectedRequestForInvoice = useMemo(
+    () =>
+      selectedPaymentRequest &&
+      selectedSupplierInvoice &&
+      selectedPaymentRequest.supplier_invoice_id === selectedSupplierInvoice.id
+        ? selectedPaymentRequest
+        : null,
+    [selectedPaymentRequest, selectedSupplierInvoice],
+  )
+
   useEffect(() => {
     if (!selectedSupplierInvoice) return
-    const requestForInvoice =
-      selectedPaymentRequest?.supplier_invoice_id === selectedSupplierInvoice.id
-        ? selectedPaymentRequest
-        : null
     setPaymentRequestForm((current) => ({
       ...current,
       supplier_invoice_id: selectedSupplierInvoice.id,
       requested_amount: selectedSupplierInvoice.unpaid_amount,
       currency: selectedSupplierInvoice.currency,
     }))
-    setPaymentApprovalForm((current) => ({
-      ...current,
-      approved_amount: requestForInvoice?.requested_amount ?? selectedSupplierInvoice.unpaid_amount,
-    }))
+    setPaymentApprovalForm(paymentApprovalFormFromRequest(selectedRequestForInvoice))
   }, [
     selectedSupplierInvoice?.id,
     selectedSupplierInvoice?.unpaid_amount,
     selectedSupplierInvoice?.currency,
-    selectedPaymentRequest?.id,
-    selectedPaymentRequest?.supplier_invoice_id,
-    selectedPaymentRequest?.requested_amount,
+    selectedRequestForInvoice?.id,
+    selectedRequestForInvoice?.status,
+    selectedRequestForInvoice?.requested_amount,
+    selectedRequestForInvoice?.approved_amount,
+    selectedRequestForInvoice?.approved_at,
+    selectedRequestForInvoice?.payment_account,
+    selectedRequestForInvoice?.remark,
   ])
+
+  // 切换发票时重新载入该发票的付款申请，保证列表与审批对象一致。
+  useEffect(() => {
+    if (activeModule !== 'payments') return
+    if (!selectedSupplierInvoice?.id) return
+    void loadPaymentRequests(selectedPaymentRequestId ?? itemId ?? undefined)
+  }, [activeModule, selectedSupplierInvoice?.id])
 
   async function loadSupplierInvoices(
     preferredId?: string,
@@ -215,6 +231,9 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     pageOverride?: number,
     pageSizeOverride?: number,
   ) {
+    const supplierInvoiceId = selectedSupplierInvoice?.id
+    // 付款申请列表只展示当前发票的申请，避免与审批对象混用。
+    if (activeModule === 'payments' && !supplierInvoiceId) return
     setLoadingPaymentRequests(true)
     setError('')
     try {
@@ -222,6 +241,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
       const pageSize = pageSizeOverride ?? paymentRequestsPager.pageSize
       const result = await listPaymentRequests({
         supplier_id: invoiceFilters.supplier.trim() || undefined,
+        supplier_invoice_id: supplierInvoiceId,
         limit: pageSize,
         offset: (page - 1) * pageSize,
       })
@@ -318,6 +338,10 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
   async function submitPaymentApproval(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!selectedPaymentRequest) return
+    if (selectedRequestForInvoice?.id !== selectedPaymentRequest.id) {
+      showError(new Error(t('finance.payment.validation.requestNotForInvoice')))
+      return
+    }
     if (
       !canApproveAssignedRecord(currentUser, selectedPaymentRequest.reviewer_id, 'finance:view') ||
       selectedPaymentRequest.requester_user_id === currentUser.id
@@ -448,6 +472,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   const selectedPaymentRequestCanApprove =
     selectedPaymentRequest?.status === 'submitted' &&
+    selectedRequestForInvoice?.id === selectedPaymentRequest.id &&
     canApproveAssignedRecord(currentUser, selectedPaymentRequest.reviewer_id, 'finance:view') &&
     selectedPaymentRequest.requester_user_id !== currentUser.id
 

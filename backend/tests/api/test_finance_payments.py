@@ -372,4 +372,66 @@ async def test_finance_payment_rejects_duplicate_approval(
     assert payable["status"] == "partial"
 
 
+async def test_list_payment_requests_filters_by_supplier_invoice(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    business_token = await _login_token(api_client)
+    finance_token = await _login_token(api_client, "finance", "finance123")
+    notice = await _received_purchase_invoice_notice(
+        api_client,
+        business_token,
+        declaration_no="CD-PAY-API-FILTER",
+        tax_invoice_no="VAT-PAY-API-FILTER",
+    )
+    invoice_a = await _create_supplier_invoice(
+        api_client,
+        finance_token,
+        notice,
+        invoice_no="SI-PAY-FILTER-A",
+    )
+    invoice_b = await _create_supplier_invoice(
+        api_client,
+        finance_token,
+        notice,
+        invoice_no="SI-PAY-FILTER-B",
+    )
+    for invoice, amount, remark in (
+        (invoice_a, "10.00", "发票A申请"),
+        (invoice_b, "20.00", "发票B申请"),
+    ):
+        response = await api_client.post(
+            "/api/v1/finance/payment-requests",
+            headers={"Authorization": f"Bearer {finance_token}"},
+            json={
+                "supplier_invoice_id": invoice["id"],
+                "payment_type": "goods_payment",
+                "request_date": "2026-09-10",
+                "requested_amount": amount,
+                "currency": "CNY",
+                "reviewer_id": "u-finance-manager",
+                "remark": remark,
+            },
+        )
+        assert response.status_code == 201
+
+    filtered = await api_client.get(
+        "/api/v1/finance/payment-requests",
+        headers={"Authorization": f"Bearer {finance_token}"},
+        params={"supplier_invoice_id": invoice_a["id"]},
+    )
+    assert filtered.status_code == 200
+    data = filtered.json()["data"]
+    assert data["total"] == 1
+    assert [item["supplier_invoice_id"] for item in data["items"]] == [invoice_a["id"]]
+    assert data["items"][0]["requested_amount"] == "10.00"
+
+    unfiltered = await api_client.get(
+        "/api/v1/finance/payment-requests",
+        headers={"Authorization": f"Bearer {finance_token}"},
+    )
+    assert unfiltered.status_code == 200
+    assert unfiltered.json()["data"]["total"] >= 2
+
+
 pytestmark = pytest.mark.usefixtures("reference_master_data")

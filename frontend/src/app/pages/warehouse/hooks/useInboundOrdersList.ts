@@ -17,6 +17,14 @@ import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 
 import { emptyInboundOrderStatusSummary } from '../inboundOrderHelpers'
 
+type Filters = {
+  q: string
+  status: string
+  mode: string
+  supplier: string
+  contract: string
+}
+
 type Params = {
   detailId: string | null
   onNavigate: (path: string) => void
@@ -33,6 +41,16 @@ type Params = {
   ) => Promise<void>
 }
 
+function filtersFromParams(params: URLSearchParams): Filters {
+  return {
+    q: params.get('q') ?? '',
+    status: params.get('status') ?? '',
+    mode: params.get('mode') ?? '',
+    supplier: params.get('supplier') ?? '',
+    contract: params.get('contract') ?? '',
+  }
+}
+
 export function useInboundOrdersList({
   detailId,
   onNavigate,
@@ -43,14 +61,15 @@ export function useInboundOrdersList({
 }: Params) {
   const urlQuery = useUrlQuery()
   const appliedUrlSearchRef = useRef(urlQuery.search)
+  const initialFilters = filtersFromParams(urlQuery.params)
   const [orders, setOrders] = useState<InboundOrder[]>([])
   const [inboundPlans, setInboundPlans] = useState<InboundPlan[]>([])
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
-  const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
-  const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
-  const [modeFilter, setModeFilter] = useState('')
-  const [supplierFilter, setSupplierFilter] = useState('')
-  const [contractFilter, setContractFilter] = useState('')
+  const [search, setSearch] = useState(initialFilters.q)
+  const [statusFilter, setStatusFilter] = useState(initialFilters.status)
+  const [modeFilter, setModeFilter] = useState(initialFilters.mode)
+  const [supplierFilter, setSupplierFilter] = useState(initialFilters.supplier)
+  const [contractFilter, setContractFilter] = useState(initialFilters.contract)
   const [loading, setLoading] = useState(false)
   const [statusSummary, setStatusSummary] = useState(emptyInboundOrderStatusSummary)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
@@ -108,15 +127,20 @@ export function useInboundOrdersList({
   useEffect(() => {
     if (appliedUrlSearchRef.current === urlQuery.search) return
     appliedUrlSearchRef.current = urlQuery.search
-    const nextSearch = urlQuery.params.get('q') ?? ''
-    const nextStatus = urlQuery.params.get('status') ?? ''
+    const nextFilters = filtersFromParams(urlQuery.params)
     const nextPage = parsePageParam(urlQuery.params)
-    setSearch(nextSearch)
-    setStatusFilter(nextStatus)
+    setSearch(nextFilters.q)
+    setStatusFilter(nextFilters.status)
+    setModeFilter(nextFilters.mode)
+    setSupplierFilter(nextFilters.supplier)
+    setContractFilter(nextFilters.contract)
     setPage(nextPage)
     void loadInboundOrders(undefined, undefined, undefined, {
-      q: nextSearch,
-      status: nextStatus,
+      q: nextFilters.q,
+      status: nextFilters.status,
+      inboundMode: nextFilters.mode,
+      supplier: nextFilters.supplier,
+      contract: nextFilters.contract,
       page: nextPage,
     })
   }, [urlQuery.search])
@@ -148,7 +172,8 @@ export function useInboundOrdersList({
     const resolvedContract = queryOverride?.contract ?? contractFilter
     const resolvedPage = queryOverride?.page ?? page
     const resolvedPageSize = queryOverride?.pageSize ?? pageSize
-    const summaryInventoryQuery = inventorySearch.trim() || resolvedQuery.trim() || undefined
+    // 库存统计只服务库存搜索或全库，不复用单据列表关键词。
+    const summaryInventoryQuery = inventorySearch.trim() || undefined
     setLoading(true)
     try {
       const [orderResult, planOptions, balanceSummary] = await Promise.all([
@@ -179,7 +204,7 @@ export function useInboundOrdersList({
       setOrders(nextOrders)
       setInboundPlans(planOptions)
       setSelectedOrderId(nextSelectedId)
-      await loadInventorySnapshotForOrder(nextOrder, inventoryQuery, search)
+      await loadInventorySnapshotForOrder(nextOrder, inventoryQuery)
     } catch (caught) {
       showError(caught, t('warehouse.inboundOrder.list.loadFailed'))
     } finally {
@@ -210,7 +235,8 @@ export function useInboundOrdersList({
 
   function openInboundOrderDetail(order: InboundOrder) {
     setSelectedOrderId(order.id)
-    onNavigate(moduleDetailPath(warehouseInboundOrderPath, order.id))
+    // 携带当前筛选查询串，返回列表时条件不丢失。
+    onNavigate(`${moduleDetailPath(warehouseInboundOrderPath, order.id)}${urlQuery.search}`)
   }
 
   function stopAndOpenInboundOrderDetail(event: MouseEvent<HTMLElement>, order: InboundOrder) {
@@ -218,16 +244,33 @@ export function useInboundOrdersList({
     openInboundOrderDetail(order)
   }
 
-  function submitFilters() {
-    setPage(1)
-    appliedUrlSearchRef.current = urlQuery.update({
-      q: search,
-      status: statusFilter,
+  function writeFiltersToUrl(filters: Filters) {
+    return urlQuery.update({
+      q: filters.q || null,
+      status: filters.status || null,
+      mode: filters.mode || null,
+      supplier: filters.supplier || null,
+      contract: filters.contract || null,
       page: null,
     })
-    void loadInboundOrders(undefined, undefined, undefined, {
+  }
+
+  function submitFilters() {
+    const filters: Filters = {
       q: search,
       status: statusFilter,
+      mode: modeFilter,
+      supplier: supplierFilter,
+      contract: contractFilter,
+    }
+    setPage(1)
+    appliedUrlSearchRef.current = writeFiltersToUrl(filters)
+    void loadInboundOrders(undefined, undefined, undefined, {
+      q: filters.q,
+      status: filters.status,
+      inboundMode: filters.mode,
+      supplier: filters.supplier,
+      contract: filters.contract,
       page: 1,
     })
   }
@@ -239,7 +282,13 @@ export function useInboundOrdersList({
     setSupplierFilter('')
     setContractFilter('')
     setPage(1)
-    appliedUrlSearchRef.current = urlQuery.update({ q: null, status: null, page: null })
+    appliedUrlSearchRef.current = writeFiltersToUrl({
+      q: '',
+      status: '',
+      mode: '',
+      supplier: '',
+      contract: '',
+    })
     void loadInboundOrders(undefined, undefined, undefined, {
       q: '',
       status: '',
@@ -262,19 +311,40 @@ export function useInboundOrdersList({
   }
 
   async function applyGeneratedOrder(order: InboundOrder, inventoryQuery: string) {
-    setSearch(order.code)
-    setStatusFilter('')
-    setContractFilter(order.purchase_contract_id)
+    const nextFilters: Filters = {
+      q: order.code,
+      status: '',
+      mode: modeFilter,
+      supplier: supplierFilter,
+      contract: order.purchase_contract_id ?? '',
+    }
+    setSearch(nextFilters.q)
+    setStatusFilter(nextFilters.status)
+    setContractFilter(nextFilters.contract)
     setInventorySearch(inventoryQuery)
+    setPage(1)
+    appliedUrlSearchRef.current = writeFiltersToUrl(nextFilters)
     upsertInboundOrder(order)
-    await loadInboundOrders(order.id, order, inventoryQuery)
+    await loadInboundOrders(order.id, order, inventoryQuery, {
+      q: nextFilters.q,
+      status: nextFilters.status,
+      inboundMode: nextFilters.mode,
+      supplier: nextFilters.supplier,
+      contract: nextFilters.contract,
+      page: 1,
+    })
   }
 
   async function applyApprovedOrder(order: InboundOrder, inventoryQuery: string) {
     setStatusFilter('approved')
     setInventorySearch(inventoryQuery)
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({ status: 'approved', page: null })
     upsertInboundOrder(order)
-    await loadInboundOrders(order.id, order, inventoryQuery)
+    await loadInboundOrders(order.id, order, inventoryQuery, {
+      status: 'approved',
+      page: 1,
+    })
   }
 
   async function applySubmittedOrder(order: InboundOrder, inventoryQuery: string) {

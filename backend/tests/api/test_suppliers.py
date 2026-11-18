@@ -385,7 +385,8 @@ async def test_supplier_endpoints_enforce_menu_permission(
     api_client: AsyncClient,
     seeded_system: None,
 ) -> None:
-    token = await _login_token(api_client, username="finance", password="finance123")
+    # 财务角色因发票登记需要已获得供应商查看权限；QC 角色仍未获得。
+    token = await _login_token(api_client, username="qc", password="qc123")
     response = await api_client.get(
         "/api/v1/masterdata/suppliers",
         headers={"Authorization": f"Bearer {token}"},

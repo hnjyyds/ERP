@@ -20,8 +20,8 @@ from app.modules.system.auth.seed_navigation import (
     system_roles,
 )
 from app.modules.system.auth.seed_permissions import system_permissions
+from app.modules.system.auth.seed_role_permissions import demo_role_permissions
 from app.modules.system.auth.seed_users import (
-    demo_role_permissions,
     demo_roles,
     demo_user_roles,
     demo_users,

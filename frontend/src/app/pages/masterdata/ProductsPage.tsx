@@ -8,6 +8,7 @@ import {
   deactivateProduct,
   deleteProductAccessory,
   importProducts,
+  listProducts,
   updateProduct,
   updateProductAccessory,
   uploadImage,
@@ -332,12 +333,40 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     })
   }
 
-  function exportSelectedCsv() {
+  /** 分页拉取当前关键词下的全部商品，供“导出全部”使用。 */
+  async function fetchAllFilteredProducts(query: string): Promise<Product[]> {
+    const pageSize = 200
+    const items: Product[] = []
+    let offset = 0
+    let total = 0
+    do {
+      const result = await listProducts({
+        q: query.trim() || undefined,
+        limit: pageSize,
+        offset,
+      })
+      total = result.total
+      items.push(...result.items)
+      if (result.items.length === 0) break
+      offset += result.items.length
+    } while (items.length < total)
+    return items
+  }
+
+  async function exportSelectedCsv() {
     const selectedIds = new Set(model.selectedRowKeys.map(String))
-    const toExport =
-      selectedIds.size > 0
-        ? model.products.filter((p) => selectedIds.has(p.id))
-        : model.products
+    let toExport: Product[]
+    if (selectedIds.size > 0) {
+      toExport = model.products.filter((p) => selectedIds.has(p.id))
+    } else {
+      // “导出全部”覆盖当前筛选范围的全部页，而不是仅已加载的当前页。
+      try {
+        toExport = await fetchAllFilteredProducts(model.search)
+      } catch (caught) {
+        showError(caught, t('masterdata.product.exportFailed'))
+        return
+      }
+    }
     if (toExport.length === 0) {
       showWarningDialog(t('masterdata.product.exportEmpty'))
       return

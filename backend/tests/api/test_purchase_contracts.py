@@ -442,7 +442,7 @@ async def test_purchase_contract_rejection_requires_reason(
     assert response.status_code == 422
 
 
-async def test_purchase_contract_endpoints_enforce_menu_permission(
+async def test_finance_role_can_read_purchase_contracts_for_invoice_registration(
     api_client: AsyncClient,
     seeded_system: None,
 ) -> None:
@@ -452,7 +452,7 @@ async def test_purchase_contract_endpoints_enforce_menu_permission(
         headers={"Authorization": f"Bearer {token}"},
     )
 
-    assert response.status_code == 403
+    assert response.status_code == 200
 
 
 async def test_purchase_generation_returns_specific_missing_product_message(

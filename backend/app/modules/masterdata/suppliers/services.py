@@ -206,7 +206,10 @@ class SupplierService:
         credit_grade: str | None,
         status: str | None,
     ) -> SupplierListResponse:
-        self._require(current_user, "masterdata:supplier:view")
+        self._require_any(
+            current_user,
+            ("masterdata:supplier:view", "masterdata:reference-option:view"),
+        )
         owner_user_ids = await self._data_scope_resolver.resolve_user_ids(
             current_user=current_user,
         )
@@ -328,6 +331,14 @@ class SupplierService:
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:
+            raise PermissionDeniedError
+
+    def _require_any(
+        self,
+        current_user: CurrentUserResponse,
+        permissions: tuple[str, ...],
+    ) -> None:
+        if not any(permission in current_user.permissions for permission in permissions):
             raise PermissionDeniedError
 
     def _can_view_credit_limit(self, current_user: CurrentUserResponse) -> bool:

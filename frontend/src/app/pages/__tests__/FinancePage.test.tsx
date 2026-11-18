@@ -150,8 +150,156 @@ describe('FinancePage', () => {
     )
 
     expect((await screen.findAllByText('SI-TARGET')).length).toBeGreaterThan(0)
-    expect(await screen.findByRole('textbox', { name: '审批金额' })).toHaveValue('100.00')
+    await waitFor(() =>
+      expect(screen.getByRole('textbox', { name: '审批金额' })).toHaveValue('100.00'),
+    )
     expect(screen.getByRole('button', { name: '审批付款' })).toBeEnabled()
+  })
+
+  it('指定跨发票申请时审批区不回填当前发票金额且禁止审批', async () => {
+    const invoice = (id: string, invoiceNo: string, unpaid: string): SupplierInvoice => ({
+      id,
+      invoice_no: invoiceNo,
+      invoice_date: '2026-08-04',
+      supplier_id: 'supplier-1',
+      supplier_name: '华东包装制品厂',
+      purchase_invoice_notice_id: null,
+      purchase_invoice_notice_code: null,
+      purchase_contract_id: 'purchase-contract-1',
+      purchase_contract_no: 'PC-001',
+      total_amount: '60.00',
+      paid_amount: '0.00',
+      unpaid_amount: unpaid,
+      currency: 'CNY',
+      due_date: '2026-08-20',
+      status: 'unpaid',
+      remark: null,
+      created_by_user_id: 'u-finance',
+      created_by_user_name: '演示财务',
+      payment_requests: [],
+      allocations: [],
+    })
+    vi.spyOn(api, 'listSupplierInvoices').mockResolvedValue({
+      items: [invoice('invoice-b', 'SI-B', '0.00'), invoice('invoice-a', 'SI-A', '60.00')],
+      total: 2,
+    })
+    vi.spyOn(api, 'listPaymentRequests').mockResolvedValue({
+      items: [
+        {
+          id: 'payment-request-a',
+          request_no: 'PR-A',
+          supplier_invoice_id: 'invoice-a',
+          supplier_invoice_no: 'SI-A',
+          supplier_id: 'supplier-1',
+          supplier_name: '华东包装制品厂',
+          purchase_contract_id: 'purchase-contract-1',
+          purchase_contract_no: 'PC-001',
+          payment_type: 'goods_payment',
+          request_date: '2026-08-04',
+          requested_amount: '60.00',
+          approved_amount: '0.00',
+          paid_amount: '0.00',
+          currency: 'CNY',
+          status: 'submitted',
+          requester_user_id: 'u-requester',
+          requester_user_name: '采购专员',
+          reviewer_id: currentUser.id,
+          reviewer_name: currentUser.display_name,
+          approved_at: null,
+          payment_account: null,
+          remark: null,
+        },
+      ],
+      total: 1,
+    })
+
+    render(
+      <FinancePage
+        currentUser={currentUser}
+        view={{ module: 'payments', id: 'invoice-b', itemId: 'payment-request-a' }}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect((await screen.findAllByText('SI-B')).length).toBeGreaterThan(0)
+    await screen.findByText('PR-A')
+    // 发票B未付0.00，不得把跨发票申请A的60.00混入审批区。
+    await waitFor(() =>
+      expect(screen.getByRole('textbox', { name: '审批金额' })).toHaveValue(''),
+    )
+    expect(screen.getByRole('button', { name: '审批付款' })).toBeDisabled()
+  })
+
+  it('已审批申请回显保存的审批日期、付款账号与备注', async () => {
+    const invoice: SupplierInvoice = {
+      id: 'invoice-approved',
+      invoice_no: 'SI-APPROVED',
+      invoice_date: '2026-11-10',
+      supplier_id: 'supplier-1',
+      supplier_name: '华东包装制品厂',
+      purchase_invoice_notice_id: null,
+      purchase_invoice_notice_code: null,
+      purchase_contract_id: null,
+      purchase_contract_no: null,
+      total_amount: '0.01',
+      paid_amount: '0.01',
+      unpaid_amount: '0.00',
+      currency: 'CNY',
+      due_date: null,
+      status: 'paid',
+      remark: null,
+      created_by_user_id: 'u-finance',
+      created_by_user_name: '演示财务',
+      payment_requests: [],
+      allocations: [],
+    }
+    vi.spyOn(api, 'listSupplierInvoices').mockResolvedValue({ items: [invoice], total: 1 })
+    vi.spyOn(api, 'listPaymentRequests').mockResolvedValue({
+      items: [
+        {
+          id: 'payment-request-approved',
+          request_no: 'PR-APPROVED',
+          supplier_invoice_id: invoice.id,
+          supplier_invoice_no: invoice.invoice_no,
+          supplier_id: 'supplier-1',
+          supplier_name: '华东包装制品厂',
+          purchase_contract_id: null,
+          purchase_contract_no: null,
+          payment_type: 'goods_payment',
+          request_date: '2026-11-17',
+          requested_amount: '0.01',
+          approved_amount: '0.01',
+          paid_amount: '0.01',
+          currency: 'CNY',
+          status: 'approved',
+          requester_user_id: 'u-requester',
+          requester_user_name: '采购专员',
+          reviewer_id: currentUser.id,
+          reviewer_name: currentUser.display_name,
+          approved_at: '2026-11-17',
+          payment_account: 'UIQA-TEST-ACCOUNT',
+          remark: '已保存的审批备注',
+        },
+      ],
+      total: 1,
+    })
+
+    render(
+      <FinancePage
+        currentUser={currentUser}
+        view={{ module: 'payments', id: invoice.id, itemId: 'payment-request-approved' }}
+        onNavigate={onNavigate}
+      />,
+    )
+
+    expect(await screen.findByRole('textbox', { name: '审批金额' })).toBeTruthy()
+    await waitFor(() =>
+      expect(screen.getByRole('textbox', { name: '审批金额' })).toHaveValue('0.01'),
+    )
+    expect(screen.getByLabelText('审批日期')).toHaveValue('2026-11-17')
+    expect(screen.getByRole('textbox', { name: '付款账号' })).toHaveValue('UIQA-TEST-ACCOUNT')
+    expect(screen.getByRole('textbox', { name: '审批备注' })).toHaveValue('已保存的审批备注')
+    expect(screen.getByRole('button', { name: '审批付款' })).toBeDisabled()
   })
 
   it('pages receipts on the server without changing backend summary totals', async () => {

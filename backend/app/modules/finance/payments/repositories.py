@@ -233,12 +233,15 @@ class PaymentRepository:
         status: str | None = None,
         payment_type: str | None = None,
         supplier_id: str | None = None,
+        supplier_invoice_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[PaymentRequestRow], int]:
         statement = select(PaymentRequest)
         count_statement = select(func.count()).select_from(PaymentRequest)
         conditions = []
+        if supplier_invoice_id:
+            conditions.append(PaymentRequest.supplier_invoice_id == supplier_invoice_id)
         if q:
             pattern = f"%{q}%"
             conditions.append(

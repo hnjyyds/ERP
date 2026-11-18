@@ -328,6 +328,7 @@ async def test_generate_purchase_contract_template_denies_missing_permission(
     api_client: AsyncClient,
     seeded_system: None,
 ) -> None:
+    # 财务仅获得关联选项读取权限，打印模板仍要求采购合同查看权限。
     token = await _login_token(api_client, username="finance", password="finance123")
     response = await api_client.get(
         "/api/v1/printing/purchase-contracts/missing-id/template",

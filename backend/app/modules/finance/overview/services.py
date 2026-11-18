@@ -49,7 +49,10 @@ class FinanceOverviewService:
                 profit_amount=self._money_sum(item.profit_amount for item in currency_summaries),
                 profit_rate=self._combined_profit_rate(currency_summaries),
                 invoice_notice_count=sum(item.count for item in invoice_statuses),
-                invoice_notice_amount=self._money_sum(item.amount for item in invoice_statuses),
+                # “待收税票金额”只统计尚未收票的通知，已收票不再计入。
+                invoice_notice_amount=self._money_sum(
+                    item.amount for item in invoice_statuses if item.status != "received"
+                ),
                 sample_fee_count=sum(item.count for item in sample_fee_statuses),
                 sample_fee_amount=self._money_sum(item.amount for item in sample_fee_statuses),
                 partner_count=partner_summary.total_count,

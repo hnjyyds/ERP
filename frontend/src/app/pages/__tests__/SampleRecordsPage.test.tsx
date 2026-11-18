@@ -199,6 +199,31 @@ describe('SampleRecordsPage', () => {
     expect(await screen.findByText('已新增样品 SP-002')).toBeTruthy()
   })
 
+  it('选择商品后按商品资料回填单位，并随单据提交', async () => {
+    const created = { ...record, id: 'rec-unit', code: 'SP-UNIT' }
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [record], total: 1 })
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [{ id: 'p-box', code: 'P-BOX', cn_name: '盒装杯', en_name: null, unit: 'box' }],
+      total: 1,
+    } as never)
+    const createSpy = vi.spyOn(api, 'createSampleRecord').mockResolvedValue(created)
+
+    render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(api.listSampleRecords).toHaveBeenCalled())
+
+    await userEvent.click(screen.getByRole('button', { name: '新增样品' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByLabelText('单位')).toHaveValue('pcs')
+
+    await userEvent.click(within(dialog).getByLabelText('产品'))
+    await userEvent.click(await screen.findByText('P-BOX / 盒装杯'))
+    expect(within(dialog).getByLabelText('单位')).toHaveValue('box')
+
+    await userEvent.click(within(dialog).getByRole('button', { name: '新增样品' }))
+    await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
+    expect(createSpy.mock.calls[0][0]).toMatchObject({ product_id: 'p-box', unit: 'box' })
+  })
+
   it('按当前表单导入样品并提示新增数量', async () => {
     vi.spyOn(api, 'listSampleRecords').mockResolvedValue({ items: [record], total: 1 })
     vi.spyOn(api, 'listProducts').mockResolvedValue({

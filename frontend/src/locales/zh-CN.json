@@ -2200,6 +2200,7 @@
       "exportSelected_one": "导出已选 {count} 条商品",
       "exportSelected_other": "导出已选 {count} 条商品",
       "exportEmpty": "请先选择要导出的商品，或直接导出全部",
+      "exportFailed": "导出商品失败",
       "exportSuccess_one": "已导出 {count} 条商品",
       "exportSuccess_other": "已导出 {count} 条商品",
       "exportFileName": "商品资料.csv",
@@ -2613,6 +2614,7 @@
       "validation": {
         "reviewerRequired": "请选择审批人",
         "approverMismatch": "该付款申请应由 {reviewer} 审批",
+        "requestNotForInvoice": "所选付款申请不属于当前供应商发票，请重新选择",
         "invoiceNoRequired": "请填写供应商发票号"
       }
     },

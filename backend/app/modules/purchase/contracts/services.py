@@ -234,7 +234,10 @@ class PurchaseContractService:
         supplier_id: str | None,
         source_type: str | None,
     ) -> PurchaseContractListResponse:
-        self._require(current_user, "purchase:contract:view")
+        self._require_any(
+            current_user,
+            ("purchase:contract:view", "masterdata:reference-option:view"),
+        )
         if approval_status is not None:
             self._validate_status(approval_status)
         if source_type is not None:
@@ -679,6 +682,10 @@ class PurchaseContractService:
 
     def _require(self, current_user: CurrentUserResponse, permission: str) -> None:
         if permission not in current_user.permissions:
+            raise PermissionDeniedError
+
+    def _require_any(self, current_user: CurrentUserResponse, permissions: tuple[str, ...]) -> None:
+        if not any(permission in current_user.permissions for permission in permissions):
             raise PermissionDeniedError
 
     def _validate_status(self, approval_status: str) -> None:

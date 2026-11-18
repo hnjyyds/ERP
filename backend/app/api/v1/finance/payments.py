@@ -78,6 +78,7 @@ async def list_payment_requests(
     status_filter: Annotated[str | None, Query(alias="status", max_length=40)] = None,
     payment_type: Annotated[str | None, Query(max_length=40)] = None,
     supplier_id: Annotated[str | None, Query(max_length=36)] = None,
+    supplier_invoice_id: Annotated[str | None, Query(max_length=36)] = None,
 ) -> ApiResponse[PaymentRequestListResponse]:
     payment_requests = await service.list_payment_requests(
         current_user=user,
@@ -85,6 +86,7 @@ async def list_payment_requests(
         status=status_filter,
         payment_type=payment_type,
         supplier_id=supplier_id,
+        supplier_invoice_id=supplier_invoice_id,
     )
     return ApiResponse(data=payment_requests)
 

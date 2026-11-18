@@ -16,8 +16,6 @@ import { supplierInvoiceStatusOptions, paymentTypeOptions } from '@/shared/formO
 import { formatFinanceAmount, nullableText } from '@/app/pages/appHelpers'
 import { t } from '@/app/appI18n'
 import {
-  initialPaymentRequestForm,
-  initialPaymentApprovalForm,
   supplierInvoiceStatusLabel,
   supplierInvoiceStatusTag,
   paymentRequestStatusTag,
@@ -95,6 +93,9 @@ export function PaymentsView({ model, shell }: Props) {
         selectedSupplierInvoice.currency,
       )
     : '-'
+  // 已审批申请只展示历史值，不允许在界面上改写后再次提交。
+  const approvalHistoryReadOnly =
+    Boolean(selectedPaymentRequest) && selectedPaymentRequest?.status !== 'submitted'
 
   return (
     <section className={detailId ? 'finance-page finance-detail-page' : 'finance-page'}>
@@ -253,10 +254,6 @@ export function PaymentsView({ model, shell }: Props) {
               onRow={(record) => ({
                 onClick: () => {
                   setSelectedSupplierInvoiceId(record.id)
-                  setPaymentRequestForm(initialPaymentRequestForm(record))
-                  setPaymentApprovalForm(
-                    initialPaymentApprovalForm(record.unpaid_amount, currentUser.display_name),
-                  )
                   goDetail('payments', record.id)
                 },
               })}
@@ -591,6 +588,7 @@ export function PaymentsView({ model, shell }: Props) {
                   <label>
                     {t('finance.payment.field.approvedAmount')}
                     <Input
+                      disabled={approvalHistoryReadOnly}
                       value={paymentApprovalForm.approved_amount}
                       onChange={(event) =>
                         setPaymentApprovalForm({
@@ -603,6 +601,7 @@ export function PaymentsView({ model, shell }: Props) {
                   <label>
                     {t('finance.payment.field.approvedAt')}
                     <Input
+                      disabled={approvalHistoryReadOnly}
                       type="date"
                       value={paymentApprovalForm.approved_at}
                       onChange={(event) =>
@@ -620,6 +619,7 @@ export function PaymentsView({ model, shell }: Props) {
                   <label>
                     {t('finance.payment.field.paymentAccount')}
                     <Input
+                      disabled={approvalHistoryReadOnly}
                       value={paymentApprovalForm.payment_account}
                       onChange={(event) =>
                         setPaymentApprovalForm({
@@ -632,6 +632,7 @@ export function PaymentsView({ model, shell }: Props) {
                   <label>
                     {t('finance.payment.field.approvalRemark')}
                     <Input
+                      disabled={approvalHistoryReadOnly}
                       value={paymentApprovalForm.remark}
                       onChange={(event) =>
                         setPaymentApprovalForm({
@@ -703,9 +704,6 @@ export function PaymentsView({ model, shell }: Props) {
                 onRow={(record) => ({
                   onClick: () => {
                     setSelectedPaymentRequestId(record.id)
-                    setPaymentApprovalForm(
-                      initialPaymentApprovalForm(record.requested_amount, currentUser.display_name),
-                    )
                   },
                 })}
               />

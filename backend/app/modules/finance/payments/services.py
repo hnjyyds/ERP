@@ -173,6 +173,7 @@ class PaymentService:
         status: str | None,
         payment_type: str | None,
         supplier_id: str | None,
+        supplier_invoice_id: str | None,
     ) -> PaymentRequestListResponse:
         self._require_finance(current_user)
         if status is not None:
@@ -184,6 +185,7 @@ class PaymentService:
             status=status,
             payment_type=payment_type,
             supplier_id=supplier_id,
+            supplier_invoice_id=supplier_invoice_id,
         )
         return PaymentRequestListResponse(
             items=[self._payment_request_response(row) for row in rows],

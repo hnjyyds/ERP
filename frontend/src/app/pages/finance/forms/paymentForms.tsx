@@ -7,6 +7,7 @@ import type {
   PaymentRequestCreatePayload,
   SupplierInvoice,
   SupplierInvoiceCreatePayload,
+  SupplierPaymentRequest,
 } from '@/api'
 import { daysFromTodayInputValue, emptyToNull, todayInputValue } from '@/app/pages/appHelpers'
 import {
@@ -91,6 +92,27 @@ export function initialPaymentApprovalForm(
     reviewer_name: reviewerName,
     payment_account: '',
     remark: '',
+  }
+}
+
+/**
+ * 审批区只读回显所选申请的已保存值：已审批申请保留批准日期、付款账号和备注；
+ * 待审批申请按申请金额与当天日期初始化。
+ */
+export function paymentApprovalFormFromRequest(
+  request: SupplierPaymentRequest | null | undefined,
+  reviewerName = '',
+): PaymentApprovalFormState {
+  if (!request) return initialPaymentApprovalForm('', reviewerName)
+  const approved = request.status === 'approved'
+  return {
+    approved_amount: approved
+      ? request.approved_amount || request.requested_amount
+      : request.requested_amount,
+    approved_at: (approved ? request.approved_at : null) ?? todayInputValue(),
+    reviewer_name: reviewerName,
+    payment_account: request.payment_account ?? '',
+    remark: request.remark ?? '',
   }
 }
 
