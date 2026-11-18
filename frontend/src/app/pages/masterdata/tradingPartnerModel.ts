@@ -165,19 +165,37 @@ export function entityToForm(entity: PartnerEntity): PartnerFormState {
   }
 }
 
+export type PartnerFormErrorField = 'code' | 'cn_name' | 'en_name' | 'partner_type' | 'country'
+
+export type PartnerFormError = {
+  field: PartnerFormErrorField
+  message: string
+}
+
 export function validatePartnerForm(
   form: PartnerFormState,
   requireCode: boolean,
   kind: TradingPartnerKind,
-): string {
-  if (requireCode && !form.code.trim()) return translateMasterdata('masterdata.tradingPartner.validation.codeRequired')
-  if (!form.cn_name.trim()) return translateMasterdata('masterdata.tradingPartner.validation.cnNameRequired')
-  if (!form.en_name.trim()) return translateMasterdata('masterdata.tradingPartner.validation.enNameRequired')
-  if (kind === 'partner' && !form.partner_type) {
-    return translateMasterdata('masterdata.tradingPartner.validation.partnerTypeRequired')
+): PartnerFormError | null {
+  if (requireCode && !form.code.trim()) {
+    return { field: 'code', message: translateMasterdata('masterdata.tradingPartner.validation.codeRequired') }
   }
-  if (!form.country.trim()) return translateMasterdata('masterdata.tradingPartner.validation.countryRequired')
-  return ''
+  if (!form.cn_name.trim()) {
+    return { field: 'cn_name', message: translateMasterdata('masterdata.tradingPartner.validation.cnNameRequired') }
+  }
+  if (!form.en_name.trim()) {
+    return { field: 'en_name', message: translateMasterdata('masterdata.tradingPartner.validation.enNameRequired') }
+  }
+  if (kind === 'partner' && !form.partner_type) {
+    return {
+      field: 'partner_type',
+      message: translateMasterdata('masterdata.tradingPartner.validation.partnerTypeRequired'),
+    }
+  }
+  if (!form.country.trim()) {
+    return { field: 'country', message: translateMasterdata('masterdata.tradingPartner.validation.countryRequired') }
+  }
+  return null
 }
 
 export function partnerCreatePayload(

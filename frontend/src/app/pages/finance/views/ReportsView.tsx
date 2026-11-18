@@ -20,6 +20,21 @@ type Props = {
   shell: FinanceViewShell
 }
 
+const drilldownQueryKeys: Record<string, string> = {
+  'receipt-usage': 'q',
+  'goods-payment': 'payables_q',
+  'fee-payment': 'fee_invoices_q',
+  'customs-receipt-collection': 'usage_q',
+}
+
+/** 来源入口链接：带上来源编号作为目标页的查询条件，避免用户重新查找。 */
+function drilldownHref(reportKey: string, targetPath: string, sourceNo: string): string {
+  const queryKey = drilldownQueryKeys[reportKey]
+  if (!queryKey || !sourceNo) return targetPath
+  const separator = targetPath.includes('?') ? '&' : '?'
+  return `${targetPath}${separator}${queryKey}=${encodeURIComponent(sourceNo)}`
+}
+
 export function ReportsView({ model, shell }: Props) {
   const {
     activeReport,
@@ -501,9 +516,21 @@ export function ReportsView({ model, shell }: Props) {
               </Descriptions.Item>
               <Descriptions.Item label={t('finance.report.drilldown.entry')}>
                 {reportDrilldown.items.length > 0
-                  ? reportDrilldown.items
-                      .map((item) => `${item.label}: ${item.value ?? ''} ${item.target_path ?? ''}`)
-                      .join('; ')
+                  ? reportDrilldown.items.map((item, index) =>
+                      item.target_path ? (
+                        <a
+                          key={`${item.label}-${index}`}
+                          className="inline-link"
+                          href={drilldownHref(reportDrilldown.report_key, item.target_path, reportDrilldown.source_no)}
+                        >
+                          {item.label}：{item.value ?? reportDrilldown.source_no}
+                        </a>
+                      ) : (
+                        <span key={`${item.label}-${index}`}>
+                          {item.label}: {item.value ?? ''}
+                        </span>
+                      ),
+                    )
                   : t('finance.report.empty.drilldownSource')}
               </Descriptions.Item>
             </Descriptions>

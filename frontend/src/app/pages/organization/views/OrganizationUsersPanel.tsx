@@ -95,7 +95,7 @@ export function OrganizationUsersPanel({ model }: Props) {
                 className="secondary-inline"
                 disabled={!model.roles.length}
                 type="button"
-                onClick={() => model.setPermissionModalOpen(true)}
+                onClick={() => model.openUserPermissions(selectedUser)}
               >
                 <ShieldCheck size={15} />
                 {t('organization.user.action.editPermissions')}

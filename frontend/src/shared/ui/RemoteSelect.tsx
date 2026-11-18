@@ -7,6 +7,9 @@ export type RemoteSelectOption = {
   label: string
   value: string
   description?: string
+  unit?: string
+  specification?: string
+  model?: string
 }
 
 type RemoteSelectProps = {
@@ -115,6 +118,7 @@ export function RemoteSelect({
       placeholder={placeholder}
       showSearch
       status={status}
+      style={{ width: '100%', minWidth: 0 }}
       value={value || undefined}
     />
   )

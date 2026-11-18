@@ -90,12 +90,14 @@ export function PurchaseContractsPage({ currentUser, detailId, onNavigate }: Pro
           setForm={formModal.setForm}
           setGenerateForm={formModal.setGenerateForm}
           suppliers={options.suppliers}
-          assignableUsers={options.assignableUsers}
+          buyerUsers={options.buyerUsers}
+          qcUsers={options.qcUsers}
           products={options.products}
           exportContracts={options.exportContracts}
           onSupplierSearch={options.loadSuppliers}
           loadingSuppliers={options.loadingSuppliers}
-          loadingAssignableUsers={options.loadingAssignableUsers}
+          loadingBuyerUsers={options.loadingBuyerUsers}
+          loadingQcUsers={options.loadingQcUsers}
           loadingProducts={options.loadingProducts}
           loadingExportContracts={options.loadingExportContracts}
           submitting={formModal.submitting}

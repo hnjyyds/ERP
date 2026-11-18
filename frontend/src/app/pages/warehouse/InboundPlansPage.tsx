@@ -23,7 +23,7 @@ import {
 import { warehouseInboundPlanPath, moduleDetailPath } from '@/app/routes'
 import { FormSelect, ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
-import { fetchSupplierSelectOptions } from '@/shared/entityOptions'
+import { fetchLocationSelectOptions, fetchSupplierSelectOptions, fetchWarehouseSelectOptions } from '@/shared/entityOptions'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { useFormModal } from '@/shared/useFormModal'
@@ -720,48 +720,57 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
               </label>
               <div className="form-pair two">
                 <label htmlFor="inbound-warehouse-id">
-                  {t('warehouse.inboundPlan.field.warehouseId')}
-                  <Input
+                  {t('warehouse.inboundPlan.field.warehouse')}
+                  <RemoteSelect
                     id="inbound-warehouse-id"
+                    allowClear
+                    ariaLabel={t('warehouse.inboundPlan.field.warehouse')}
+                    fetchOptions={fetchWarehouseSelectOptions}
+                    initialOption={
+                      scheduleForm.warehouse_id
+                        ? {
+                            value: scheduleForm.warehouse_id,
+                            label: scheduleForm.warehouse_name || scheduleForm.warehouse_id,
+                          }
+                        : undefined
+                    }
+                    placeholder={t('warehouse.inboundPlan.field.warehousePlaceholder')}
                     required
                     value={scheduleForm.warehouse_id}
-                    onChange={(event) =>
-                      setScheduleForm({ ...scheduleForm, warehouse_id: event.target.value })
+                    onChange={(warehouseId, option) =>
+                      setScheduleForm({
+                        ...scheduleForm,
+                        warehouse_id: warehouseId,
+                        warehouse_name: option?.label ?? '',
+                      })
                     }
                   />
                 </label>
-                <label htmlFor="inbound-warehouse-name">
-                  {t('warehouse.inboundPlan.field.warehouse')}
-                  <Input
-                    id="inbound-warehouse-name"
-                    required
-                    value={scheduleForm.warehouse_name}
-                    onChange={(event) =>
-                      setScheduleForm({ ...scheduleForm, warehouse_name: event.target.value })
-                    }
-                  />
-                </label>
-              </div>
-              <div className="form-pair two">
                 <label htmlFor="inbound-location-id">
-                  {t('warehouse.inboundPlan.field.locationId')}
-                  <Input
+                  {t('warehouse.inboundPlan.field.location')}
+                  <RemoteSelect
                     id="inbound-location-id"
+                    allowClear
+                    ariaLabel={t('warehouse.inboundPlan.field.location')}
+                    fetchOptions={fetchLocationSelectOptions}
+                    initialOption={
+                      scheduleForm.location_id
+                        ? {
+                            value: scheduleForm.location_id,
+                            label: scheduleForm.location_name || scheduleForm.location_id,
+                            description: scheduleForm.warehouse_name,
+                          }
+                        : undefined
+                    }
+                    placeholder={t('warehouse.inboundPlan.field.locationPlaceholder')}
                     required
                     value={scheduleForm.location_id}
-                    onChange={(event) =>
-                      setScheduleForm({ ...scheduleForm, location_id: event.target.value })
-                    }
-                  />
-                </label>
-                <label htmlFor="inbound-location-name">
-                  {t('warehouse.inboundPlan.field.location')}
-                  <Input
-                    id="inbound-location-name"
-                    required
-                    value={scheduleForm.location_name}
-                    onChange={(event) =>
-                      setScheduleForm({ ...scheduleForm, location_name: event.target.value })
+                    onChange={(locationId, option) =>
+                      setScheduleForm({
+                        ...scheduleForm,
+                        location_id: locationId,
+                        location_name: option?.label ?? '',
+                      })
                     }
                   />
                 </label>

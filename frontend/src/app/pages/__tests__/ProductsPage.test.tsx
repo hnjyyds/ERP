@@ -257,6 +257,30 @@ describe('ProductsPage', () => {
     expect(createProduct).not.toHaveBeenCalled()
   })
 
+  it('商品新建填写配件单耗但缺配件名称时就地提示并阻止提交', async () => {
+    const user = userEvent.setup()
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(listProducts).toHaveBeenCalled())
+
+    await user.click(screen.getByRole('button', { name: '新增商品' }))
+    const dialog = await screen.findByRole('dialog')
+    await user.type(within(dialog).getByLabelText(/产品编号/), 'P-202')
+    await user.type(within(dialog).getByLabelText(/中文名称/), '配件缺名称')
+    await user.type(within(dialog).getByLabelText(/英文名称/), 'Accessory Missing Name')
+    await user.type(within(dialog).getByLabelText(/海关编码/), '8481804090')
+    await user.type(within(dialog).getByLabelText(/包装资料/), '24 pcs/carton')
+    const consumption = within(dialog).getByLabelText(/单耗/)
+    await user.clear(consumption)
+    await user.type(consumption, '1.25')
+    await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
+
+    expect(
+      await within(dialog).findByText('已填写配件信息，请补充配件名称或清空配件信息'),
+    ).toBeInTheDocument()
+    expect(within(dialog).getByLabelText(/配件名称/)).toHaveFocus()
+    expect(createProduct).not.toHaveBeenCalled()
+  })
+
   it('新增商品：校验必填、提交创建 payload 并回到第一页刷新', async () => {
     const user = userEvent.setup()
     vi.mocked(createProduct).mockResolvedValue({ ...productFixture, id: 'product-new', code: 'P-200' })

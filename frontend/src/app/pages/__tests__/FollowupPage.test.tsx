@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as api from '@/api'
 import type { FollowProcessTemplate, PurchaseFollowPlan } from '@/api'
@@ -338,13 +338,29 @@ describe('FollowupPage', () => {
     const generateSpy = vi
       .spyOn(api, 'generateFollowupPlanFromPurchaseContract')
       .mockResolvedValue(generated)
+    vi.spyOn(api, 'listPurchaseContracts').mockResolvedValue({
+      items: [
+        {
+          id: 'pc-9',
+          code: 'PC-009',
+          supplier_id: 'supplier-1',
+          supplier_name: '贝斯特针织',
+        } as Awaited<ReturnType<typeof api.listPurchaseContracts>>['items'][number],
+      ],
+      total: 1,
+      summary: { submitted_count: 0, approved_count: 1, total_amount: '0', currency: null },
+    })
     const user = userEvent.setup()
     render(<FollowupPage detailId={null} onNavigate={onNavigate} />)
 
     await user.click(screen.getByRole('button', { name: '配置/生成' }))
-    fireEvent.change(document.getElementById('followup-contract-id')!, {
-      target: { value: 'pc-9' },
-    })
+    const contractSelects = screen.getAllByRole('combobox', { name: '采购合同' })
+    await user.click(contractSelects[0])
+    const contractOption = (await screen.findAllByText('PC-009')).find((element) =>
+      element.classList.contains('remote-select-option-title'),
+    )
+    expect(contractOption).toBeTruthy()
+    await user.click(contractOption!)
     await user.click(screen.getByRole('button', { name: '生成跟单计划' }))
 
     await waitFor(() => {

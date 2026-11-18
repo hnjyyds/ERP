@@ -191,6 +191,7 @@ class PartnerService:
         q: str | None,
         partner_type: str | None,
         status: str | None,
+        country: str | None = None,
     ) -> PartnerListResponse:
         self._require(current_user, "masterdata:partner:view")
         if partner_type is not None:
@@ -202,6 +203,7 @@ class PartnerService:
             q=q,
             partner_type=partner_type,
             status=status,
+            country=country,
             owner_user_ids=owner_user_ids,
         )
         active_count, contact_count, partner_type_count = (
@@ -209,6 +211,7 @@ class PartnerService:
                 q=q,
                 partner_type=partner_type,
                 status=status,
+                country=country,
                 owner_user_ids=owner_user_ids,
             )
         )

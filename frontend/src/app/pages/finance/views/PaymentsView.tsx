@@ -43,6 +43,8 @@ export function PaymentsView({ model, shell }: Props) {
     invoiceStatusFilter,
     invoiceSupplierFilter,
     loadingPayables,
+    loadPayables,
+    payablesLoadError,
     loadingPaymentRequests,
     loadingSupplierInvoices,
     loadSupplierInvoices,
@@ -774,6 +776,7 @@ export function PaymentsView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={payablesLoadError}
                     filtered={Boolean(
                       payableSearch.trim() ||
                         payableStatusFilter ||
@@ -781,6 +784,7 @@ export function PaymentsView({ model, shell }: Props) {
                         payableContractFilter.trim(),
                     )}
                     onClearFilters={() => void clearPayableFilters()}
+                    onRetry={() => void loadPayables()}
                   />
                 ),
               }}

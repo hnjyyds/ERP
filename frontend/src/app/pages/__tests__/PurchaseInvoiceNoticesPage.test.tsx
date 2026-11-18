@@ -163,6 +163,14 @@ describe('PurchaseInvoiceNoticesPage', () => {
 
   it('从报关单证生成开票通知并提交行项目', async () => {
     const listSpy = mockList()
+    vi.spyOn(api, 'listSuppliers').mockResolvedValue({
+      items: [{ id: 'sup-1', code: 'SUP-001', cn_name: '供应商A', en_name: '', status: 'active' }],
+      total: 1,
+    } as never)
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [{ id: 'prod-1', code: 'P-001', cn_name: '商品A', en_name: '', status: 'active' }],
+      total: 1,
+    } as never)
     const generateSpy = vi
       .spyOn(api, 'generatePurchaseInvoiceNoticesFromDeclaration')
       .mockResolvedValue({
@@ -178,9 +186,15 @@ describe('PurchaseInvoiceNoticesPage', () => {
     const dialog = await screen.findByRole('dialog')
 
     await user.type(within(dialog).getByLabelText('报关单号'), 'CD-2026-9')
-    await user.type(within(dialog).getAllByLabelText('供应商')[0], '供应商A')
+    await user.click(within(dialog).getAllByRole('combobox', { name: '供应商' })[0])
+    await user.type(within(dialog).getAllByRole('combobox', { name: '供应商' })[0], '供应商')
+    await user.click(await screen.findByText('供应商A'))
+    await user.click(within(dialog).getAllByRole('combobox', { name: '商品' })[0])
+    await user.type(within(dialog).getAllByRole('combobox', { name: '商品' })[0], '商品')
+    await user.click(await screen.findByText('商品A'))
     await user.type(within(dialog).getAllByLabelText('报关品名')[0], '报关品名A')
     await user.type(within(dialog).getAllByLabelText('开票品名')[0], '开票品名A')
+    await user.type(within(dialog).getAllByLabelText('开票数量')[0], '100')
     await user.click(within(dialog).getByRole('button', { name: '生成开票通知' }))
 
     await waitFor(() => {
@@ -189,8 +203,11 @@ describe('PurchaseInvoiceNoticesPage', () => {
           customs_declaration_no: 'CD-2026-9',
           lines: [
             expect.objectContaining({
+              supplier_id: 'sup-1',
               supplier_name: '供应商A',
-              product_name: 'Eco Shopping Bag',
+              product_id: 'prod-1',
+              product_code: 'P-001',
+              product_name: '商品A',
               customs_name: '报关品名A',
               invoice_name: '开票品名A',
             }),
@@ -199,6 +216,24 @@ describe('PurchaseInvoiceNoticesPage', () => {
       )
     })
     expect(await screen.findByText('已生成 1 条供应商开票通知')).toBeInTheDocument()
+  })
+
+  it('生成开票通知不再预置演示供应商、合同和商品', async () => {
+    mockList()
+    const user = userEvent.setup()
+    render(<PurchaseInvoiceNoticesPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(api.listPurchaseInvoiceNotices).toHaveBeenCalled())
+
+    await user.click(screen.getByRole('button', { name: '生成开票通知' }))
+    const dialog = await screen.findByRole('dialog')
+
+    expect(within(dialog).getAllByRole('combobox', { name: '供应商' })[0]).toHaveValue('')
+    expect(
+      within(dialog).getAllByRole('combobox', { name: '采购合同号' })[0],
+    ).toHaveValue('')
+    expect(within(dialog).getAllByRole('combobox', { name: '商品' })[0]).toHaveValue('')
+    expect(within(dialog).getAllByLabelText('开票数量')[0]).toHaveValue(null)
+    expect(within(dialog).getAllByLabelText('金额')[0]).toHaveValue(null)
   })
 
   it('详情页发送开票通知', async () => {

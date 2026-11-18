@@ -28,8 +28,9 @@ import { documentPartyTypeOptions, type LocalizedOption } from '@/shared/formOpt
 import { useFormModal } from '@/shared/useFormModal'
 import { useTablePagination } from '@/shared/useTablePagination'
 import { parsePageParam, useUrlQuery } from '@/shared/useUrlQuery'
-import { ListPageShell, Metric, PanelTitle } from '@/shared/ui'
+import { ListPageShell, Metric, PanelTitle, RemoteSelect } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
+import { fetchCustomerSelectOptions } from '@/shared/entityOptions'
 import { t } from '@/app/appI18n'
 import { documentPartyPath, moduleDetailPath } from '@/app/routes'
 
@@ -76,6 +77,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [editingPartyId, setEditingPartyId] = useState<string | null>(null)
+  const [formError, setFormError] = useState<DocumentPartyFormError | null>(null)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } =
     useTablePagination(50, parsePageParam(initialParams.current))
   const {
@@ -107,6 +109,26 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
     value: option.value,
     label: t(option.labelKey),
   }))
+  // 补填字段后立即收起字段旁的错误，不必再次提交才消失。
+  const activeFormError = formError && !form[formError.field].trim() ? formError : null
+
+  useEffect(() => {
+    if (!activeFormError) return
+    document.getElementById(`document-party-field-${activeFormError.field}`)?.focus()
+  }, [activeFormError])
+
+  const fieldError = (field: DocumentPartyFormErrorField) =>
+    activeFormError?.field === field ? (
+      <span className="form-field-error" id={`document-party-field-${field}-error`}>
+        {activeFormError.message}
+      </span>
+    ) : null
+
+  const invalid = (field: DocumentPartyFormErrorField) => ({
+    'aria-invalid': activeFormError?.field === field,
+    'aria-describedby':
+      activeFormError?.field === field ? `document-party-field-${field}-error` : undefined,
+  })
 
   function documentPartyTypeLabel(value: string): string {
     const option = documentPartyTypeOptions.find((item) => item.value === value)
@@ -217,11 +239,13 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
 
   function closePartyForm() {
     setEditingPartyId(null)
+    setFormError(null)
     closePartyModal()
   }
 
   function openCreate() {
     setEditingPartyId(null)
+    setFormError(null)
     setMessage('')
     openPartyModal()
   }
@@ -229,6 +253,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   function openEdit() {
     if (!selectedParty) return
     setEditingPartyId(selectedParty.id)
+    setFormError(null)
     openPartyModal(documentPartyToForm(selectedParty))
   }
 
@@ -236,11 +261,14 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
     event.preventDefault()
     setMessage('')
     const isCreate = !editingPartyId
-    const validationMessage = validateDocumentPartyForm(form, isCreate)
-    if (validationMessage) {
-      showWarningDialog(validationMessage)
+    const validationError = validateDocumentPartyForm(form, isCreate)
+    if (validationError) {
+      // 字段旁同步保留错误提示并聚焦，避免只依赖 3 秒后消失的顶部提示。
+      setFormError(validationError)
+      showWarningDialog(validationError.message)
       return
     }
+    setFormError(null)
     const saved = await runPartySubmit(
       async () => {
         if (editingPartyId) {
@@ -564,12 +592,18 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
         <form className="record-form entity-modal-form" onSubmit={submitParty}>
           <div className="entity-modal-grid">
             <label>
-              {t('masterdata.field.code')}
+              <span className="form-field-label">
+                {t('masterdata.field.code')}
+                {!editingPartyId ? <span className="form-required-mark">*</span> : null}
+              </span>
               <Input
+                id="document-party-field-code"
                 disabled={Boolean(editingPartyId)}
                 value={form.code}
                 onChange={(event) => setForm({ ...form, code: event.target.value })}
+                {...invalid('code')}
               />
+              {fieldError('code')}
             </label>
             <label>
               {t('masterdata.field.type')}
@@ -588,29 +622,55 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               />
             </label>
             <label className="entity-modal-span">
-              {t('masterdata.documentParty.displayName')}
+              <span className="form-field-label">
+                {t('masterdata.documentParty.displayName')}
+                <span className="form-required-mark">*</span>
+              </span>
               <Input
+                id="document-party-field-display_name"
                 value={form.display_name}
                 onChange={(event) => setForm({ ...form, display_name: event.target.value })}
+                {...invalid('display_name')}
               />
+              {fieldError('display_name')}
             </label>
             <label>
-              {t('masterdata.documentParty.customerId')}
-              <Input
+              {t('masterdata.documentParty.relatedCustomer')}
+              <RemoteSelect
+                allowClear
+                ariaLabel={t('masterdata.documentParty.relatedCustomer')}
+                fetchOptions={fetchCustomerSelectOptions}
+                initialOption={
+                  form.customer_id
+                    ? {
+                        value: form.customer_id,
+                        label: form.customer_name || form.customer_id,
+                      }
+                    : undefined
+                }
+                placeholder={t('masterdata.documentParty.customerPlaceholder')}
                 value={form.customer_id}
-                onChange={(event) => setForm({ ...form, customer_id: event.target.value })}
+                onChange={(customerId, option) =>
+                  setForm({
+                    ...form,
+                    customer_id: customerId,
+                    customer_name: option?.label ?? '',
+                  })
+                }
               />
             </label>
             <label>
-              {t('masterdata.documentParty.customerName')}
+              <span className="form-field-label">
+                {t('masterdata.field.country')}
+                <span className="form-required-mark">*</span>
+              </span>
               <Input
-                value={form.customer_name}
-                onChange={(event) => setForm({ ...form, customer_name: event.target.value })}
+                id="document-party-field-country"
+                value={form.country}
+                onChange={(event) => setForm({ ...form, country: event.target.value })}
+                {...invalid('country')}
               />
-            </label>
-            <label>
-              {t('masterdata.field.country')}
-              <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
+              {fieldError('country')}
             </label>
             <label className="entity-modal-span">
               {t('masterdata.field.address')}
@@ -749,11 +809,30 @@ function documentPartyToForm(party: DocumentParty): DocumentPartyFormState {
   }
 }
 
-function validateDocumentPartyForm(form: DocumentPartyFormState, requireCode: boolean): string {
-  if (requireCode && !form.code.trim()) return t('masterdata.documentParty.validation.codeRequired')
-  if (!form.display_name.trim()) return t('masterdata.documentParty.validation.displayNameRequired')
-  if (!form.country.trim()) return t('masterdata.documentParty.validation.countryRequired')
-  return ''
+type DocumentPartyFormErrorField = 'code' | 'display_name' | 'country'
+
+type DocumentPartyFormError = {
+  field: DocumentPartyFormErrorField
+  message: string
+}
+
+function validateDocumentPartyForm(
+  form: DocumentPartyFormState,
+  requireCode: boolean,
+): DocumentPartyFormError | null {
+  if (requireCode && !form.code.trim()) {
+    return { field: 'code', message: t('masterdata.documentParty.validation.codeRequired') }
+  }
+  if (!form.display_name.trim()) {
+    return {
+      field: 'display_name',
+      message: t('masterdata.documentParty.validation.displayNameRequired'),
+    }
+  }
+  if (!form.country.trim()) {
+    return { field: 'country', message: t('masterdata.documentParty.validation.countryRequired') }
+  }
+  return null
 }
 
 function documentPartyPayload(form: DocumentPartyFormState): DocumentPartyCreatePayload {

@@ -162,11 +162,9 @@ export function followupSourceEventFormForPlan(
     purchase_contract_id: plan.purchase_contract_id,
     node_code: firstPending.node_code,
     source_record_type: followupSourceTypeForNode(firstPending.node_code),
-    source_record_id: `${firstPending.node_code}-source`,
+    source_record_id: '',
     actual_date: firstPending.planned_date,
-    source_summary: t('purchase.followup.message.summaryCompleted', {
-      name: followupNodeLabel(firstPending.node_code, firstPending.node_name),
-    }),
+    source_summary: '',
   }
 }
 

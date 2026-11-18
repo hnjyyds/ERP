@@ -98,6 +98,26 @@ describe('FinancePage', () => {
     expect(await screen.findByText('SI-RETRY')).toBeTruthy()
   })
 
+  it('应付账款加载失败显示独立错误态并可重试', async () => {
+    vi.spyOn(api, 'listSupplierInvoices').mockResolvedValue({ items: [], total: 0 })
+    const spy = vi
+      .spyOn(api, 'listPayables')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [], total: 0, total_payable_amount: '0' })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'payments', id: null }} onNavigate={onNavigate} />,
+    )
+
+    await waitFor(() => expect(spy).toHaveBeenCalled())
+    const panel = screen.getByText('应付账款查询').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeTruthy()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(within(panel).queryByText('加载失败')).not.toBeInTheDocument())
+  })
+
   it('keeps tax document filters and actions in the shared desktop toolbar', () => {
     render(
       <FinancePage currentUser={currentUser} view={{ module: 'tax', id: null }} onNavigate={onNavigate} />,

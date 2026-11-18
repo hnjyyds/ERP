@@ -2,7 +2,8 @@ import { Button, Input, Modal, Segmented } from 'antd'
 import { LayoutDashboard } from 'lucide-react'
 
 import { followupNodeOptions, followupSourceTypeOptions } from '@/shared/formOptions'
-import { FormSelect, PanelTitle } from '@/shared/ui'
+import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
+import { fetchFollowupSourceSelectOptions, fetchPurchaseContractOptions } from '@/shared/entityOptions'
 import { t } from '@/app/appI18n'
 
 import { followupSourceTypeForNode, type FollowupTemplateFormState } from '../followupHelpers'
@@ -173,15 +174,19 @@ export function FollowupConfigModal({ model }: Props) {
         >
           <div className="form-divider">{t('purchase.followup.form.generateDivider')}</div>
           <label htmlFor="followup-contract-id">
-            {t('purchase.followup.field.purchaseContractId')}
-            <Input
+            {t('purchase.followup.field.purchaseContract')}
+            <RemoteSelect
               id="followup-contract-id"
+              allowClear
+              ariaLabel={t('purchase.followup.field.purchaseContract')}
+              fetchOptions={fetchPurchaseContractOptions}
+              placeholder={t('purchase.followup.form.contractPlaceholder')}
               required
               value={model.planForm.purchase_contract_id}
-              onChange={(event) =>
+              onChange={(contractId) =>
                 model.setPlanForm({
                   ...model.planForm,
-                  purchase_contract_id: event.target.value,
+                  purchase_contract_id: contractId,
                 })
               }
             />
@@ -208,15 +213,19 @@ export function FollowupConfigModal({ model }: Props) {
         >
           <div className="form-divider">{t('purchase.followup.form.sourceDivider')}</div>
           <label htmlFor="followup-source-contract-id">
-            {t('purchase.followup.field.purchaseContractId')}
-            <Input
+            {t('purchase.followup.field.purchaseContract')}
+            <RemoteSelect
               id="followup-source-contract-id"
+              allowClear
+              ariaLabel={t('purchase.followup.field.purchaseContract')}
+              fetchOptions={fetchPurchaseContractOptions}
+              placeholder={t('purchase.followup.form.contractPlaceholder')}
               required
               value={model.sourceEventForm.purchase_contract_id}
-              onChange={(event) =>
+              onChange={(contractId) =>
                 model.setSourceEventForm({
                   ...model.sourceEventForm,
-                  purchase_contract_id: event.target.value,
+                  purchase_contract_id: contractId,
                 })
               }
             />
@@ -231,6 +240,8 @@ export function FollowupConfigModal({ model }: Props) {
                     ...model.sourceEventForm,
                     node_code: event.target.value,
                     source_record_type: followupSourceTypeForNode(event.target.value),
+                    source_record_id: '',
+                    source_summary: '',
                   })
                 }
               >
@@ -249,6 +260,8 @@ export function FollowupConfigModal({ model }: Props) {
                   model.setSourceEventForm({
                     ...model.sourceEventForm,
                     source_record_type: event.target.value,
+                    source_record_id: '',
+                    source_summary: '',
                   })
                 }
               >
@@ -262,15 +275,26 @@ export function FollowupConfigModal({ model }: Props) {
           </div>
           <div className="form-pair two">
             <label htmlFor="followup-source-id">
-              {t('purchase.followup.field.sourceRecordId')}
-              <Input
+              {t('purchase.followup.field.sourceRecord')}
+              <RemoteSelect
+                key={model.sourceEventForm.source_record_type}
                 id="followup-source-id"
+                allowClear
+                ariaLabel={t('purchase.followup.field.sourceRecord')}
+                fetchOptions={(query) =>
+                  fetchFollowupSourceSelectOptions(
+                    model.sourceEventForm.source_record_type,
+                    query,
+                  )
+                }
+                placeholder={t('purchase.followup.form.sourceRecordPlaceholder')}
                 required
                 value={model.sourceEventForm.source_record_id}
-                onChange={(event) =>
+                onChange={(recordId, option) =>
                   model.setSourceEventForm({
                     ...model.sourceEventForm,
-                    source_record_id: event.target.value,
+                    source_record_id: recordId,
+                    source_summary: recordId ? option?.label ?? '' : '',
                   })
                 }
               />

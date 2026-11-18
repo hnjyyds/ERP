@@ -74,7 +74,7 @@ export function usePurchaseContractFormModal({ contract, options, setMessage, on
   )
 
   function applyQcUser(userId: string | undefined) {
-    const user = userId ? options.assignableUsers.find((item) => item.id === userId) : null
+    const user = userId ? options.qcUsers.find((item) => item.id === userId) : null
     setForm((current) => ({
       ...current,
       qc_user_id: user?.id ?? '',
@@ -83,7 +83,7 @@ export function usePurchaseContractFormModal({ contract, options, setMessage, on
   }
 
   function applyBuyer(userId: string | undefined) {
-    const user = userId ? options.assignableUsers.find((item) => item.id === userId) : null
+    const user = userId ? options.buyerUsers.find((item) => item.id === userId) : null
     setForm((current) => ({
       ...current,
       buyer_user_id: user?.id ?? '',
@@ -92,7 +92,7 @@ export function usePurchaseContractFormModal({ contract, options, setMessage, on
   }
 
   function applyQcUserToGenerateForm(userId: string | undefined) {
-    const user = userId ? options.assignableUsers.find((item) => item.id === userId) : null
+    const user = userId ? options.qcUsers.find((item) => item.id === userId) : null
     setGenerateForm((current) => ({
       ...current,
       qc_user_id: user?.id ?? '',
@@ -101,7 +101,7 @@ export function usePurchaseContractFormModal({ contract, options, setMessage, on
   }
 
   function applyBuyerToGenerateForm(userId: string | undefined) {
-    const user = userId ? options.assignableUsers.find((item) => item.id === userId) : null
+    const user = userId ? options.buyerUsers.find((item) => item.id === userId) : null
     setGenerateForm((current) => ({
       ...current,
       buyer_user_id: user?.id ?? '',

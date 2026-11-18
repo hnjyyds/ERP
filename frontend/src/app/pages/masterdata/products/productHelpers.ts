@@ -67,7 +67,15 @@ export function accessoryRuleOptions() {
 }
 
 export type ProductFormError = {
-  field: 'code' | 'cn_name' | 'en_name' | 'customs_code' | 'unit' | 'package_info'
+  field:
+    | 'code'
+    | 'cn_name'
+    | 'en_name'
+    | 'customs_code'
+    | 'unit'
+    | 'package_info'
+    | 'accessory_name'
+    | 'accessory_unit_consumption'
   message: string
 }
 
@@ -93,6 +101,54 @@ export function validateProductForm(
   }
   if (mode === 'create' && !form.package_info.trim()) {
     return { field: 'package_info', message: t('masterdata.product.validation.packageInfoRequired') }
+  }
+  if (mode === 'create') {
+    // 首个配件可整段留空；一旦填了单耗、单位、供应商等，就必须补名称，避免静默丢弃。
+    if (!form.accessory_name.trim()) {
+      const touchedAccessory =
+        form.accessory_unit_consumption.trim() !== '1' ||
+        form.accessory_unit.trim() !== 'pcs' ||
+        Boolean(form.accessory_supplier.trim()) ||
+        form.accessory_rule !== 'by_supplier'
+      if (touchedAccessory) {
+        return {
+          field: 'accessory_name',
+          message: t('masterdata.product.validation.accessoryNameOrClear'),
+        }
+      }
+    } else if (!(Number(form.accessory_unit_consumption) > 0)) {
+      return {
+        field: 'accessory_unit_consumption',
+        message: t('masterdata.product.validation.accessoryUnitConsumptionRequired'),
+      }
+    }
+  }
+  return null
+}
+
+export type ProductAccessoryFormError = {
+  field: 'accessory_name' | 'unit_consumption' | 'unit'
+  message: string
+}
+
+export function validateProductAccessoryForm(
+  form: ProductAccessoryFormState,
+): ProductAccessoryFormError | null {
+  if (!form.accessory_name.trim()) {
+    return {
+      field: 'accessory_name',
+      message: t('masterdata.product.validation.accessoryNameRequired'),
+    }
+  }
+  const consumption = Number(form.unit_consumption)
+  if (!form.unit_consumption.trim() || !Number.isFinite(consumption) || consumption <= 0) {
+    return {
+      field: 'unit_consumption',
+      message: t('masterdata.product.validation.accessoryUnitConsumptionRequired'),
+    }
+  }
+  if (!form.unit.trim()) {
+    return { field: 'unit', message: t('masterdata.product.validation.unitRequired') }
   }
   return null
 }

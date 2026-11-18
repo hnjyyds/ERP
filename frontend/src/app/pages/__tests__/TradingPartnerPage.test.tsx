@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {
   TradingPartnerPage,
@@ -83,6 +83,25 @@ describe('TradingPartnerPage', () => {
   it('renders trading partner list panel', () => {
     render(<TradingPartnerPage {...defaultProps} />)
     expect(screen.getByText('往来伙伴资料')).toBeTruthy()
+  })
+
+  it('新建空表单提交后字段旁保留必填错误并聚焦编号', async () => {
+    const user = userEvent.setup()
+    render(<TradingPartnerPage {...defaultProps} />)
+    await waitFor(() => expect(listEntity).toHaveBeenCalled())
+
+    await user.click(screen.getByRole('button', { name: '新增往来伙伴' }))
+    const dialog = await screen.findByRole('dialog')
+    await user.click(within(dialog).getByRole('button', { name: '新增往来伙伴' }))
+
+    expect(await within(dialog).findByText('请填写编号')).toBeInTheDocument()
+    const codeInput = within(dialog).getByLabelText(/编号/)
+    expect(codeInput).toHaveAttribute('aria-invalid', 'true')
+    expect(codeInput).toHaveFocus()
+    expect(unusedMutation).not.toHaveBeenCalled()
+
+    await user.type(codeInput, 'PARTNER-900')
+    expect(within(dialog).queryByText('请填写编号')).not.toBeInTheDocument()
   })
 
   it('默认使用紧凑工具栏并按需展开高级筛选', async () => {

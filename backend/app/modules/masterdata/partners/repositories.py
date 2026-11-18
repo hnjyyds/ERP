@@ -220,6 +220,7 @@ class PartnerRepository:
         q: str | None = None,
         partner_type: str | None = None,
         status: str | None = None,
+        country: str | None = None,
         owner_user_ids: list[str] | None = None,
         limit: int = 50,
         offset: int = 0,
@@ -228,6 +229,7 @@ class PartnerRepository:
             q=q,
             partner_type=partner_type,
             status=status,
+            country=country,
             owner_user_ids=owner_user_ids,
         )
         statement = select(Partner)
@@ -251,6 +253,7 @@ class PartnerRepository:
         q: str | None,
         partner_type: str | None,
         status: str | None,
+        country: str | None = None,
         owner_user_ids: list[str] | None,
     ) -> tuple[int, int, int]:
         """同一筛选条件下的启用伙伴数、联系人数与伙伴类型数，不受分页影响。"""
@@ -258,6 +261,7 @@ class PartnerRepository:
             q=q,
             partner_type=partner_type,
             status=status,
+            country=country,
             owner_user_ids=owner_user_ids,
         )
         active_statement = select(func.count()).select_from(Partner).where(
@@ -286,9 +290,12 @@ class PartnerRepository:
         q: str | None,
         partner_type: str | None,
         status: str | None,
+        country: str | None,
         owner_user_ids: list[str] | None,
     ) -> list:
         conditions = []
+        if country:
+            conditions.append(func.lower(Partner.country) == country.strip().lower())
         if q:
             pattern = f"%{q}%"
             contact_exists = (

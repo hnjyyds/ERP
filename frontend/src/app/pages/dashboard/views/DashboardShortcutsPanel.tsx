@@ -54,6 +54,21 @@ export function DashboardShortcutsPanel({
     return canNavigatePath(path.split('?')[0])
   }
 
+  function openShortcutManager() {
+    // 取消/关闭应丢弃未提交草稿，与待办、日程等表单保持一致。
+    setForm(emptyForm)
+    setError('')
+    setMessage('')
+    setManageOpen(true)
+  }
+
+  function closeShortcutManager() {
+    setForm(emptyForm)
+    setError('')
+    setMessage('')
+    setManageOpen(false)
+  }
+
   function openShortcut(path: string) {
     if (!canOpen(path)) return
     onNavigate(path)
@@ -106,11 +121,7 @@ export function DashboardShortcutsPanel({
         <button
           className="panel-action-button panel-link-button"
           type="button"
-          onClick={() => {
-            setError('')
-            setMessage('')
-            setManageOpen(true)
-          }}
+          onClick={openShortcutManager}
         >
           <Settings2 size={15} />
           {t('dashboard.manageShortcuts')}
@@ -168,7 +179,7 @@ export function DashboardShortcutsPanel({
         open={manageOpen}
         title={t('dashboard.manageShortcuts')}
         width={640}
-        onCancel={() => setManageOpen(false)}
+        onCancel={closeShortcutManager}
       >
         <section className="dashboard-shortcut-manager">
           {message ? <div className="dashboard-feedback success">{message}</div> : null}
@@ -254,7 +265,7 @@ export function DashboardShortcutsPanel({
               <button
                 className="secondary-inline"
                 type="button"
-                onClick={() => setManageOpen(false)}
+                onClick={closeShortcutManager}
               >
                 {t('common.close')}
               </button>

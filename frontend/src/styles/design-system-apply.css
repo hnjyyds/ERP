@@ -676,7 +676,7 @@ body .ant-input-number:not(.ant-input-number-disabled):hover,
 body .ant-picker:not(.ant-picker-disabled):hover,
 body .ant-select:not(.ant-select-disabled):hover,
 body .inline-filters select:not(:disabled):hover,
-body .record-form input:not(:disabled):hover,
+body .record-form input:not(.ant-select-input):not(:disabled):hover,
 body .record-form select:not(:disabled):hover,
 body .record-form textarea:not(:disabled):hover,
 body textarea.ant-input:hover {
@@ -787,7 +787,7 @@ body .ant-input-number-disabled,
 body .ant-picker-disabled,
 body .ant-select-disabled,
 body .inline-filters select:disabled,
-body .record-form input:disabled,
+body .record-form input:not(.ant-select-input):disabled,
 body .record-form select:disabled {
   border-color: var(--ui-border-subtle) !important;
   background: var(--ui-bg-muted) !important;
@@ -1857,6 +1857,25 @@ body .audit-page .audit-filters > .filter-actions .ant-btn {
     height: calc(var(--ui-touch-height) - 10px);
     min-height: calc(var(--ui-touch-height) - 10px);
   }
+
+  /* 手机端日期范围浮层改为上下单列，避免双面板并排把左侧月份挤出视口。 */
+  .ant-picker-dropdown {
+    max-width: calc(100vw - 8px);
+  }
+
+  .ant-picker-dropdown .ant-picker-panels {
+    flex-direction: column;
+    width: auto;
+  }
+
+  .ant-picker-dropdown .ant-picker-panels > .ant-picker-panel + .ant-picker-panel {
+    border-left: 0;
+    border-top: 1px solid var(--ui-border);
+  }
+
+  .ant-picker-dropdown .ant-picker-panel-container {
+    max-width: calc(100vw - 8px);
+  }
 }
 
 /* 列表页辅助说明：与标题、筛选栏拉开层级和间距，不再和主内容同权重。 */
@@ -1932,4 +1951,18 @@ body .list-filters > .ant-btn {
     height: calc(var(--ui-touch-height) - 10px);
     min-height: calc(var(--ui-touch-height) - 10px);
   }
+}
+
+/* 报表来源下钻等场景的可点击业务入口 */
+.inline-link {
+  color: var(--ui-primary);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.inline-link:hover,
+.inline-link:focus-visible {
+  color: color-mix(in srgb, var(--ui-primary) 82%, #000);
 }

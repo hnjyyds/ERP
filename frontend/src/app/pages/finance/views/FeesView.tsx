@@ -5,8 +5,13 @@ import {
   type FeePaymentRequest,
   type PartnerFeeInvoice,
 } from '@/api'
-import { FormSelect, PanelTitle } from '@/shared/ui'
+import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
+import {
+  fetchPartnerSelectOptions,
+  fetchShipmentSelectOptions,
+  fetchUserSelectOptions,
+} from '@/shared/entityOptions'
 import {
   partnerFeeInvoiceStatusOptions,
   feeTypeOptions,
@@ -298,32 +303,33 @@ export function FeesView({ model, shell }: Props) {
                   />
                 </label>
               </div>
-              <div className="form-pair two">
-                <label>
-                  {t('finance.fee.field.partnerId')}
-                  <Input
-                    value={partnerFeeInvoiceForm.partner_id}
-                    onChange={(event) =>
-                      setPartnerFeeInvoiceForm({
-                        ...partnerFeeInvoiceForm,
-                        partner_id: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  {t('finance.fee.field.partnerName')}
-                  <Input
-                    value={partnerFeeInvoiceForm.partner_name}
-                    onChange={(event) =>
-                      setPartnerFeeInvoiceForm({
-                        ...partnerFeeInvoiceForm,
-                        partner_name: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-              </div>
+              <label>
+                {t('finance.fee.field.partnerName')}
+                <RemoteSelect
+                  allowClear
+                  ariaLabel={t('finance.fee.field.partnerName')}
+                  fetchOptions={fetchPartnerSelectOptions}
+                  initialOption={
+                    partnerFeeInvoiceForm.partner_id
+                      ? {
+                          value: partnerFeeInvoiceForm.partner_id,
+                          label:
+                            partnerFeeInvoiceForm.partner_name ||
+                            partnerFeeInvoiceForm.partner_id,
+                        }
+                      : undefined
+                  }
+                  placeholder={t('finance.fee.field.partnerPlaceholder')}
+                  value={partnerFeeInvoiceForm.partner_id}
+                  onChange={(partnerId, option) =>
+                    setPartnerFeeInvoiceForm({
+                      ...partnerFeeInvoiceForm,
+                      partner_id: partnerId,
+                      partner_name: option?.label ?? '',
+                    })
+                  }
+                />
+              </label>
               <div className="form-pair two">
                 <label>
                   {t('finance.fee.field.partnerType')}
@@ -363,58 +369,60 @@ export function FeesView({ model, shell }: Props) {
                   </FormSelect>
                 </label>
               </div>
-              <div className="form-pair two">
-                <label>
-                  {t('finance.fee.field.shipmentId')}
-                  <Input
-                    value={partnerFeeInvoiceForm.shipment_plan_id}
-                    onChange={(event) =>
-                      setPartnerFeeInvoiceForm({
-                        ...partnerFeeInvoiceForm,
-                        shipment_plan_id: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  {t('finance.fee.field.shipmentNo')}
-                  <Input
-                    value={partnerFeeInvoiceForm.shipment_no}
-                    onChange={(event) =>
-                      setPartnerFeeInvoiceForm({
-                        ...partnerFeeInvoiceForm,
-                        shipment_no: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-              </div>
-              <div className="form-pair two">
-                <label>
-                  {t('finance.fee.field.salesUserId')}
-                  <Input
-                    value={partnerFeeInvoiceForm.sales_user_id}
-                    onChange={(event) =>
-                      setPartnerFeeInvoiceForm({
-                        ...partnerFeeInvoiceForm,
-                        sales_user_id: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  {t('finance.fee.field.salesUserName')}
-                  <Input
-                    value={partnerFeeInvoiceForm.sales_user_name}
-                    onChange={(event) =>
-                      setPartnerFeeInvoiceForm({
-                        ...partnerFeeInvoiceForm,
-                        sales_user_name: event.target.value,
-                      })
-                    }
-                  />
-                </label>
-              </div>
+              <label>
+                {t('finance.fee.field.shipmentNo')}
+                <RemoteSelect
+                  allowClear
+                  ariaLabel={t('finance.fee.field.shipmentNo')}
+                  fetchOptions={fetchShipmentSelectOptions}
+                  initialOption={
+                    partnerFeeInvoiceForm.shipment_plan_id
+                      ? {
+                          value: partnerFeeInvoiceForm.shipment_plan_id,
+                          label:
+                            partnerFeeInvoiceForm.shipment_no ||
+                            partnerFeeInvoiceForm.shipment_plan_id,
+                        }
+                      : undefined
+                  }
+                  placeholder={t('finance.fee.field.shipmentPlaceholder')}
+                  value={partnerFeeInvoiceForm.shipment_plan_id}
+                  onChange={(shipmentId, option) =>
+                    setPartnerFeeInvoiceForm({
+                      ...partnerFeeInvoiceForm,
+                      shipment_plan_id: shipmentId,
+                      shipment_no: option?.label ?? '',
+                    })
+                  }
+                />
+              </label>
+              <label>
+                {t('finance.fee.field.salesUserName')}
+                <RemoteSelect
+                  allowClear
+                  ariaLabel={t('finance.fee.field.salesUserName')}
+                  fetchOptions={fetchUserSelectOptions}
+                  initialOption={
+                    partnerFeeInvoiceForm.sales_user_id
+                      ? {
+                          value: partnerFeeInvoiceForm.sales_user_id,
+                          label:
+                            partnerFeeInvoiceForm.sales_user_name ||
+                            partnerFeeInvoiceForm.sales_user_id,
+                        }
+                      : undefined
+                  }
+                  placeholder={t('finance.fee.field.userPlaceholder')}
+                  value={partnerFeeInvoiceForm.sales_user_id}
+                  onChange={(userId, option) =>
+                    setPartnerFeeInvoiceForm({
+                      ...partnerFeeInvoiceForm,
+                      sales_user_id: userId,
+                      sales_user_name: option?.label ?? '',
+                    })
+                  }
+                />
+              </label>
               <div className="form-pair three">
                 <label>
                   {t('finance.fee.field.invoiceAmount')}

@@ -499,11 +499,14 @@ class ProductRepository:
         self,
         *,
         q: str | None = None,
+        status: str | None = None,
         include_inactive: bool = False,
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[list[ProductRow], int]:
-        conditions = self._product_conditions(q=q, include_inactive=include_inactive)
+        conditions = self._product_conditions(
+            q=q, include_inactive=include_inactive, status=status
+        )
         statement = select(Product)
         count_statement = select(func.count()).select_from(Product)
         for condition in conditions:
@@ -523,10 +526,13 @@ class ProductRepository:
         self,
         *,
         q: str | None = None,
+        status: str | None = None,
         include_inactive: bool = False,
     ) -> tuple[int, int]:
         """同一筛选条件下的有图商品数与配件总数，不受分页影响。"""
-        conditions = self._product_conditions(q=q, include_inactive=include_inactive)
+        conditions = self._product_conditions(
+            q=q, include_inactive=include_inactive, status=status
+        )
 
         with_image_statement = (
             select(func.count())
@@ -544,9 +550,13 @@ class ProductRepository:
         accessory_count = await self.session.scalar(accessory_statement)
         return int(with_image_count or 0), int(accessory_count or 0)
 
-    def _product_conditions(self, *, q: str | None, include_inactive: bool) -> list:
+    def _product_conditions(
+        self, *, q: str | None, include_inactive: bool, status: str | None = None
+    ) -> list:
         conditions = []
-        if not include_inactive:
+        if status in ("active", "inactive"):
+            conditions.append(Product.status == status)
+        elif not include_inactive:
             conditions.append(Product.status == "active")
         if q:
             pattern = f"%{q}%"

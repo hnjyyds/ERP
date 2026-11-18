@@ -13,6 +13,7 @@ vi.mock('@/api', () => ({
   scheduleOutboundPlan: vi.fn(),
   listShipments: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   listAssignableUsers: vi.fn().mockResolvedValue({ users: [] }),
+  listInventoryBalances: vi.fn().mockResolvedValue({ items: [], total: 0 }),
 }))
 
 vi.mock('@/shared/ui', async (importOriginal) => {

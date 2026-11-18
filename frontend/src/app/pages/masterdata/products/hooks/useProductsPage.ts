@@ -57,8 +57,11 @@ export type ProductsListModel = {
     pageOverride?: number,
     pageSizeOverride?: number,
     queryOverride?: string,
+    statusOverride?: string,
   ) => Promise<void>
-  submitSearch: (query?: string) => void
+  submitSearch: (query?: string, statusOverride?: string) => void
+  statusFilter: string
+  changeStatusFilter: (nextStatus: string) => void
   goToPage: (nextPage: number, nextPageSize: number) => void
   resetToFirstPage: (preferredId?: string) => Promise<void>
 }
@@ -72,6 +75,9 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
   const [detailLoading, setDetailLoading] = useState(false)
   const latestRequest = useLatestRequest()
   const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(
+    () => urlQuery.params.get('status') ?? '',
+  )
   const [summary, setSummary] = useState<ProductListSummary>({
     with_image_count: 0,
     accessory_count: 0,
@@ -107,10 +113,12 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     if (appliedUrlSearchRef.current === urlQuery.search) return
     appliedUrlSearchRef.current = urlQuery.search
     const nextSearch = urlQuery.params.get('q') ?? ''
+    const nextStatus = urlQuery.params.get('status') ?? ''
     const nextPage = parsePageParam(urlQuery.params)
     setSearch(nextSearch)
+    setStatusFilter(nextStatus)
     setPage(nextPage)
-    void loadProducts(undefined, nextPage, pageSize, nextSearch)
+    void loadProducts(undefined, nextPage, pageSize, nextSearch, nextStatus)
   }, [urlQuery.search])
 
   useEffect(() => {
@@ -181,16 +189,19 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     pageOverride?: number,
     pageSizeOverride?: number,
     queryOverride?: string,
+    statusOverride?: string,
   ) {
     const resolvedPage = pageOverride ?? page
     const resolvedPageSize = pageSizeOverride ?? pageSize
     const resolvedQuery = queryOverride ?? search
+    const resolvedStatus = statusOverride ?? statusFilter
     setLoading(true)
     setLoadError(false)
     const requestId = latestRequest.begin()
     try {
       const result = await listProducts({
         q: resolvedQuery.trim() || undefined,
+        status: resolvedStatus || undefined,
         limit: resolvedPageSize,
         offset: (resolvedPage - 1) * resolvedPageSize,
       })
@@ -226,11 +237,27 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     setSelectedProductIdState(id)
   }
 
-  function submitSearch(query: string = search) {
+  function submitSearch(query: string = search, statusOverride?: string) {
+    const nextStatus = statusOverride ?? statusFilter
     setSearch(query)
+    if (statusOverride !== undefined) setStatusFilter(statusOverride)
     setPage(1)
-    appliedUrlSearchRef.current = urlQuery.update({ q: query, page: null })
-    void loadProducts(undefined, 1, undefined, query)
+    appliedUrlSearchRef.current = urlQuery.update({
+      q: query,
+      status: nextStatus || null,
+      page: null,
+    })
+    void loadProducts(undefined, 1, undefined, query, nextStatus)
+  }
+
+  function changeStatusFilter(nextStatus: string) {
+    setStatusFilter(nextStatus)
+    setPage(1)
+    appliedUrlSearchRef.current = urlQuery.update({
+      status: nextStatus || null,
+      page: null,
+    })
+    void loadProducts(undefined, 1, undefined, search, nextStatus)
   }
 
   function goToPage(nextPage: number, nextPageSize: number) {
@@ -256,6 +283,8 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     detailLoading,
     search,
     setSearch,
+    statusFilter,
+    changeStatusFilter,
     summary,
     loading,
     loadError,

@@ -13,6 +13,7 @@ vi.mock('@/api', () => ({
   listPurchaseContracts: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   listSuppliers: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   listAssignableUsers: vi.fn().mockResolvedValue({ users: [] }),
+  listInventoryBalances: vi.fn().mockResolvedValue({ items: [], total: 0 }),
   scheduleInboundPlan: vi.fn(),
 }))
 

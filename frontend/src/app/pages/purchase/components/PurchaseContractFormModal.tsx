@@ -33,11 +33,13 @@ type PurchaseContractFormModalProps = {
   setForm: Dispatch<SetStateAction<PurchaseContractFormState>>
   setGenerateForm: Dispatch<SetStateAction<PurchaseContractGenerateFormState>>
   suppliers: Supplier[]
-  assignableUsers: AssignableUser[]
+  buyerUsers: AssignableUser[]
+  qcUsers: AssignableUser[]
   products: Product[]
   exportContracts: ExportContract[]
   loadingSuppliers: boolean
-  loadingAssignableUsers: boolean
+  loadingBuyerUsers: boolean
+  loadingQcUsers: boolean
   loadingProducts: boolean
   loadingExportContracts: boolean
   submitting: boolean
@@ -76,11 +78,13 @@ export function PurchaseContractFormModal({
   setForm,
   setGenerateForm,
   suppliers,
-  assignableUsers,
+  buyerUsers,
+  qcUsers,
   products,
   exportContracts,
   loadingSuppliers,
-  loadingAssignableUsers,
+  loadingBuyerUsers,
+  loadingQcUsers,
   loadingProducts,
   loadingExportContracts,
   submitting,
@@ -263,18 +267,18 @@ export function PurchaseContractFormModal({
                   <Select
                     allowClear
                     showSearch
-                    loading={loadingAssignableUsers}
+                    loading={loadingBuyerUsers}
                     optionFilterProp="label"
                     value={form.buyer_user_id || undefined}
                     placeholder={t('purchase.contract.form.buyerSelectPlaceholder')}
                     notFoundContent={
-                      loadingAssignableUsers
+                      loadingBuyerUsers
                         ? t('purchase.contract.form.loadingUsers')
                         : t('purchase.contract.form.noUsers')
                     }
                     onChange={applyBuyer}
                   >
-                    {renderAssignableUserOptions(assignableUsers)}
+                    {renderAssignableUserOptions(buyerUsers)}
                   </Select>
                 </label>
                 <label>
@@ -282,22 +286,22 @@ export function PurchaseContractFormModal({
                   <Select
                     allowClear
                     showSearch
-                    loading={loadingAssignableUsers}
+                    loading={loadingQcUsers}
                     optionFilterProp="label"
                     value={form.qc_user_id || undefined}
                     placeholder={
-                      assignableUsers.length > 0
+                      qcUsers.length > 0
                         ? t('purchase.contract.form.userSelectPlaceholder')
                         : t('purchase.contract.form.noUsers')
                     }
                     notFoundContent={
-                      loadingAssignableUsers
+                      loadingQcUsers
                         ? t('purchase.contract.form.loadingUsers')
                         : t('purchase.contract.form.noUsers')
                     }
                     onChange={applyQcUser}
                   >
-                    {renderAssignableUserOptions(assignableUsers)}
+                    {renderAssignableUserOptions(qcUsers)}
                   </Select>
                 </label>
               </div>
@@ -617,18 +621,18 @@ export function PurchaseContractFormModal({
                   <Select
                     allowClear
                     showSearch
-                    loading={loadingAssignableUsers}
+                    loading={loadingBuyerUsers}
                     optionFilterProp="label"
                     value={generateForm.buyer_user_id || undefined}
                     placeholder={t('purchase.contract.form.buyerSelectPlaceholder')}
                     notFoundContent={
-                      loadingAssignableUsers
+                      loadingBuyerUsers
                         ? t('purchase.contract.form.loadingUsers')
                         : t('purchase.contract.form.noUsers')
                     }
                     onChange={applyBuyerToGenerateForm}
                   >
-                    {renderAssignableUserOptions(assignableUsers)}
+                    {renderAssignableUserOptions(buyerUsers)}
                   </Select>
                 </label>
                 <label>
@@ -636,18 +640,18 @@ export function PurchaseContractFormModal({
                   <Select
                     allowClear
                     showSearch
-                    loading={loadingAssignableUsers}
+                    loading={loadingQcUsers}
                     optionFilterProp="label"
                     value={generateForm.qc_user_id || undefined}
                     placeholder={t('purchase.contract.form.userSelectPlaceholder')}
                     notFoundContent={
-                      loadingAssignableUsers
+                      loadingQcUsers
                         ? t('purchase.contract.form.loadingUsers')
                         : t('purchase.contract.form.noUsers')
                     }
                     onChange={applyQcUserToGenerateForm}
                   >
-                    {renderAssignableUserOptions(assignableUsers)}
+                    {renderAssignableUserOptions(qcUsers)}
                   </Select>
                 </label>
               </div>

@@ -38,7 +38,9 @@ import {
   productToForm,
   productUpdatePayload,
   readFileAsDataUrl,
+  validateProductAccessoryForm,
   validateProductForm,
+  type ProductAccessoryFormError,
   type ProductAccessoryFormState,
   type ProductFormError,
   type ProductFormState,
@@ -66,6 +68,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
   const [importResult, setImportResult] = useState<ProductImportResult | null>(null)
   const [importing, setImporting] = useState(false)
   const [formError, setFormError] = useState<ProductFormError | null>(null)
+  const [accessoryFormError, setAccessoryFormError] = useState<ProductAccessoryFormError | null>(null)
   const [imageErrors, setImageErrors] = useState<Record<number, string>>({})
   const [addImageError, setAddImageError] = useState('')
   const [imageUploading, setImageUploading] = useState(false)
@@ -227,12 +230,14 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
   function openCreateAccessory() {
     setAccessoryForm(initialProductAccessoryForm())
+    setAccessoryFormError(null)
     setEditingAccessoryId(null)
     setAccessoryModalMode('create')
   }
 
   function openEditAccessory(accessory: Product['accessories'][number]) {
     setAccessoryForm(productAccessoryToForm(accessory))
+    setAccessoryFormError(null)
     setEditingAccessoryId(accessory.id)
     setAccessoryModalMode('edit')
   }
@@ -241,6 +246,14 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     event.preventDefault()
     const selectedProduct = model.selectedProduct
     if (!selectedProduct) return
+    const missing = validateProductAccessoryForm(accessoryForm)
+    if (missing) {
+      // 字段旁同步保留错误提示，避免只依赖 3 秒后消失的顶部提示。
+      setAccessoryFormError(missing)
+      showWarningDialog(missing.message)
+      return
+    }
+    setAccessoryFormError(null)
     setAccessorySubmitting(true)
     setMessage('')
     try {
@@ -342,6 +355,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
     do {
       const result = await listProducts({
         q: query.trim() || undefined,
+        status: model.statusFilter || undefined,
         limit: pageSize,
         offset,
       })
@@ -488,6 +502,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
       />
 
       <ProductAccessoryModal
+        error={accessoryFormError}
         form={accessoryForm}
         mode={accessoryModalMode}
         setForm={setAccessoryForm}

@@ -36,6 +36,7 @@ export function PartnersPage({ detailId, onNavigate }: PartnersPageProps) {
       listEntity={(filters) =>
         listPartners({
           q: filters?.q,
+          country: filters?.country,
           partner_type: filters?.partner_type,
           status: filters?.status,
           limit: filters?.limit,

@@ -310,6 +310,18 @@ describe('ExportQuotationsPage', () => {
   it('新增报价失败时保留弹窗和已填写的产品信息', async () => {
     window.history.replaceState({}, '', '/')
     mockDetailReferences()
+    vi.spyOn(api, 'listProducts').mockResolvedValue({
+      items: [
+        {
+          id: 'p-1',
+          code: 'P-001',
+          cn_name: '测试产品',
+          en_name: '',
+          status: 'active',
+        },
+      ],
+      total: 1,
+    } as never)
     vi.spyOn(api, 'listExportQuotations').mockResolvedValue({
       items: [],
       total: 0,
@@ -325,18 +337,22 @@ describe('ExportQuotationsPage', () => {
 
     await user.click(screen.getByRole('button', { name: '新增出口报价' }))
     const dialog = within(screen.getByRole('dialog'))
-    await user.type(fieldByLabel('商品名称'), '测试产品')
+    await user.click(dialog.getByRole('combobox', { name: '商品' }))
+    await user.type(dialog.getByRole('combobox', { name: '商品' }), '测试')
+    await user.click(await screen.findByText('测试产品'))
     await user.clear(fieldByLabel('销售单价'))
     await user.type(fieldByLabel('销售单价'), '12.5')
     await user.click(dialog.getByRole('button', { name: '新增出口报价' }))
 
     await waitFor(() => expect(createSpy).toHaveBeenCalledTimes(1))
     expect(createSpy.mock.calls[0][0].lines[0]).toMatchObject({
+      product_id: 'p-1',
+      product_code: 'P-001',
       product_name: '测试产品',
       unit_price: '12.5',
     })
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(fieldByLabel('商品名称')).toHaveValue('测试产品')
+    expect(dialog.getByText('测试产品')).toBeInTheDocument()
     expect(fieldByLabel('销售单价')).toHaveValue(12.5)
   })
 

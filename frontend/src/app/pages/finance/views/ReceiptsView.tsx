@@ -5,7 +5,11 @@ import { useCallback, useRef } from 'react'
 import { listCustomers, type BankReceipt, type ReceivableItem } from '@/api'
 import { FormSelect, PanelTitle, RemoteSelect } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
-import { fetchCustomerSelectOptions } from '@/shared/entityOptions'
+import {
+  fetchCustomerSelectOptions,
+  fetchExportContractSelectOptions,
+  fetchUserSelectOptions,
+} from '@/shared/entityOptions'
 import {
   receiptStatusOptions,
   receiptTypeOptions,
@@ -462,24 +466,32 @@ export function ReceiptsView({ model, shell }: Props) {
                         />
                       </label>
                       <label>
-                        {t('finance.receipt.field.salesUserId')}
-                        <Input
+                        {t('finance.receipt.field.salesUserName')}
+                        <RemoteSelect
+                          allowClear
+                          ariaLabel={t('finance.receipt.field.salesUserName')}
+                          fetchOptions={fetchUserSelectOptions}
+                          initialOption={
+                            claimForm.sales_user_id
+                              ? {
+                                  value: claimForm.sales_user_id,
+                                  label:
+                                    claimForm.sales_user_name || claimForm.sales_user_id,
+                                }
+                              : undefined
+                          }
+                          placeholder={t('finance.receipt.field.userPlaceholder')}
                           value={claimForm.sales_user_id}
-                          onChange={(event) =>
-                            setClaimForm({ ...claimForm, sales_user_id: event.target.value })
+                          onChange={(userId, option) =>
+                            setClaimForm({
+                              ...claimForm,
+                              sales_user_id: userId,
+                              sales_user_name: option?.label ?? '',
+                            })
                           }
                         />
                       </label>
                     </div>
-                    <label>
-                      {t('finance.receipt.field.salesUserName')}
-                      <Input
-                        value={claimForm.sales_user_name}
-                        onChange={(event) =>
-                          setClaimForm({ ...claimForm, sales_user_name: event.target.value })
-                        }
-                      />
-                    </label>
                     <label>
                       {t('finance.receipt.field.claimNote')}
                       <Input
@@ -534,32 +546,32 @@ export function ReceiptsView({ model, shell }: Props) {
                         />
                       </label>
                     </div>
-                    <div className="form-pair two">
-                      <label>
-                        {t('finance.receipt.field.contractId')}
-                        <Input
-                          value={allocationForm.contract_id}
-                          onChange={(event) =>
-                            setAllocationForm({
-                              ...allocationForm,
-                              contract_id: event.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                      <label>
-                        {t('finance.receipt.field.contractNo')}
-                        <Input
-                          value={allocationForm.contract_no}
-                          onChange={(event) =>
-                            setAllocationForm({
-                              ...allocationForm,
-                              contract_no: event.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
+                    <label>
+                      {t('finance.receipt.field.contractNo')}
+                      <RemoteSelect
+                        allowClear
+                        ariaLabel={t('finance.receipt.field.contractNo')}
+                        fetchOptions={fetchExportContractSelectOptions}
+                        initialOption={
+                          allocationForm.contract_id
+                            ? {
+                                value: allocationForm.contract_id,
+                                label:
+                                  allocationForm.contract_no || allocationForm.contract_id,
+                              }
+                            : undefined
+                        }
+                        placeholder={t('finance.receipt.field.contractPlaceholder')}
+                        value={allocationForm.contract_id}
+                        onChange={(contractId, option) =>
+                          setAllocationForm({
+                            ...allocationForm,
+                            contract_id: contractId,
+                            contract_no: option?.label ?? '',
+                          })
+                        }
+                      />
+                    </label>
                     <div className="form-pair three">
                       <label>
                         {t('finance.receipt.field.invoiceNo')}

@@ -29,12 +29,14 @@ async def list_partners(
     q: Annotated[str | None, Query(max_length=120)] = None,
     partner_type: Annotated[str | None, Query(max_length=40)] = None,
     status: Annotated[str | None, Query(max_length=40)] = None,
+    country: Annotated[str | None, Query(max_length=80)] = None,
 ) -> ApiResponse[PartnerListResponse]:
     partners = await service.list_partners(
         current_user=user,
         q=q,
         partner_type=partner_type,
         status=status,
+        country=country,
     )
     return ApiResponse(data=partners)
 

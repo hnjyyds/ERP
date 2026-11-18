@@ -141,6 +141,7 @@ export function listPartners(filters: {
   q?: string
   partner_type?: string
   status?: string
+  country?: string
   limit?: number
   offset?: number
 } = {}): Promise<PartnerList> {
@@ -148,6 +149,7 @@ export function listPartners(filters: {
   if (filters.q) params.set('q', filters.q)
   if (filters.partner_type) params.set('partner_type', filters.partner_type)
   if (filters.status) params.set('status', filters.status)
+  if (filters.country) params.set('country', filters.country)
   if (filters.limit !== undefined) params.set('limit', String(filters.limit))
   if (filters.offset !== undefined) params.set('offset', String(filters.offset))
   const suffix = params.size > 0 ? `?${params.toString()}` : ''

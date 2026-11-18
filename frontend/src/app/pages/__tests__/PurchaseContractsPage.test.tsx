@@ -430,6 +430,55 @@ describe('PurchaseContractsPage', () => {
     expect(within(dialog).getByLabelText('供应商名称')).toHaveValue('测试工厂')
   })
 
+  it('采购员与QC负责人按各自权限加载候选，互不复用质检名单', async () => {
+    const user = userEvent.setup()
+    mockContractApis(makeContract())
+    const buyerUser = {
+      id: 'u-purchase',
+      username: 'purchase',
+      display_name: '演示采购专员',
+      department_name: '采购部',
+      avatar_type: 'preset' as const,
+      avatar_value: 'blue',
+    }
+    const qcUser = {
+      id: 'u-qc',
+      username: 'qc',
+      display_name: '演示QC专员',
+      department_name: '质检部',
+      avatar_type: 'preset' as const,
+      avatar_value: 'green',
+    }
+    const assignableSpy = vi
+      .spyOn(api, 'listAssignableUsers')
+      .mockImplementation(async (permission?: string) =>
+        permission === 'purchase:contract:edit' ? { users: [buyerUser] } : { users: [qcUser] },
+      )
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+    await user.click(await screen.findByRole('button', { name: '新增采购合同' }))
+    const dialog = await screen.findByRole('dialog')
+
+    await waitFor(() => {
+      expect(assignableSpy).toHaveBeenCalledWith('purchase:contract:edit')
+      expect(assignableSpy).toHaveBeenCalledWith('quality:inspection:edit')
+    })
+
+    const comboboxes = within(dialog).getAllByRole('combobox')
+    const buyerSelect = comboboxes[1]
+    const qcSelect = comboboxes[2]
+
+    await user.click(buyerSelect)
+    await user.type(buyerSelect, '采购')
+    expect(await screen.findByText('演示采购专员 / purchase / 采购部')).toBeInTheDocument()
+
+    await user.click(qcSelect)
+    await user.type(qcSelect, 'QC')
+    expect(await screen.findByText('演示QC专员 / qc / 质检部')).toBeInTheDocument()
+  })
+
   it('草稿状态下编辑和作废可用，未选审批人不能提交且审批按钮禁用', async () => {
     const contract = makeContract()
     mockContractApis(contract)

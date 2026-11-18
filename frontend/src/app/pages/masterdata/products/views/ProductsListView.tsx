@@ -6,7 +6,7 @@ import type { MouseEvent } from 'react'
 
 import type { Product } from '@/api'
 import { t } from '@/app/appI18n'
-import { ListPageShell } from '@/shared/ui'
+import { FormSelect, ListPageShell } from '@/shared/ui'
 import { ListEmptyState } from '@/shared/ui/ListEmptyState'
 import type { ProductsListModel } from '../hooks/useProductsPage'
 
@@ -33,6 +33,8 @@ export function ProductsListView({ model, onCreate, onOpenImport, onExport, onOp
     goToPage,
     submitSearch,
     setSelectedProductId,
+    statusFilter,
+    changeStatusFilter,
   } = model
 
   function stopAndOpenDetail(event: MouseEvent<HTMLElement>, product: Product) {
@@ -59,6 +61,18 @@ export function ProductsListView({ model, onCreate, onOpenImport, onExport, onOp
               placeholder={t('masterdata.product.searchPlaceholder')}
               onChange={(event) => setSearch(event.target.value)}
             />
+          </label>
+          <label>
+            {t('masterdata.product.field.status')}
+            <FormSelect
+              aria-label={t('masterdata.product.statusFilterLabel')}
+              value={statusFilter}
+              onChange={(event) => changeStatusFilter(event.target.value)}
+            >
+              <option value="">{t('masterdata.product.statusFilter.all')}</option>
+              <option value="active">{t('status.active')}</option>
+              <option value="inactive">{t('status.inactive')}</option>
+            </FormSelect>
           </label>
           <div className="product-filter-actions">
             <Tooltip title={t('masterdata.product.searchAction')}>
@@ -114,7 +128,7 @@ export function ProductsListView({ model, onCreate, onOpenImport, onExport, onOp
               error={model.loadError}
               filtered={Boolean(search.trim())}
               onCreate={onCreate}
-              onClearFilters={() => submitSearch('')}
+              onClearFilters={() => submitSearch('', '')}
               onRetry={() => void model.loadProducts()}
             />
           ),

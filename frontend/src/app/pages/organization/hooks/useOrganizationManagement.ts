@@ -282,12 +282,24 @@ export function useOrganizationManagement({ currentUser }: Params) {
 
   function selectRoleForPermissions(role: OrganizationRole) {
     setSelectedRoleId(role.id)
-    setPermissionFormIds(role.permissions.map((permission) => permission.id))
+    setPermissionFormIds((role.permissions ?? []).map((permission) => permission.id))
   }
 
   function selectRoleIdForPermissions(roleId: string) {
     const role = roles.find((item) => item.id === roleId)
     if (role) selectRoleForPermissions(role)
+  }
+
+  function openUserPermissions(user: OrganizationUser) {
+    const userRoleId = user.roles[0]?.id
+    const role = roles.find((item) => item.id === userRoleId)
+    if (role) {
+      selectRoleForPermissions(role)
+    } else if (userRoleId) {
+      setSelectedRoleId(userRoleId)
+      setPermissionFormIds([])
+    }
+    setPermissionModalOpen(true)
   }
 
   function togglePermission(permissionId: string) {
@@ -700,6 +712,7 @@ export function useOrganizationManagement({ currentUser }: Params) {
     submitRoleForm,
     permissionModalOpen,
     setPermissionModalOpen,
+    openUserPermissions,
     selectRoleIdForPermissions,
     togglePermission,
     setGroupPermissions,

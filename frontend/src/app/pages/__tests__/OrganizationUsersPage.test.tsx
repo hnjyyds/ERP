@@ -134,7 +134,7 @@ describe('OrganizationUsersPage', () => {
     } as never)
 
     render(<OrganizationUsersPage currentUser={mockCurrentUser} />)
-    await user.click(await screen.findByRole('button', { name: '编辑用户权限' }))
+    await user.click(await screen.findByRole('button', { name: '编辑所属角色权限' }))
     const dialog = await screen.findByRole('dialog')
     await user.click(await within(dialog).findByLabelText('编辑打样'))
     await user.click(within(dialog).getByRole('button', { name: '保存权限' }))

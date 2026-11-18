@@ -4,7 +4,12 @@ import { Button, Input, Modal } from 'antd'
 import { LayoutDashboard } from 'lucide-react'
 
 import { t } from '@/app/appI18n'
-import { PanelTitle } from '@/shared/ui'
+import { PanelTitle, RemoteSelect } from '@/shared/ui'
+import {
+  fetchProductSelectOptions,
+  fetchPurchaseContractOptions,
+  fetchSupplierSelectOptions,
+} from '@/shared/entityOptions'
 import type { PurchaseInvoiceNoticeFormState } from '../invoiceNoticeHelpers'
 import type { PurchaseInvoiceNoticesModel } from '../hooks/usePurchaseInvoiceNotices'
 
@@ -174,70 +179,91 @@ function PurchaseInvoiceLineFields({
     <>
       <div className="form-divider">{title}</div>
       <div className="form-pair two">
-        <label htmlFor={`purchase-invoice-supplier-id-${suffix}`}>
-          {t('purchase.invoiceNotice.field.supplierId')}
-          <Input
-            id={`purchase-invoice-supplier-id-${suffix}`}
-            value={values.supplier_id}
-            onChange={(event) => update('supplier_id', event.target.value)}
-          />
-        </label>
-        <label htmlFor={`purchase-invoice-supplier-name-${suffix}`}>
+        <label>
           {t('purchase.invoiceNotice.field.supplier')}
-          <Input
-            id={`purchase-invoice-supplier-name-${suffix}`}
-            required={required}
-            value={values.supplier_name}
-            onChange={(event) => update('supplier_name', event.target.value)}
+          <RemoteSelect
+            allowClear
+            ariaLabel={t('purchase.invoiceNotice.field.supplier')}
+            fetchOptions={fetchSupplierSelectOptions}
+            initialOption={
+              values.supplier_id
+                ? {
+                    value: values.supplier_id,
+                    label: values.supplier_name || values.supplier_id,
+                  }
+                : undefined
+            }
+            placeholder={t('purchase.invoiceNotice.field.supplierPlaceholder')}
+            value={values.supplier_id}
+            onChange={(supplierId, option) =>
+              setForm({
+                ...form,
+                [`supplier_id_${suffix}`]: supplierId,
+                [`supplier_name_${suffix}`]: option?.label ?? '',
+                [`purchase_contract_id_${suffix}`]: '',
+                [`purchase_contract_no_${suffix}`]: '',
+                [`product_id_${suffix}`]: '',
+                [`product_code_${suffix}`]: '',
+                [`product_name_${suffix}`]: '',
+              } as PurchaseInvoiceNoticeFormState)
+            }
           />
         </label>
-      </div>
-      <div className="form-pair two">
-        <label htmlFor={`purchase-invoice-contract-no-${suffix}`}>
+        <label>
           {t('purchase.invoiceNotice.field.purchaseContractNo')}
-          <Input
-            id={`purchase-invoice-contract-no-${suffix}`}
-            value={values.purchase_contract_no}
-            onChange={(event) => update('purchase_contract_no', event.target.value)}
-          />
-        </label>
-        <label htmlFor={`purchase-invoice-product-code-${suffix}`}>
-          {t('purchase.invoiceNotice.field.productCode')}
-          <Input
-            id={`purchase-invoice-product-code-${suffix}`}
-            value={values.product_code}
-            onChange={(event) => update('product_code', event.target.value)}
-          />
-        </label>
-      </div>
-      <div className="visually-hidden">
-        <label htmlFor={`purchase-invoice-contract-id-${suffix}`}>
-          {t('purchase.invoiceNotice.field.purchaseContractId')}
-          <Input
-            id={`purchase-invoice-contract-id-${suffix}`}
+          <RemoteSelect
+            allowClear
+            ariaLabel={t('purchase.invoiceNotice.field.purchaseContractNo')}
+            fetchOptions={fetchPurchaseContractOptions}
+            initialOption={
+              values.purchase_contract_id
+                ? {
+                    value: values.purchase_contract_id,
+                    label: values.purchase_contract_no || values.purchase_contract_id,
+                  }
+                : undefined
+            }
+            placeholder={t('purchase.invoiceNotice.field.purchaseContractPlaceholder')}
             value={values.purchase_contract_id}
-            onChange={(event) => update('purchase_contract_id', event.target.value)}
-          />
-        </label>
-        <label htmlFor={`purchase-invoice-product-id-${suffix}`}>
-          {t('purchase.invoiceNotice.field.productId')}
-          <Input
-            id={`purchase-invoice-product-id-${suffix}`}
-            value={values.product_id}
-            onChange={(event) => update('product_id', event.target.value)}
+            onChange={(contractId, option) =>
+              setForm({
+                ...form,
+                [`purchase_contract_id_${suffix}`]: contractId,
+                [`purchase_contract_no_${suffix}`]: option?.label ?? '',
+              } as PurchaseInvoiceNoticeFormState)
+            }
           />
         </label>
       </div>
-      <div className="form-pair three">
-        <label htmlFor={`purchase-invoice-product-name-${suffix}`}>
-          {t('purchase.invoiceNotice.field.productName')}
-          <Input
-            id={`purchase-invoice-product-name-${suffix}`}
-            required={required}
-            value={values.product_name}
-            onChange={(event) => update('product_name', event.target.value)}
-          />
-        </label>
+      <label>
+        {t('purchase.invoiceNotice.field.product')}
+        <RemoteSelect
+          allowClear
+          ariaLabel={t('purchase.invoiceNotice.field.product')}
+          fetchOptions={fetchProductSelectOptions}
+          initialOption={
+            values.product_id
+              ? {
+                  value: values.product_id,
+                  label: values.product_name || values.product_code || values.product_id,
+                  description: values.product_code,
+                }
+              : undefined
+          }
+          placeholder={t('purchase.invoiceNotice.field.productPlaceholder')}
+          value={values.product_id}
+          onChange={(productId, option) =>
+            setForm({
+              ...form,
+              [`product_id_${suffix}`]: productId,
+              [`product_code_${suffix}`]: option?.description ?? '',
+              [`product_name_${suffix}`]: option?.label ?? '',
+              [`unit_${suffix}`]: option ? option.unit || values.unit : values.unit,
+            } as PurchaseInvoiceNoticeFormState)
+          }
+        />
+      </label>
+      <div className="form-pair two">
         <label htmlFor={`purchase-invoice-customs-name-${suffix}`}>
           {t('purchase.invoiceNotice.field.customsName')}
           <Input

@@ -1,7 +1,8 @@
 import { Button, Input, Modal, Select } from 'antd'
 
 import { freightMethodOptions } from '@/shared/formOptions'
-import { FormSelect } from '@/shared/ui'
+import { FormSelect, RemoteSelect } from '@/shared/ui'
+import { fetchProductSelectOptions } from '@/shared/entityOptions'
 import { t } from '@/app/appI18n'
 import type { Customer, ExportQuotation } from '@/api'
 
@@ -151,27 +152,34 @@ export function ExportQuotationFormModal({
           />
         </label>
         <div className="form-divider">{t('sales.quotation.form.linesTitle')}</div>
-        <div className="form-pair two">
-          <label>
-            {t('sales.quotation.field.productId')}
-            <Input
-              value={form.product_id}
-              onChange={(event) => workflow.setForm({ ...form, product_id: event.target.value })}
-            />
-          </label>
-          <label>
-            {t('sales.quotation.field.productCode')}
-            <Input
-              value={form.product_code}
-              onChange={(event) => workflow.setForm({ ...form, product_code: event.target.value })}
-            />
-          </label>
-        </div>
         <label>
-          {t('sales.quotation.field.productName')}
-          <Input
-            value={form.product_name}
-            onChange={(event) => workflow.setForm({ ...form, product_name: event.target.value })}
+          {t('sales.quotation.field.product')}
+          <RemoteSelect
+            allowClear
+            ariaLabel={t('sales.quotation.field.product')}
+            fetchOptions={fetchProductSelectOptions}
+            initialOption={
+              form.product_id
+                ? {
+                    value: form.product_id,
+                    label: form.product_name || form.product_code || form.product_id,
+                    description: form.product_code,
+                  }
+                : undefined
+            }
+            placeholder={t('sales.quotation.form.productPlaceholder')}
+            value={form.product_id}
+            onChange={(productId, option) =>
+              workflow.setForm({
+                ...form,
+                product_id: productId,
+                product_code: option?.description ?? '',
+                product_name: option?.label ?? '',
+                specification: option?.specification ?? '',
+                model: option?.model ?? '',
+                unit: option?.unit ?? '',
+              })
+            }
           />
         </label>
         <div className="form-pair two">

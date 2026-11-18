@@ -1,6 +1,7 @@
 import csv
 from datetime import UTC, datetime
 from io import StringIO
+from zoneinfo import ZoneInfo
 
 from app.core.csv_export import safe_cell
 from app.modules.system.audit_logs.filters import AuditLogFilters
@@ -13,6 +14,15 @@ from app.modules.system.audit_logs.schemas import (
 )
 from app.modules.system.auth.permissions import SUPER_ADMIN_PERMISSION
 from app.modules.system.auth.schemas import CurrentUserResponse
+
+_AUDIT_TIME_ZONE = ZoneInfo("Asia/Shanghai")
+
+
+def format_audit_timestamp(value: datetime) -> str:
+    """导出与界面一致：按北京时间并附带 UTC 偏移，避免跨日误读。"""
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=UTC)
+    return value.astimezone(_AUDIT_TIME_ZONE).isoformat(sep=" ", timespec="seconds")
 
 
 class AuditLogPermissionDeniedError(Exception):
@@ -48,11 +58,13 @@ class AuditLogService:
         rows = await self._repository.list_all(filters)
         output = StringIO()
         writer = csv.writer(output)
-        writer.writerow(["时间", "操作人", "动作", "模块", "单号", "摘要", "资源 ID", "附加信息"])
+        writer.writerow(
+            ["时间（Asia/Shanghai）", "操作人", "动作", "模块", "单号", "摘要", "资源 ID", "附加信息"]
+        )
         for row in rows:
             writer.writerow(
                 [
-                    row.created_at.isoformat(sep=" ", timespec="seconds"),
+                    format_audit_timestamp(row.created_at),
                     safe_cell(row.actor_name),
                     safe_cell(row.action),
                     safe_cell(row.resource_type),

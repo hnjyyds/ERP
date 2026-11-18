@@ -31,8 +31,9 @@ async def list_products(
     user: CurrentUserDep,
     service: Annotated[ProductService, Depends(get_product_service)],
     q: Annotated[str | None, Query(max_length=120)] = None,
+    status: Annotated[str | None, Query(max_length=20)] = None,
 ) -> ApiResponse[ProductListResponse]:
-    products = await service.list_products(current_user=user, q=q)
+    products = await service.list_products(current_user=user, q=q, status=status)
     return ApiResponse(data=products)
 
 

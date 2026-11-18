@@ -148,6 +148,30 @@ describe('DashboardShortcutsPanel', () => {
     })
   })
 
+  it('取消或关闭后重开不保留未提交草稿', async () => {
+    const user = userEvent.setup()
+    renderPanel()
+
+    await user.click(screen.getByRole('button', { name: 'dashboard.manageShortcuts' }))
+    const dialog = screen.getByRole('dialog')
+    await user.type(within(dialog).getByLabelText('dashboard.shortcutName'), '未提交草稿')
+    await user.selectOptions(
+      within(dialog).getByLabelText('dashboard.shortcutTarget'),
+      '/sales/contracts',
+    )
+    await user.click(within(dialog).getByRole('button', { name: 'common.close' }))
+    await user.click(screen.getByRole('button', { name: 'dashboard.manageShortcuts' }))
+    const reopened = screen.getAllByRole('dialog').at(-1) as HTMLElement
+    expect(within(reopened).getByLabelText('dashboard.shortcutName')).toHaveValue('')
+    expect(within(reopened).getByLabelText('dashboard.shortcutTarget')).toHaveValue('')
+
+    await user.type(within(reopened).getByLabelText('dashboard.shortcutName'), '再次填写')
+    await user.click(within(reopened).getByRole('button', { name: 'Close' }))
+    await user.click(screen.getByRole('button', { name: 'dashboard.manageShortcuts' }))
+    const reopenedAgain = screen.getAllByRole('dialog').at(-1) as HTMLElement
+    expect(within(reopenedAgain).getByLabelText('dashboard.shortcutName')).toHaveValue('')
+  })
+
   it('deletes a shortcut from the management modal', async () => {
     const user = userEvent.setup()
     const { props } = renderPanel()

@@ -121,6 +121,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
   const [loadingSupplierInvoices, setLoadingSupplierInvoices] = useState(false)
 
   const [supplierInvoicesLoadError, setSupplierInvoicesLoadError] = useState(false)
+  const [payablesLoadError, setPayablesLoadError] = useState(false)
 
   const [loadingPaymentRequests, setLoadingPaymentRequests] = useState(false)
 
@@ -288,7 +289,9 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
       setPayables(result.items)
       payablesPager.setTotal(result.total)
       setPayableTotalAmount(result.total_payable_amount)
+      setPayablesLoadError(false)
     } catch (caught) {
+      setPayablesLoadError(true)
       showError(caught, t('finance.payment.message.loadPayablesFailed'))
     } finally {
       setLoadingPayables(false)
@@ -495,6 +498,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     loadPaymentRequests,
     loadSupplierInvoices,
     loadingPayables,
+    payablesLoadError,
     loadingPaymentRequests,
     loadingSupplierInvoices,
     supplierInvoicesLoadError,

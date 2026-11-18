@@ -317,13 +317,17 @@ export function ProductFormModal({
               <label>
                 {t('masterdata.product.field.accessoryName')}
                 <Input
+                  id="product-field-accessory_name"
                   value={form.accessory_name}
                   onChange={(event) => setForm({ ...form, accessory_name: event.target.value })}
+                  {...invalid('accessory_name')}
                 />
+                {fieldError('accessory_name')}
               </label>
               <label>
                 {t('masterdata.product.field.unitConsumption')}
                 <Input
+                  id="product-field-accessory_unit_consumption"
                   type="number"
                   min="0"
                   step="0.01"
@@ -331,7 +335,9 @@ export function ProductFormModal({
                   onChange={(event) =>
                     setForm({ ...form, accessory_unit_consumption: event.target.value })
                   }
+                  {...invalid('accessory_unit_consumption')}
                 />
+                {fieldError('accessory_unit_consumption')}
               </label>
               <label>
                 {t('masterdata.product.field.accessoryUnit')}

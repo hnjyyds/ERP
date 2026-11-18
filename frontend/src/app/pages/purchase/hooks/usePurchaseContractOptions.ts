@@ -28,11 +28,13 @@ export function usePurchaseContractOptions() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [pinnedProducts, setPinnedProducts] = useState<Product[]>([])
   const [pinnedSuppliers, setPinnedSuppliers] = useState<Supplier[]>([])
-  const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([])
+  const [buyerUsers, setBuyerUsers] = useState<AssignableUser[]>([])
+  const [qcUsers, setQcUsers] = useState<AssignableUser[]>([])
   const [exportContracts, setExportContracts] = useState<ExportContract[]>([])
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingSuppliers, setLoadingSuppliers] = useState(false)
-  const [loadingAssignableUsers, setLoadingAssignableUsers] = useState(false)
+  const [loadingBuyerUsers, setLoadingBuyerUsers] = useState(false)
+  const [loadingQcUsers, setLoadingQcUsers] = useState(false)
   const [loadingExportContracts, setLoadingExportContracts] = useState(false)
   const productRequestRef = useRef(0)
   const supplierRequestRef = useRef(0)
@@ -85,15 +87,27 @@ export function usePurchaseContractOptions() {
     )
   }, [])
 
-  const loadAssignableUsers = useCallback(async () => {
-    setLoadingAssignableUsers(true)
+  const loadBuyerUsers = useCallback(async () => {
+    setLoadingBuyerUsers(true)
     try {
-      const result = await listAssignableUsers('quality:inspection:edit')
-      setAssignableUsers(result.users)
+      const result = await listAssignableUsers('purchase:contract:edit')
+      setBuyerUsers(result.users)
     } catch (caught) {
       showError(caught, t('purchase.contract.list.userLoadFailed'))
     } finally {
-      setLoadingAssignableUsers(false)
+      setLoadingBuyerUsers(false)
+    }
+  }, [])
+
+  const loadQcUsers = useCallback(async () => {
+    setLoadingQcUsers(true)
+    try {
+      const result = await listAssignableUsers('quality:inspection:edit')
+      setQcUsers(result.users)
+    } catch (caught) {
+      showError(caught, t('purchase.contract.list.userLoadFailed'))
+    } finally {
+      setLoadingQcUsers(false)
     }
   }, [])
 
@@ -112,17 +126,20 @@ export function usePurchaseContractOptions() {
   useEffect(() => {
     void loadProducts('')
     void loadSuppliers('')
-    void loadAssignableUsers()
-  }, [loadProducts, loadSuppliers, loadAssignableUsers])
+    void loadBuyerUsers()
+    void loadQcUsers()
+  }, [loadProducts, loadSuppliers, loadBuyerUsers, loadQcUsers])
 
   return {
     products: mergeById(pinnedProducts, products),
     suppliers: mergeById(pinnedSuppliers, suppliers),
-    assignableUsers,
+    buyerUsers,
+    qcUsers,
     exportContracts,
     loadingProducts,
     loadingSuppliers,
-    loadingAssignableUsers,
+    loadingBuyerUsers,
+    loadingQcUsers,
     loadingExportContracts,
     loadProducts,
     loadSuppliers,

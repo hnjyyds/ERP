@@ -133,6 +133,20 @@ function formatQuantity(value: number): string {
   return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(2)))
 }
 
+/** 列表范围的留样合计：按单位分别统计，避免不同单位直接相加。 */
+function retainedByUnitText(records: SampleRecord[]): string {
+  const totals = new Map<string, number>()
+  for (const record of records) {
+    const unit = record.stock_summary?.unit || record.unit || ''
+    const quantity = Number(record.stock_summary?.retained_quantity ?? 0)
+    totals.set(unit, (totals.get(unit) ?? 0) + quantity)
+  }
+  const parts = [...totals.entries()]
+    .filter(([, quantity]) => Number.isFinite(quantity))
+    .map(([unit, quantity]) => `${formatQuantity(quantity)} ${unit}`.trim())
+  return parts.length > 0 ? parts.join(' / ') : '0'
+}
+
 function sampleRecordTypeLabel(value: string): string {
   const option = sampleRecordTypeOptions.find((item) => item.value === value)
   return option ? t(option.labelKey) : value
@@ -426,10 +440,13 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
           label={t('sample.record.metric.confirmSampleCount')}
           value={summary?.confirm_sample_count ?? 0}
         />
-        <Metric label={t('sample.record.metric.imageCount')} value={selectedRecord?.images.length ?? 0} />
+        <Metric
+          label={t('sample.record.metric.imageCount')}
+          value={records.reduce((sum, record) => sum + (record.images?.length ?? 0), 0)}
+        />
         <Metric
           label={t('sample.record.metric.retainedCount')}
-          value={Number(selectedRecord?.stock_summary.retained_quantity ?? 0)}
+          value={retainedByUnitText(records)}
         />
       </div>
 

@@ -47,6 +47,8 @@ import {
   type PartnerContactPayload,
   type PartnerCreatePayload,
   type PartnerEntity,
+  type PartnerFormError,
+  type PartnerFormErrorField,
   type PartnerListResult,
   type PartnerListSummary,
   type PartnerTransaction,
@@ -162,6 +164,8 @@ export function TradingPartnerPage({
   const [message, setMessage] = useState('')
   const [editingEntityId, setEditingEntityId] = useState<string | null>(null)
   const [editingContactId, setEditingContactId] = useState<string | null>(null)
+  const [entityFormError, setEntityFormError] = useState<PartnerFormError | null>(null)
+  const [contactNameError, setContactNameError] = useState('')
   const {
     open: entityModalOpen,
     form,
@@ -180,6 +184,34 @@ export function TradingPartnerPage({
     close: closeContactModal,
     runSubmit: runContactSubmit,
   } = useFormModal(initialContactForm)
+  // 补填字段后立即收起字段旁的错误，不必再次提交才消失。
+  const activeEntityError =
+    entityFormError && !form[entityFormError.field].trim() ? entityFormError : null
+  const activeContactNameError = contactNameError && !contactForm.name.trim() ? contactNameError : ''
+
+  useEffect(() => {
+    if (!activeEntityError) return
+    document.getElementById(`partner-field-${activeEntityError.field}`)?.focus()
+  }, [activeEntityError])
+
+  useEffect(() => {
+    if (!activeContactNameError) return
+    document.getElementById('partner-contact-field-name')?.focus()
+  }, [activeContactNameError])
+
+  const fieldError = (field: PartnerFormErrorField) =>
+    activeEntityError?.field === field ? (
+      <span className="form-field-error" id={`partner-field-${field}-error`}>
+        {activeEntityError.message}
+      </span>
+    ) : null
+
+  const invalid = (field: PartnerFormErrorField) => ({
+    'aria-invalid': activeEntityError?.field === field,
+    'aria-describedby':
+      activeEntityError?.field === field ? `partner-field-${field}-error` : undefined,
+  })
+
   const columnOptions =
     kind === 'partner'
       ? buildColumnOptions()
@@ -461,11 +493,13 @@ export function TradingPartnerPage({
 
   function closeEntityForm() {
     setEditingEntityId(null)
+    setEntityFormError(null)
     closeEntityModal()
   }
 
   function openCreate() {
     setEditingEntityId(null)
+    setEntityFormError(null)
     setMessage('')
     openEntityModal()
   }
@@ -473,22 +507,26 @@ export function TradingPartnerPage({
   function openEdit() {
     if (!selected) return
     setEditingEntityId(selected.id)
+    setEntityFormError(null)
     openEntityModal(entityToForm(selected))
   }
 
   function openCreateContact() {
     if (!selected) return
     setEditingContactId(null)
+    setContactNameError('')
     openContactModal()
   }
 
   function openEditContact(contact: PartnerContact) {
     setEditingContactId(contact.id)
+    setContactNameError('')
     openContactModal(initialContactForm(contact))
   }
 
   function closeContactForm() {
     setEditingContactId(null)
+    setContactNameError('')
     closeContactModal()
   }
 
@@ -496,11 +534,14 @@ export function TradingPartnerPage({
     event.preventDefault()
     setMessage('')
     const isCreate = !editingEntityId
-    const validationMessage = validatePartnerForm(form, isCreate, kind)
-    if (validationMessage) {
-      showWarningDialog(validationMessage)
+    const validationError = validatePartnerForm(form, isCreate, kind)
+    if (validationError) {
+      // 字段旁同步保留错误提示并聚焦，避免只依赖 3 秒后消失的顶部提示。
+      setEntityFormError(validationError)
+      showWarningDialog(validationError.message)
       return
     }
+    setEntityFormError(null)
     const saved = await runEntitySubmit(
       async () => {
         if (editingEntityId && selected) {
@@ -526,9 +567,12 @@ export function TradingPartnerPage({
     if (!selected) return
     setMessage('')
     if (!contactForm.name.trim()) {
-      showWarningDialog(t('masterdata.tradingPartner.contactNameRequired'))
+      const message = t('masterdata.tradingPartner.contactNameRequired')
+      setContactNameError(message)
+      showWarningDialog(message)
       return
     }
+    setContactNameError('')
     const saved = await runContactSubmit(
       async () => {
         if (editingContactId) {
@@ -1020,34 +1064,73 @@ export function TradingPartnerPage({
         <form className="record-form entity-modal-form" onSubmit={submitEntity}>
           <div className="entity-modal-grid">
             <label>
-              {t('masterdata.field.code')}
+              <span className="form-field-label">
+                {t('masterdata.field.code')}
+                {!editingEntityId ? <span className="form-required-mark">*</span> : null}
+              </span>
               <Input
+                id="partner-field-code"
                 disabled={Boolean(editingEntityId)}
                 value={form.code}
                 onChange={(event) => setForm({ ...form, code: event.target.value })}
+                {...invalid('code')}
               />
+              {fieldError('code')}
             </label>
             <label>
-              {t('masterdata.field.cnName')}
-              <Input value={form.cn_name} onChange={(event) => setForm({ ...form, cn_name: event.target.value })} />
+              <span className="form-field-label">
+                {t('masterdata.field.cnName')}
+                <span className="form-required-mark">*</span>
+              </span>
+              <Input
+                id="partner-field-cn_name"
+                value={form.cn_name}
+                onChange={(event) => setForm({ ...form, cn_name: event.target.value })}
+                {...invalid('cn_name')}
+              />
+              {fieldError('cn_name')}
             </label>
             <label>
-              {t('masterdata.field.enName')}
-              <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
+              <span className="form-field-label">
+                {t('masterdata.field.enName')}
+                <span className="form-required-mark">*</span>
+              </span>
+              <Input
+                id="partner-field-en_name"
+                value={form.en_name}
+                onChange={(event) => setForm({ ...form, en_name: event.target.value })}
+                {...invalid('en_name')}
+              />
+              {fieldError('en_name')}
             </label>
             {kind === 'partner' ? (
               <label>
-                {t('masterdata.tradingPartner.partnerTypeSection')}
+                <span className="form-field-label">
+                  {t('masterdata.tradingPartner.partnerTypeSection')}
+                  <span className="form-required-mark">*</span>
+                </span>
                 <Select
+                  id="partner-field-partner_type"
                   options={formPartnerTypeOptions}
                   value={form.partner_type}
                   onChange={(value) => setForm({ ...form, partner_type: value })}
+                  {...invalid('partner_type')}
                 />
+                {fieldError('partner_type')}
               </label>
             ) : null}
             <label>
-              {t('masterdata.field.country')}
-              <Input value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
+              <span className="form-field-label">
+                {t('masterdata.field.country')}
+                <span className="form-required-mark">*</span>
+              </span>
+              <Input
+                id="partner-field-country"
+                value={form.country}
+                onChange={(event) => setForm({ ...form, country: event.target.value })}
+                {...invalid('country')}
+              />
+              {fieldError('country')}
             </label>
             <label>
               {t('masterdata.field.status')}
@@ -1188,11 +1271,22 @@ export function TradingPartnerPage({
         <form className="record-form entity-modal-form" onSubmit={submitContact}>
           <div className="entity-modal-grid two">
             <label>
-              {t('masterdata.tradingPartner.firstName')}
+              <span className="form-field-label">
+                {t('masterdata.tradingPartner.firstName')}
+                <span className="form-required-mark">*</span>
+              </span>
               <Input
+                id="partner-contact-field-name"
+                aria-describedby={activeContactNameError ? 'partner-contact-field-name-error' : undefined}
+                aria-invalid={Boolean(activeContactNameError)}
                 value={contactForm.name}
                 onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
               />
+              {activeContactNameError ? (
+                <span className="form-field-error" id="partner-contact-field-name-error">
+                  {activeContactNameError}
+                </span>
+              ) : null}
             </label>
             <label>
               {t('masterdata.tradingPartner.jobTitle')}
