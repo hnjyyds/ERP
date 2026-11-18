@@ -110,7 +110,7 @@ class PurchaseInvoiceNoticeService:
     ) -> PurchaseInvoiceNoticeListResponse:
         self._require_any(
             current_user,
-            ("purchase:invoice_notice:view", "masterdata:reference-option:view"),
+            ("purchase:invoice_notice:view", "purchase:invoice_notice:option:view"),
         )
         if status is not None:
             self._validate_status(status)

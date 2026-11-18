@@ -479,6 +479,11 @@ def demo_role_permissions() -> list[RolePermission]:
             role_id="role-finance",
             permission_id="perm-reference-option-view",
         ),
+        RolePermission(
+            id="rp-finance-invoice-notice-option-view",
+            role_id="role-finance",
+            permission_id="perm-invoice-notice-option-view",
+        ),
     ]
     role_permissions.extend(
         _role_permissions(

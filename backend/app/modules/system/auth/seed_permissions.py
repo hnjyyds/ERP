@@ -118,6 +118,11 @@ def _base_permissions() -> list[Permission]:
             name="读取关联业务选项",
         ),
         Permission(
+            id="perm-invoice-notice-option-view",
+            code="purchase:invoice_notice:option:view",
+            name="读取开票通知选项",
+        ),
+        Permission(
             id="perm-partner-view",
             code="masterdata:partner:view",
             name="查看合作伙伴",

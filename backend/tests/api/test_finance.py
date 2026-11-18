@@ -319,6 +319,24 @@ async def test_finance_role_can_read_invoice_registration_sources(
         assert response.status_code == 200, path
 
 
+async def test_warehouse_role_reads_only_required_reference_options(
+    api_client: AsyncClient,
+    seeded_system: None,
+) -> None:
+    warehouse_token = await _login_token(api_client, "warehouse", "warehouse123")
+    suppliers = await api_client.get(
+        "/api/v1/masterdata/suppliers",
+        headers={"Authorization": f"Bearer {warehouse_token}"},
+    )
+    assert suppliers.status_code == 200
+    notices = await api_client.get(
+        "/api/v1/purchase/invoice-notices",
+        headers={"Authorization": f"Bearer {warehouse_token}"},
+    )
+    # 仓库入仓筛选不需要开票通知，受限权限不扩散到该来源。
+    assert notices.status_code == 403
+
+
 async def test_finance_overview_requires_login_and_finance_permission(
     api_client: AsyncClient,
     seeded_system: None,
