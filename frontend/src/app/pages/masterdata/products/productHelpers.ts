@@ -67,22 +67,32 @@ export function accessoryRuleOptions() {
 }
 
 export type ProductFormError = {
-  field: 'code' | 'cn_name' | 'customs_code' | 'unit'
+  field: 'code' | 'cn_name' | 'en_name' | 'customs_code' | 'unit' | 'package_info'
   message: string
 }
 
-export function validateProductForm(form: ProductFormState): ProductFormError | null {
+export function validateProductForm(
+  form: ProductFormState,
+  mode: 'create' | 'edit' = 'create',
+): ProductFormError | null {
   if (!form.code.trim()) {
     return { field: 'code', message: t('masterdata.product.validation.codeRequired') }
   }
   if (!form.cn_name.trim()) {
     return { field: 'cn_name', message: t('masterdata.product.validation.cnNameRequired') }
   }
+  // 新建时与服务端约束一致要求英文名与包装资料；编辑历史记录不因旧数据缺字段被拦截。
+  if (mode === 'create' && !form.en_name.trim()) {
+    return { field: 'en_name', message: t('masterdata.product.validation.enNameRequired') }
+  }
   if (!form.customs_code.trim()) {
     return { field: 'customs_code', message: t('masterdata.product.validation.customsCodeRequired') }
   }
   if (!form.unit.trim()) {
     return { field: 'unit', message: t('masterdata.product.validation.unitRequired') }
+  }
+  if (mode === 'create' && !form.package_info.trim()) {
+    return { field: 'package_info', message: t('masterdata.product.validation.packageInfoRequired') }
   }
   return null
 }

@@ -152,8 +152,17 @@ export function ProductFormModal({
             {fieldError('cn_name')}
           </label>
           <label>
-            {t('masterdata.product.field.enName')}
-            <Input value={form.en_name} onChange={(event) => setForm({ ...form, en_name: event.target.value })} />
+            <span className="form-field-label">
+              {t('masterdata.product.field.enName')}
+              {mode === 'create' ? <span className="form-required-mark">*</span> : null}
+            </span>
+            <Input
+              id="product-field-en_name"
+              value={form.en_name}
+              onChange={(event) => setForm({ ...form, en_name: event.target.value })}
+              {...invalid('en_name')}
+            />
+            {fieldError('en_name')}
           </label>
           <label>
             {t('masterdata.product.field.specification')}
@@ -286,12 +295,18 @@ export function ProductFormModal({
             <p className="product-image-hint">{t('masterdata.product.imageHint')}</p>
           </div>
           <label className="entity-modal-span">
-            {t('masterdata.product.field.packageInfo')}
+            <span className="form-field-label">
+              {t('masterdata.product.field.packageInfo')}
+              {mode === 'create' ? <span className="form-required-mark">*</span> : null}
+            </span>
             <Input.TextArea
+              id="product-field-package_info"
               rows={4}
               value={form.package_info}
               onChange={(event) => setForm({ ...form, package_info: event.target.value })}
+              {...invalid('package_info')}
             />
+            {fieldError('package_info')}
           </label>
         </div>
 

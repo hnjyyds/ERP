@@ -58,6 +58,46 @@ describe('FinancePage', () => {
     expect(container).toBeTruthy()
   })
 
+  it('供应商发票加载失败显示错误态并可重试', async () => {
+    const user = userEvent.setup()
+    const invoice: SupplierInvoice = {
+      id: 'invoice-retry',
+      invoice_no: 'SI-RETRY',
+      invoice_date: '2026-11-10',
+      supplier_id: 'supplier-1',
+      supplier_name: '华东包装制品厂',
+      purchase_invoice_notice_id: null,
+      purchase_invoice_notice_code: null,
+      purchase_contract_id: null,
+      purchase_contract_no: null,
+      total_amount: '10.00',
+      paid_amount: '0.00',
+      unpaid_amount: '10.00',
+      currency: 'CNY',
+      due_date: null,
+      status: 'unpaid',
+      remark: null,
+      created_by_user_id: 'u-finance',
+      created_by_user_name: '演示财务',
+      payment_requests: [],
+      allocations: [],
+    }
+    const spy = vi
+      .spyOn(api, 'listSupplierInvoices')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [invoice], total: 1 })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'payments', id: null }} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await screen.findByText('SI-RETRY')).toBeTruthy()
+  })
+
   it('keeps tax document filters and actions in the shared desktop toolbar', () => {
     render(
       <FinancePage currentUser={currentUser} view={{ module: 'tax', id: null }} onNavigate={onNavigate} />,

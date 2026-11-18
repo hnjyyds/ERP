@@ -100,6 +100,7 @@ export function ShipmentListPanel({ model, onGenerate }: Props) {
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -107,6 +108,7 @@ export function ShipmentListPanel({ model, onGenerate }: Props) {
                 Boolean(model.contractFilter.trim())
               }
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadShipments()}
             />
           ),
         }}

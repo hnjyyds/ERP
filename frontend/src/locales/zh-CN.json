@@ -89,7 +89,10 @@
       "createSupplier": "新增供应商",
       "createCustomer": "新增客户",
       "noDataTitle": "暂无数据",
-      "noDataDescription": "完成首次录入后，这里会显示对应记录"
+      "noDataDescription": "完成首次录入后，这里会显示对应记录",
+      "loadFailedTitle": "加载失败",
+      "loadFailedDescription": "数据读取失败，请重试；当前筛选条件会保留",
+      "retry": "重试"
     },
     "form": {
       "selectPlaceholder": "请选择"
@@ -2331,8 +2334,10 @@
       "validation": {
         "codeRequired": "请填写商品编号",
         "cnNameRequired": "请填写商品中文名称",
+        "enNameRequired": "请填写商品英文名称",
         "customsCodeRequired": "请填写海关编码",
-        "unitRequired": "请填写商品单位"
+        "unitRequired": "请填写商品单位",
+        "packageInfoRequired": "请填写包装资料"
       }
     },
     "field": {

@@ -94,7 +94,7 @@ export function ProductsPage({ detailId, onNavigate }: ProductsPageProps) {
 
   async function submitProduct(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const missing = validateProductForm(form)
+    const missing = validateProductForm(form, productModalMode === 'edit' ? 'edit' : 'create')
     if (missing) {
       // 字段旁同步保留错误提示，避免只依赖 3 秒后消失的顶部提示。
       setFormError(missing)

@@ -291,6 +291,32 @@ describe('SampleDeliveriesPage', () => {
     ])
   })
 
+  it('清空关联样品后样品分类恢复默认值', async () => {
+    vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({ items: [delivery], total: 1 })
+    vi.spyOn(api, 'listSampleRecords').mockResolvedValue({
+      items: [
+        { id: 'rec-1', code: 'S-001', sample_type: 'confirm_sample', product_name: '样品杯', unit: 'pcs' },
+        { id: 'rec-2', code: 'S-002', sample_type: 'incoming', product_name: '来样杯', unit: 'pcs' },
+      ],
+      total: 2,
+    } as never)
+
+    render(<SampleDeliveriesPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+    await userEvent.click(screen.getByRole('button', { name: '新增寄样单' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByDisplayValue('确认样')).toBeTruthy()
+
+    await userEvent.click(within(dialog).getByLabelText('样品登记'))
+    await userEvent.click(await screen.findByText('S-002 / 来样杯'))
+    expect(within(dialog).getByDisplayValue('来样')).toBeTruthy()
+
+    const clear = dialog.querySelector('.ant-select-clear')
+    expect(clear).toBeTruthy()
+    await userEvent.click(clear as HTMLElement)
+    expect(within(dialog).getByDisplayValue('确认样')).toBeTruthy()
+    expect(within(dialog).queryByDisplayValue('来样')).toBeNull()
+  })
+
   it('非指定审批人不可审核并提示等待指定人', async () => {
     vi.spyOn(api, 'listSampleDeliveries').mockResolvedValue({
       items: [

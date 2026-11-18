@@ -77,6 +77,8 @@ export function SampleDeliveryFormModal({
         ...form,
         sample_record_id: '',
         sample_code: '',
+        // 清空关联样品时同步恢复样品分类默认值，避免保留上一样品的分类。
+        sample_type: 'confirm_sample',
         product_id: '',
         product_code: '',
         product_name: '',

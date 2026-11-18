@@ -89,7 +89,10 @@
       "createSupplier": "Add supplier",
       "createCustomer": "Add customer",
       "noDataTitle": "No data yet",
-      "noDataDescription": "Records will appear here after the first entry"
+      "noDataDescription": "Records will appear here after the first entry",
+      "loadFailedTitle": "Failed to load",
+      "loadFailedDescription": "The data could not be loaded. Retry; current filters will be kept.",
+      "retry": "Retry"
     },
     "form": {
       "selectPlaceholder": "Please select"
@@ -2331,8 +2334,10 @@
       "validation": {
         "codeRequired": "Enter a product code",
         "cnNameRequired": "Enter the Chinese product name",
+        "enNameRequired": "Enter the English product name",
         "customsCodeRequired": "Enter the HS code",
-        "unitRequired": "Enter the product unit"
+        "unitRequired": "Enter the product unit",
+        "packageInfoRequired": "Enter the packaging details"
       }
     },
     "field": {

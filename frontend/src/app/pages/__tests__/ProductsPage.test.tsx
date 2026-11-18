@@ -236,6 +236,27 @@ describe('ProductsPage', () => {
     expect(screen.queryByRole('columnheader', { name: '编号' })).not.toBeInTheDocument()
   })
 
+  it('英文名称与包装资料缺失时就地提示必填并阻止提交', async () => {
+    const user = userEvent.setup()
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(listProducts).toHaveBeenCalled())
+
+    await user.click(screen.getByRole('button', { name: '新增商品' }))
+    const dialog = await screen.findByRole('dialog')
+    await user.type(within(dialog).getByLabelText(/产品编号/), 'P-201')
+    await user.type(within(dialog).getByLabelText(/中文名称/), '缺字段商品')
+    await user.type(within(dialog).getByLabelText(/海关编码/), '8481804090')
+    await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
+
+    expect(await within(dialog).findByText('请填写商品英文名称')).toBeInTheDocument()
+    expect(createProduct).not.toHaveBeenCalled()
+
+    await user.type(within(dialog).getByLabelText(/英文名称/), 'Missing Field')
+    await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
+    expect(await within(dialog).findByText('请填写包装资料')).toBeInTheDocument()
+    expect(createProduct).not.toHaveBeenCalled()
+  })
+
   it('新增商品：校验必填、提交创建 payload 并回到第一页刷新', async () => {
     const user = userEvent.setup()
     vi.mocked(createProduct).mockResolvedValue({ ...productFixture, id: 'product-new', code: 'P-200' })
@@ -252,7 +273,9 @@ describe('ProductsPage', () => {
 
     await user.type(within(dialog).getByLabelText(/产品编号/), 'P-200')
     await user.type(within(dialog).getByLabelText(/中文名称/), '新商品')
+    await user.type(within(dialog).getByLabelText(/英文名称/), 'New Product')
     await user.type(within(dialog).getByLabelText(/海关编码/), '8481804090')
+    await user.type(within(dialog).getByLabelText(/包装资料/), '24 pcs/carton')
     await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
 
     await waitFor(() => {
@@ -306,7 +329,9 @@ describe('ProductsPage', () => {
 
     await user.type(within(dialog).getByLabelText(/产品编号/), 'P-300')
     await user.type(within(dialog).getByLabelText(/中文名称/), '带图商品')
+    await user.type(within(dialog).getByLabelText(/英文名称/), 'Product With Images')
     await user.type(within(dialog).getByLabelText(/海关编码/), '8481804090')
+    await user.type(within(dialog).getByLabelText(/包装资料/), '12 pcs/carton')
     await user.click(within(dialog).getByRole('button', { name: '新增商品' }))
 
     await waitFor(() => {
@@ -348,6 +373,26 @@ describe('ProductsPage', () => {
       'src',
       'https://example.test/front.png',
     )
+  })
+
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listProducts)
+      .mockReset()
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [productFixture],
+        total: 1,
+        summary: { with_image_count: 0, accessory_count: 0 },
+      })
+
+    render(<ProductsPage detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    expect(await screen.findByText('P-001')).toBeTruthy()
   })
 
   it('导出：未选行导出当前筛选的全部页，选中后只导出选中行', async () => {

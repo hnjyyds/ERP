@@ -120,6 +120,8 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
 
   const [loadingSupplierInvoices, setLoadingSupplierInvoices] = useState(false)
 
+  const [supplierInvoicesLoadError, setSupplierInvoicesLoadError] = useState(false)
+
   const [loadingPaymentRequests, setLoadingPaymentRequests] = useState(false)
 
   const [loadingPayables, setLoadingPayables] = useState(false)
@@ -193,6 +195,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     filtersOverride?: InvoiceFilters,
   ) {
     setLoadingSupplierInvoices(true)
+    setSupplierInvoicesLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? invoiceFilters
@@ -220,6 +223,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
         null
       setSelectedSupplierInvoiceId(nextInvoiceId)
     } catch (caught) {
+      setSupplierInvoicesLoadError(true)
       showError(caught, t('finance.payment.message.loadSupplierInvoicesFailed'))
     } finally {
       setLoadingSupplierInvoices(false)
@@ -493,6 +497,7 @@ export function usePaymentsModule(env: FinanceModuleEnv) {
     loadingPayables,
     loadingPaymentRequests,
     loadingSupplierInvoices,
+    supplierInvoicesLoadError,
     payableContractFilter: payableFilters.contract,
     payableSearch: payableFilters.q,
     payableStatusFilter: payableFilters.status,

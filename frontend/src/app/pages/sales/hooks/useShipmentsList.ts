@@ -49,6 +49,7 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
   const [customerFilter, setCustomerFilter] = useState(initialFilters.customer)
   const [contractFilter, setContractFilter] = useState(initialFilters.contract)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
@@ -97,6 +98,7 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
     const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     const resolvedContract = filtersOverride?.contract ?? contractFilter
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listShipments({
         q: resolvedQ.trim() || undefined,
@@ -125,6 +127,7 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
         null
       setSelectedShipmentId(nextSelectedId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('sales.shipment.list.loadFailed'))
     } finally {
       setLoading(false)
@@ -219,6 +222,7 @@ export function useShipmentsList({ detailId, onNavigate }: Params) {
     contractFilter,
     setContractFilter,
     loading,
+    loadError,
     total,
     pagination,
     loadShipments,

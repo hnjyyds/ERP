@@ -111,9 +111,11 @@ export function ProductsListView({ model, onCreate, onOpenImport, onExport, onOp
             <ListEmptyState
               createLabel={t('masterdata.product.create')}
               emptyTitle={t('masterdata.product.emptyTitle')}
+              error={model.loadError}
               filtered={Boolean(search.trim())}
               onCreate={onCreate}
               onClearFilters={() => submitSearch('')}
+              onRetry={() => void model.loadProducts()}
             />
           ),
         }}

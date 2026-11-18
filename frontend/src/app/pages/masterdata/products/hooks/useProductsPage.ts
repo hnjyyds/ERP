@@ -38,6 +38,7 @@ export type ProductsListModel = {
   setSearch: (value: string) => void
   summary: ProductListSummary
   loading: boolean
+  loadError: boolean
   selectedRowKeys: Key[]
   setSelectedRowKeys: (keys: Key[]) => void
   columnViewControl: ReturnType<typeof useColumnView>['control']
@@ -76,6 +77,7 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     accessory_count: 0,
   })
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
   const [relatedCustomers, setRelatedCustomers] = useState<ProductCustomer[]>([])
   const [transactions, setTransactions] = useState<ProductTransaction[]>([])
@@ -184,6 +186,7 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     const resolvedPageSize = pageSizeOverride ?? pageSize
     const resolvedQuery = queryOverride ?? search
     setLoading(true)
+    setLoadError(false)
     const requestId = latestRequest.begin()
     try {
       const result = await listProducts({
@@ -212,6 +215,7 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
       setSelectedProductIdState(nextSelectedId)
     } catch (caught) {
       if (!latestRequest.isLatest(requestId)) return
+      setLoadError(true)
       showError(caught, t('masterdata.product.loadFailed'))
     } finally {
       if (latestRequest.isLatest(requestId)) setLoading(false)
@@ -254,6 +258,7 @@ export function useProductsPage({ detailId, onNavigate }: ProductsPageArgs): Pro
     setSearch,
     summary,
     loading,
+    loadError,
     selectedRowKeys,
     setSelectedRowKeys,
     columnViewControl,
