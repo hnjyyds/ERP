@@ -3,6 +3,10 @@ screenshots/*
 !screenshots/P01-390-status-dropdown-edge.png
 !screenshots/P01-P02-inactive-1440.png
 !screenshots/P01-P17-save-result.png
+!screenshots/P01-acc-image-detail-final-1440.png
+!screenshots/P01-acc-image-preview-1440.png
+!screenshots/P01-acc-list-390.png
+!screenshots/P01-acc-save-blocked-1440.png
 !screenshots/P01-accessory-error-after-toast.png
 !screenshots/P01-columns-open-real-390.png
 !screenshots/P01-create-observed.png
@@ -98,6 +102,8 @@ screenshots/*
 !screenshots/P08-qc-candidates-BTFsUnZ2-1440.png
 !screenshots/P09-390-contract-query.png
 !screenshots/P09-390-customer-dropdown.png
+!screenshots/P09-acc-detail-1440.png
+!screenshots/P09-acc-list-390.png
 !screenshots/P09-contract-no-empty.png
 !screenshots/P09-contract-no-restored.png
 !screenshots/P09-customer-select-after-keyboard.png
@@ -247,6 +253,7 @@ screenshots/*
 !screenshots/P23-review-detail-1440.png
 !screenshots/P23-review-detail-end-1440.png
 !screenshots/P24-390-supplier-dropdown.png
+!screenshots/P24-acc-list-390.png
 !screenshots/P24-app-switch-1440.png
 !screenshots/P24-approved-metadata-1280.png
 !screenshots/P24-approved-metadata-1440.png
@@ -453,6 +460,5 @@ screenshots/*
 !screenshots/q05-12-partner-label-Bpsh-390.png
 !screenshots/q05-12-supplier-label-Bpsh-390.png
 !screenshots/q05-14-partner-BRdw-1440.png
+!screenshots/q05-14-partner-Bpsh-390.png
 !screenshots/q05-14-sample-options-Bpsh-1440.png
-
-# 原始临时快照目录不入库

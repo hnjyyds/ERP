@@ -1,0 +1,102 @@
+{
+  "restoreErr": null,
+  "headsRestored": [
+    "",
+    "编号",
+    "中文名称",
+    "英文名称",
+    "海关编码",
+    "单位",
+    "状态",
+    "配件",
+    "入口"
+  ],
+  "before": 53,
+  "opened": true,
+  "unitErr": {
+    "errs": [
+      {
+        "id": "product-field-unit-error",
+        "text": "请填写商品单位"
+      }
+    ],
+    "focus": {
+      "id": "product-field-unit",
+      "invalid": "true",
+      "desc": "product-field-unit-error"
+    }
+  },
+  "accErr": {
+    "errs": [
+      {
+        "id": "product-field-accessory_name-error",
+        "text": "已填写配件信息，请补充配件名称或清空配件信息"
+      }
+    ],
+    "focus": {
+      "id": "product-field-accessory_name",
+      "invalid": "true",
+      "desc": "product-field-accessory_name-error"
+    }
+  },
+  "blocked": {
+    "dialogOpen": true,
+    "toasts": [
+      "Failed to fetch"
+    ],
+    "buttons": [
+      {
+        "t": "",
+        "disabled": false
+      },
+      {
+        "t": "取消",
+        "disabled": false
+      },
+      {
+        "t": "新增商品",
+        "disabled": false
+      }
+    ]
+  },
+  "afterBlocked": 53,
+  "closedAfterCancel": true,
+  "triggerFocus": {
+    "label": "Close",
+    "text": ""
+  },
+  "focusAfterCancel": {
+    "tag": "BUTTON",
+    "label": null,
+    "text": "新增商品"
+  },
+  "esc": {
+    "closed": true,
+    "focus": {
+      "tag": "BODY",
+      "label": null,
+      "text": "D-DUTCH\n新裴贸易\n业务管理系统\n"
+    }
+  },
+  "errNow": {
+    "errs": [],
+    "focus": {
+      "id": "product-field-code",
+      "invalid": "true",
+      "desc": "product-field-code-error"
+    }
+  },
+  "errLater": {
+    "errs": [
+      {
+        "id": "product-field-code-error",
+        "text": "请填写商品编号"
+      }
+    ],
+    "focus": {
+      "id": "product-field-code",
+      "invalid": "true",
+      "desc": "product-field-code-error"
+    }
+  }
+}

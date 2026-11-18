@@ -1,0 +1,843 @@
+{
+  "api": {
+    "status": 200,
+    "count": 52,
+    "withImages": [
+      {
+        "id": "ec46eab8-76f1-4ba7-931c-da30a5b80d9b",
+        "code": "UIQA-NAMES-01",
+        "name": "UIQA图片文件名验收",
+        "status": "active",
+        "unit": "pcs",
+        "tax": "0.1300",
+        "rebate": "0.0900",
+        "images": 2,
+        "names": [
+          "UIQA-C.png",
+          "UIQA-A.png"
+        ]
+      },
+      {
+        "id": "0de270b6-67e9-41fc-be47-6da47f8703ac",
+        "code": "UIQA-20261117-05-P01",
+        "name": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本",
+        "status": "active",
+        "unit": "pcs",
+        "tax": "0.1300",
+        "rebate": "0.0900",
+        "images": 2,
+        "names": [
+          "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+          "be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png"
+        ]
+      },
+      {
+        "id": "42b6d30d-790c-449f-9663-6f9c990a4c9e",
+        "code": "UI261114-IMG",
+        "name": "多图验证商品",
+        "status": "active",
+        "unit": "pcs",
+        "tax": "0.1300",
+        "rebate": "0.0900",
+        "images": 2,
+        "names": [
+          "556e3d301b1d4405b26df6efc7898861-e803edfb3d5f431b.png",
+          "ee6b826409954a649a3cf9882cf54f40-ae7374f41539b7e0.png"
+        ]
+      },
+      {
+        "id": "9febbfe2-08c9-4388-8d5c-1bdebe4edae4",
+        "code": "UI261114-IMG01",
+        "name": "演示商品｜图片上传测试袋",
+        "status": "active",
+        "unit": "pcs",
+        "tax": "0.1300",
+        "rebate": "0.0900",
+        "images": 3,
+        "names": [
+          "a368aa49c0694581b8967a8ace4fe18d-df1df21f9a835efb.png",
+          "61aeb2212c6c4c618d40aa4ba631c5ec-d15e5a3902dac332.png",
+          "dba07d104ad4403fbf2d0568d496dcee-6f912872b9990a8f.png"
+        ]
+      }
+    ],
+    "noNames": []
+  },
+  "toggleErr": " restore:ElementResolutionError: page.click failed: Locator loc=role:menuitem[name*=\"英文名称\"] matched 0 element",
+  "headsNoEn": [
+    "",
+    "编号",
+    "中文名称",
+    "海关编码",
+    "单位",
+    "状态",
+    "配件",
+    "入口"
+  ],
+  "headsRestored": [
+    "",
+    "编号",
+    "中文名称",
+    "海关编码",
+    "单位",
+    "状态",
+    "配件",
+    "入口"
+  ],
+  "initial": {
+    "rect": {
+      "x": 230,
+      "y": 23.140625,
+      "width": 1040,
+      "height": 756.71875,
+      "top": 23.140625,
+      "right": 1270,
+      "bottom": 779.859375,
+      "left": 230
+    },
+    "scrollH": 757,
+    "fields": [
+      {
+        "label": "产品编号",
+        "star": true,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "商品单位",
+        "star": true,
+        "value": "pcs",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "中文名称",
+        "star": true,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "英文名称",
+        "star": true,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "规格",
+        "star": false,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "型号",
+        "star": false,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "海关编码",
+        "star": true,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "税率",
+        "star": false,
+        "value": "13.00",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "退税率",
+        "star": false,
+        "value": "9.00",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "状态",
+        "star": false,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "添加图片",
+        "star": false,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "包装资料",
+        "star": true,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "配件名称",
+        "star": false,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "单耗",
+        "star": false,
+        "value": "1",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "配件单位",
+        "star": false,
+        "value": "pcs",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "默认供应商",
+        "star": false,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      },
+      {
+        "label": "采购拆分",
+        "star": false,
+        "value": "",
+        "placeholder": null,
+        "required": false,
+        "ariaRequired": null
+      }
+    ]
+  },
+  "err0": {
+    "errs": [
+      {
+        "id": "product-field-code-error",
+        "text": "请填写商品编号"
+      }
+    ],
+    "focus": {
+      "id": "product-field-code",
+      "invalid": "true",
+      "desc": "product-field-code-error"
+    },
+    "descEl": "请填写商品编号"
+  },
+  "seq": [
+    {
+      "filled": "产品编号",
+      "set": "UIQA-ACC-01",
+      "errs": [
+        {
+          "id": "product-field-cn_name-error",
+          "text": "请填写商品中文名称"
+        }
+      ],
+      "focus": {
+        "id": "product-field-cn_name",
+        "invalid": "true",
+        "desc": "product-field-cn_name-error"
+      },
+      "descEl": "请填写商品中文名称"
+    },
+    {
+      "filled": "中文名称",
+      "set": "验收按钮商品",
+      "errs": [
+        {
+          "id": "product-field-en_name-error",
+          "text": "请填写商品英文名称"
+        }
+      ],
+      "focus": {
+        "id": "product-field-en_name",
+        "invalid": "true",
+        "desc": "product-field-en_name-error"
+      },
+      "descEl": "请填写商品英文名称"
+    },
+    {
+      "filled": "英文名称",
+      "set": "Acceptance Button Product",
+      "errs": [
+        {
+          "id": "product-field-customs_code-error",
+          "text": "请填写海关编码"
+        }
+      ],
+      "focus": {
+        "id": "product-field-customs_code",
+        "invalid": "true",
+        "desc": "product-field-customs_code-error"
+      },
+      "descEl": "请填写海关编码"
+    },
+    {
+      "filled": "海关编码",
+      "set": "0000000000",
+      "errs": [
+        {
+          "id": "product-field-package_info-error",
+          "text": "请填写包装资料"
+        }
+      ],
+      "focus": {
+        "id": "product-field-package_info",
+        "invalid": "true",
+        "desc": "product-field-package_info-error"
+      },
+      "descEl": "请填写包装资料"
+    },
+    {
+      "filled": "包装资料",
+      "set": "验收包装",
+      "errs": [],
+      "focus": {
+        "id": "product-field-package_info",
+        "invalid": "false",
+        "desc": null
+      },
+      "descEl": null
+    }
+  ],
+  "afterAllFilled": {
+    "errs": [],
+    "focus": {
+      "id": "product-field-package_info",
+      "invalid": "false",
+      "desc": null
+    },
+    "descEl": null
+  },
+  "filledValues": [
+    {
+      "label": "产品编号",
+      "value": "UIQA-ACC-01",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "商品单位",
+      "value": "pcs",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "中文名称",
+      "value": "验收按钮商品",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "英文名称",
+      "value": "Acceptance Button Product",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "规格",
+      "value": "",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "型号",
+      "value": "",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "海关编码",
+      "value": "0000000000",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "税率",
+      "value": "13.00",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "退税率",
+      "value": "9.00",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "状态",
+      "value": "",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "添加图片",
+      "value": "",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "包装资料",
+      "value": "验收包装",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "配件名称",
+      "value": "",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "单耗",
+      "value": "1",
+      "invalid": "false",
+      "desc": null
+    },
+    {
+      "label": "配件单位",
+      "value": "pcs",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "默认供应商",
+      "value": "",
+      "invalid": null,
+      "desc": null
+    },
+    {
+      "label": "采购拆分",
+      "value": "",
+      "invalid": null,
+      "desc": null
+    }
+  ],
+  "formScroll": {
+    "dialogH": 225.879150390625,
+    "body": [
+      {
+        "cls": "record-form entity-modal-form",
+        "ch": 610,
+        "sh": 947
+      }
+    ],
+    "btns": [
+      {
+        "t": "",
+        "r": {
+          "x": 890.89111328125,
+          "y": 293.9333801269531,
+          "width": 8.35797119140625,
+          "height": 8.35797119140625,
+          "top": 293.9333801269531,
+          "right": 899.2490844726562,
+          "bottom": 302.2913513183594,
+          "left": 890.89111328125
+        }
+      },
+      {
+        "t": "取消",
+        "r": {
+          "x": 833.3392944335938,
+          "y": 489.3657531738281,
+          "width": 21.06280517578125,
+          "height": 10.745941162109375,
+          "top": 489.3657531738281,
+          "right": 854.402099609375,
+          "bottom": 500.1116943359375,
+          "left": 833.3392944335938
+        }
+      },
+      {
+        "t": "新增商品",
+        "r": {
+          "x": 857.9840087890625,
+          "y": 489.3657531738281,
+          "width": 31.713134765625,
+          "height": 10.745941162109375,
+          "top": 489.3657531738281,
+          "right": 889.6971435546875,
+          "bottom": 500.1116943359375,
+          "left": 857.9840087890625
+        }
+      }
+    ]
+  },
+  "closedAfterCancel": true,
+  "focusAfterCancel": {
+    "tag": "BUTTON",
+    "text": "",
+    "label": "设置列视图"
+  },
+  "reopened": [
+    {
+      "label": "产品编号",
+      "value": ""
+    },
+    {
+      "label": "商品单位",
+      "value": "pcs"
+    },
+    {
+      "label": "中文名称",
+      "value": ""
+    },
+    {
+      "label": "英文名称",
+      "value": ""
+    },
+    {
+      "label": "规格",
+      "value": ""
+    },
+    {
+      "label": "型号",
+      "value": ""
+    },
+    {
+      "label": "海关编码",
+      "value": ""
+    },
+    {
+      "label": "税率",
+      "value": "13.00"
+    },
+    {
+      "label": "退税率",
+      "value": "9.00"
+    },
+    {
+      "label": "状态",
+      "value": ""
+    },
+    {
+      "label": "添加图片",
+      "value": ""
+    },
+    {
+      "label": "包装资料",
+      "value": ""
+    },
+    {
+      "label": "配件名称",
+      "value": ""
+    },
+    {
+      "label": "单耗",
+      "value": "1"
+    },
+    {
+      "label": "配件单位",
+      "value": "pcs"
+    },
+    {
+      "label": "默认供应商",
+      "value": ""
+    },
+    {
+      "label": "采购拆分",
+      "value": ""
+    }
+  ],
+  "closedAfterEsc": {
+    "closed": false,
+    "focus": {
+      "tag": "BUTTON",
+      "label": "Close",
+      "text": ""
+    }
+  },
+  "editInit": {
+    "fields": [
+      {
+        "label": "产品编号",
+        "value": "UIQA-NAMES-01",
+        "readonly": false
+      },
+      {
+        "label": "商品单位",
+        "value": "pcs",
+        "readonly": false
+      },
+      {
+        "label": "中文名称",
+        "value": "UIQA图片文件名验收",
+        "readonly": false
+      },
+      {
+        "label": "英文名称",
+        "value": "UIQA Image Name Test",
+        "readonly": false
+      },
+      {
+        "label": "规格",
+        "value": "",
+        "readonly": false
+      },
+      {
+        "label": "型号",
+        "value": "",
+        "readonly": false
+      },
+      {
+        "label": "海关编码",
+        "value": "0000000000",
+        "readonly": false
+      },
+      {
+        "label": "税率",
+        "value": "13.00",
+        "readonly": false
+      },
+      {
+        "label": "退税率",
+        "value": "9.00",
+        "readonly": false
+      },
+      {
+        "label": "状态",
+        "value": "",
+        "readonly": true
+      },
+      {
+        "label": "更换图片",
+        "value": "",
+        "readonly": false
+      },
+      {
+        "label": "更换图片",
+        "value": "",
+        "readonly": false
+      },
+      {
+        "label": "添加图片",
+        "value": "",
+        "readonly": false
+      },
+      {
+        "label": "包装资料",
+        "value": "箱装",
+        "readonly": false
+      }
+    ],
+    "images": [
+      {
+        "alt": "商品图片预览",
+        "rect": {
+          "x": 283,
+          "y": 476.65625,
+          "width": 102,
+          "height": 102,
+          "top": 476.65625,
+          "right": 385,
+          "bottom": 578.65625,
+          "left": 283
+        }
+      },
+      {
+        "alt": "商品图片预览",
+        "rect": {
+          "x": 399,
+          "y": 476.65625,
+          "width": 102,
+          "height": 102,
+          "top": 476.65625,
+          "right": 501,
+          "bottom": 578.65625,
+          "left": 399
+        }
+      }
+    ],
+    "imageNames": [
+      "共 2 张",
+      "更换图片",
+      "UIQA-C.png",
+      "主图",
+      "更换图片",
+      "UIQA-A.png",
+      "支持 PNG、JPG，图片需小于 2MB；第一张为主图，点击缩略图可更换。"
+    ],
+    "imgText": "共 2 张",
+    "bodyText": "编辑商品\n产品编号\n*\n商品单位\n*\n中文名称\n*\n英文名称\n规格\n型号\n海关编码\n*\n税率\n%\n按百分比填写，例如 13 表示 13%\n退税率\n%\n按百分比填写，例如 13 表示 13%\n状态\n启用\n商品图片\n共 2 张\n更换图片\nUIQA-C.png\n主图\n更换图片\nUIQA-A.png\n添加图片\n\n支持 PNG、JPG，图片需小于 2MB；第一张为主图，点击缩略图可更换。\n\n包装资料\n取消\n保存商品"
+  },
+  "edit390": {
+    "rect": {
+      "x": 8,
+      "y": 28.0625,
+      "width": 374,
+      "height": 787.8828125,
+      "top": 28.0625,
+      "right": 382,
+      "bottom": 815.9453125,
+      "left": 8
+    },
+    "vw": 390,
+    "docW": 390,
+    "body": [
+      {
+        "cls": "record-form entity-modal-form",
+        "ch": 641,
+        "sh": 1399,
+        "sw": 270,
+        "cw": 270
+      }
+    ],
+    "btns": [
+      {
+        "t": "",
+        "r": {
+          "x": 318,
+          "y": 46.0625,
+          "width": 44,
+          "height": 44,
+          "top": 46.0625,
+          "right": 362,
+          "bottom": 90.0625,
+          "left": 318
+        }
+      },
+      {
+        "t": "",
+        "r": {
+          "x": 114,
+          "y": 1024.2265625,
+          "width": 44,
+          "height": 44,
+          "top": 1024.2265625,
+          "right": 158,
+          "bottom": 1068.2265625,
+          "left": 114
+        }
+      },
+      {
+        "t": "",
+        "r": {
+          "x": 214,
+          "y": 1024.2265625,
+          "width": 44,
+          "height": 44,
+          "top": 1024.2265625,
+          "right": 258,
+          "bottom": 1068.2265625,
+          "left": 214
+        }
+      },
+      {
+        "t": "取消",
+        "r": {
+          "x": 141.1953125,
+          "y": 723.9453125,
+          "width": 70.5625,
+          "height": 44,
+          "top": 723.9453125,
+          "right": 211.7578125,
+          "bottom": 767.9453125,
+          "left": 141.1953125
+        }
+      },
+      {
+        "t": "保存商品",
+        "r": {
+          "x": 223.7578125,
+          "y": 723.9453125,
+          "width": 106.2421875,
+          "height": 44,
+          "top": 723.9453125,
+          "right": 330,
+          "bottom": 767.9453125,
+          "left": 223.7578125
+        }
+      }
+    ],
+    "labelWidths": [
+      {
+        "label": "产品编号",
+        "w": 270
+      },
+      {
+        "label": "商品单位",
+        "w": 270
+      },
+      {
+        "label": "中文名称",
+        "w": 270
+      },
+      {
+        "label": "英文名称",
+        "w": 270
+      },
+      {
+        "label": "规格",
+        "w": 270
+      },
+      {
+        "label": "型号",
+        "w": 270
+      },
+      {
+        "label": "海关编码",
+        "w": 270
+      },
+      {
+        "label": "税率",
+        "w": 270
+      },
+      {
+        "label": "退税率",
+        "w": 270
+      },
+      {
+        "label": "状态",
+        "w": 270
+      },
+      {
+        "label": "更换图片",
+        "w": 88
+      },
+      {
+        "label": "更换图片",
+        "w": 88
+      },
+      {
+        "label": "添加图片",
+        "w": 88
+      },
+      {
+        "label": "包装资料",
+        "w": 270
+      }
+    ]
+  },
+  "closeTarget": {
+    "w": 44,
+    "h": 44
+  },
+  "closedByX": true
+}

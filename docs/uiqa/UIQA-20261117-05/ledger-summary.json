@@ -15,7 +15,7 @@
     "未测": 47
   },
   "pages": 42,
-  "defects": 29,
+  "defects": 33,
   "normative_rows": 2016,
   "normative_results": {
     "未测": 1870,
@@ -39,12 +39,12 @@
     "通过（仅限手动输入/显示）": 2
   },
   "whole_pages_passed": 0,
-  "status": "历史29项全部关闭：Q05-03/06/07/09/12/14及Q05-22原失败路径补测通过；缺陷关闭与新版规范项未测分开保留；0页签收",
+  "status": "整页验收P01/P09/P24已逐项给出结论：均未签收；新登记Q05-30/31/32/33；缺陷29关闭+4开放；0页签收；矩阵未测项与缺陷关闭分开保留",
   "defect_status": {
     "closed": 29,
     "pending_reverify": 0,
-    "open": 0,
-    "total": 29
+    "open": 4,
+    "total": 33
   },
   "deployment": {
     "frontend_commit": "449aaa0a",
@@ -74,7 +74,8 @@
       "q05-06-empty-states-reverify-20261118.json",
       "q05-07-image-names-reverify-20261118.json",
       "q05-14-enum-labels-reverify-20261118.json"
-    ]
+    ],
+    "archive_commit": "260d774f"
   },
   "resume": {
     "space": 12,
@@ -139,5 +140,46 @@
       "name": "42页48项验收矩阵-index-Bpsh7zKB.csv",
       "rows": 2016
     }
-  ]
+  ],
+  "page_acceptance": {
+    "bundle": "index-Bpsh7zKB.js",
+    "commit": "449aaa0a",
+    "report": "page-acceptance/summary-20261118.json",
+    "pages": {
+      "PAGE-01": {
+        "name": "商品资料",
+        "pass": 26,
+        "na": 3,
+        "partial": 12,
+        "fail": 4,
+        "untested": 3,
+        "signed": false
+      },
+      "PAGE-09": {
+        "name": "出货明细",
+        "pass": 6,
+        "na": 7,
+        "partial": 20,
+        "fail": 3,
+        "untested": 12,
+        "signed": false
+      },
+      "PAGE-24": {
+        "name": "付款管理",
+        "pass": 10,
+        "na": 7,
+        "partial": 17,
+        "fail": 1,
+        "untested": 13,
+        "signed": false
+      }
+    },
+    "new_defects": [
+      "Q05-30",
+      "Q05-31",
+      "Q05-32",
+      "Q05-33"
+    ],
+    "matrix": "42页48项验收矩阵-index-Bpsh7zKB-整页验收.csv"
+  }
 }

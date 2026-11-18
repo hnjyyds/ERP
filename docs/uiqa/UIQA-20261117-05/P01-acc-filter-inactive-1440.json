@@ -1,0 +1,374 @@
+{
+  "url": "http://127.0.0.1:8080/masterdata/products?status=inactive",
+  "viewport": [
+    1440,
+    900
+  ],
+  "docW": 1440,
+  "bodyH": 900,
+  "title": "商品资料",
+  "heads": [
+    {
+      "t": "H1",
+      "text": "商品资料",
+      "rect": [
+        264,
+        27,
+        97,
+        32
+      ],
+      "fontSize": "24px"
+    },
+    {
+      "t": "H2",
+      "text": "商品资料",
+      "rect": [
+        308,
+        195,
+        73,
+        25
+      ],
+      "fontSize": "18px"
+    }
+  ],
+  "selectedMenu": [
+    {
+      "text": "商品资料",
+      "href": "/masterdata/products",
+      "aria": "page",
+      "cls": "nav-link active"
+    }
+  ],
+  "ctrls": [
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "4",
+      "label": "通知",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1340,
+        16,
+        38,
+        38
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgba(0, 0, 0, 0)",
+      "color": "rgb(140, 143, 156)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "",
+      "label": "系统设置",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1378,
+        16,
+        38,
+        38
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgba(0, 0, 0, 0)",
+      "color": "rgb(140, 143, 156)"
+    },
+    {
+      "tag": "INPUT",
+      "role": null,
+      "text": "",
+      "label": null,
+      "placeholder": "编号 / 中文 / 英文 / 海关编码",
+      "value": "",
+      "disabled": false,
+      "rect": [
+        281,
+        257,
+        1039,
+        36
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgb(223, 227, 232)",
+      "color": "rgb(32, 36, 44)"
+    },
+    {
+      "tag": "INPUT",
+      "role": "combobox",
+      "text": "",
+      "label": "状态筛选",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1343,
+        262,
+        27,
+        26
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "0px rgba(0, 0, 0, 0.88)",
+      "color": "rgba(0, 0, 0, 0.88)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "",
+      "label": "查询商品",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        936,
+        305,
+        36,
+        36
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgb(223, 227, 232)",
+      "color": "rgb(32, 36, 44)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "新增商品",
+      "label": null,
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        980,
+        305,
+        111,
+        36
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgb(49, 91, 214)",
+      "color": "rgb(255, 255, 255)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "导入",
+      "label": "导入商品",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1099,
+        305,
+        85,
+        36
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgb(223, 227, 232)",
+      "color": "rgb(32, 36, 44)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "导出",
+      "label": "导出全部商品",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1192,
+        305,
+        85,
+        36
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgb(223, 227, 232)",
+      "color": "rgb(32, 36, 44)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "",
+      "label": "设置列视图",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1284,
+        305,
+        36,
+        36
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "1px rgb(223, 227, 232)",
+      "color": "rgb(32, 36, 44)"
+    },
+    {
+      "tag": "INPUT",
+      "role": null,
+      "text": "",
+      "label": "Select all",
+      "placeholder": null,
+      "value": "on",
+      "disabled": false,
+      "rect": [
+        289,
+        381,
+        16,
+        16
+      ],
+      "hit": true,
+      "fontSize": "14px",
+      "border": "0px rgba(0, 0, 0, 0.88)",
+      "color": "rgba(0, 0, 0, 0.88)"
+    },
+    {
+      "tag": "INPUT",
+      "role": null,
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "value": "on",
+      "disabled": false,
+      "rect": [
+        289,
+        421,
+        16,
+        16
+      ],
+      "hit": true,
+      "fontSize": "14px",
+      "border": "0px rgba(0, 0, 0, 0.88)",
+      "color": "rgba(0, 0, 0, 0.88)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "UIQA-20261117-05-P02",
+      "label": null,
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        321,
+        418,
+        155,
+        19
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "0px rgb(49, 91, 214)",
+      "color": "rgb(49, 91, 214)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "查看详情",
+      "label": null,
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1297,
+        418,
+        67,
+        28
+      ],
+      "hit": true,
+      "fontSize": "12px",
+      "border": "1px rgb(223, 227, 232)",
+      "color": "rgb(32, 36, 44)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1227,
+        477,
+        24,
+        24
+      ],
+      "hit": true,
+      "fontSize": "12px",
+      "border": "1px rgba(0, 0, 0, 0)",
+      "color": "rgba(0, 0, 0, 0.25)"
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "text": "",
+      "label": null,
+      "placeholder": null,
+      "value": "",
+      "disabled": true,
+      "rect": [
+        1283,
+        477,
+        24,
+        24
+      ],
+      "hit": true,
+      "fontSize": "12px",
+      "border": "1px rgba(0, 0, 0, 0)",
+      "color": "rgba(0, 0, 0, 0.835)"
+    },
+    {
+      "tag": "INPUT",
+      "role": "combobox",
+      "text": "",
+      "label": "页码",
+      "placeholder": null,
+      "value": "",
+      "disabled": false,
+      "rect": [
+        1320,
+        476,
+        50,
+        26
+      ],
+      "hit": true,
+      "fontSize": "13px",
+      "border": "0px rgba(0, 0, 0, 0.88)",
+      "color": "rgba(0, 0, 0, 0.88)"
+    }
+  ],
+  "tables": [
+    {
+      "i": 0,
+      "rect": [
+        281,
+        370,
+        1118,
+        85
+      ],
+      "clientW": 1118,
+      "scrollW": 1118,
+      "clientH": 85,
+      "scrollH": 85,
+      "cols": 9,
+      "rows": 1,
+      "lastHeader": "入口"
+    }
+  ],
+  "ph": [
+    {
+      "placeholder": "编号 / 中文 / 英文 / 海关编码",
+      "color": "rgb(107, 114, 128)",
+      "fontSize": "13px"
+    }
+  ],
+  "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 商品资料 4 商品 1 配件明细 0 有图商品 0 件 商品资料 搜索 状态 停用 停用 新增商品 导入 导出 编号 中文名称 英文名称 海关编码 单位 状态 配件 入口 UIQA-20261117-05-P02 UIQA分页验收商品02 UIQA Paging Test Product 02 0000000000 pcs 停用 0 查看详情 共 1 条 1 50 条/页 active 全部状态 启用 停用"
+}

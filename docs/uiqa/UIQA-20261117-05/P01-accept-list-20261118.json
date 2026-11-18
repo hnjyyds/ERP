@@ -1,0 +1,1561 @@
+{
+  "bundle": "http://127.0.0.1:8080/assets/index-Bpsh7zKB.js",
+  "views": {
+    "390": {
+      "docW": 390,
+      "viewport": [
+        390,
+        844
+      ],
+      "title": "商品资料",
+      "selectedMenu": [
+        {
+          "text": "商品资料",
+          "href": "/masterdata/products",
+          "aria": "page",
+          "cls": "nav-link active"
+        }
+      ],
+      "tables": [
+        {
+          "i": 0,
+          "rect": [
+            31,
+            651,
+            328,
+            5823
+          ],
+          "clientW": 328,
+          "scrollW": 760,
+          "clientH": 5823,
+          "scrollH": 5823,
+          "cols": 9,
+          "rows": 50,
+          "lastHeader": "入口"
+        }
+      ],
+      "ph": [
+        {
+          "placeholder": "编号 / 中文 / 英文 / 海关编码",
+          "color": "rgb(107, 114, 128)",
+          "fontSize": "13px"
+        }
+      ],
+      "ctrlCount": 163,
+      "smallTargets": [
+        {
+          "tag": "INPUT",
+          "role": "combobox",
+          "text": "",
+          "label": "状态筛选",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            42,
+            475,
+            288,
+            34
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": "Select all",
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            670,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            717,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            828,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            940,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1051,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1162,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1273,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1385,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1496,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1607,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1718,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1829,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            1941,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            2052,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            2163,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            2274,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            2385,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            2497,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            39,
+            2608,
+            16,
+            16
+          ],
+          "hit": false,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        }
+      ],
+      "headGaps": [
+        {
+          "t": "H1",
+          "text": "商品资料",
+          "rect": [
+            14,
+            94,
+            82,
+            28
+          ],
+          "fontSize": "20px"
+        },
+        {
+          "t": "H2",
+          "text": "商品资料",
+          "rect": [
+            58,
+            331,
+            73,
+            25
+          ],
+          "fontSize": "18px"
+        }
+      ]
+    },
+    "1280": {
+      "docW": 1280,
+      "viewport": [
+        1280,
+        720
+      ],
+      "title": "商品资料",
+      "selectedMenu": [
+        {
+          "text": "商品资料",
+          "href": "/masterdata/products",
+          "aria": "page",
+          "cls": "nav-link active"
+        }
+      ],
+      "tables": [
+        {
+          "i": 0,
+          "rect": [
+            281,
+            370,
+            958,
+            2802
+          ],
+          "clientW": 958,
+          "scrollW": 958,
+          "clientH": 2802,
+          "scrollH": 2802,
+          "cols": 9,
+          "rows": 50,
+          "lastHeader": "入口"
+        }
+      ],
+      "ph": [
+        {
+          "placeholder": "编号 / 中文 / 英文 / 海关编码",
+          "color": "rgb(107, 114, 128)",
+          "fontSize": "13px"
+        }
+      ],
+      "ctrlCount": 163,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "4",
+          "label": "通知",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1180,
+            16,
+            38,
+            38
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgba(0, 0, 0, 0)",
+          "color": "rgb(140, 143, 156)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "label": "系统设置",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1218,
+            16,
+            38,
+            38
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgba(0, 0, 0, 0)",
+          "color": "rgb(140, 143, 156)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": "编号 / 中文 / 英文 / 海关编码",
+          "value": "",
+          "disabled": false,
+          "rect": [
+            281,
+            257,
+            853,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": "combobox",
+          "text": "",
+          "label": "状态筛选",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1157,
+            262,
+            53,
+            26
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "label": "查询商品",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            750,
+            305,
+            36,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "新增商品",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            794,
+            305,
+            111,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(49, 91, 214)",
+          "color": "rgb(255, 255, 255)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "导入",
+          "label": "导入商品",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            913,
+            305,
+            85,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "导出",
+          "label": "导出全部商品",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1005,
+            305,
+            85,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "label": "设置列视图",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1098,
+            305,
+            36,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": "Select all",
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            381,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            421,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "UIQA-NAMES-01",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            321,
+            418,
+            107,
+            19
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgb(49, 91, 214)",
+          "color": "rgb(49, 91, 214)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "查看详情",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1137,
+            418,
+            67,
+            28
+          ],
+          "hit": true,
+          "fontSize": "12px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            475,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "UIQA-20261117-05-P47",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            321,
+            472,
+            154,
+            19
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgb(49, 91, 214)",
+          "color": "rgb(49, 91, 214)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "查看详情",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1137,
+            472,
+            67,
+            28
+          ],
+          "hit": true,
+          "fontSize": "12px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            530,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "UIQA-20261117-05-P46",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            321,
+            527,
+            155,
+            19
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgb(49, 91, 214)",
+          "color": "rgb(49, 91, 214)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "查看详情",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1137,
+            527,
+            67,
+            28
+          ],
+          "hit": true,
+          "fontSize": "12px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            585,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        }
+      ],
+      "headGaps": [
+        {
+          "t": "H1",
+          "text": "商品资料",
+          "rect": [
+            264,
+            27,
+            97,
+            32
+          ],
+          "fontSize": "24px"
+        },
+        {
+          "t": "H2",
+          "text": "商品资料",
+          "rect": [
+            308,
+            195,
+            73,
+            25
+          ],
+          "fontSize": "18px"
+        }
+      ]
+    },
+    "1440": {
+      "docW": 1440,
+      "viewport": [
+        1440,
+        900
+      ],
+      "title": "商品资料",
+      "selectedMenu": [
+        {
+          "text": "商品资料",
+          "href": "/masterdata/products",
+          "aria": "page",
+          "cls": "nav-link active"
+        }
+      ],
+      "tables": [
+        {
+          "i": 0,
+          "rect": [
+            281,
+            370,
+            1118,
+            2319
+          ],
+          "clientW": 1118,
+          "scrollW": 1118,
+          "clientH": 2319,
+          "scrollH": 2319,
+          "cols": 9,
+          "rows": 50,
+          "lastHeader": "入口"
+        }
+      ],
+      "ph": [
+        {
+          "placeholder": "编号 / 中文 / 英文 / 海关编码",
+          "color": "rgb(107, 114, 128)",
+          "fontSize": "13px"
+        }
+      ],
+      "ctrlCount": 163,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "4",
+          "label": "通知",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1340,
+            16,
+            38,
+            38
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgba(0, 0, 0, 0)",
+          "color": "rgb(140, 143, 156)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "label": "系统设置",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1378,
+            16,
+            38,
+            38
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgba(0, 0, 0, 0)",
+          "color": "rgb(140, 143, 156)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": "编号 / 中文 / 英文 / 海关编码",
+          "value": "",
+          "disabled": false,
+          "rect": [
+            281,
+            257,
+            1013,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": "combobox",
+          "text": "",
+          "label": "状态筛选",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1317,
+            262,
+            53,
+            26
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "label": "查询商品",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            910,
+            305,
+            36,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "新增商品",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            954,
+            305,
+            111,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(49, 91, 214)",
+          "color": "rgb(255, 255, 255)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "导入",
+          "label": "导入商品",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1073,
+            305,
+            85,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "导出",
+          "label": "导出全部商品",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1165,
+            305,
+            85,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "",
+          "label": "设置列视图",
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1258,
+            305,
+            36,
+            36
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": "Select all",
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            381,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            421,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "UIQA-NAMES-01",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            321,
+            418,
+            107,
+            19
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgb(49, 91, 214)",
+          "color": "rgb(49, 91, 214)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "查看详情",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1297,
+            418,
+            67,
+            28
+          ],
+          "hit": true,
+          "fontSize": "12px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            466,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "UIQA-20261117-05-P47",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            321,
+            463,
+            154,
+            19
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgb(49, 91, 214)",
+          "color": "rgb(49, 91, 214)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "查看详情",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1297,
+            463,
+            67,
+            28
+          ],
+          "hit": true,
+          "fontSize": "12px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            511,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "UIQA-20261117-05-P46",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            321,
+            508,
+            155,
+            19
+          ],
+          "hit": true,
+          "fontSize": "13px",
+          "border": "0px rgb(49, 91, 214)",
+          "color": "rgb(49, 91, 214)"
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "查看详情",
+          "label": null,
+          "placeholder": null,
+          "value": "",
+          "disabled": false,
+          "rect": [
+            1297,
+            508,
+            67,
+            28
+          ],
+          "hit": true,
+          "fontSize": "12px",
+          "border": "1px rgb(223, 227, 232)",
+          "color": "rgb(32, 36, 44)"
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "text": "",
+          "label": null,
+          "placeholder": null,
+          "value": "on",
+          "disabled": false,
+          "rect": [
+            289,
+            556,
+            16,
+            16
+          ],
+          "hit": true,
+          "fontSize": "14px",
+          "border": "0px rgba(0, 0, 0, 0.88)",
+          "color": "rgba(0, 0, 0, 0.88)"
+        }
+      ],
+      "headGaps": [
+        {
+          "t": "H1",
+          "text": "商品资料",
+          "rect": [
+            264,
+            27,
+            97,
+            32
+          ],
+          "fontSize": "24px"
+        },
+        {
+          "t": "H2",
+          "text": "商品资料",
+          "rect": [
+            308,
+            195,
+            73,
+            25
+          ],
+          "fontSize": "18px"
+        }
+      ]
+    }
+  },
+  "dropdown": {
+    "rect": {
+      "x": 1305,
+      "y": 296,
+      "width": 93.046875,
+      "height": 97.57278442382812,
+      "top": 296,
+      "right": 1398.046875,
+      "bottom": 393.5727844238281,
+      "left": 1305
+    },
+    "options": [
+      {
+        "text": "全部状态",
+        "selected": null,
+        "rect": {
+          "x": 1310,
+          "y": 300.60247802734375,
+          "width": 83.046875,
+          "height": 29.4559326171875,
+          "top": 300.60247802734375,
+          "right": 1393.046875,
+          "bottom": 330.05841064453125,
+          "left": 1310
+        }
+      },
+      {
+        "text": "启用",
+        "selected": null,
+        "rect": {
+          "x": 1310,
+          "y": 330.05841064453125,
+          "width": 83.046875,
+          "height": 29.4559326171875,
+          "top": 330.05841064453125,
+          "right": 1393.046875,
+          "bottom": 359.51434326171875,
+          "left": 1310
+        }
+      },
+      {
+        "text": "停用",
+        "selected": null,
+        "rect": {
+          "x": 1310,
+          "y": 359.51434326171875,
+          "width": 83.046875,
+          "height": 29.4559326171875,
+          "top": 359.51434326171875,
+          "right": 1393.046875,
+          "bottom": 388.97027587890625,
+          "left": 1310
+        }
+      }
+    ],
+    "style": "0.60249"
+  },
+  "inactiveRows": [
+    {
+      "i": 0,
+      "rect": [
+        281,
+        370,
+        1118,
+        85
+      ],
+      "clientW": 1118,
+      "scrollW": 1118,
+      "clientH": 85,
+      "scrollH": 85,
+      "cols": 9,
+      "rows": 1,
+      "lastHeader": "入口"
+    }
+  ],
+  "inactiveBody": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 商品资料 4 商品 1 配件明细 0 有图商品 0 件 商品资料 搜索 状态 停用 停用 新增商品 导入 导出 编号 中文名称 英文名称 海关编码 单位 状态 配件 入口 UIQA-20261117-05-P02 UIQA分页验收商品02 UIQA Paging Test Product 02 0000000000 pcs 停用 0 查看详情 共 1 条 1 50 条/页 active 全部状态 启用 停用",
+  "inactiveDetail": {
+    "url": "http://127.0.0.1:8080/masterdata/products/2fded9d3-11cd-4bb7-a6b5-b25d9d77dbed",
+    "title": "商品资料",
+    "body": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 商品资料 4 商品明细 返回列表 编辑商品 停用 商品图片 共 0 张 暂无图片 中文名称 UIQA分页验收商品02 英文名称 UIQA Paging Test Product 02 规格/型号 UIQA-SPEC-02 / UIQA-M02 海关编码 0000000000 税率/退税率 0% / 0% 状态 停用 包装资料 UIQA分页测试资料，不用于真实交易。 追加配件 配件名称 单耗 单位 默认供应商 采购拆分 操作 暂无数据 相关客户与交易 客户 合同数 累计数量 累计金额 最近合同 暂无关联客户，出口合同生成后自动汇总 业务记录 来源 单号 日期 往来方 数量 金额 摘要 暂无业务记录，报价/合同/出货/采购引用该商品后自动汇总"
+  },
+  "known": [
+    {
+      "i": 0,
+      "rect": [
+        281,
+        370,
+        1118,
+        85
+      ],
+      "clientW": 1118,
+      "scrollW": 1118,
+      "clientH": 85,
+      "scrollH": 85,
+      "cols": 9,
+      "rows": 1,
+      "lastHeader": "入口"
+    }
+  ],
+  "knownRows": [
+    "UIQA-NAMES-01"
+  ],
+  "empty": {
+    "url": "http://127.0.0.1:8080/masterdata/products?q=ZZZ-NO-SUCH",
+    "body": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 商品资料 4 商品 0 配件明细 0 有图商品 0 件 商品资料 搜索 状态 全部状态 新增商品 导入 导出 编号 中文名称 英文名称 海关编码 单位 状态 配件 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+    "buttons": [
+      "导航",
+      "4",
+      "新增商品",
+      "导入",
+      "导出",
+      "清空筛选"
+    ]
+  },
+  "clearLabel": "清空筛选",
+  "restored": {
+    "url": "http://127.0.0.1:8080/masterdata/products",
+    "rows": 50,
+    "total": "共 52 条",
+    "firstRow": " UIQA-NAMES-01 UIQA图片文件名验收 UIQA Image Name Test 0000000000 pcs 启用 0 查看详情"
+  },
+  "colMenu": {
+    "text": "✓ 编号 ✓ 中文名称 ✓ 英文名称 ✓ 海关编码 ✓ 单位 ✓ 状态 ✓ 配件 恢复默认",
+    "rect": {
+      "x": 1257,
+      "y": 344,
+      "width": 113.125,
+      "height": 275,
+      "top": 344,
+      "right": 1370.125,
+      "bottom": 619,
+      "left": 1257
+    },
+    "checkboxes": []
+  },
+  "notice": {
+    "text": "✓ 编号 ✓ 中文名称 ✓ 英文名称 ✓ 海关编码 ✓ 单位 ✓ 状态 ✓ 配件 恢复默认",
+    "rect": {
+      "x": 1257,
+      "y": 344,
+      "width": 113.125,
+      "height": 275,
+      "top": 344,
+      "right": 1370.125,
+      "bottom": 619,
+      "left": 1257
+    }
+  },
+  "page2": {
+    "url": "http://127.0.0.1:8080/masterdata/products?page=2",
+    "rows": 2,
+    "first": " QA261112 验收测试围巾 QA261112 Audit Scarf 6214300000 pcs 启用 0 查看详情",
+    "pager": "共 52 条 1 2 50 条/页"
+  },
+  "pageSizeOptions": null,
+  "detail": {
+    "url": "http://127.0.0.1:8080/masterdata/products/ec46eab8-76f1-4ba7-931c-da30a5b80d9b",
+    "title": "商品资料",
+    "body": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 商品资料 4 商品明细 返回列表 编辑商品 停用 商品图片 共 2 张 UIQA-C.png 主图 UIQA-A.png 中文名称 UIQA图片文件名验收 英文名称 UIQA Image Name Test 规格/型号 未填 / 未填 海关编码 0000000000 税率/退税率 13% / 9% 状态 启用 包装资料 箱装 追加配件 配件名称 单耗 单位 默认供应商 采购拆分 操作 暂无数据 相关客户与交易 客户 合同数 累计数量 累计金额 最近合同 暂无关联客户，出口合同生成后自动汇总 业务记录 来源 单号 日期 往来方 数量 金额 摘要 暂无业务记录，报价/合同/出货/采购引用该商品后自动汇总",
+    "images": [
+      {
+        "alt": "UIQA图片文件名验收 图片 第 1 张 UIQA-C.png",
+        "src": "c39a13db84724ea8a9554f659c80f24a-9a97d538604d5753.png",
+        "rect": {
+          "x": 295,
+          "y": 191.59375,
+          "width": 96.6640625,
+          "height": 96.6640625,
+          "top": 191.59375,
+          "right": 391.6640625,
+          "bottom": 288.2578125,
+          "left": 295
+        }
+      },
+      {
+        "alt": "UIQA图片文件名验收 图片 第 2 张 UIQA-A.png",
+        "src": "57894f35b99d40ce874433f2f01835cd-39245e8609e4b0b9.png",
+        "rect": {
+          "x": 403.6640625,
+          "y": 191.59375,
+          "width": 96.6640625,
+          "height": 96.6640625,
+          "top": 191.59375,
+          "right": 500.328125,
+          "bottom": 288.2578125,
+          "left": 403.6640625
+        }
+      }
+    ],
+    "buttons": [
+      "导航",
+      "4",
+      "返回列表",
+      "编辑商品",
+      "停用",
+      "追加配件"
+    ]
+  },
+  "shots": [
+    "P01-acc-list-1440",
+    "P01-acc-list-1280",
+    "P01-acc-list-390",
+    "P01-acc-status-open",
+    "P01-acc-filter-inactive-1440",
+    "P01-acc-detail-inactive-1440",
+    "P01-acc-empty-1440",
+    "P01-acc-restored-1440",
+    "P01-acc-columns-1440",
+    "P01-acc-notice-1440",
+    "P01-acc-page2-1440",
+    "P01-acc-detail-1440"
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "detailBefore": {
+    "url": "http://127.0.0.1:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+    "count": "共 2 张",
+    "items": [],
+    "alt": [
+      "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 图片 第 1 张 ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 图片 第 2 张 be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png"
+    ],
+    "body": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 商品资料 4 商品明细 返回列表 编辑商品 停用 商品图片 共 2 张 ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png 主图 be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png 中文名称 UIQA全量验收专用长名称商品｜棉"
+  },
+  "preview": {
+    "alt": "",
+    "src": "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+    "natural": [
+      640,
+      480
+    ],
+    "rect": {
+      "x": 430,
+      "y": 161.5,
+      "width": 640,
+      "height": 480,
+      "top": 161.5,
+      "right": 1070,
+      "bottom": 641.5,
+      "left": 430
+    },
+    "mask": {
+      "x": 0,
+      "y": 0,
+      "width": 1500,
+      "height": 803,
+      "top": 0,
+      "right": 1500,
+      "bottom": 803,
+      "left": 0
+    },
+    "buttons": [
+      "",
+      "",
+      "",
+      "flipY",
+      "flipX",
+      "rotateLeft",
+      "rotateRight",
+      "zoomOut",
+      "zoomIn"
+    ]
+  },
+  "previewClosed": true,
+  "initial": [
+    {
+      "name": "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "alt": "商品图片预览",
+      "primary": true,
+      "src": "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "countText": "共 2 张"
+    },
+    {
+      "name": "be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png",
+      "alt": "商品图片预览",
+      "primary": false,
+      "src": "be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png",
+      "countText": "共 2 张"
+    }
+  ],
+  "afterAppend": [
+    {
+      "name": "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "alt": "商品图片预览",
+      "primary": true,
+      "src": "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "countText": "共 3 张"
+    },
+    {
+      "name": "be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png",
+      "alt": "商品图片预览",
+      "primary": false,
+      "src": "be0bd5a7f666460b945ebfdce1620f78-39245e8609e4b0b9.png",
+      "countText": "共 3 张"
+    },
+    {
+      "name": "UIQA-B.png",
+      "alt": "商品图片预览",
+      "primary": false,
+      "src": "e3a8570a39724927a85cc4eb3af52939-b1d10b7f82aad09e.png",
+      "countText": "共 3 张"
+    }
+  ],
+  "afterRemove": [
+    {
+      "name": "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "alt": "商品图片预览",
+      "primary": true,
+      "src": "ddd1d15209c74ff08538049c23b3f033-9a97d538604d5753.png",
+      "countText": "共 2 张"
+    },
+    {
+      "name": "UIQA-B.png",
+      "alt": "商品图片预览",
+      "primary": false,
+      "src": "e3a8570a39724927a85cc4eb3af52939-b1d10b7f82aad09e.png",
+      "countText": "共 2 张"
+    }
+  ],
+  "afterReplace": [
+    {
+      "name": "UIQA-A.png",
+      "alt": "商品图片预览",
+      "primary": true,
+      "src": "5f477acdb93d4c9f9170636f2b59c28a-39245e8609e4b0b9.png",
+      "countText": "共 2 张"
+    },
+    {
+      "name": "UIQA-B.png",
+      "alt": "商品图片预览",
+      "primary": false,
+      "src": "e3a8570a39724927a85cc4eb3af52939-b1d10b7f82aad09e.png",
+      "countText": "共 2 张"
+    }
+  ],
+  "afterRemoveFirst": [
+    {
+      "name": "UIQA-B.png",
+      "alt": "商品图片预览",
+      "primary": true,
+      "src": "e3a8570a39724927a85cc4eb3af52939-b1d10b7f82aad09e.png",
+      "countText": "共 1 张"
+    }
+  ],
+  "beforeSave": [
+    {
+      "name": "UIQA-B.png",
+      "alt": "商品图片预览",
+      "primary": true,
+      "src": "e3a8570a39724927a85cc4eb3af52939-b1d10b7f82aad09e.png",
+      "countText": "共 2 张"
+    },
+    {
+      "name": "UIQA-C.png",
+      "alt": "商品图片预览",
+      "primary": false,
+      "src": "694aa83e2302416ca315dfe4eb98738f-9a97d538604d5753.png",
+      "countText": "共 2 张"
+    }
+  ],
+  "afterSave": {
+    "url": "http://127.0.0.1:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+    "dialogOpen": false,
+    "toast": []
+  },
+  "detailAfter": {
+    "url": "http://127.0.0.1:8080/masterdata/products/0de270b6-67e9-41fc-be47-6da47f8703ac",
+    "count": "共 2 张",
+    "items": [],
+    "alt": [
+      "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 图片 第 1 张 UIQA-B.png",
+      "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 图片 第 2 张 UIQA-C.png"
+    ],
+    "body": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 商品资料 4 商品明细 返回列表 编辑商品 停用 商品图片 共 2 张 UIQA-B.png 主图 UIQA-C.png 中文名称 UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 英文名称 UIQA Full Acceptance Cotton Linen Storage Bag 规格/型号 未填 / 未填 海关编码 "
+  },
+  "api": {
+    "names": [
+      "UIQA-B.png",
+      "UIQA-C.png"
+    ],
+    "urls": [
+      "e3a8570a39724927a85cc4eb3af52939-b1d10b7f82aad09e.png",
+      "694aa83e2302416ca315dfe4eb98738f-9a97d538604d5753.png"
+    ]
+  },
+  "detail390": {
+    "docW": 390,
+    "items": []
+  }
+}

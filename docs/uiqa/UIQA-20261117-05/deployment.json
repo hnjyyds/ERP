@@ -39,8 +39,25 @@
       "q05_06_empty_states": "q05-06-empty-states-reverify-20261118.json",
       "q05_07_image_names": "q05-07-image-names-reverify-20261118.json",
       "q05_14_enum_labels": "q05-14-enum-labels-reverify-20261118.json",
-      "viewports": ["1440x900", "1280x720", "390x844"],
-      "matrix": "42页48项验收矩阵-index-Bpsh7zKB.csv"
+      "viewports": [
+        "1440x900",
+        "1280x720",
+        "390x844"
+      ],
+      "matrix": "42页48项验收矩阵-index-Bpsh7zKB.csv",
+      "page_acceptance": "page-acceptance/summary-20261118.json",
+      "page_acceptance_matrix": "42页48项验收矩阵-index-Bpsh7zKB-整页验收.csv",
+      "page_results": {
+        "PAGE-01": "26通过/3不适用/12部分/4失败/3未测/未签收",
+        "PAGE-09": "6/7/20/3/12/未签收",
+        "PAGE-24": "10/7/17/1/13/未签收"
+      },
+      "new_defects": [
+        "Q05-30",
+        "Q05-31",
+        "Q05-32",
+        "Q05-33"
+      ]
     }
   }
 ]

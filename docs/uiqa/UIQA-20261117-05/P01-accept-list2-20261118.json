@@ -1,0 +1,811 @@
+{
+  "api": {
+    "status": 401,
+    "count": 0,
+    "withImages": []
+  },
+  "cards": [
+    "52",
+    "3",
+    "4"
+  ],
+  "heads": [
+    "",
+    "编号",
+    "中文名称",
+    "英文名称",
+    "海关编码",
+    "单位",
+    "状态",
+    "配件",
+    "入口"
+  ],
+  "menuVisible": true,
+  "toggled": null,
+  "headsNoEn": [
+    "",
+    "编号",
+    "中文名称",
+    "英文名称",
+    "海关编码",
+    "单位",
+    "状态",
+    "配件",
+    "入口"
+  ],
+  "headsRestored": [
+    "",
+    "编号",
+    "中文名称",
+    "英文名称",
+    "海关编码",
+    "单位",
+    "状态",
+    "配件",
+    "入口"
+  ],
+  "notice": [
+    {
+      "text": "通知 全部已读 采购跟单提醒 采购合同 PC-HR36RU 的跟单节点「确认样提交日期」已逾期 3 天，请尽快更新进度 审批通知 演示财务主管 已审批通过付款 PR-PG3X2P 采购跟单提醒 采购合同 PC-HR36RU 的跟单节点「确认样提交日期」已逾期 2 天，请尽快更新进度 采购跟单提醒 采购合同 PC-HR36RU 的跟单节点「确认样提交日期」已逾期 1 天，请尽快更新进度 审批通知 演示业务主管 已审批通过出口报价 QT-A33KVZ 查看全部消息",
+      "rect": {
+        "x": 1094,
+        "y": 66,
+        "width": 344,
+        "height": 360.8515625,
+        "top": 66,
+        "right": 1438,
+        "bottom": 426.8515625,
+        "left": 1094
+      }
+    }
+  ],
+  "sizeOpen": false,
+  "sizeOpts": [],
+  "sizeApplied": null,
+  "headerState": [
+    {
+      "t": "",
+      "sort": null
+    },
+    {
+      "t": "编号",
+      "sort": null
+    },
+    {
+      "t": "中文名称",
+      "sort": null
+    },
+    {
+      "t": "英文名称",
+      "sort": null
+    },
+    {
+      "t": "海关编码",
+      "sort": null
+    },
+    {
+      "t": "单位",
+      "sort": null
+    },
+    {
+      "t": "状态",
+      "sort": null
+    },
+    {
+      "t": "配件",
+      "sort": null
+    },
+    {
+      "t": "入口",
+      "sort": null
+    }
+  ],
+  "dropdown": [
+    [
+      93,
+      103,
+      "0.876831"
+    ],
+    [
+      93,
+      106,
+      "1"
+    ]
+  ],
+  "focusAfterEsc": {
+    "tag": "INPUT",
+    "label": "状态筛选",
+    "value": ""
+  },
+  "scrollStart": {
+    "left": 0,
+    "max": 432,
+    "header": "入口"
+  },
+  "scrollEnd": {
+    "left": 432,
+    "max": 432,
+    "lastHeaderLeft": 255.0625,
+    "lastHeaderRight": 359,
+    "vw": 390
+  },
+  "mobileButtons": [
+    {
+      "text": "导航",
+      "w": 84,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "4",
+      "w": 44,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "系统设置",
+      "w": 44,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "查询商品",
+      "w": 50,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "新增商品",
+      "w": 111,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "导入",
+      "w": 85,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "导出",
+      "w": 85,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "设置列视图",
+      "w": 50,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "UIQA-NAMES-01",
+      "w": 107,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": true
+    },
+    {
+      "text": "UIQA-20261117-05-P47",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P46",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P45",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P44",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P43",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P42",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P41",
+      "w": 152,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P40",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P39",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P38",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P37",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P36",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P35",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P34",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P33",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P32",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P31",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P30",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P29",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P28",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P27",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P26",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P25",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P24",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P23",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P22",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P21",
+      "w": 152,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P20",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P19",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P18",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P17",
+      "w": 152,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P16",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P15",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P14",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P13",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P12",
+      "w": 152,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P11",
+      "w": 151,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P10",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P09",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P08",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P07",
+      "w": 154,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P06",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P05",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P04",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P03",
+      "w": 155,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UIQA-20261117-05-P01",
+      "w": 153,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UI261114-IMG",
+      "w": 90,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UI261114-IMG01",
+      "w": 106,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "UI261114-P01",
+      "w": 89,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "查看详情",
+      "w": 67,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "",
+      "w": 24,
+      "h": 44,
+      "hit": false
+    },
+    {
+      "text": "",
+      "w": 24,
+      "h": 44,
+      "hit": false
+    }
+  ],
+  "kb": {
+    "tab1": {
+      "tag": "INPUT",
+      "label": "状态筛选",
+      "role": "combobox"
+    },
+    "tab0": {
+      "tag": "INPUT",
+      "placeholder": "编号 / 中文 / 英文 / 海关编码"
+    },
+    "kbResult": {
+      "url": "http://127.0.0.1:8080/masterdata/products?q=UIQA-NAMES-01",
+      "rows": 1,
+      "first": " UIQA-NAMES-01 UIQA图片文件名验收 UIQA Image Name Test 0000000000 pcs 启用 0 查看详情"
+    }
+  },
+  "tokens": []
+}
