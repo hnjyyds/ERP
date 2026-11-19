@@ -1,11 +1,11 @@
 {
-  "task_space": 36,
+  "task_space": 42,
   "page": "p1",
   "bundle": "index-jJamVJA9.js",
-  "phase": "本批4项修复完成并三档复验关闭；Q05-33经0023修正后关闭",
+  "phase": "P02–P05基础资料48项整页验收完成；Q05-34/Q05-35新登记开放",
   "status": "in_progress",
-  "main_pages_completed": [],
-  "next": "前端index-jJamVJA9.js + 后端0023_shipment_finance_misc_fees：Q05-33（应收-应付+同币种退税-同币种杂费，利润率分母统一应收）、Q05-32网络文案、Q05-30手机点击区域、Q05-07大图预览文件名均已复验关闭；32项全部关闭；P01/P09/P24仍0页签收；下一批其余39页",
+  "main_pages_completed": ["PAGE-02","PAGE-03","PAGE-04","PAGE-05"],
+  "next": "7页已逐项判定、0页签收；本轮新登记Q05-34（P02–P05加载失败误示首录空态）与Q05-35（P05负责人显示内部ID）；下一批继续其余35页，P26/P27/P31按finance-impact-checklist-20261119.md验财务修复影响面",
   "authorizations": [
     "全站只读",
     "补充UIQA测试资料",
@@ -14,7 +14,7 @@
     "用户明确允许W-FIN-01 CNY0.01付款闭环",
     "用户明确允许自取自用测试账号凭据登录；只读DB哈希核对，不修改账号权限"
   ],
-  "open_defects": [],
+  "open_defects": ["Q05-34","Q05-35"],
   "data_changes": [
     "新增商品 UIQA-NAMES-01 / ec46eab8-76f1-4ba7-931c-da30a5b80d9b，上传UIQA-C.png、UIQA-A.png，用于Q05-07文件名持久化复验",
     "新增商品 UIQA-20261117-05-P01 / 0de270b6-67e9-41fc-be47-6da47f8703ac",
@@ -34,7 +34,9 @@
     "UIQA-20261117-05-P01图片经追加B、移除次图、A替换首图、移除首图、追加C并保存，最终顺序UIQA-B.png/UIQA-C.png，B为主图",
     "迁移0022按应收-应付+已登记退税重算全部出货单；因漏计同币种杂费且把利润率分母改为应收+退税，SP-DAEPEG被错误改为215.00/100.00%，Q05-33随之重开，该迁移保留为变更前对账",
     "迁移0023按应收-应付+同币种退税-同币种杂费重算全部存量出货单，利润率分母统一为应收；SP-DAEPEG恢复210.00/102.44%",
-    "退税登记与杂费分摊写入均改为调用ShipmentPlanRepository.refresh_finance整体重算，不再增量加减利润"
+    "退税登记与杂费分摊写入均改为调用ShipmentPlanRepository.refresh_finance整体重算，不再增量加减利润",
+    "P03整页验收逐字段填写时误触发保存，新增客户 UIQA-ACC-P03 / e6fc7060-51ad-49f8-acdc-98446e555ada（验收资料P03，启用），未在UI删除",
+    "P04整页验收逐字段填写时误触发保存，新增合作伙伴 UIQA-ACC-P04 / 2197afaf-8e79-4586-b022-43f4ae00b563（验收资料P04，启用），未在UI删除"
   ],
   "helpers": [
     "/tmp/full-harness.mjs",
@@ -69,7 +71,10 @@
     "部署样式实际为index-aRStlGe6.css，deployment.json与ledger-summary已更正",
     "Q05-31已合并至Q05-07，Q05-31编号保留不单独计数；去重后32项",
     "Q05-33曾重开为31关闭/1开放，0023修正杂费来源与利润率分母后关闭；0022已部署记录保留，不删除",
-    "利润率统一以应收为分母，与经营总览一致；不按页面改定义，也不做100%截断"
+    "利润率统一以应收为分母，与经营总览一致；不按页面改定义，也不做100%截断",
+    "P02–P05加载失败均显示首录/暂无数据空态+网络toast，无重试；登记Q05-34，不并入已关闭的Q05-28",
+    "P05详情负责人显示内部ID u-baeac30b5127ebdb；登记Q05-35",
+    "基础资料验收证据为P02/P03/P04/P05-accept-20261119.json、P02-P05-nav-size/inactive JSON与被引用截图"
   ],
   "spreadsheet_authoring": {
     "skill": "spreadsheets已完整读取",
@@ -110,5 +115,5 @@
   },
   "offline_ledger_summary": "ledger-summary.json",
   "offline_integrity": "ledger-integrity-check.json",
-  "updated_at": "2026-11-19T04:10:00+00:00"
+  "updated_at": "2026-11-19T07:30:00+00:00"
 }

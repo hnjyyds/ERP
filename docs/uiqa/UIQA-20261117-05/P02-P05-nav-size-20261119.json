@@ -1,0 +1,195 @@
+{
+  "at": "2026-11-19T07:22:08.844Z",
+  "nav": {
+    "P02": {
+      "url": "http://127.0.0.1:8080/masterdata/suppliers",
+      "h1": "供应商资料",
+      "expect": "供应商资料",
+      "menuSelected": [
+        "供应商资料"
+      ],
+      "clicked": true
+    },
+    "P03": {
+      "url": "http://127.0.0.1:8080/masterdata/customers",
+      "h1": "客户资料和订单要求",
+      "expect": "客户资料和订单要求",
+      "menuSelected": [
+        "客户资料"
+      ],
+      "clicked": true
+    },
+    "P04": {
+      "url": "http://127.0.0.1:8080/masterdata/partners",
+      "h1": "合作伙伴",
+      "expect": "合作伙伴",
+      "menuSelected": [
+        "合作伙伴"
+      ],
+      "clicked": true
+    },
+    "P05": {
+      "url": "http://127.0.0.1:8080/masterdata/document-parties",
+      "h1": "单证资料",
+      "expect": "单证资料",
+      "menuSelected": [
+        "单证资料"
+      ],
+      "clicked": true
+    }
+  },
+  "sizes": {
+    "P02": {
+      "vw": 1280,
+      "docW": 1280,
+      "vw390": 390,
+      "docW390": 390,
+      "pager": {
+        "item": {
+          "x": 265,
+          "y": 831.765625,
+          "width": 46,
+          "height": 44,
+          "top": 831.765625,
+          "right": 311,
+          "bottom": 875.765625,
+          "left": 265
+        },
+        "prev": {
+          "x": 217,
+          "y": 831.765625,
+          "width": 44,
+          "height": 44,
+          "top": 831.765625,
+          "right": 261,
+          "bottom": 875.765625,
+          "left": 217
+        },
+        "next": {
+          "x": 315,
+          "y": 831.765625,
+          "width": 44,
+          "height": 44,
+          "top": 831.765625,
+          "right": 359,
+          "bottom": 875.765625,
+          "left": 315
+        }
+      }
+    },
+    "P03": {
+      "vw": 1280,
+      "docW": 1280,
+      "vw390": 390,
+      "docW390": 390,
+      "pager": {
+        "item": {
+          "x": 265,
+          "y": 853.203125,
+          "width": 46,
+          "height": 44,
+          "top": 853.203125,
+          "right": 311,
+          "bottom": 897.203125,
+          "left": 265
+        },
+        "prev": {
+          "x": 217,
+          "y": 853.203125,
+          "width": 44,
+          "height": 44,
+          "top": 853.203125,
+          "right": 261,
+          "bottom": 897.203125,
+          "left": 217
+        },
+        "next": {
+          "x": 315,
+          "y": 853.203125,
+          "width": 44,
+          "height": 44,
+          "top": 853.203125,
+          "right": 359,
+          "bottom": 897.203125,
+          "left": 315
+        }
+      }
+    },
+    "P04": {
+      "vw": 1280,
+      "docW": 1280,
+      "vw390": 390,
+      "docW390": 390,
+      "pager": {
+        "item": {
+          "x": 265,
+          "y": 853.203125,
+          "width": 46,
+          "height": 44,
+          "top": 853.203125,
+          "right": 311,
+          "bottom": 897.203125,
+          "left": 265
+        },
+        "prev": {
+          "x": 217,
+          "y": 853.203125,
+          "width": 44,
+          "height": 44,
+          "top": 853.203125,
+          "right": 261,
+          "bottom": 897.203125,
+          "left": 217
+        },
+        "next": {
+          "x": 315,
+          "y": 853.203125,
+          "width": 44,
+          "height": 44,
+          "top": 853.203125,
+          "right": 359,
+          "bottom": 897.203125,
+          "left": 315
+        }
+      }
+    },
+    "P05": {
+      "vw": 1280,
+      "docW": 1280,
+      "vw390": 390,
+      "docW390": 390,
+      "pager": {
+        "item": {
+          "x": 265,
+          "y": 941.546875,
+          "width": 46,
+          "height": 44,
+          "top": 941.546875,
+          "right": 311,
+          "bottom": 985.546875,
+          "left": 265
+        },
+        "prev": {
+          "x": 217,
+          "y": 941.546875,
+          "width": 44,
+          "height": 44,
+          "top": 941.546875,
+          "right": 261,
+          "bottom": 985.546875,
+          "left": 217
+        },
+        "next": {
+          "x": 315,
+          "y": 941.546875,
+          "width": 44,
+          "height": 44,
+          "top": 941.546875,
+          "right": 359,
+          "bottom": 985.546875,
+          "left": 315
+        }
+      }
+    }
+  }
+}

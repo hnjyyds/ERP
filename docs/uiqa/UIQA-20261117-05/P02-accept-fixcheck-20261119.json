@@ -1,0 +1,91 @@
+{
+  "at": "2026-11-19T07:19:22.462Z",
+  "v0": {
+    "errors": [
+      "请填写编号"
+    ],
+    "focus": {
+      "id": "partner-field-code",
+      "invalid": "true",
+      "desc": "partner-field-code-error"
+    }
+  },
+  "v1": {
+    "errors": [
+      "请填写中文名称"
+    ],
+    "focus": {
+      "id": "partner-field-cn_name",
+      "invalid": "true",
+      "desc": "partner-field-cn_name-error"
+    }
+  },
+  "v2": {
+    "errors": [
+      "请填写英文名称"
+    ],
+    "focus": {
+      "id": "partner-field-en_name",
+      "invalid": "true",
+      "desc": "partner-field-en_name-error"
+    }
+  },
+  "v3": {
+    "errors": [
+      "请填写国家/地区"
+    ],
+    "focus": {
+      "id": "partner-field-country",
+      "invalid": "true",
+      "desc": "partner-field-country-error"
+    }
+  },
+  "filled": {
+    "text": "编号 * 中文名称 * 英文名称 * 国家/地区 * 状态 启用 网站 地址 信用资料 信用等级 A 授信额度 币种 账期 风险备注 首个联系人 姓名 职务 邮箱 电话 主要联系人 取消 新增供应商",
+    "values": [
+      "UIQA-ACC-P02",
+      "验收供应商",
+      "Acceptance Supplier",
+      "中国"
+    ]
+  },
+  "failText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 供应商资料 5 供应商 0 启用 0 联系人 0 有信用资料 0 供应商资料 搜索 新增供应商 编号 中文名称 英文名称 国家/地区 联系人 状态 入口 还没有供应商资料 点击“新增供应商”建立第一条资料，之后可在这里搜索和维护 去新增供应商 网络连接异常，请检查网络后重试",
+  "recovered": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 商品资料 供应商资料 客户资料 合作伙伴 单证资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 供应商资料 5 供应商 3 启用 2 联系人 4 有信用资料 3 供应商资料 搜索 新增供应商 编号 中文名称 英文名称 国家/地区 联系人 状态 入口 UIQA-20261117-05-S01 UIQA全量验收停用供应商样本 UIQA Inactive Supplier Test Record CN UIQA测试联系人 停用 查看详情 UI261114-S01 演示供应商｜江南织造 Demo Jiangnan Textile 中国 演示联系人李先生 启用 查看详情 QA261112-S01 QA261112 测试供应商 QA261112 Supplier CN QA261112 联系人 启用 查看详情 共 3 条 1 50 条/页",
+  "retryBtn": null,
+  "mobileContact": {
+    "docW": 390,
+    "label": {
+      "text": "设为主要联系人",
+      "r": {
+        "x": 60,
+        "y": 545.2265625,
+        "width": 270,
+        "height": 45,
+        "top": 545.2265625,
+        "right": 330,
+        "bottom": 590.2265625,
+        "left": 60
+      }
+    },
+    "checkbox": {
+      "x": 60,
+      "y": 559.7265625,
+      "width": 16,
+      "height": 16,
+      "top": 559.7265625,
+      "right": 76,
+      "bottom": 575.7265625,
+      "left": 60
+    },
+    "dialog": {
+      "x": 8,
+      "y": 106.78125,
+      "width": 374,
+      "height": 630.4453125,
+      "top": 106.78125,
+      "right": 382,
+      "bottom": 737.2265625,
+      "left": 8
+    }
+  }
+}

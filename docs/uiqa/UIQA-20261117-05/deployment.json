@@ -109,7 +109,15 @@
     "page_acceptance_meta": {
       "baseline_bundle": "assets/index-Bpsh7zKB.js",
       "reverify_bundle": "assets/index-jJamVJA9.js",
-      "backend_migration": "0023_shipment_finance_misc_fees"
+      "backend_migration": "0023_shipment_finance_misc_fees",
+      "pages": {
+        "PAGE-02": "14通过/9不适用/20部分/1失败/4未测/未签收",
+        "PAGE-03": "14/9/20/1/4/未签收",
+        "PAGE-04": "14/9/20/1/4/未签收",
+        "PAGE-05": "12/8/22/2/4/未签收"
+      },
+      "new_defects": ["Q05-34", "Q05-35"],
+      "finance_impact_checklist": "page-acceptance/finance-impact-checklist-20261119.md"
     }
   }
 ]

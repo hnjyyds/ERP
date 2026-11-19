@@ -72,6 +72,18 @@
     "partial_fixes": 1,
     "pages_signed_off": 0
   },
+  "p02_p05_batch": {
+    "checked_at": "2026-11-19T07:30:00+00:00",
+    "pages": ["PAGE-02", "PAGE-03", "PAGE-04", "PAGE-05"],
+    "rows": 192,
+    "rows_per_page": 48,
+    "json_valid": true,
+    "missing_evidence": [],
+    "broken_markdown_links": 0,
+    "defects_new": ["Q05-34", "Q05-35"],
+    "pages_signed_off": 0,
+    "note": "四页各48行，计数均合计48；未测均写明具体原因；加载失败与内部ID两项新缺陷保留开放"
+  },
   "third_reverify": {
     "checked_markdown_files": 3,
     "relative_links_checked": 120,

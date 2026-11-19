@@ -15,7 +15,7 @@
     "未测": 47
   },
   "pages": 42,
-  "defects": 32,
+  "defects": 34,
   "normative_rows": 2016,
   "normative_results": {
     "未测": 1870,
@@ -39,13 +39,13 @@
     "通过（仅限手动输入/显示）": 2
   },
   "whole_pages_passed": 0,
-  "status": "P01/P09/P24仍0页签收（部分通过/未测保留）；Q05-33重开后经迁移0023修正关闭，32项全部关闭；前端index-jJamVJA9.js、后端0023_shipment_finance_misc_fees",
+  "status": "P01/P02/P03/P04/P05/P09/P24共7页已逐项判定、0页签收；Q05-33经0023修正关闭；基础资料验收新登记Q05-34/Q05-35，当前32关闭+2开放；前端index-jJamVJA9.js、后端0023_shipment_finance_misc_fees",
   "defect_status": {
     "closed": 32,
     "pending_reverify": 0,
-    "open": 0,
-    "total": 32,
-    "note": "Q05-31已合并至Q05-07不单独计数；Q05-33曾重开（31关闭/1开放），0023修正杂费来源与利润率分母后关闭；变更前0022记录保留"
+    "open": 2,
+    "total": 34,
+    "note": "Q05-31已合并至Q05-07不单独计数；Q05-33重开后经0023修正关闭；Q05-34（P02–P05加载失败误示首录空态）与Q05-35（P05负责人显示内部ID）为2026-11-19基础资料验收新登记，保持开放"
   },
   "deployment": {
     "frontend_commit": "449aaa0a",
@@ -177,14 +177,53 @@
         "fail": 0,
         "untested": 13,
         "signed": false
+      },
+      "PAGE-02": {
+        "name": "供应商资料",
+        "pass": 14,
+        "na": 9,
+        "partial": 20,
+        "fail": 1,
+        "untested": 4,
+        "signed": false
+      },
+      "PAGE-03": {
+        "name": "客户资料",
+        "pass": 14,
+        "na": 9,
+        "partial": 20,
+        "fail": 1,
+        "untested": 4,
+        "signed": false
+      },
+      "PAGE-04": {
+        "name": "合作伙伴",
+        "pass": 14,
+        "na": 9,
+        "partial": 20,
+        "fail": 1,
+        "untested": 4,
+        "signed": false
+      },
+      "PAGE-05": {
+        "name": "单证资料",
+        "pass": 12,
+        "na": 8,
+        "partial": 22,
+        "fail": 2,
+        "untested": 4,
+        "signed": false
       }
     },
     "new_defects": [
       "Q05-07",
       "Q05-30",
       "Q05-32",
-      "Q05-33"
+      "Q05-33",
+      "Q05-34",
+      "Q05-35"
     ],
+    "finance_impact_checklist": "page-acceptance/finance-impact-checklist-20261119.md",
     "matrix": "42页48项验收矩阵-index-Bpsh7zKB-整页验收.csv",
     "merged_records": {
       "Q05-31": "Q05-07"
