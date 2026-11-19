@@ -1,0 +1,500 @@
+{
+  "page": "PAGE-06",
+  "at": "2026-11-19T07:57:39.575Z",
+  "list1440": {
+    "url": "http://127.0.0.1:8080/sales/quotations",
+    "h1": "出口报价",
+    "heads": [
+      "报价单号",
+      "状态",
+      "客户",
+      "贸易条款",
+      "金额",
+      "合同",
+      "入口"
+    ],
+    "rows": [
+      "QT-A33KVZ 已生成合同 QA261112 测试客户 FOB Ningbo USD 50.00 EC-5FW46R 查看详情"
+    ],
+    "stats": [
+      {
+        "n": "5",
+        "p": "5"
+      },
+      {
+        "n": "1",
+        "p": "报价单 1"
+      },
+      {
+        "n": "0",
+        "p": "待审批 0"
+      },
+      {
+        "n": "1",
+        "p": "已审批 1"
+      },
+      {
+        "n": "1",
+        "p": "1"
+      }
+    ],
+    "tableText": "报价单号 状态 客户 贸易条款 金额 合同 入口 QT-A33KVZ 已生成合同 QA261112 测试客户 FOB Ningbo USD 50.00 EC-5FW46R 查看详情",
+    "buttons": [
+      "5",
+      "查询",
+      "新增出口报价",
+      "QT-A33KVZ",
+      "查看详情"
+    ]
+  },
+  "bundle": "http://127.0.0.1:8080/assets/index-jJamVJA9.js",
+  "searchKnown": {
+    "url": "http://127.0.0.1:8080/sales/quotations?q=QT-A33KVZ",
+    "h1": "出口报价",
+    "heads": [
+      "报价单号",
+      "状态",
+      "客户",
+      "贸易条款",
+      "金额",
+      "合同",
+      "入口"
+    ],
+    "rows": [
+      "QT-A33KVZ 已生成合同 QA261112 测试客户 FOB Ningbo USD 50.00 EC-5FW46R 查看详情"
+    ],
+    "stats": [
+      {
+        "n": "5",
+        "p": "5"
+      },
+      {
+        "n": "1",
+        "p": "报价单 1"
+      },
+      {
+        "n": "0",
+        "p": "待审批 0"
+      },
+      {
+        "n": "1",
+        "p": "已审批 1"
+      },
+      {
+        "n": "1",
+        "p": "1"
+      }
+    ],
+    "tableText": "报价单号 状态 客户 贸易条款 金额 合同 入口 QT-A33KVZ 已生成合同 QA261112 测试客户 FOB Ningbo USD 50.00 EC-5FW46R 查看详情",
+    "buttons": [
+      "5",
+      "查询",
+      "新增出口报价",
+      "QT-A33KVZ",
+      "查看详情"
+    ]
+  },
+  "searchEmpty": {
+    "state": {
+      "url": "http://127.0.0.1:8080/sales/quotations?q=ZZZ-NO",
+      "h1": "出口报价",
+      "heads": [
+        "报价单号",
+        "状态",
+        "客户",
+        "贸易条款",
+        "金额",
+        "合同",
+        "入口"
+      ],
+      "rows": [
+        "没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选"
+      ],
+      "stats": [
+        {
+          "n": "5",
+          "p": "5"
+        },
+        {
+          "n": "0",
+          "p": "报价单 0"
+        },
+        {
+          "n": "0",
+          "p": "待审批 0"
+        },
+        {
+          "n": "0",
+          "p": "已审批 0"
+        }
+      ],
+      "tableText": "报价单号 状态 客户 贸易条款 金额 合同 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+      "buttons": [
+        "5",
+        "查询",
+        "新增出口报价",
+        "清空筛选"
+      ]
+    },
+    "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口报价 5 报价单 0 待审批 0 已审批 0 报价金额 USD 0 报价单列表 报价搜索 审批状态 全部状态 客户筛选 从客户资料筛选 查询 新增出口报价 报价单号 状态 客户 贸易条款 金额 合同 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选"
+  },
+  "filters": [
+    [
+      "全部状态",
+      "草稿",
+      "待审批",
+      "已审批",
+      "已生成合同"
+    ],
+    [
+      "UIQA-ACC-P03 / 验收资料P03 / 中国",
+      "UI261114-C01 / 演示客户｜海湾家居贸易 / 荷兰",
+      "QA261112-C01 / QA261112 测试客户 / DE"
+    ],
+    [
+      "20 条/页",
+      "50 条/页",
+      "100 条/页"
+    ]
+  ],
+  "createInitial": {
+    "title": "新增或编辑出口报价",
+    "rect": {
+      "x": 628,
+      "y": 511.9750061035156,
+      "width": 184,
+      "height": 205.98751831054688,
+      "top": 511.9750061035156,
+      "right": 812,
+      "bottom": 717.9625244140625,
+      "left": 628
+    },
+    "inputs": [
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "系统自动生成",
+        "readOnly": true,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "报价单号"
+      },
+      {
+        "tag": "INPUT",
+        "type": "date",
+        "value": "2026-11-19",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "报价日期"
+      },
+      {
+        "tag": "INPUT",
+        "type": "search",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "选择客户"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "选择客户后自动带出",
+        "readOnly": true,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "客户标识"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "选择客户后自动带出",
+        "readOnly": true,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "客户名称"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "业务员"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "USD",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "币种"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "FOB Ningbo",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "贸易条款"
+      },
+      {
+        "tag": "INPUT",
+        "type": "date",
+        "value": "2026-11-19",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "有效期"
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": "textarea",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "报价描述"
+      },
+      {
+        "tag": "INPUT",
+        "type": "search",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "商品"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "规格"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "型号"
+      },
+      {
+        "tag": "INPUT",
+        "type": "number",
+        "value": "1",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "数量"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "pcs",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "单位"
+      },
+      {
+        "tag": "INPUT",
+        "type": "number",
+        "value": "1.00",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "销售单价"
+      },
+      {
+        "tag": "INPUT",
+        "type": "search",
+        "value": "",
+        "placeholder": "",
+        "readOnly": true,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "货运方式"
+      },
+      {
+        "tag": "INPUT",
+        "type": "number",
+        "value": "0.00",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "运费"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "采购参考供应商"
+      },
+      {
+        "tag": "INPUT",
+        "type": "number",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "采购参考价"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "明细备注"
+      }
+    ],
+    "texts": [
+      "新增或编辑出口报价",
+      "从客户资料选择",
+      "报价商品明细",
+      "按商品编号或名称搜索"
+    ],
+    "buttons": [
+      "取 消",
+      "保存草稿编辑",
+      "新增出口报价"
+    ],
+    "stars": 0
+  },
+  "cancelled": false,
+  "reopen": {
+    "values": [
+      "",
+      "2026-11-19",
+      "",
+      "",
+      "",
+      "",
+      "USD",
+      "FOB Ningbo",
+      "2026-11-19",
+      ""
+    ]
+  },
+  "escClosed": true,
+  "detail": {
+    "url": "http://127.0.0.1:8080/sales/quotations/ccdbe6c2-efee-40ca-be09-fc4ee1092365",
+    "h1": "出口报价",
+    "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口报价 5 报价单 1 待审批 0 已审批 1 报价金额 USD 50.00 报价单明细 返回列表 状态/日期 已生成合同 / 2026-11-12 客户 QA261112 测试客户 业务员 未填 贸易条款 FOB Ningbo 报价金额 USD 50.00 审核人 演示业务主管 合同号 EC-5FW46R 有效期 - 报价描述 QA261112 修改后重新提交 载入编辑 提交审批 审批通过 导出 PDF 报价确认生成出口合同 确认日期 合同号 生成出口合同 商品编号 商品名称 规格 型号 数量 销售单价 金额 货运方式 运费 QA261112-P01 QA261112 验收测试围巾 - - 5 pcs 10 50.00 海运 0.00 历史报价 1 条 报价单 客户 日期 状态 金额 QT-A33KVZ QA261112 测试客户 2026-11-12 已生成合同 USD 50.00 采购询价参考 1 条 供应商 参考价 日期 来源单号 QA261112 测试供应商 RMB 2.50 2026-11-12 PI-KTPXTU 打样单 从该报价发起打样 打样单号 状态 最新进度 样品登记 日期 暂无打样单 寄样关联 0 条 寄样单 客户 日期 状态 快递 暂无寄样关联",
+    "buttons": [
+      "导航",
+      "5",
+      "返回列表",
+      "载入编辑",
+      "提交审批",
+      "审批通过",
+      "导出 PDF",
+      "生成出口合同",
+      "从该报价发起打样"
+    ]
+  },
+  "mobile": {
+    "docW": 390,
+    "scrollW": 460,
+    "clientW": 328,
+    "rowButtons": [
+      {
+        "t": "查看详情",
+        "r": {
+          "x": 415.65625,
+          "y": 750.9921875,
+          "width": 67.015625,
+          "height": 44,
+          "top": 750.9921875,
+          "right": 482.671875,
+          "bottom": 794.9921875,
+          "left": 415.65625
+        }
+      }
+    ],
+    "create": {
+      "t": "新增出口报价",
+      "r": {
+        "x": 199,
+        "y": 615.2890625,
+        "width": 160,
+        "height": 44,
+        "top": 615.2890625,
+        "right": 359,
+        "bottom": 659.2890625,
+        "left": 199
+      }
+    },
+    "pagination": {
+      "x": 265,
+      "y": 870.2109375,
+      "width": 46,
+      "height": 44,
+      "top": 870.2109375,
+      "right": 311,
+      "bottom": 914.2109375,
+      "left": 265
+    }
+  },
+  "size1280": {
+    "docW": 1280
+  },
+  "failText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口报价 5 报价单 0 待审批 0 已审批 0 报价金额 USD 0 报价单列表 报价搜索 审批状态 全部状态 客户筛选 从客户资料筛选 查询 新增出口报价 报价单号 状态 客户 贸易条款 金额 合同 入口 暂无数据 完成首次录入后，这里会显示对应记录 网络连接异常，请检查网络后重试",
+  "retryBtn": null,
+  "recovered": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口报价 5 报价单 1 待审批 0 已审批 1 报价金额 USD 50.00 报价单列表 报价搜索 审批状态 全部状态 客户筛选 从客户资料筛选 查询 新增出口报价 报价单号 状态 客户 贸易条款 金额 合同 入口 QT-A33KVZ 已生成合同 QA261112 测试客户 FOB Ningbo USD 50.00 EC-5FW46R 查看详情 共 1 条 1 50 条/页",
+  "blockedWrites": []
+}

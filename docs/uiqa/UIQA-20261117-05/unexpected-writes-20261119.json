@@ -1,0 +1,62 @@
+{
+  "recorded_at": "2026-11-19T08:10:00+08:00",
+  "cause": "P03/P04 整页验收时用“连续补填+再次提交”探测剩余必填字段，最后一次提交在全部必填通过后落库；属于非预期测试写入，不是业务操作。",
+  "disposition": "保留记录，不删除；标记为非预期测试写入，后续按测试数据管理；已停止该探测方式。",
+  "records": [
+    {
+      "page": "PAGE-03",
+      "entity": "customer",
+      "table": "customers",
+      "id": "e6fc7060-51ad-49f8-acdc-98446e555ada",
+      "code": "UIQA-ACC-P03",
+      "cn_name": "验收资料P03",
+      "en_name": "Acceptance P03",
+      "country": "中国",
+      "address": null,
+      "website": null,
+      "status": "active",
+      "owner_user_id": "u-baeac30b5127ebdb",
+      "created_at": "2026-11-19 07:20:10.013382",
+      "actual_form_values": {
+        "code": "UIQA-ACC-P03",
+        "cn_name": "验收资料P03",
+        "en_name": "Acceptance P03",
+        "country": "中国"
+      },
+      "missing_fields": ["address", "website"]
+    },
+    {
+      "page": "PAGE-04",
+      "entity": "partner",
+      "table": "partners",
+      "id": "2197afaf-8e79-4586-b022-43f4ae00b563",
+      "code": "UIQA-ACC-P04",
+      "cn_name": "验收资料P04",
+      "en_name": "Acceptance P04",
+      "partner_type": "freight_forwarder",
+      "country": "中国",
+      "address": null,
+      "website": null,
+      "status": "active",
+      "owner_user_id": "u-baeac30b5127ebdb",
+      "created_at": "2026-11-19 07:20:33.794638",
+      "actual_form_values": {
+        "code": "UIQA-ACC-P04",
+        "cn_name": "验收资料P04",
+        "en_name": "Acceptance P04",
+        "country": "中国"
+      },
+      "missing_fields": ["address", "website"]
+    }
+  ],
+  "process_change": {
+    "effective_from": "2026-11-19",
+    "rules": [
+      "先核对前端表单结构与后端 schema 的必填约束，再设计校验用例。",
+      "禁止连续补填后提交来探测剩余必填字段。",
+      "每个校验用例只保留一个已知必填项为空，其余保持已知状态；不得在所有必填均满足时点击保存。",
+      "P06–P08 等业务单据未提交检查禁止按回车，禁止触发默认提交；页面内安装写请求拦截器，记录所有被拦截的 POST/PUT/PATCH/DELETE。",
+      "保存成功路径只在明确限定的测试对象上执行，并预先登记对象与字段。"
+    ]
+  }
+}

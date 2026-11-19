@@ -39,7 +39,7 @@
     "通过（仅限手动输入/显示）": 2
   },
   "whole_pages_passed": 0,
-  "status": "P01/P02/P03/P04/P05/P09/P24共7页已逐项判定、0页签收；Q05-33经0023修正关闭；基础资料验收新登记Q05-34/Q05-35，当前32关闭+2开放；前端index-jJamVJA9.js、后端0023_shipment_finance_misc_fees",
+  "status": "P01–P09中P01/P02/P03/P04/P05/P06/P07/P08/P09及P24共10页已逐项判定、0页签收；Q05-33经0023修正关闭；验收新登记Q05-34/Q05-35，当前32关闭+2开放；前端index-jJamVJA9.js、后端0023_shipment_finance_misc_fees",
   "defect_status": {
     "closed": 32,
     "pending_reverify": 0,
@@ -212,6 +212,33 @@
         "partial": 22,
         "fail": 2,
         "untested": 4,
+        "signed": false
+      },
+      "PAGE-06": {
+        "name": "出口报价",
+        "pass": 12,
+        "na": 8,
+        "partial": 19,
+        "fail": 1,
+        "untested": 8,
+        "signed": false
+      },
+      "PAGE-07": {
+        "name": "出口合同",
+        "pass": 12,
+        "na": 8,
+        "partial": 19,
+        "fail": 1,
+        "untested": 8,
+        "signed": false
+      },
+      "PAGE-08": {
+        "name": "采购合同",
+        "pass": 12,
+        "na": 8,
+        "partial": 19,
+        "fail": 1,
+        "untested": 8,
         "signed": false
       }
     },

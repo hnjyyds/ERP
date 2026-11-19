@@ -1,0 +1,407 @@
+{
+  "page": "PAGE-07",
+  "at": "2026-11-19T07:58:01.899Z",
+  "list1440": {
+    "url": "http://127.0.0.1:8080/sales/contracts",
+    "h1": "出口合同",
+    "heads": [
+      "合同号",
+      "状态",
+      "客户",
+      "计划出运日",
+      "金额",
+      "回签",
+      "入口"
+    ],
+    "rows": [
+      "EC-5FW46R 草稿 QA261112 测试客户 2026-11-12 USD 50.00 未回签 查看详情",
+      "EC-F8D7RX 已审批 QA261112 测试客户 2026-11-25 USD 512.50 未回签 查看详情"
+    ],
+    "stats": [
+      {
+        "n": "5",
+        "p": "5"
+      },
+      {
+        "n": "2",
+        "p": "合同数 2"
+      },
+      {
+        "n": "0",
+        "p": "待审批 0"
+      },
+      {
+        "n": "1",
+        "p": "已审批 1"
+      },
+      {
+        "n": "1",
+        "p": "1"
+      }
+    ],
+    "tableText": "合同号 状态 客户 计划出运日 金额 回签 入口 EC-5FW46R 草稿 QA261112 测试客户 2026-11-12 USD 50.00 未回签 查看详情 EC-F8D7RX 已审批 QA261112 测试客户 2026-11-25 USD 512.50 未回签 查看详情",
+    "buttons": [
+      "5",
+      "查询",
+      "新增合同",
+      "EC-5FW46R",
+      "查看详情",
+      "EC-F8D7RX",
+      "查看详情"
+    ]
+  },
+  "bundle": "http://127.0.0.1:8080/assets/index-jJamVJA9.js",
+  "searchKnown": {
+    "url": "http://127.0.0.1:8080/sales/contracts?q=EC-F8D7RX",
+    "h1": "出口合同",
+    "heads": [
+      "合同号",
+      "状态",
+      "客户",
+      "计划出运日",
+      "金额",
+      "回签",
+      "入口"
+    ],
+    "rows": [
+      "EC-F8D7RX 已审批 QA261112 测试客户 2026-11-25 USD 512.50 未回签 查看详情"
+    ],
+    "stats": [
+      {
+        "n": "5",
+        "p": "5"
+      },
+      {
+        "n": "1",
+        "p": "合同数 1"
+      },
+      {
+        "n": "0",
+        "p": "待审批 0"
+      },
+      {
+        "n": "1",
+        "p": "已审批 1"
+      },
+      {
+        "n": "1",
+        "p": "1"
+      }
+    ],
+    "tableText": "合同号 状态 客户 计划出运日 金额 回签 入口 EC-F8D7RX 已审批 QA261112 测试客户 2026-11-25 USD 512.50 未回签 查看详情",
+    "buttons": [
+      "5",
+      "查询",
+      "新增合同",
+      "EC-F8D7RX",
+      "查看详情"
+    ]
+  },
+  "searchEmpty": {
+    "state": {
+      "url": "http://127.0.0.1:8080/sales/contracts?q=ZZZ-NO",
+      "h1": "出口合同",
+      "heads": [
+        "合同号",
+        "状态",
+        "客户",
+        "计划出运日",
+        "金额",
+        "回签",
+        "入口"
+      ],
+      "rows": [
+        "没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选"
+      ],
+      "stats": [
+        {
+          "n": "5",
+          "p": "5"
+        },
+        {
+          "n": "0",
+          "p": "合同数 0"
+        },
+        {
+          "n": "0",
+          "p": "待审批 0"
+        },
+        {
+          "n": "0",
+          "p": "已审批 0"
+        }
+      ],
+      "tableText": "合同号 状态 客户 计划出运日 金额 回签 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+      "buttons": [
+        "5",
+        "查询",
+        "新增合同",
+        "清空筛选"
+      ]
+    },
+    "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口合同 5 合同数 0 待审批 0 已审批 0 合同金额 USD 0.00 预收款 USD 0.00 合同列表 合同搜索 审批状态 全部状态 客户筛选 从客户资料筛选 查询 新增合同 合同号 状态 客户 计划出运日 金额 回签 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选"
+  },
+  "filters": [
+    [
+      "全部状态",
+      "草稿",
+      "待审批",
+      "已审批",
+      "已退回",
+      "已作废"
+    ],
+    [
+      "验收资料P03\nUIQA-ACC-P03 · 中国",
+      "演示客户｜海湾家居贸易\nUI261114-C01 · 荷兰",
+      "QA261112 测试客户\nQA261112-C01 · DE"
+    ],
+    [
+      "20 条/页",
+      "50 条/页",
+      "100 条/页"
+    ]
+  ],
+  "createInitial": {
+    "title": "新增出口合同",
+    "rect": {
+      "x": 604,
+      "y": 376.88592529296875,
+      "width": 232,
+      "height": 146.2281494140625,
+      "top": 376.88592529296875,
+      "right": 836,
+      "bottom": 523.1140747070312,
+      "left": 604
+    },
+    "inputs": [
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "系统自动生成",
+        "readOnly": true,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "合同号"
+      },
+      {
+        "tag": "INPUT",
+        "type": "date",
+        "value": "2026-11-19",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "合同日期"
+      },
+      {
+        "tag": "INPUT",
+        "type": "search",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "业务员"
+      },
+      {
+        "tag": "INPUT",
+        "type": "search",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "选择客户"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "选择客户后自动带出",
+        "readOnly": true,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "客户名称"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "USD",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "币种"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "FOB Ningbo",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "贸易条款"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "30% T/T in advance, balance before shipment",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "付款条款"
+      },
+      {
+        "tag": "INPUT",
+        "type": "date",
+        "value": "2026-11-19",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "计划出运日"
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "value": "",
+        "placeholder": "",
+        "readOnly": false,
+        "required": false,
+        "ariaRequired": null,
+        "invalid": null,
+        "label": "合同备注"
+      }
+    ],
+    "texts": [
+      "新增出口合同",
+      "从客户资料选择",
+      "合同商品明细",
+      "已添加 0 个商品，可分别填写条形码并调整规格、数量和销售单价。",
+      "商品",
+      "条形码",
+      "规格 / 型号",
+      "数量",
+      "单位",
+      "销售单价",
+      "金额",
+      "操作",
+      "暂未添加商品，请点击“添加商品”批量选择"
+    ],
+    "buttons": [
+      "添加商品",
+      "取 消",
+      "新增出口合同"
+    ],
+    "stars": 0
+  },
+  "cancelled": false,
+  "reopen": {
+    "values": [
+      "",
+      "2026-11-19",
+      "",
+      "",
+      "",
+      "USD",
+      "FOB Ningbo",
+      "30% T/T in advance, balance before shipment",
+      "2026-11-19",
+      ""
+    ]
+  },
+  "escClosed": true,
+  "detail": {
+    "url": "http://127.0.0.1:8080/sales/contracts/34817a9e-a058-4438-ba51-3e8b311bda58",
+    "h1": "出口合同",
+    "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口合同 5 合同数 2 待审批 0 已审批 1 合同金额 USD 562.50 预收款 USD 0.00 合同明细 返回列表 状态/回签 已审批 / 未回签 客户 QA261112 测试客户 业务员 系统管理员 贸易条款 FOB Ningbo 付款条款 30% deposit,70% before shipment 合同金额 USD 512.50 已采购/已出货 0 / 20 来源报价 未关联 合同备注 QA261112 全流程测试出口合同 载入编辑 提交审批 审批通过 导出 PDF 打印单据 作废合同 客户回签 回签人 回签日期 回签方式 回签文件号 回签备注 登记回签 预收款 水单号 收款日期 金额 付款方 收款备注 关联预收款 商品编号 商品名称 条形码 规格 型号 数量 销售单价 金额 已采购 已出货 QA261112-P01 QA261112 验收测试围巾 - - - 50 pcs USD 10.25 USD 512.50 0 20 暂无商品图片 未采购数量 50 未出货金额 USD 307.50 预收款合计 USD 0.00 客户回签日 - 历史询报价参考 1 条 报价单 客户 日期 金额 QT-A33KVZ QA261112 测试客户 2026-11-12 USD 50.00 合同采购情况 1 条 商品编号 商品名称 合同数量 已采购 未采购 状态 QA261112-P01 QA261112 验收测试围巾 50 0 50 未开始 合同出货情况 1 条 商品编号 商品名称 计划出运日 合同数量 已出货 未出货 未出货金额 状态 QA261112-P01 QA261112 验收测试围巾 2026-11-25 50 20 30 USD 307.50 部分完成 回签记录 0 条 回签人 回签日期 方式 文件号 备注 暂无回签记录 预收款记录 0 条 水单号 收款日期 付款方 金额 备注 暂无预收款记录",
+    "buttons": [
+      "导航",
+      "5",
+      "返回列表",
+      "载入编辑",
+      "提交审批",
+      "审批通过",
+      "导出 PDF",
+      "打印单据",
+      "作废合同",
+      "登记回签",
+      "关联预收款"
+    ]
+  },
+  "mobile": {
+    "docW": 390,
+    "scrollW": 423,
+    "clientW": 328,
+    "rowButtons": [
+      {
+        "t": "查看详情",
+        "r": {
+          "x": 378.7265625,
+          "y": 871.7890625,
+          "width": 67.015625,
+          "height": 44,
+          "top": 871.7890625,
+          "right": 445.7421875,
+          "bottom": 915.7890625,
+          "left": 378.7265625
+        }
+      },
+      {
+        "t": "查看详情",
+        "r": {
+          "x": 378.7265625,
+          "y": 945.3203125,
+          "width": 67.015625,
+          "height": 44,
+          "top": 945.3203125,
+          "right": 445.7421875,
+          "bottom": 989.3203125,
+          "left": 378.7265625
+        }
+      }
+    ],
+    "create": {
+      "t": "新增合同",
+      "r": {
+        "x": 247.953125,
+        "y": 748.0859375,
+        "width": 111.046875,
+        "height": 44,
+        "top": 748.0859375,
+        "right": 359,
+        "bottom": 792.0859375,
+        "left": 247.953125
+      }
+    },
+    "pagination": {
+      "x": 265,
+      "y": 1026.8515625,
+      "width": 46,
+      "height": 44,
+      "top": 1026.8515625,
+      "right": 311,
+      "bottom": 1070.8515625,
+      "left": 265
+    }
+  },
+  "size1280": {
+    "docW": 1280
+  },
+  "failText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口合同 5 合同数 0 待审批 0 已审批 0 合同金额 USD 0.00 预收款 USD 0.00 合同列表 合同搜索 审批状态 全部状态 客户筛选 从客户资料筛选 查询 新增合同 合同号 状态 客户 计划出运日 金额 回签 入口 还没有出口合同 完成首次录入后，这里会显示对应记录 去新增合同 网络连接异常，请检查网络后重试",
+  "retryBtn": null,
+  "recovered": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出口合同 5 合同数 2 待审批 0 已审批 1 合同金额 USD 562.50 预收款 USD 0.00 合同列表 合同搜索 审批状态 全部状态 客户筛选 从客户资料筛选 查询 新增合同 合同号 状态 客户 计划出运日 金额 回签 入口 EC-5FW46R 草稿 QA261112 测试客户 2026-11-12 USD 50.00 未回签 查看详情 EC-F8D7RX 已审批 QA261112 测试客户 2026-11-25 USD 512.50 未回签 查看详情 共 2 条 1 50 条/页",
+  "blockedWrites": []
+}

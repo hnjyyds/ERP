@@ -72,6 +72,19 @@
     "partial_fixes": 1,
     "pages_signed_off": 0
   },
+  "p06_p08_batch": {
+    "checked_at": "2026-11-19T08:30:00+00:00",
+    "pages": ["PAGE-06", "PAGE-07", "PAGE-08"],
+    "rows": 144,
+    "rows_per_page": 48,
+    "json_valid": true,
+    "missing_evidence": [],
+    "broken_markdown_links": 0,
+    "write_requests_blocked_or_sent": 0,
+    "defects_new": [],
+    "pages_signed_off": 0,
+    "note": "业务单据只读验收：未按回车、未点保存/提交/审批；写请求拦截器记录0次写请求；D04/D05/D08/D09按禁止提交规则判未测并写明静态约束"
+  },
   "p02_p05_batch": {
     "checked_at": "2026-11-19T07:30:00+00:00",
     "pages": ["PAGE-02", "PAGE-03", "PAGE-04", "PAGE-05"],
