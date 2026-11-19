@@ -113,6 +113,7 @@ export function ExportContractListPanel({
             <ListEmptyState
               createLabel={t('sales.contract.list.create')}
               emptyTitle={t('sales.contract.list.emptyTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -120,6 +121,7 @@ export function ExportContractListPanel({
               }
               onCreate={onCreate}
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadContracts()}
             />
           ),
         }}

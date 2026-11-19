@@ -54,6 +54,7 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
   const [purchaseReferences, setPurchaseReferences] = useState<ExportQuotationPurchaseReference[]>([])
   const [sampleDeliveries, setSampleDeliveries] = useState<SampleDelivery[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [loadingCustomers, setLoadingCustomers] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
@@ -111,6 +112,7 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
     const resolvedStatus = filtersOverride?.status ?? statusFilter
     const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listExportQuotations({
         q: resolvedQ.trim() || undefined,
@@ -140,6 +142,7 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
         null
       setSelectedQuotationId(nextSelectedId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('sales.quotation.list.loadFailed'))
     } finally {
       setLoading(false)
@@ -286,6 +289,7 @@ export function useExportQuotationsList({ detailId, onNavigate }: Params) {
     purchaseReferences,
     sampleDeliveries,
     loading,
+    loadError,
     total,
     pagination,
     submitFilters,

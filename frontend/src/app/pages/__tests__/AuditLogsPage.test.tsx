@@ -74,6 +74,36 @@ describe('AuditLogsPage', () => {
     })
   })
 
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    vi.mocked(listAuditLogs)
+      .mockReset()
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [auditFixture], total: 1 })
+
+    render(<AuditLogsPage />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    await userEvent.type(screen.getByPlaceholderText('输入单号关键字'), 'RB-AUDIT')
+    await userEvent.click(screen.getByRole('button', { name: /查\s*询/ }))
+    await waitFor(() => {
+      expect(listAuditLogs).toHaveBeenLastCalledWith(
+        expect.objectContaining({ keyword: 'RB-AUDIT' }),
+      )
+    })
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+
+    await userEvent.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('提交报销单')).toBeTruthy()
+    expect(screen.getByPlaceholderText('输入单号关键字')).toHaveValue('RB-AUDIT')
+    expect(listAuditLogs).toHaveBeenLastCalledWith(
+      expect.objectContaining({ keyword: 'RB-AUDIT' }),
+    )
+  })
+
   it('exports current filter result as CSV', async () => {
     render(<AuditLogsPage />)
     await screen.findByText('提交报销单')

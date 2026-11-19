@@ -356,4 +356,26 @@ describe('OutboundOrdersPage', () => {
       })
     })
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', '/warehouse/outbound-orders?q=OO-9')
+    vi.mocked(listOutboundOrders)
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [orderFixture],
+        total: 1,
+        summary: summaryFixture,
+      })
+    const user = userEvent.setup()
+    render(<OutboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(screen.getByPlaceholderText('出库单 / 来源单 / 商品')).toHaveValue('OO-9')
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('OO-TEST-001')).toBeTruthy()
+    expect(listOutboundOrders).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'OO-9' }))
+  })
 })

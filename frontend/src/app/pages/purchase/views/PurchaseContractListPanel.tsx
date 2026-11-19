@@ -104,6 +104,7 @@ export function PurchaseContractListPanel({ model, onCreate, onGenerate, onOpenD
             <ListEmptyState
               createLabel={t('purchase.contract.list.create')}
               emptyTitle={t('purchase.contract.list.emptyTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -112,6 +113,7 @@ export function PurchaseContractListPanel({ model, onCreate, onGenerate, onOpenD
               }
               onCreate={onCreate}
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadContracts()}
             />
           ),
         }}

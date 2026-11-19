@@ -639,4 +639,23 @@ describe('SampleDeliveriesPage', () => {
     await userEvent.click(await screen.findByRole('button', { name: '返回列表' }))
     expect(onNavigate).toHaveBeenCalledWith(sampleDeliveryPath)
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', `${sampleDeliveryPath}?q=SD-9`)
+    const listSpy = vi
+      .spyOn(api, 'listSampleDeliveries')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [delivery], total: 1 })
+
+    render(<SampleDeliveriesPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(screen.getByLabelText('寄样搜索')).toHaveValue('SD-9')
+
+    await userEvent.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('SD-001')).toBeTruthy()
+    expect(listSpy).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'SD-9' }))
+  })
 })

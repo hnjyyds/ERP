@@ -493,4 +493,31 @@ describe('PurchaseContractsPage', () => {
     expect(screen.getByRole('button', { name: '作废合同' })).toBeEnabled()
     expect(screen.queryByRole('button', { name: '作废重开' })).not.toBeInTheDocument()
   })
+
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    vi.spyOn(api, 'listPurchaseContracts')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [makeContract()],
+        total: 1,
+        summary: {
+          submitted_count: 0,
+          approved_count: 0,
+          total_amount: '1200.00',
+          currency: 'USD',
+        },
+      })
+    vi.spyOn(api, 'listPurchaseContractReminders').mockResolvedValue({ items: [], total: 0 })
+
+    render(
+      <PurchaseContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('还没有采购合同')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    expect(await screen.findByText('PC-CANCEL')).toBeTruthy()
+  })
 })

@@ -730,4 +730,57 @@ describe('QualityInspectionsPage', () => {
     )
     expect(metricTexts()).toEqual(before)
   })
+
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listQualityInspections)
+      .mockReset()
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [
+          {
+            id: 'qc-retry-001',
+            code: 'QC-RETRY-001',
+            purchase_contract_id: 'pc-001',
+            purchase_contract_no: 'PC-QC-001',
+            supplier_id: 'supplier-001',
+            supplier_name: '华东包装制品厂',
+            status: 'pending',
+            scheduled_at: '2026-08-25T09:00:00',
+            inspected_at: null,
+            result: null,
+            inspector_id: 'user-qc',
+            inspector_name: '演示 QC 专员',
+            qc_user_id: 'user-qc',
+            qc_user_name: '演示 QC 专员',
+            issue_summary: null,
+            attachment_group_id: null,
+            lines: [],
+            issues: [],
+          } as unknown as QualityInspection,
+        ],
+        total: 1,
+        summary: {
+          pending_count: 1,
+          in_progress_count: 0,
+          completed_count: 0,
+          cancelled_count: 0,
+          overdue_count: 0,
+          open_issue_count: 0,
+          my_action_count: 0,
+        },
+      })
+
+    render(
+      <QualityInspectionsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(
+      screen.queryByText('审批采购合同后请在此创建 QC 任务，或点击“新增 QC 单”手动创建'),
+    ).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    expect(await screen.findByText('QC-RETRY-001')).toBeTruthy()
+  })
 })

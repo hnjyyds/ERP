@@ -113,6 +113,7 @@ export function InboundOrderListPanel({ model, onOpenModal }: Props) {
               createLabel={t('warehouse.inboundOrder.list.generateOrApprove')}
               emptyDescription={t('warehouse.inboundOrder.list.emptyDescription')}
               emptyTitle={t('warehouse.inboundOrder.list.emptyTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -122,6 +123,7 @@ export function InboundOrderListPanel({ model, onOpenModal }: Props) {
               }
               onCreate={onOpenModal}
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadInboundOrders()}
             />
           ),
         }}

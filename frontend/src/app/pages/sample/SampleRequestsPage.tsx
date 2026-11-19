@@ -61,6 +61,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
   const [dateFromFilter, setDateFromFilter] = useState('')
   const [dateToFilter, setDateToFilter] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const {
@@ -124,6 +125,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
     const resolvedDateFrom = filtersOverride?.dateFrom ?? dateFromFilter
     const resolvedDateTo = filtersOverride?.dateTo ?? dateToFilter
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listSampleRequests({
         q: resolvedQ.trim() || undefined,
@@ -150,6 +152,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
         null
       setSelectedRequestId(nextSelectedId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('sample.request.message.loadFailed'))
     } finally {
       setLoading(false)
@@ -472,6 +475,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={loadError}
                     filtered={
                       Boolean(search.trim()) ||
                       Boolean(statusFilter) ||
@@ -480,6 +484,7 @@ export function SampleRequestsPage({ currentUser, detailId, onNavigate }: Props)
                       Boolean(dateToFilter)
                     }
                     onClearFilters={clearFilters}
+                    onRetry={() => void loadRequests()}
                   />
                 ),
               }}

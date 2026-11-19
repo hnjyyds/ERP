@@ -27,6 +27,7 @@ export function useQualityTasksList({ currentUser }: Params) {
   const [statusFilter, setStatusFilter] = useState(() => urlQuery.params.get('status') ?? '')
   const [search, setSearch] = useState(() => urlQuery.params.get('q') ?? '')
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
 
   useEffect(() => {
     void loadTasks()
@@ -58,6 +59,7 @@ export function useQualityTasksList({ currentUser }: Params) {
     const resolvedPageSize = pageSizeOverride ?? pageSize
     const filters = filtersOverride ?? currentFilters()
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listQualityInspections({
         inspector_user_id: currentUser.id,
@@ -78,6 +80,7 @@ export function useQualityTasksList({ currentUser }: Params) {
       }
       setTasks(result.items)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('quality.task.message.loadFailed'))
     } finally {
       setLoading(false)
@@ -127,6 +130,7 @@ export function useQualityTasksList({ currentUser }: Params) {
     statusFilter,
     setStatusFilter,
     loading,
+    loadError,
     pagination,
     loadTasks,
     upsertTask,

@@ -685,4 +685,29 @@ describe('ExportContractsPage', () => {
     expect(screen.getByRole('button', { name: '载入编辑' })).toBeDisabled()
     expect(screen.getByRole('button', { name: '提交审批' })).toBeDisabled()
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', '/sales/contracts?q=EC-9')
+    const contract = makeExportContract()
+    api.listExportContracts
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [contract],
+        total: 1,
+        summary: emptyContractSummary,
+      })
+
+    render(
+      <ExportContractsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(screen.getByPlaceholderText('合同号 / 客户 / 产品 / 条款')).toHaveValue('EC-9')
+
+    await userEvent.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('EC-DRAFT')).toBeTruthy()
+    expect(api.listExportContracts).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'EC-9' }))
+  })
 })

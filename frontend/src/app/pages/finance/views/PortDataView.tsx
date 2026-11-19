@@ -22,14 +22,18 @@ export function PortDataView({ model, shell }: Props) {
     customsDeclarationFilter,
     customsReceiptFilter,
     customsRecords,
+    customsRecordsLoadError,
     customsRecordsPagination,
     customsRecordsTotal,
     customsTradeTypeFilter,
+    loadCustomsRecords,
+    loadPortImportBatches,
     loadingCustomsRecords,
     loadingPortBatches,
     matchingCustomsReceipts,
     portBatchForm,
     portImportBatches,
+    portImportBatchesLoadError,
     portImportBatchesPagination,
     portRecordForm,
     setCustomsDeclarationFilter,
@@ -102,12 +106,14 @@ export function PortDataView({ model, shell }: Props) {
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={customsRecordsLoadError}
                   filtered={
                     Boolean(customsDeclarationFilter.trim()) ||
                     Boolean(customsReceiptFilter.trim()) ||
                     Boolean(customsTradeTypeFilter)
                   }
                   onClearFilters={() => void clearCustomsRecordFilters()}
+                  onRetry={() => void loadCustomsRecords()}
                 />
               ),
             }}
@@ -175,6 +181,16 @@ export function PortDataView({ model, shell }: Props) {
             />
           </div>
           <Table<PortImportBatch>
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  error={portImportBatchesLoadError}
+                  filtered={false}
+                  onRetry={() => void loadPortImportBatches()}
+                />
+              ),
+            }}
             columns={[
               { title: t('finance.portData.table.batchNo'), dataIndex: 'batch_no' },
               { title: t('finance.portData.table.source'), dataIndex: 'source' },

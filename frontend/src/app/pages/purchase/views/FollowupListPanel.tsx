@@ -90,6 +90,7 @@ export function FollowupListPanel({
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -97,6 +98,7 @@ export function FollowupListPanel({
                 Boolean(model.contractFilter.trim())
               }
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadFollowupWorkspace()}
             />
           ),
         }}

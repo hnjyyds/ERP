@@ -236,6 +236,25 @@ describe('PurchaseInvoiceNoticesPage', () => {
     expect(within(dialog).getAllByLabelText('金额')[0]).toHaveValue(null)
   })
 
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    const listSpy = vi
+      .spyOn(api, 'listPurchaseInvoiceNotices')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [notice], total: 1, summary: noticeSummary })
+    vi.spyOn(api, 'listPurchaseInvoiceNoticeReminders').mockResolvedValue({ items: [], total: 0 })
+
+    render(<PurchaseInvoiceNoticesPage detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(2))
+    expect(listSpy).toHaveBeenLastCalledWith(expect.objectContaining({ offset: 0 }))
+    expect(await screen.findByText('PIN-001')).toBeTruthy()
+  })
+
   it('详情页发送开票通知', async () => {
     const draftNotice: PurchaseInvoiceNotice = {
       ...notice,

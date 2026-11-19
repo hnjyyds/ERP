@@ -58,6 +58,7 @@ export function useQualityInspectionsList({
   )
   const [eligibility, setEligibility] = useState<QualityInspectionInboundEligibility | null>(null)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
 
   const fetchSupplierOptions = useCallback(async (query: string) => {
     const result = await listPurchaseContracts({
@@ -150,6 +151,7 @@ export function useQualityInspectionsList({
     const resolvedPage = pageOverride ?? page
     const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listQualityInspections({
         q: activeFilters.search.trim() || undefined,
@@ -184,6 +186,7 @@ export function useQualityInspectionsList({
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('quality.inspection.message.loadFailed'))
     } finally {
       setLoading(false)
@@ -271,6 +274,7 @@ export function useQualityInspectionsList({
     inspections,
     summary,
     loading,
+    loadError,
     pagination,
     search,
     statusFilter,

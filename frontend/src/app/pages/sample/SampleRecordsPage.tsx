@@ -183,6 +183,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
   )
   const [summary, setSummary] = useState<SampleRecordListSummary | null>(null)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [form, setForm] = useState<SampleRecordFormState>(() => initialSampleRecordForm())
@@ -265,6 +266,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
       purchase_contract_id: purchaseContractFilter.trim() || undefined,
     }
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listSampleRecords({
         ...filters,
@@ -281,6 +283,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
         null
       setSelectedRecordId(nextSelectedId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('sample.record.message.loadFailed'))
     } finally {
       setLoading(false)
@@ -537,6 +540,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={loadError}
                     filtered={
                       Boolean(search.trim()) ||
                       Boolean(typeFilter) ||
@@ -544,6 +548,7 @@ export function SampleRecordsPage({ detailId, onNavigate }: RoutedDetailPageProp
                       Boolean(purchaseContractFilter.trim())
                     }
                     onClearFilters={clearFilters}
+                    onRetry={() => void loadRecords()}
                   />
                 ),
               }}

@@ -173,6 +173,7 @@ export function QualityInspectionListPanel({ model, onCreate, onOpenDetail }: Pr
               createLabel={t('quality.inspection.action.create')}
               emptyDescription={t('quality.inspection.panel.listEmptyDescription')}
               emptyTitle={t('quality.inspection.panel.listEmptyTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -181,6 +182,7 @@ export function QualityInspectionListPanel({ model, onCreate, onOpenDetail }: Pr
               }
               onCreate={onCreate}
               onClearFilters={model.resetFilters}
+              onRetry={() => void model.loadQualityInspections()}
             />
           ),
         }}

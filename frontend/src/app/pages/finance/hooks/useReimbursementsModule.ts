@@ -74,6 +74,8 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
 
   const [loadingReimbursements, setLoadingReimbursements] = useState(false)
 
+  const [reimbursementsLoadError, setReimbursementsLoadError] = useState(false)
+
   const [submittingReimbursementAction, setSubmittingReimbursementAction] = useState(false)
 
   const reimbursementModal = useFormModal(initialReimbursementForm)
@@ -87,6 +89,7 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     filtersOverride?: ReimbursementFilters,
   ) {
     setLoadingReimbursements(true)
+    setReimbursementsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? reimbursementFilters
@@ -114,6 +117,7 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
         null
       setSelectedReimbursementId(nextId)
     } catch (caught) {
+      setReimbursementsLoadError(true)
       showError(caught, t('finance.reimbursement.message.loadFailed'))
     } finally {
       setLoadingReimbursements(false)
@@ -258,6 +262,7 @@ export function useReimbursementsModule(env: FinanceModuleEnv) {
     reimbursementSearch: reimbursementFilters.q,
     reimbursementStatusFilter: reimbursementFilters.status,
     reimbursements,
+    reimbursementsLoadError,
     reimbursementsPagination: reimbursementsPager.pagination,
     reimbursementsTotal: reimbursementsPager.total,
     reimbursementsTotalAmount,

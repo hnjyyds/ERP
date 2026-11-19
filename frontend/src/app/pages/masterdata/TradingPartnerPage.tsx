@@ -161,6 +161,7 @@ export function TradingPartnerPage({
   )
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [transactionLoading, setTransactionLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [editingEntityId, setEditingEntityId] = useState<string | null>(null)
@@ -419,6 +420,7 @@ export function TradingPartnerPage({
     const resolvedPageSize = pageSizeOverride ?? pageSize
     const filters = filtersOverride ?? currentFilters()
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listEntity({
         ...filters,
@@ -442,6 +444,7 @@ export function TradingPartnerPage({
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('masterdata.tradingPartner.listLoadFailed', { entity: entityLabel }))
     } finally {
       setLoading(false)
@@ -829,9 +832,11 @@ export function TradingPartnerPage({
                   emptyTitle={t('masterdata.tradingPartner.listEmptyTitle', {
                     entity: entityLabel,
                   })}
+                  error={loadError}
                   filtered={Boolean(search.trim()) || activeAdvancedFilterCount > 0}
                   onCreate={openCreate}
                   onClearFilters={clearAllFilters}
+                  onRetry={() => void loadRows()}
                 />
               ),
             }}

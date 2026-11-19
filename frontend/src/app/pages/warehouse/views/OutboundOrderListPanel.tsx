@@ -124,6 +124,7 @@ export function OutboundOrderListPanel({ model, onOpenModal }: Props) {
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -133,6 +134,7 @@ export function OutboundOrderListPanel({ model, onOpenModal }: Props) {
                 Boolean(model.sourceIdFilter.trim())
               }
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadOutboundOrders()}
             />
           ),
         }}

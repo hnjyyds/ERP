@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   createDocumentParty,
   deactivateDocumentParty,
+  listAssignableUsers,
   listDocumentParties,
   updateDocumentParty,
   type DocumentParty,
@@ -74,7 +75,9 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
   const [typeFilter, setTypeFilter] = useState(initialParams.current.get('party_type') ?? '')
   const [statusFilter, setStatusFilter] = useState(initialParams.current.get('status') ?? '')
   const [summary, setSummary] = useState<DocumentPartyListSummary | null>(null)
+  const [ownerNames, setOwnerNames] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [message, setMessage] = useState('')
   const [editingPartyId, setEditingPartyId] = useState<string | null>(null)
   const [formError, setFormError] = useState<DocumentPartyFormError | null>(null)
@@ -144,9 +147,30 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
     },
     [detailId, parties, selectedId],
   )
+  const selectedOwnerName = selectedParty?.owner_user_id
+    ? ownerNames[selectedParty.owner_user_id]
+    : undefined
 
   useEffect(() => {
     void loadParties()
+  }, [])
+
+  // 详情里的负责人字段只存内部用户 ID，这里换成可读姓名；目录不可用时保留 ID 供追溯。
+  useEffect(() => {
+    let active = true
+    listAssignableUsers()
+      .then((response) => {
+        if (!active || response.users.length === 0) return
+        setOwnerNames(
+          Object.fromEntries(response.users.map((user) => [user.id, user.display_name])),
+        )
+      })
+      .catch(() => {
+        /* 保留当前值 */
+      })
+    return () => {
+      active = false
+    }
   }, [])
 
   useEffect(() => {
@@ -200,6 +224,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
       status: statusFilter || undefined,
     }
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listDocumentParties({
         ...filters,
@@ -214,6 +239,7 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
         return result.items[0]?.id ?? null
       })
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('masterdata.documentParty.loadFailed'))
     } finally {
       setLoading(false)
@@ -390,10 +416,12 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={loadError}
                   filtered={
                     Boolean(search.trim()) || Boolean(typeFilter) || Boolean(statusFilter)
                   }
                   onClearFilters={clearFilters}
+                  onRetry={() => void loadParties()}
                 />
               ),
             }}
@@ -541,7 +569,15 @@ export function DocumentPartiesPage({ detailId, onNavigate }: DocumentPartiesPag
                 </div>
                 <div>
                   <dt>{t('masterdata.field.owner')}</dt>
-                  <dd>{selectedParty.owner_user_id}</dd>
+                  <dd
+                    title={
+                      selectedParty.owner_user_id && !selectedOwnerName
+                        ? selectedParty.owner_user_id
+                        : undefined
+                    }
+                  >
+                    {selectedOwnerName ?? t('masterdata.field.ownerUnassigned')}
+                  </dd>
                 </div>
               </dl>
 

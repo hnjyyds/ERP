@@ -6,9 +6,16 @@ import * as api from '@/api'
 import type {
   BankReceipt,
   CurrentUser,
+  FeePayableItem,
+  FinancialSettlement,
+  MiscFeeAllocation,
+  MiscFeeItem,
+  PartnerFeeInvoice,
   ReceivableItem,
   SupplierInvoice,
   SupplierPaymentRequest,
+  VerificationDocument,
+  VerificationUsageItem,
 } from '@/api'
 
 const currentUser: CurrentUser = {
@@ -20,6 +27,196 @@ const currentUser: CurrentUser = {
   avatar_value: 'sage-pulse',
   roles: ['finance'],
   permissions: ['finance:view'],
+}
+
+const bankReceiptFixture: BankReceipt = {
+  id: 'receipt-retry',
+  receipt_no: 'BR-RETRY',
+  received_at: '2026-11-10',
+  payer_name: '华东客户',
+  customer_id: 'customer-1',
+  customer_name: '华东客户',
+  amount: '1200.00',
+  allocated_amount: '0.00',
+  unallocated_amount: '1200.00',
+  currency: 'USD',
+  bank_account: '招商银行 **** 8821',
+  reference_no: null,
+  receipt_type: 'customer_receipt',
+  status: 'unclaimed',
+  claim_message: '',
+  remark: null,
+  created_by_user_id: 'u-finance',
+  created_by_user_name: '演示财务',
+  claims: [],
+  allocations: [],
+}
+
+const receivableFixture: ReceivableItem = {
+  contract_id: 'contract-retry',
+  contract_no: 'SC-RETRY',
+  customer_id: 'customer-1',
+  customer_name: '华东客户',
+  sales_user_id: 'u-sales',
+  sales_user_name: '业务员',
+  currency: 'USD',
+  total_amount: '1200.00',
+  received_amount: '0.00',
+  receivable_amount: '1200.00',
+  status: 'unsettled',
+}
+
+const partnerFeeInvoiceFixture: PartnerFeeInvoice = {
+  id: 'fee-invoice-retry',
+  invoice_no: 'PFI-RETRY',
+  invoice_date: '2026-11-10',
+  partner_id: null,
+  partner_name: '海外代理',
+  partner_type: null,
+  shipment_plan_id: null,
+  shipment_no: null,
+  sales_user_id: null,
+  sales_user_name: null,
+  fee_type: 'other',
+  total_amount: '100.00',
+  paid_amount: '0.00',
+  unpaid_amount: '100.00',
+  currency: 'USD',
+  due_date: null,
+  status: 'unpaid',
+  remark: null,
+  created_by_user_id: 'u-finance',
+  created_by_user_name: '演示财务',
+  fee_payment_requests: [],
+  allocations: [],
+}
+
+const feePayableFixture: FeePayableItem = {
+  partner_fee_invoice_id: 'fee-invoice-1',
+  invoice_no: 'FP-RETRY',
+  partner_id: null,
+  partner_name: '海外代理',
+  partner_type: null,
+  shipment_plan_id: null,
+  shipment_no: null,
+  sales_user_id: null,
+  sales_user_name: null,
+  fee_type: 'other',
+  currency: 'USD',
+  total_amount: '100.00',
+  paid_amount: '0.00',
+  payable_amount: '100.00',
+  due_date: null,
+  status: 'unpaid',
+}
+
+const verificationDocumentFixture: VerificationDocument = {
+  id: 'verification-document-retry',
+  document_no: 'VD-RETRY',
+  received_at: '2026-11-10',
+  owner_user_id: null,
+  owner_user_name: null,
+  shipment_plan_id: null,
+  shipment_no: null,
+  customer_name: null,
+  currency: 'USD',
+  refundable_amount: '100.00',
+  refunded_amount: '0.00',
+  unrefunded_amount: '100.00',
+  valid_until: '2027-11-10',
+  reminder_date: '2027-01-10',
+  reminder_status: 'pending',
+  reminder_message: '',
+  status: 'issued',
+  customs_declaration_no: null,
+  customs_receipt_no: null,
+  customs_receipt_at: null,
+  verification_no: null,
+  verified_at: null,
+  remark: null,
+  created_by_user_id: 'u-finance',
+  created_by_user_name: '演示财务',
+  refunds: [],
+}
+
+const verificationUsageFixture: VerificationUsageItem = {
+  verification_document_id: 'verification-document-usage',
+  document_no: 'VU-RETRY',
+  shipment_plan_id: null,
+  shipment_no: null,
+  owner_user_id: null,
+  owner_user_name: null,
+  customer_name: null,
+  currency: 'USD',
+  refundable_amount: '100.00',
+  refunded_amount: '0.00',
+  unrefunded_amount: '100.00',
+  valid_until: '2027-11-10',
+  reminder_date: '2027-01-10',
+  reminder_status: 'pending',
+  status: 'issued',
+  customs_receipt_no: null,
+  verification_no: null,
+}
+
+const miscFeeItemFixture: MiscFeeItem = {
+  id: 'misc-item-retry',
+  code: 'MISC-RETRY',
+  name: '退运杂费',
+  category: 'other',
+  default_allocation_method: 'by_amount',
+  is_active: true,
+  status: 'active',
+  remark: null,
+  created_by_user_id: 'u-finance',
+  created_by_user_name: '演示财务',
+}
+
+const miscFeeAllocationFixture: MiscFeeAllocation = {
+  id: 'misc-allocation-retry',
+  allocation_no: 'MA-RETRY',
+  item_id: 'misc-item-retry',
+  item_code: 'MISC-RETRY',
+  item_name: '退运杂费',
+  item_category: 'other',
+  shipment_plan_id: 'shipment-1',
+  shipment_no: 'SHIP-001',
+  customer_name: '华东客户',
+  sales_user_id: null,
+  sales_user_name: null,
+  allocated_at: '2026-11-10',
+  amount: '10.00',
+  currency: 'USD',
+  allocation_method: 'by_amount',
+  basis: null,
+  status: 'allocated',
+  remark: null,
+  created_by_user_id: 'u-finance',
+  created_by_user_name: '演示财务',
+}
+
+const financialSettlementFixture: FinancialSettlement = {
+  id: 'settlement-retry',
+  settlement_no: 'FS-RETRY',
+  shipment_plan_id: 'shipment-1',
+  shipment_no: 'SHIP-001',
+  customer_name: '华东客户',
+  settlement_date: '2026-11-10',
+  currency: 'USD',
+  sales_income: '1000.00',
+  purchase_cost_amount: '0.00',
+  partner_fee_amount: '0.00',
+  misc_fee_amount: '0.00',
+  tax_refund_amount: '0.00',
+  manual_cost_amount: '0.00',
+  gross_profit: '1000.00',
+  gross_profit_rate: '100',
+  status: 'locked',
+  remark: null,
+  created_by_user_id: 'u-finance',
+  created_by_user_name: '演示财务',
+  created_at: '2026-11-10',
+  cost_items: [],
 }
 
 describe('FinancePage', () => {
@@ -560,5 +757,269 @@ describe('FinancePage', () => {
     expect(window.location.search).not.toContain('receipts_page=')
     expect(window.location.search).toContain('payables_q=SI-KEEP')
     expect(window.location.search).toContain('payables_page=3')
+  })
+
+  it('收款单加载失败显示独立错误态并可重试', async () => {
+    const spy = vi
+      .spyOn(api, 'listBankReceipts')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [bankReceiptFixture],
+        total: 1,
+        total_amount: '1200.00',
+        unallocated_amount: '1200.00',
+        currency: 'USD',
+      })
+    vi.spyOn(api, 'listReceivables').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_receivable_amount: '0.00',
+    })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'receipts', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('银行水单列表').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('BR-RETRY')).toBeInTheDocument()
+  })
+
+  it('应收账款加载失败显示独立错误态并可重试', async () => {
+    vi.spyOn(api, 'listBankReceipts').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_amount: '0.00',
+      unallocated_amount: '0.00',
+      currency: 'USD',
+    })
+    const spy = vi
+      .spyOn(api, 'listReceivables')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [receivableFixture],
+        total: 1,
+        total_receivable_amount: '1200.00',
+      })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'receipts', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('应收账款查询').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('SC-RETRY')).toBeInTheDocument()
+  })
+
+  it('合作伙伴费用发票加载失败显示独立错误态并可重试', async () => {
+    const spy = vi
+      .spyOn(api, 'listPartnerFeeInvoices')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [partnerFeeInvoiceFixture], total: 1 })
+    vi.spyOn(api, 'listFeePayables').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_payable_amount: '0.00',
+    })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'fees', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('合作伙伴费用发票').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('PFI-RETRY')).toBeInTheDocument()
+  })
+
+  it('应付费用加载失败显示独立错误态并可重试', async () => {
+    vi.spyOn(api, 'listPartnerFeeInvoices').mockResolvedValue({ items: [], total: 0 })
+    const spy = vi
+      .spyOn(api, 'listFeePayables')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [feePayableFixture],
+        total: 1,
+        total_payable_amount: '100.00',
+      })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'fees', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('应付费用查询').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('FP-RETRY')).toBeInTheDocument()
+  })
+
+  it('核销单加载失败显示独立错误态并可重试', async () => {
+    const spy = vi
+      .spyOn(api, 'listVerificationDocuments')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [verificationDocumentFixture], total: 1 })
+    vi.spyOn(api, 'listVerificationUsage').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_refunded_amount: '0.00',
+    })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'tax', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('核销单列表').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('VD-RETRY')).toBeInTheDocument()
+  })
+
+  it('核销单使用情况加载失败显示独立错误态并可重试', async () => {
+    vi.spyOn(api, 'listVerificationDocuments').mockResolvedValue({ items: [], total: 0 })
+    const spy = vi
+      .spyOn(api, 'listVerificationUsage')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [verificationUsageFixture],
+        total: 1,
+        total_refunded_amount: '0.00',
+      })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'tax', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('核销单使用情况查询').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('VU-RETRY')).toBeInTheDocument()
+  })
+
+  it('杂费项目加载失败显示独立错误态并可重试', async () => {
+    const spy = vi
+      .spyOn(api, 'listMiscFeeItems')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [miscFeeItemFixture], total: 1 })
+    vi.spyOn(api, 'listMiscFeeAllocations').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_allocated_amount: '0.00',
+    })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'misc', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('杂费项目配置').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('MISC-RETRY')).toBeInTheDocument()
+  })
+
+  it('杂费分摊加载失败显示独立错误态并可重试', async () => {
+    vi.spyOn(api, 'listMiscFeeItems').mockResolvedValue({ items: [], total: 0 })
+    const spy = vi
+      .spyOn(api, 'listMiscFeeAllocations')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [miscFeeAllocationFixture],
+        total: 1,
+        total_allocated_amount: '10.00',
+      })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'misc', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('杂费分摊查询').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('MA-RETRY')).toBeInTheDocument()
+  })
+
+  it('财务结算加载失败显示独立错误态并可重试', async () => {
+    const spy = vi
+      .spyOn(api, 'listFinancialSettlements')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [financialSettlementFixture],
+        total: 1,
+        total_sales_income: '1000.00',
+        total_gross_profit: '1000.00',
+      })
+    vi.spyOn(api, 'listProfitCalculations').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_sales_income: '0.00',
+      total_gross_profit: '0.00',
+    })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'settlement', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('财务结算列表').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('FS-RETRY')).toBeInTheDocument()
+  })
+
+  it('利润核算加载失败显示独立错误态并可重试', async () => {
+    vi.spyOn(api, 'listFinancialSettlements').mockResolvedValue({
+      items: [],
+      total: 0,
+      total_sales_income: '0.00',
+      total_gross_profit: '0.00',
+    })
+    const spy = vi
+      .spyOn(api, 'listProfitCalculations')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [financialSettlementFixture],
+        total: 1,
+        total_sales_income: '1000.00',
+        total_gross_profit: '1000.00',
+      })
+
+    render(
+      <FinancePage currentUser={currentUser} view={{ module: 'settlement', id: null }} onNavigate={onNavigate} />,
+    )
+
+    const panel = screen.getByText('利润核算表').closest('section') as HTMLElement
+    expect(await within(panel).findByText('加载失败')).toBeInTheDocument()
+    expect(within(panel).queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    fireEvent.click(within(panel).getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
+    expect(await within(panel).findByText('FS-RETRY')).toBeInTheDocument()
   })
 })

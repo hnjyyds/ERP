@@ -24,6 +24,7 @@ export function PurchaseInvoiceNoticesListView({ model }: Props) {
     notices,
     selectedNotice,
     loading,
+    loadError,
     search,
     setSearch,
     statusFilter,
@@ -113,6 +114,7 @@ export function PurchaseInvoiceNoticesListView({ model }: Props) {
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={loadError}
               filtered={
                 Boolean(search.trim()) ||
                 Boolean(statusFilter) ||
@@ -120,6 +122,7 @@ export function PurchaseInvoiceNoticesListView({ model }: Props) {
                 Boolean(customsFilter.trim())
               }
               onClearFilters={clearFilters}
+              onRetry={() => void model.loadNotices()}
             />
           ),
         }}

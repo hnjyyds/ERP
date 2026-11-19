@@ -53,16 +53,20 @@ export function FeesView({ model, shell }: Props) {
     feePayableStatusFilter,
     feePayableTypeFilter,
     feePayables,
+    feePayablesLoadError,
     feePayablesPagination,
     feePaymentApprovalForm,
     feePaymentRequestForm,
     feePaymentRequests,
+    loadFeePayables,
+    loadPartnerFeeInvoices,
     loadingFeePayables,
     loadingFeePaymentRequests,
     loadingPartnerFeeInvoices,
     partnerFeeInvoiceForm,
     partnerFeeInvoiceNoError,
     partnerFeeInvoices,
+    partnerFeeInvoicesLoadError,
     partnerFeeInvoicesPagination,
     selectedFeePaymentRequest,
     selectedFeePaymentRequestCanApprove,
@@ -195,6 +199,7 @@ export function FeesView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={partnerFeeInvoicesLoadError}
                     filtered={
                       Boolean(feeInvoiceSearch.trim()) ||
                       Boolean(feeInvoiceStatusFilter) ||
@@ -203,6 +208,7 @@ export function FeesView({ model, shell }: Props) {
                       Boolean(feeInvoiceShipmentFilter.trim())
                     }
                     onClearFilters={() => void clearFeeInvoiceFilters()}
+                    onRetry={() => void loadPartnerFeeInvoices()}
                   />
                 ),
               }}
@@ -827,6 +833,7 @@ export function FeesView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={feePayablesLoadError}
                     filtered={
                       Boolean(feePayableSearch.trim()) ||
                       Boolean(feePayableStatusFilter) ||
@@ -835,6 +842,7 @@ export function FeesView({ model, shell }: Props) {
                       Boolean(feePayableShipmentFilter.trim())
                     }
                     onClearFilters={() => void clearFeePayableFilters()}
+                    onRetry={() => void loadFeePayables()}
                   />
                 ),
               }}

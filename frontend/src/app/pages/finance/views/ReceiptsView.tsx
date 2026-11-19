@@ -41,6 +41,8 @@ export function ReceiptsView({ model, shell }: Props) {
     claimForm,
     clearReceiptFilters,
     clearReceivableFilters,
+    loadReceipts,
+    loadReceivables,
     loadingReceipts,
     loadingReceivables,
     receiptCurrency,
@@ -54,10 +56,12 @@ export function ReceiptsView({ model, shell }: Props) {
     receiptSearch,
     receiptStatusFilter,
     receipts,
+    receiptsLoadError,
     receivableContractFilter,
     receivableInvoiceFilter,
     receivableSearch,
     receivables,
+    receivablesLoadError,
     selectedReceipt,
     selectedReceiptCanAllocate,
     selectedReceiptCanClaim,
@@ -203,12 +207,14 @@ export function ReceiptsView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={receiptsLoadError}
                     filtered={
                       Boolean(receiptSearch.trim()) ||
                       Boolean(receiptStatusFilter) ||
                       Boolean(receiptCustomerFilter)
                     }
                     onClearFilters={() => void clearReceiptFilters()}
+                    onRetry={() => void loadReceipts()}
                   />
                 ),
               }}
@@ -706,12 +712,14 @@ export function ReceiptsView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={receivablesLoadError}
                     filtered={
                       Boolean(receivableSearch.trim()) ||
                       Boolean(receivableContractFilter.trim()) ||
                       Boolean(receivableInvoiceFilter.trim())
                     }
                     onClearFilters={() => void clearReceivableFilters()}
+                    onRetry={() => void loadReceivables()}
                   />
                 ),
               }}

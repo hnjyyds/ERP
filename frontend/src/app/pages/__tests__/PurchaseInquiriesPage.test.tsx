@@ -183,6 +183,34 @@ describe('PurchaseInquiriesPage', () => {
     expect(window.location.search).not.toContain('page=')
   })
 
+  it('列表加载失败显示独立错误态并可重试，重试保留筛选条件', async () => {
+    const user = userEvent.setup()
+    const listSpy = vi
+      .spyOn(api, 'listPurchaseInquiries')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [inquiry], total: 1, summary: emptySummary })
+
+    render(<PurchaseInquiriesPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(1))
+
+    await user.type(screen.getByLabelText('询价搜索'), 'PI-9')
+    await user.click(screen.getByRole('button', { name: '查询' }))
+    await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(2))
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('还没有采购询价')).toBeNull()
+    expect(screen.getByLabelText('询价搜索')).toHaveValue('PI-9')
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(3))
+    expect(listSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ q: 'PI-9', offset: 0 }),
+    )
+    expect(await screen.findByText('PI-001')).toBeTruthy()
+    expect(screen.getByLabelText('询价搜索')).toHaveValue('PI-9')
+  })
+
   it('详情页按商品与报价供应商加载样品与参考价', async () => {
     vi.spyOn(api, 'listPurchaseInquiries').mockResolvedValue({
       items: [detailInquiry],

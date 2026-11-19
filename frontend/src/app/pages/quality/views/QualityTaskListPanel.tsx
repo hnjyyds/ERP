@@ -80,8 +80,10 @@ export function QualityTaskListPanel({ model, workflow, onOpenDetail }: Props) {
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={model.loadError}
               filtered={Boolean(model.search.trim()) || Boolean(model.statusFilter)}
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadTasks()}
             />
           ),
         }}

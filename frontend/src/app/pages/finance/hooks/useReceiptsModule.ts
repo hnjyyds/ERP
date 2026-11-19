@@ -109,7 +109,11 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
 
   const [loadingReceipts, setLoadingReceipts] = useState(false)
 
+  const [receiptsLoadError, setReceiptsLoadError] = useState(false)
+
   const [loadingReceivables, setLoadingReceivables] = useState(false)
+
+  const [receivablesLoadError, setReceivablesLoadError] = useState(false)
 
   const [submittingClaim, setSubmittingClaim] = useState(false)
 
@@ -127,6 +131,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     filtersOverride?: ReceiptFilters,
   ) {
     setLoadingReceipts(true)
+    setReceiptsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? receiptFilters
@@ -156,6 +161,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
         null
       setSelectedReceiptId(nextReceiptId)
     } catch (caught) {
+      setReceiptsLoadError(true)
       showError(caught, t('finance.receipt.message.loadReceiptsFailed'))
     } finally {
       setLoadingReceipts(false)
@@ -168,6 +174,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     filtersOverride?: ReceivableFilters,
   ) {
     setLoadingReceivables(true)
+    setReceivablesLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? receivableFilters
@@ -184,6 +191,7 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
       receivablesPager.setTotal(result.total)
       setReceivableTotal(result.total_receivable_amount)
     } catch (caught) {
+      setReceivablesLoadError(true)
       showError(caught, t('finance.receipt.message.loadReceivablesFailed'))
     } finally {
       setLoadingReceivables(false)
@@ -357,10 +365,12 @@ export function useReceiptsModule(env: FinanceModuleEnv) {
     receiptSearch: receiptFilters.q,
     receiptStatusFilter: receiptFilters.status,
     receipts,
+    receiptsLoadError,
     receivableContractFilter: receivableFilters.contract,
     receivableInvoiceFilter: receivableFilters.invoice,
     receivableSearch: receivableFilters.q,
     receivables,
+    receivablesLoadError,
     selectedReceipt,
     selectedReceiptCanAllocate,
     selectedReceiptCanClaim,

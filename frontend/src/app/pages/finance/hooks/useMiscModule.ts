@@ -104,7 +104,11 @@ export function useMiscModule(env: FinanceModuleEnv) {
 
   const [loadingMiscFeeItems, setLoadingMiscFeeItems] = useState(false)
 
+  const [miscFeeItemsLoadError, setMiscFeeItemsLoadError] = useState(false)
+
   const [loadingMiscFeeAllocations, setLoadingMiscFeeAllocations] = useState(false)
+
+  const [miscFeeAllocationsLoadError, setMiscFeeAllocationsLoadError] = useState(false)
 
   const [loadingMiscFeeSummary, setLoadingMiscFeeSummary] = useState(false)
 
@@ -131,6 +135,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
     filtersOverride?: MiscItemFilters,
   ) {
     setLoadingMiscFeeItems(true)
+    setMiscFeeItemsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? miscItemFilters
@@ -157,6 +162,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
         null
       setSelectedMiscFeeItemId(nextItemId)
     } catch (caught) {
+      setMiscFeeItemsLoadError(true)
       showError(caught, t('finance.misc.message.loadItemsFailed'))
     } finally {
       setLoadingMiscFeeItems(false)
@@ -169,6 +175,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
     filtersOverride?: MiscAllocationFilters,
   ) {
     setLoadingMiscFeeAllocations(true)
+    setMiscFeeAllocationsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? miscAllocationFilters
@@ -185,6 +192,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
       setMiscFeeAllocations(result.items)
       miscFeeAllocationsPager.setTotal(result.total)
     } catch (caught) {
+      setMiscFeeAllocationsLoadError(true)
       showError(caught, t('finance.misc.message.loadAllocationsFailed'))
     } finally {
       setLoadingMiscFeeAllocations(false)
@@ -358,6 +366,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
     miscFeeAllocationSearch: miscAllocationFilters.q,
     miscFeeAllocationShipmentFilter: miscAllocationFilters.shipment,
     miscFeeAllocations,
+    miscFeeAllocationsLoadError,
     miscFeeAllocationsPagination: miscFeeAllocationsPager.pagination,
     miscFeeAllocationsTotal: miscFeeAllocationsPager.total,
     miscFeeItemCategoryFilter: miscItemFilters.category,
@@ -366,6 +375,7 @@ export function useMiscModule(env: FinanceModuleEnv) {
     miscFeeItemSearch: miscItemFilters.q,
     miscFeeItemStatusFilter: miscItemFilters.status,
     miscFeeItems,
+    miscFeeItemsLoadError,
     miscFeeItemsPagination: miscFeeItemsPager.pagination,
     miscFeeItemsTotal: miscFeeItemsPager.total,
     miscItemModalOpen: miscItemModal.open,

@@ -119,10 +119,102 @@
         "PAGE-07": "12/8/19/1/8/未签收/0次写请求",
         "PAGE-08": "12/8/19/1/8/未签收/0次写请求"
       },
-      "new_defects": ["Q05-34", "Q05-35"],
+      "new_defects": [
+        "Q05-34",
+        "Q05-35"
+      ],
       "non_expected_writes": "unexpected-writes-20261119.json",
       "fix_queue": "fix-queue-20261119.md",
       "finance_impact_checklist": "page-acceptance/finance-impact-checklist-20261119.md"
     }
+  },
+  {
+    "deployed_at": "2026-11-19",
+    "base_commit": "449aaa0a",
+    "working_tree_patch": true,
+    "frontend_asset": "assets/index-nah24HOd.js",
+    "frontend_css": "assets/index-XnLQlyxz.css",
+    "frontend_image_id": "sha256:2a98504f45b7465453143b6eeb7edd18476174f1082a7a546cd9d1cca6d30a0c",
+    "backend_image_id": "sha256:9bcad31dd557819aea433a40bc15434771c627aec38825d0316a88d2861fa060",
+    "alembic_head": "0023_shipment_finance_misc_fees",
+    "scope": [
+      "Q05-34 共享列表错误态：29个页面文件/32页接入独立 loadError 与重试",
+      "Q05-35 P05 详情负责人显示姓名，空值与目录缺用户回退“未指定”"
+    ],
+    "reverify": {
+      "q05_34_batch1": "q05-34-reverify-20261119-batch1.json",
+      "q05_34_batch2": "q05-34-reverify-20261119-batch2.json",
+      "q05_35": "q05-35-owner-reverify-20261119.json",
+      "areas": 39,
+      "pages": 32,
+      "all_recovered_without_reload": true,
+      "filter_note": "P01–P04、P13 查询不写 URL，刷新丢筛选属既有行为；单测覆盖原列表内重试不清空输入",
+      "not_individually_verified": [
+        "P32 其余5个报表页签共用同一错误标志与接口",
+        "P25 付费申请子表无 ListEmptyState"
+      ]
+    },
+    "page_acceptance": {
+      "PAGE-10": "13通过/8不适用/18部分/0失败/9未测/未签收/0次写请求",
+      "PAGE-11": "8/8/23/0/9/未签收/0次写请求",
+      "PAGE-12": "12/3/20/0/13/未签收/0次写请求",
+      "summary": "page-acceptance/P10-P12-summary-20261119.json",
+      "report": "page-acceptance/PAGE-10-采购询价-20261119.md; page-acceptance/PAGE-11-采购开票通知-20261119.md; page-acceptance/PAGE-12-样品登记-20261119.md"
+    },
+    "data_counts": {
+      "P10": {
+        "list_rows": 1,
+        "metrics": "5询价/1已发模板/0已报价/1供应商报价"
+      },
+      "P11": {
+        "list_rows": 3,
+        "metrics": "5开票通知/3已发送/0已收票/CNY0.01/0待催收"
+      },
+      "P12": {
+        "list_rows": 2,
+        "metrics": "5样品/2确认样/1图片/留样5pcs"
+      },
+      "P01": 50,
+      "P02": 3,
+      "P03": 4,
+      "P04": 4,
+      "P05": 3,
+      "P06": 1,
+      "P07": 2,
+      "P08": 1,
+      "P09": 1,
+      "P13": 2,
+      "P14": 1,
+      "P15": 1,
+      "P16": 1,
+      "P17": 1,
+      "P18": 1,
+      "P19": 1,
+      "P20": 1,
+      "P21": 1,
+      "P23": 2,
+      "P24": 4,
+      "P25": 2,
+      "P26": 2,
+      "P27": 2,
+      "P28": 2,
+      "P29": 5,
+      "P32": 2,
+      "P33": 2,
+      "P34": 10,
+      "P42": 51
+    },
+    "counts": {
+      "defects": 34,
+      "closed": 32,
+      "open": 2,
+      "open_ids": [
+        "Q05-34",
+        "Q05-35"
+      ],
+      "signed_pages": 0
+    },
+    "observation_not_registered": "P11 生成弹窗显示自动生成的“报关单证 ID”UUID，可编辑且无用途说明；未新登记缺陷，A02 记部分通过",
+    "note": "Q05-34/Q05-35 已修复并逐区复验，但按用户本轮口径保持开放计数，待确认后关闭"
   }
 ]

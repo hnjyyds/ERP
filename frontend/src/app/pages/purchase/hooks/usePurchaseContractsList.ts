@@ -46,6 +46,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
   const [supplierFilter, setSupplierFilter] = useState(initialFilters.supplier)
   const [sourceFilter, setSourceFilter] = useState(initialFilters.source)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
@@ -124,6 +125,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
     const resolvedSupplier = filtersOverride?.supplier ?? supplierFilter
     const resolvedSource = filtersOverride?.source ?? sourceFilter
     setLoading(true)
+    setLoadError(false)
     const requestId = latestRequest.begin()
     try {
       const result = await listPurchaseContracts({
@@ -164,6 +166,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
       if (!latestRequest.isLatest(requestId)) return
+      setLoadError(true)
       showError(caught, t('purchase.contract.list.loadFailed'))
     } finally {
       if (latestRequest.isLatest(requestId)) setLoading(false)
@@ -258,6 +261,7 @@ export function usePurchaseContractsList({ detailId, onNavigate }: Options) {
     setSelectedContractId,
     detailLoading,
     loading,
+    loadError,
     total,
     pagination,
     search,

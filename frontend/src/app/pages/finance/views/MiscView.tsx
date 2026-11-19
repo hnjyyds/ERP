@@ -31,6 +31,8 @@ export function MiscView({ model, shell }: Props) {
     changeMiscFeeItemsPage,
     clearMiscAllocationFilters,
     clearMiscItemFilters,
+    loadMiscFeeAllocations,
+    loadMiscFeeItems,
     loadingMiscFeeAllocations,
     loadingMiscFeeItems,
     loadingMiscFeeSummary,
@@ -40,6 +42,7 @@ export function MiscView({ model, shell }: Props) {
     miscFeeAllocationSearch,
     miscFeeAllocationShipmentFilter,
     miscFeeAllocations,
+    miscFeeAllocationsLoadError,
     miscFeeAllocationsPagination,
     miscFeeAllocationsTotal,
     miscFeeItemCategoryFilter,
@@ -48,6 +51,7 @@ export function MiscView({ model, shell }: Props) {
     miscFeeItemSearch,
     miscFeeItemStatusFilter,
     miscFeeItems,
+    miscFeeItemsLoadError,
     miscFeeItemsPagination,
     miscItemModalOpen,
     selectedMiscFeeItem,
@@ -161,12 +165,14 @@ export function MiscView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={miscFeeItemsLoadError}
                     filtered={
                       Boolean(miscFeeItemSearch.trim()) ||
                       Boolean(miscFeeItemCategoryFilter) ||
                       Boolean(miscFeeItemStatusFilter)
                     }
                     onClearFilters={() => void clearMiscItemFilters()}
+                    onRetry={() => void loadMiscFeeItems()}
                   />
                 ),
               }}
@@ -611,6 +617,7 @@ export function MiscView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={miscFeeAllocationsLoadError}
                     filtered={
                       Boolean(miscFeeAllocationSearch.trim()) ||
                       Boolean(miscFeeAllocationCategoryFilter) ||
@@ -618,6 +625,7 @@ export function MiscView({ model, shell }: Props) {
                       Boolean(miscFeeAllocationSalesFilter.trim())
                     }
                     onClearFilters={() => void clearMiscAllocationFilters()}
+                    onRetry={() => void loadMiscFeeAllocations()}
                   />
                 ),
               }}

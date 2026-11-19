@@ -525,4 +525,30 @@ describe('ExportQuotationsPage', () => {
     expect(screen.getByText('未转样品登记')).toBeTruthy()
     expect(screen.getByRole('button', { name: '从该报价发起打样' })).toBeTruthy()
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', '/sales/quotations?q=Q-2')
+    mockDetailReferences()
+    const listSpy = vi
+      .spyOn(api, 'listExportQuotations')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [quotation],
+        total: 1,
+        summary: { submitted_count: 0, approved_count: 0, total_amount: '0', currency: 'USD' },
+      })
+
+    render(
+      <ExportQuotationsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />,
+    )
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(screen.getByPlaceholderText('单号 / 客户 / 产品 / 条款')).toHaveValue('Q-2')
+
+    await userEvent.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('Q-001')).toBeTruthy()
+    expect(listSpy).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'Q-2' }))
+  })
 })

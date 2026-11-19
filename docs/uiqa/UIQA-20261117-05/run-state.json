@@ -1,11 +1,22 @@
 {
-  "task_space": 42,
+  "task_space": 43,
   "page": "p1",
-  "bundle": "index-jJamVJA9.js",
-  "phase": "P06–P08业务单据48项整页验收完成（只读、0次写请求）；Q05-34/Q05-35保持开放",
+  "bundle": "index-nah24HOd.js",
+  "phase": "P10–P12业务单据48项整页验收完成（只读、0次写请求）；Q05-34共享错误态与Q05-35负责人姓名已修复部署并逐区复验",
   "status": "in_progress",
-  "main_pages_completed": ["PAGE-02","PAGE-03","PAGE-04","PAGE-05","PAGE-06","PAGE-07","PAGE-08"],
-  "next": "10页已逐项判定、0页签收；Q05-34共7页实测、修复需覆盖29个ListEmptyState页面；Q05-35待修复；下一批继续P10–P12，P26/P27/P31按finance-impact-checklist-20261119.md验财务修复影响面",
+  "main_pages_completed": [
+    "PAGE-02",
+    "PAGE-03",
+    "PAGE-04",
+    "PAGE-05",
+    "PAGE-06",
+    "PAGE-07",
+    "PAGE-08",
+    "PAGE-10",
+    "PAGE-11",
+    "PAGE-12"
+  ],
+  "next": "13页已逐项判定、0页签收；下一批继续P13–P15；P26/P27/P31按finance-impact-checklist-20261119.md验财务修复影响面；Q05-34/Q05-35修复已复验，按口径仍开放待确认关闭",
   "authorizations": [
     "全站只读",
     "补充UIQA测试资料",
@@ -14,7 +25,10 @@
     "用户明确允许W-FIN-01 CNY0.01付款闭环",
     "用户明确允许自取自用测试账号凭据登录；只读DB哈希核对，不修改账号权限"
   ],
-  "open_defects": ["Q05-34","Q05-35"],
+  "open_defects": [
+    "Q05-34",
+    "Q05-35"
+  ],
   "data_changes": [
     "新增商品 UIQA-NAMES-01 / ec46eab8-76f1-4ba7-931c-da30a5b80d9b，上传UIQA-C.png、UIQA-A.png，用于Q05-07文件名持久化复验",
     "新增商品 UIQA-20261117-05-P01 / 0de270b6-67e9-41fc-be47-6da47f8703ac",
@@ -38,7 +52,9 @@
     "非预期测试写入（保留，不删除）：customers e6fc7060-51ad-49f8-acdc-98446e555ada / UIQA-ACC-P03 / 验收资料P03 / Acceptance P03 / 中国 / active / owner u-baeac30b5127ebdb / created_at 2026-11-19 07:20:10.013382；address、website 为空",
     "非预期测试写入（保留，不删除）：partners 2197afaf-8e79-4586-b022-43f4ae00b563 / UIQA-ACC-P04 / 验收资料P04 / Acceptance P04 / freight_forwarder / 中国 / active / owner u-baeac30b5127ebdb / created_at 2026-11-19 07:20:33.794638；address、website 为空",
     "两条非预期写入完整字段见 unexpected-writes-20261119.json；原因是用连续补填+再次提交探测剩余必填，已停止该做法",
-    "P06/P07/P08验收安装页面写请求拦截器，未按回车、未点保存/提交/审批；三页记录0次POST/PUT/PATCH/DELETE，未新增报价/合同/审批数据"
+    "P06/P07/P08验收安装页面写请求拦截器，未按回车、未点保存/提交/审批；三页记录0次POST/PUT/PATCH/DELETE，未新增报价/合同/审批数据",
+    "P10–P12验收全程只读：未按回车、未提交/生成/保存/上传图片，页面写请求拦截器记录0次POST/PUT/PATCH/DELETE",
+    "Q05-34/Q05-35修复仅改前端与服务端无关代码，未新增或修改业务数据"
   ],
   "helpers": [
     "/tmp/full-harness.mjs",
@@ -80,7 +96,12 @@
     "操作纪律：先核对前端结构与后端schema必填，禁止连续补填+提交探测；每个校验用例只留一个已知必填为空；全部必填满足时不点保存",
     "Q05-34已实测P02–P08七页，修复队列列出32个使用ListEmptyState的页面（29个页面文件），要求逐区失败→解除→点击重试→恢复",
     "Q05-35修复要求显示负责人姓名与空值回退，不能只隐藏内部ID",
-    "P06–P08证据为P06/P07/P08-accept-20261119.json与被引用截图；三页写请求拦截记录均为0"
+    "P06–P08证据为P06/P07/P08-accept-20261119.json与被引用截图；三页写请求拦截记录均为0",
+    "Q05-34修复：29个页面文件/32页接入独立loadError与onRetry；39个查询区逐区失败→解除→点击重试→恢复，未整页刷新",
+    "Q05-34筛选保留：P01–P04、P13查询不写URL，刷新丢筛选属既有行为；P32其余5个页签共用同一错误标志与接口，仅当前页签实测；P25付费申请子表无ListEmptyState",
+    "Q05-35修复：P05详情负责人显示“系统管理员”，空值/目录缺用户显示“未指定”，原始ID仅title追溯",
+    "P10–P12证据为P10-P12-accept-20261119.json、page-acceptance/P10-P12-summary-20261119.json与三页48项JSON/MD；三页均0次写请求",
+    "P11生成弹窗自动生成“报关单证ID”UUID可见且可编辑，无用途说明；列为未编号观察项，不改变34项=32关闭+2开放计数"
   ],
   "spreadsheet_authoring": {
     "skill": "spreadsheets已完整读取",
@@ -121,5 +142,5 @@
   },
   "offline_ledger_summary": "ledger-summary.json",
   "offline_integrity": "ledger-integrity-check.json",
-  "updated_at": "2026-11-19T08:30:00+00:00"
+  "updated_at": "2026-11-19T10:30:00+00:00"
 }

@@ -86,6 +86,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
   const [sampleHistory, setSampleHistory] = useState<SampleDelivery[]>([])
   const [quoteHistory, setQuoteHistory] = useState<SampleDelivery[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [form, setForm] = useState<SampleDeliveryFormState>(() => initialSampleDeliveryForm())
@@ -171,6 +172,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
     }
   }) {
     setLoading(true)
+    setLoadError(false)
     try {
       const reportFilters = {
         customer_id: (options?.filters?.customer_id ?? customerFilter).trim() || undefined,
@@ -193,6 +195,9 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
           ...filters,
           limit: nextPageSize,
           offset: (nextPage - 1) * nextPageSize,
+        }).catch((caught) => {
+          setLoadError(true)
+          throw caught
         }),
         getSampleDeliveryFeeStatistics(reportFilters),
         getSampleDeliveryStatistics(reportFilters),
@@ -557,6 +562,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
           <SampleDeliveryListView
             deliveries={deliveries}
             loading={loading}
+            loadError={loadError}
             selectedId={selectedDelivery?.id}
             submitting={submitting}
             search={search}
@@ -574,6 +580,7 @@ export function SampleDeliveriesPage({ currentUser, detailId, onNavigate }: Prop
               Boolean(dateToFilter)
             }
             onClearFilters={clearFilters}
+            onRetry={() => void loadDeliveries()}
             onSearchChange={setSearch}
             onStatusChange={setStatusFilter}
             onCustomerChange={setCustomerFilter}

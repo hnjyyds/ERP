@@ -215,6 +215,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     runSubmit: runScheduleSubmit,
   } = useFormModal(initialOutboundPlanScheduleForm)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [message, setMessage] = useState('')
 
   const selectedPlan = useMemo(() => {
@@ -291,6 +292,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
     const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     const resolvedSourceId = filtersOverride?.sourceId ?? sourceIdFilter
     setLoading(true)
+    setLoadError(false)
     try {
       const [planResult, shipmentOptions] = await Promise.all([
         listOutboundPlans({
@@ -302,6 +304,9 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
           source_id: resolvedSourceId.trim() || undefined,
           limit: resolvedPageSize,
           offset: (resolvedPage - 1) * resolvedPageSize,
+        }).catch((caught) => {
+          setLoadError(true)
+          throw caught
         }),
         loadOutboundShipmentOptions(),
       ])
@@ -643,6 +648,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={loadError}
                     filtered={
                       Boolean(search.trim()) ||
                       Boolean(statusFilter) ||
@@ -652,6 +658,7 @@ export function OutboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProp
                       Boolean(sourceIdFilter.trim())
                     }
                     onClearFilters={clearFilters}
+                    onRetry={() => void loadOutboundPlans()}
                   />
                 ),
               }}

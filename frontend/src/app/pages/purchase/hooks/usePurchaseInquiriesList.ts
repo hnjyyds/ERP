@@ -50,6 +50,7 @@ export function usePurchaseInquiriesList({ detailId, onNavigate }: Params) {
   const [supplierSamples, setSupplierSamples] = useState<SupplierSampleEvidence[]>([])
   const [references, setReferences] = useState<PurchaseInquiryReference[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
@@ -102,6 +103,7 @@ export function usePurchaseInquiriesList({ detailId, onNavigate }: Params) {
     const resolvedPage = pageOverride ?? page
     const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listPurchaseInquiries({
         q: (filtersOverride?.q ?? search).trim() || undefined,
@@ -130,6 +132,7 @@ export function usePurchaseInquiriesList({ detailId, onNavigate }: Params) {
         null
       setSelectedInquiryId(nextSelectedId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('purchase.inquiry.list.loadFailed'))
     } finally {
       setLoading(false)
@@ -234,6 +237,7 @@ export function usePurchaseInquiriesList({ detailId, onNavigate }: Params) {
     supplierSamples,
     references,
     loading,
+    loadError,
     total,
     pagination,
     loadInquiries,

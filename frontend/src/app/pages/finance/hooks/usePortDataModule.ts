@@ -68,7 +68,11 @@ export function usePortDataModule(
 
   const [loadingPortBatches, setLoadingPortBatches] = useState(false)
 
+  const [portBatchesLoadError, setPortBatchesLoadError] = useState(false)
+
   const [loadingCustomsRecords, setLoadingCustomsRecords] = useState(false)
+
+  const [customsRecordsLoadError, setCustomsRecordsLoadError] = useState(false)
 
   const [submittingPortBatch, setSubmittingPortBatch] = useState(false)
 
@@ -98,6 +102,7 @@ export function usePortDataModule(
 
   async function loadPortImportBatches(pageOverride?: number, pageSizeOverride?: number) {
     setLoadingPortBatches(true)
+    setPortBatchesLoadError(false)
     setError('')
     try {
       const page = pageOverride ?? batchesPager.page
@@ -109,6 +114,7 @@ export function usePortDataModule(
       setPortImportBatches(result.items)
       batchesPager.setTotal(result.total)
     } catch (caught) {
+      setPortBatchesLoadError(true)
       showError(caught, t('finance.portData.message.loadBatchesFailed'))
     } finally {
       setLoadingPortBatches(false)
@@ -121,6 +127,7 @@ export function usePortDataModule(
     filtersOverride?: CustomsRecordFilters,
   ) {
     setLoadingCustomsRecords(true)
+    setCustomsRecordsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? customsRecordFilters
@@ -136,6 +143,7 @@ export function usePortDataModule(
       setCustomsRecords(result.items)
       recordsPager.setTotal(result.total)
     } catch (caught) {
+      setCustomsRecordsLoadError(true)
       showError(caught, t('finance.portData.message.loadCustomsFailed'))
     } finally {
       setLoadingCustomsRecords(false)
@@ -278,6 +286,7 @@ export function usePortDataModule(
     customsDeclarationFilter: customsRecordFilters.declaration,
     customsReceiptFilter: customsRecordFilters.receipt,
     customsRecords,
+    customsRecordsLoadError,
     customsRecordsPagination: recordsPager.pagination,
     customsRecordsTotal: recordsPager.total,
     customsTradeTypeFilter: customsRecordFilters.tradeType,
@@ -288,6 +297,7 @@ export function usePortDataModule(
     matchingCustomsReceipts,
     portBatchForm,
     portImportBatches,
+    portImportBatchesLoadError: portBatchesLoadError,
     portImportBatchesPagination: batchesPager.pagination,
     portImportBatchesTotal: batchesPager.total,
     portRecordForm,

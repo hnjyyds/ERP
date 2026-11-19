@@ -114,7 +114,11 @@ export function useTaxModule(env: FinanceModuleEnv) {
 
   const [loadingVerificationDocuments, setLoadingVerificationDocuments] = useState(false)
 
+  const [verificationDocumentsLoadError, setVerificationDocumentsLoadError] = useState(false)
+
   const [loadingVerificationUsage, setLoadingVerificationUsage] = useState(false)
+
+  const [verificationUsageLoadError, setVerificationUsageLoadError] = useState(false)
 
   const [submittingCustomsReceipt, setSubmittingCustomsReceipt] = useState(false)
 
@@ -155,6 +159,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
     filtersOverride?: DocumentFilters,
   ) {
     setLoadingVerificationDocuments(true)
+    setVerificationDocumentsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? documentFilters
@@ -183,6 +188,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
         null
       setSelectedVerificationDocumentId(nextDocumentId)
     } catch (caught) {
+      setVerificationDocumentsLoadError(true)
       showError(caught, t('finance.tax.message.loadDocumentsFailed'))
     } finally {
       setLoadingVerificationDocuments(false)
@@ -276,6 +282,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
 
   async function loadVerificationUsage(filtersOverride?: UsageFilters) {
     setLoadingVerificationUsage(true)
+    setVerificationUsageLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? usageFilters
@@ -287,6 +294,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
       })
       setVerificationUsage(result.items)
     } catch (caught) {
+      setVerificationUsageLoadError(true)
       showError(caught, t('finance.tax.message.loadUsageFailed'))
     } finally {
       setLoadingVerificationUsage(false)
@@ -461,6 +469,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
     taxRefundForm,
     verificationDocumentForm: taxDocumentModal.form,
     verificationDocuments,
+    verificationDocumentsLoadError,
     verificationDocumentsPagination: verificationDocumentsPager.pagination,
     verificationDocumentsTotal: verificationDocumentsPager.total,
     verificationOwnerFilter: documentFilters.owner,
@@ -470,6 +479,7 @@ export function useTaxModule(env: FinanceModuleEnv) {
     verificationShipmentFilter: documentFilters.shipment,
     verificationStatusFilter: documentFilters.status,
     verificationUsage,
+    verificationUsageLoadError,
     verificationUsageReminderFilter: usageFilters.reminder,
     verificationUsageSearch: usageFilters.q,
     verificationUsageShipmentFilter: usageFilters.shipment,

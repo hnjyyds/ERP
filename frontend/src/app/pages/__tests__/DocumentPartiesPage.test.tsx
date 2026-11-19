@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { createDocumentParty, listCustomers, listDocumentParties } from '@/api'
+import {
+  createDocumentParty,
+  listAssignableUsers,
+  listCustomers,
+  listDocumentParties,
+} from '@/api'
 import { DocumentPartiesPage } from '@/app/pages/masterdata/DocumentPartiesPage'
 
 vi.mock('@/shared/ui', async (importOriginal) => {
@@ -29,7 +34,30 @@ vi.mock('@/api', () => ({
   updateDocumentParty: vi.fn(),
   deactivateDocumentParty: vi.fn(),
   listCustomers: vi.fn(async () => ({ items: [], total: 0 })),
+  listAssignableUsers: vi.fn(async () => ({ users: [] })),
 }))
+
+const documentParty = {
+  id: 'dp-1',
+  code: 'DP-001',
+  party_type: 'consignee',
+  display_name: '宁波收货人',
+  customer_id: null,
+  customer_name: null,
+  country: '中国',
+  address: null,
+  contact_person: null,
+  email: null,
+  phone: null,
+  bank_name: null,
+  swift_code: null,
+  account_no: null,
+  tax_id: null,
+  remarks: null,
+  is_default: false,
+  status: 'active',
+  owner_user_id: 'user-1',
+}
 
 describe('DocumentPartiesPage', () => {
   const onNavigate = vi.fn()
@@ -141,5 +169,81 @@ describe('DocumentPartiesPage', () => {
         expect.objectContaining({ status: 'inactive', limit: 50, offset: 0 }),
       ),
     )
+  })
+
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listDocumentParties)
+      .mockReset()
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [documentParty],
+        total: 1,
+        summary: {
+          total: 1,
+          default_count: 0,
+          consignee_count: 1,
+          issuing_bank_count: 0,
+        },
+      })
+
+    render(<DocumentPartiesPage detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    expect(await screen.findByText('DP-001')).toBeTruthy()
+  })
+
+  it('详情负责人显示可读姓名而不是内部 ID', async () => {
+    vi.mocked(listDocumentParties).mockResolvedValue({
+      items: [{ ...documentParty, owner_user_id: 'user-1' }],
+      total: 1,
+    })
+    vi.mocked(listAssignableUsers).mockResolvedValue({
+      users: [
+        {
+          id: 'user-1',
+          username: 'owner',
+          display_name: '张三',
+          department_name: '业务部',
+          avatar_type: 'preset',
+          avatar_value: 'blue',
+        },
+      ],
+    } as never)
+
+    render(<DocumentPartiesPage detailId="dp-1" onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('张三')).toBeTruthy()
+    expect(screen.queryByText('user-1')).toBeNull()
+  })
+
+  it('详情负责人为空或目录中找不到时显示未指定，并保留原始 ID 作为追溯线索', async () => {
+    vi.mocked(listDocumentParties).mockResolvedValue({
+      items: [{ ...documentParty, owner_user_id: 'user-missing' }],
+      total: 1,
+    })
+    vi.mocked(listAssignableUsers).mockResolvedValue({ users: [] })
+
+    render(<DocumentPartiesPage detailId="dp-1" onNavigate={onNavigate} />)
+
+    const owner = await screen.findByText('未指定')
+    expect(owner).toHaveAttribute('title', 'user-missing')
+    expect(screen.queryByText('user-missing')).toBeNull()
+  })
+
+  it('详情负责人为空时显示未指定且不带内部 ID 提示', async () => {
+    vi.mocked(listDocumentParties).mockResolvedValue({
+      items: [{ ...documentParty, owner_user_id: '' }],
+      total: 1,
+    })
+    vi.mocked(listAssignableUsers).mockResolvedValue({ users: [] })
+
+    render(<DocumentPartiesPage detailId="dp-1" onNavigate={onNavigate} />)
+
+    const owner = await screen.findByText('未指定')
+    expect(owner).not.toHaveAttribute('title')
   })
 })

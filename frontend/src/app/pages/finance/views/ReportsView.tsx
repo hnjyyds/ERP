@@ -68,6 +68,7 @@ export function ReportsView({ model, shell }: Props) {
     reportDrilldown,
     reportFeeType,
     reportIncludeRegistered,
+    reportLoadError,
     reportOwnerUserId,
     reportPartnerName,
     reportReceiptNo,
@@ -331,8 +332,10 @@ export function ReportsView({ model, shell }: Props) {
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={reportLoadError}
                   filtered={reportFiltered}
                   onClearFilters={clearReportFilters}
+                  onRetry={() => void loadFinanceReport(activeReport)}
                 />
               ),
             }}
@@ -365,6 +368,17 @@ export function ReportsView({ model, shell }: Props) {
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
             ]}
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  error={reportLoadError}
+                  filtered={reportFiltered}
+                  onClearFilters={clearReportFilters}
+                  onRetry={() => void loadFinanceReport(activeReport)}
+                />
+              ),
+            }}
             dataSource={bankReceiptSummaryReport?.currency_summaries ?? []}
             loading={loadingReport}
             pagination={false}
@@ -408,6 +422,17 @@ export function ReportsView({ model, shell }: Props) {
                 ),
               },
             ]}
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  error={reportLoadError}
+                  filtered={reportFiltered}
+                  onClearFilters={clearReportFilters}
+                  onRetry={() => void loadFinanceReport(activeReport)}
+                />
+              ),
+            }}
             dataSource={goodsPaymentReport?.rows ?? []}
             loading={loadingReport}
             pagination={false}
@@ -451,6 +476,17 @@ export function ReportsView({ model, shell }: Props) {
                 ),
               },
             ]}
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  error={reportLoadError}
+                  filtered={reportFiltered}
+                  onClearFilters={clearReportFilters}
+                  onRetry={() => void loadFinanceReport(activeReport)}
+                />
+              ),
+            }}
             dataSource={feePaymentReport?.rows ?? []}
             loading={loadingReport}
             pagination={false}
@@ -500,6 +536,17 @@ export function ReportsView({ model, shell }: Props) {
                 ),
               },
             ]}
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  error={reportLoadError}
+                  filtered={reportFiltered}
+                  onClearFilters={clearReportFilters}
+                  onRetry={() => void loadFinanceReport(activeReport)}
+                />
+              ),
+            }}
             dataSource={customsCollectionReport?.rows ?? []}
             loading={loadingReport}
             pagination={false}
@@ -529,6 +576,17 @@ export function ReportsView({ model, shell }: Props) {
                 render: (value: string, record) => formatFinanceAmount(value, record.currency),
               },
             ]}
+            locale={{
+              emptyText: (
+                <ListEmptyState
+                  emptyTitle={t('common.empty.noDataTitle')}
+                  error={reportLoadError}
+                  filtered={reportFiltered}
+                  onClearFilters={clearReportFilters}
+                  onRetry={() => void loadFinanceReport(activeReport)}
+                />
+              ),
+            }}
             dataSource={taxRefundStatisticsReport?.currency_totals ?? []}
             loading={loadingReport}
             pagination={false}

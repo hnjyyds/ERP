@@ -179,4 +179,24 @@ describe('TradingPartnerPage', () => {
     )
     expect(window.location.search).toContain('q=%E8%BF%9C%E8%88%AA')
   })
+
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    listEntity
+      .mockReset()
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [partnerRow],
+        total: 1,
+        summary: { active_count: 1, contact_count: 0, partner_type_count: 1 },
+      })
+
+    render(<TradingPartnerPage {...defaultProps} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('还没有往来伙伴资料')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    expect(await screen.findByText('P-FWD-001')).toBeTruthy()
+  })
 })

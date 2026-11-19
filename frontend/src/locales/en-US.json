@@ -2379,6 +2379,7 @@
       "remarks": "Remarks",
       "taxId": "Tax ID",
       "owner": "Owner",
+      "ownerUnassigned": "Unassigned",
       "allTypes": "All types",
       "allStatus": "All statuses",
       "notMaintained": "Not maintained"

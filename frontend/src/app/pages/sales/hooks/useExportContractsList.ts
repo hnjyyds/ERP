@@ -40,6 +40,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
   const [statusFilter, setStatusFilter] = useState(initialFilters.status)
   const [customerFilter, setCustomerFilter] = useState(initialFilters.customer)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
@@ -114,6 +115,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     const resolvedStatus = filtersOverride?.status ?? statusFilter
     const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     setLoading(true)
+    setLoadError(false)
     const requestId = latestRequest.begin()
     try {
       const result = await listExportContracts({
@@ -144,6 +146,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
       setSelectedContractId(nextSelectedId)
     } catch (caught) {
       if (!latestRequest.isLatest(requestId)) return
+      setLoadError(true)
       showError(caught, t('sales.contract.list.loadFailed'))
     } finally {
       if (latestRequest.isLatest(requestId)) setLoading(false)
@@ -220,6 +223,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     setSelectedContractId,
     detailLoading,
     loading,
+    loadError,
     total,
     pagination,
     search,
@@ -233,6 +237,7 @@ export function useExportContractsList({ detailId, onNavigate }: Options) {
     clearFilters,
     changeContractsPage,
     stopAndOpenContractDetail,
+    loadContracts,
   }
 }
 

@@ -21,6 +21,7 @@ export function ReimbursementsView({ model, shell }: Props) {
     clearReimbursementFilters,
     handleReimbursementApprove,
     handleReimbursementPay,
+    loadReimbursements,
     loadingReimbursements,
     reimbursementCategoryFilter,
     reimbursementForm,
@@ -29,6 +30,7 @@ export function ReimbursementsView({ model, shell }: Props) {
     reimbursementSearch,
     reimbursementStatusFilter,
     reimbursements,
+    reimbursementsLoadError,
     reimbursementsPagination,
     reimbursementsTotal,
     reimbursementsTotalAmount,
@@ -123,12 +125,14 @@ export function ReimbursementsView({ model, shell }: Props) {
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={reimbursementsLoadError}
                   filtered={
                     Boolean(reimbursementSearch.trim()) ||
                     Boolean(reimbursementStatusFilter) ||
                     Boolean(reimbursementCategoryFilter)
                   }
                   onClearFilters={() => void clearReimbursementFilters()}
+                  onRetry={() => void loadReimbursements()}
                 />
               ),
             }}

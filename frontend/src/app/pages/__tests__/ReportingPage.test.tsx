@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -110,6 +110,42 @@ describe('ReportingPage', () => {
     await user.click(screen.getAllByText('common.empty.clearFilters')[0])
 
     expect(listApprovalDocuments).toHaveBeenLastCalledWith({})
+  })
+
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listApprovalDocuments)
+      .mockReset()
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue(approvalQuery([approvalDocument({})]))
+
+    render(<ReportingPage onNavigate={onNavigate} />)
+
+    const panel = screen
+      .getByText('reporting.panel.approvalListTitle')
+      .closest('section') as HTMLElement
+    expect((await within(panel).findAllByText('common.empty.loadFailedTitle')).length).toBeGreaterThan(0)
+    expect(within(panel).queryByText('common.empty.noDataDescription')).toBeNull()
+
+    await user.type(
+      screen.getByPlaceholderText('reporting.filter.applicantPlaceholder'),
+      'sales-1',
+    )
+    await user.click(screen.getByRole('button', { name: 'reporting.action.search' }))
+    await waitFor(() => {
+      expect(listApprovalDocuments).toHaveBeenLastCalledWith(
+        expect.objectContaining({ applicant_user_id: 'sales-1' }),
+      )
+    })
+    expect((await within(panel).findAllByText('common.empty.loadFailedTitle')).length).toBeGreaterThan(0)
+
+    await user.click(within(panel).getAllByRole('button', { name: 'common.empty.retry' })[0])
+
+    expect(await screen.findByText('EC-001')).toBeTruthy()
+    expect(screen.getByPlaceholderText('reporting.filter.applicantPlaceholder')).toHaveValue(
+      'sales-1',
+    )
   })
 
   it('opens pending documents for approval and approved documents for details', async () => {

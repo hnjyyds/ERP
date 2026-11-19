@@ -391,4 +391,32 @@ describe('MyQualityTasksPage', () => {
     )
     expect(metricTexts()).toEqual(before)
   })
+
+  it('列表加载失败显示独立错误态并可重试', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listQualityInspections)
+      .mockReset()
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [pendingTask as QualityInspection],
+        total: 1,
+        summary: {
+          pending_count: 1,
+          in_progress_count: 0,
+          completed_count: 0,
+          cancelled_count: 0,
+          overdue_count: 0,
+          open_issue_count: 0,
+          my_action_count: 1,
+        },
+      })
+
+    render(<MyQualityTasksPage currentUser={currentUser} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    expect(await screen.findByText('QC-TASK-001')).toBeTruthy()
+  })
 })

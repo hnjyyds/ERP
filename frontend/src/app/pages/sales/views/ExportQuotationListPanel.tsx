@@ -98,12 +98,14 @@ export function ExportQuotationListPanel({ model, onOpenForm }: Props) {
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
                 Boolean(model.customerFilter)
               }
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadQuotations()}
             />
           ),
         }}

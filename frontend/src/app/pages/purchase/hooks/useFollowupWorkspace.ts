@@ -46,6 +46,7 @@ export function useFollowupWorkspace({
   const [contractFilter, setContractFilter] = useState(() => urlQuery.params.get('contract') ?? '')
   const [overdueAsOf, setOverdueAsOf] = useState(() => todayInputValue())
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
@@ -110,9 +111,11 @@ export function useFollowupWorkspace({
     const resolvedPage = pageOverride ?? page
     const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
+    setLoadError(false)
     try {
       const [templateResult, planResult, overdueResult] = await Promise.all([
-        listFollowupTemplates(),
+        // 模板与逾期节点属于辅助数据，失败时不影响列表本身的错误态。
+        listFollowupTemplates().catch(() => ({ items: [], total: 0 })),
         listFollowupPlans({
           q: (filtersOverride?.q ?? search).trim() || undefined,
           overall_status: (filtersOverride?.status ?? statusFilter) || undefined,
@@ -121,7 +124,7 @@ export function useFollowupWorkspace({
           limit: resolvedPageSize,
           offset: (resolvedPage - 1) * resolvedPageSize,
         }),
-        listFollowupOverdueNodes(overdueAsOf),
+        listFollowupOverdueNodes(overdueAsOf).catch(() => ({ items: [], total: 0 })),
       ])
       setTemplates(templateResult.items)
       setTotal(planResult.total)
@@ -159,6 +162,7 @@ export function useFollowupWorkspace({
       setSelectedTemplateId(nextTemplateId)
       setSelectedPlanId(nextPlanId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('purchase.followup.list.loadFailed'))
     } finally {
       setLoading(false)
@@ -222,6 +226,7 @@ export function useFollowupWorkspace({
     changeListPage,
     contractFilter,
     loading,
+    loadError,
     loadFollowupWorkspace,
     openFollowupDetail,
     overdueAsOf,

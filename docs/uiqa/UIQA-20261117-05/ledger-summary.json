@@ -39,21 +39,21 @@
     "通过（仅限手动输入/显示）": 2
   },
   "whole_pages_passed": 0,
-  "status": "P01–P09中P01/P02/P03/P04/P05/P06/P07/P08/P09及P24共10页已逐项判定、0页签收；Q05-33经0023修正关闭；验收新登记Q05-34/Q05-35，当前32关闭+2开放；前端index-jJamVJA9.js、后端0023_shipment_finance_misc_fees",
+  "status": "P01–P12中13页已逐项判定、0页签收；Q05-34/Q05-35已修复部署并逐区复验，按口径仍为32关闭+2开放；前端index-nah24HOd.js、后端0023_shipment_finance_misc_fees",
   "defect_status": {
     "closed": 32,
     "pending_reverify": 0,
     "open": 2,
     "total": 34,
-    "note": "Q05-31已合并至Q05-07不单独计数；Q05-33重开后经0023修正关闭；Q05-34（P02–P05加载失败误示首录空态）与Q05-35（P05负责人显示内部ID）为2026-11-19基础资料验收新登记，保持开放"
+    "note": "Q05-31已合并至Q05-07不单独计数；Q05-33经0023修正关闭；Q05-34/Q05-35已修复部署并复验（32页39区失败→重试→恢复；P05负责人显示姓名），按本轮口径保持开放，待确认后关闭"
   },
   "deployment": {
     "frontend_commit": "449aaa0a",
     "backend_commit": "449aaa0a",
-    "frontend_asset": "assets/index-jJamVJA9.js",
+    "frontend_asset": "assets/index-nah24HOd.js",
     "frontend_css": "assets/index-XnLQlyxz.css",
     "frontend_css_note": "容器内实际样式文件；原记index-C-HlQaba.css已更正，入口JS不变",
-    "previous_asset": "assets/index-Bpsh7zKB.js",
+    "previous_asset": "assets/index-jJamVJA9.js",
     "backend_image_id": "sha256:9bcad31dd557819aea433a40bc15434771c627aec38825d0316a88d2861fa060",
     "alembic_head": "0023_shipment_finance_misc_fees",
     "superseded_migration": "0022_recalc_shipment_finance（漏计杂费，保留为变更前对账）",
@@ -78,9 +78,14 @@
       "q05-06-empty-states-reverify-20261118.json",
       "q05-07-image-names-reverify-20261118.json",
       "q05-14-enum-labels-reverify-20261118.json",
-      "q05-33-reconcile-20261119.json"
+      "q05-33-reconcile-20261119.json",
+      "q05-34-reverify-20261119-batch1.json",
+      "q05-34-reverify-20261119-batch2.json",
+      "q05-35-owner-reverify-20261119.json"
     ],
-    "archive_commit": "260d774f"
+    "archive_commit": "260d774f",
+    "frontend_image_id": "sha256:2a98504f45b7465453143b6eeb7edd18476174f1082a7a546cd9d1cca6d30a0c",
+    "deployment_record": "deployment.json 2026-11-19 index-nah24HOd.js 条目"
   },
   "resume": {
     "space": 12,
@@ -147,7 +152,7 @@
     }
   ],
   "page_acceptance": {
-    "bundle": "index-jJamVJA9.js",
+    "bundle": "index-nah24HOd.js",
     "commit": "449aaa0a",
     "report": "page-acceptance/summary-20261118.json",
     "pages": {
@@ -240,6 +245,33 @@
         "fail": 1,
         "untested": 8,
         "signed": false
+      },
+      "PAGE-10": {
+        "name": "采购询价",
+        "pass": 13,
+        "na": 8,
+        "partial": 18,
+        "fail": 0,
+        "untested": 9,
+        "signed": false
+      },
+      "PAGE-11": {
+        "name": "采购开票通知",
+        "pass": 8,
+        "na": 8,
+        "partial": 23,
+        "fail": 0,
+        "untested": 9,
+        "signed": false
+      },
+      "PAGE-12": {
+        "name": "样品登记",
+        "pass": 12,
+        "na": 3,
+        "partial": 20,
+        "fail": 0,
+        "untested": 13,
+        "signed": false
       }
     },
     "new_defects": [
@@ -255,6 +287,9 @@
     "merged_records": {
       "Q05-31": "Q05-07"
     },
-    "baseline_bundle": "index-Bpsh7zKB.js"
+    "baseline_bundle": "index-Bpsh7zKB.js",
+    "summary": "page-acceptance/P10-P12-summary-20261119.json",
+    "fix_queue": "fix-queue-20261119.md",
+    "q05_34_35": "已修复部署并逐区复验；计数保持32关闭+2开放"
   }
 }

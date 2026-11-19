@@ -118,4 +118,23 @@ describe('OutboundPlansPage', () => {
     render(<OutboundPlansPage detailId={null} onNavigate={onNavigate} />)
     expect(screen.queryByText('待出库清单')).toBeFalsy()
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', '/warehouse/outbound-plans?q=OP-9')
+    const user = userEvent.setup()
+    vi.mocked(listOutboundPlans)
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [planFixture], total: 1, summary: summaryFixture })
+
+    render(<OutboundPlansPage detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(screen.getByPlaceholderText('计划号 / 来源单 / 商品')).toHaveValue('OP-9')
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('OP-TEST-001')).toBeTruthy()
+    expect(listOutboundPlans).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'OP-9' }))
+  })
 })

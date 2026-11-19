@@ -71,6 +71,7 @@ export function useInboundOrdersList({
   const [supplierFilter, setSupplierFilter] = useState(initialFilters.supplier)
   const [contractFilter, setContractFilter] = useState(initialFilters.contract)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [statusSummary, setStatusSummary] = useState(emptyInboundOrderStatusSummary)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
@@ -175,6 +176,7 @@ export function useInboundOrdersList({
     // 库存统计只服务库存搜索或全库，不复用单据列表关键词。
     const summaryInventoryQuery = inventorySearch.trim() || undefined
     setLoading(true)
+    setLoadError(false)
     try {
       const [orderResult, planOptions, balanceSummary] = await Promise.all([
         listInboundOrders({
@@ -185,6 +187,9 @@ export function useInboundOrdersList({
           purchase_contract_id: resolvedContract.trim() || undefined,
           limit: resolvedPageSize,
           offset: (resolvedPage - 1) * resolvedPageSize,
+        }).catch((caught) => {
+          setLoadError(true)
+          throw caught
         }),
         loadInboundOrderPlanOptions(),
         listInventoryBalances({ q: summaryInventoryQuery, limit: 1 }),
@@ -375,6 +380,7 @@ export function useInboundOrdersList({
     contractFilter,
     setContractFilter,
     loading,
+    loadError,
     statusSummary,
     total,
     pagination,

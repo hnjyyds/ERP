@@ -202,7 +202,9 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
   const [statisticsSupplierFilter, setStatisticsSupplierFilter] = useState('')
   const [statisticsSalesFilter, setStatisticsSalesFilter] = useState('')
   const [loading, setLoading] = useState(false)
+  const [approvalsLoadError, setApprovalsLoadError] = useState(false)
   const [loadingStatistics, setLoadingStatistics] = useState(false)
+  const [statisticsLoadError, setStatisticsLoadError] = useState(false)
 
   useEffect(() => {
     void loadApprovals()
@@ -211,6 +213,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
   async function loadApprovals() {
     setLoading(true)
+    setApprovalsLoadError(false)
     try {
       const result = await listApprovalDocuments({
         document_type: documentTypeFilter || undefined,
@@ -221,6 +224,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       })
       setApprovals(result)
     } catch (caught) {
+      setApprovalsLoadError(true)
       showError(caught, t('reporting.message.approvalLoadFailed'))
     } finally {
       setLoading(false)
@@ -229,6 +233,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
 
   async function loadStatistics() {
     setLoadingStatistics(true)
+    setStatisticsLoadError(false)
     try {
       const result = await listReportingStatistics({
         date_from: statisticsDateFromFilter || undefined,
@@ -240,6 +245,7 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
       })
       setStatistics(result)
     } catch (caught) {
+      setStatisticsLoadError(true)
       showError(caught, t('reporting.message.statisticsLoadFailed'))
     } finally {
       setLoadingStatistics(false)
@@ -252,9 +258,11 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
     setApplicantUserFilter('')
     setDateFromFilter('')
     setDateToFilter('')
+    setApprovalsLoadError(false)
     void listApprovalDocuments({ status: 'submitted' })
       .then(setApprovals)
       .catch((caught: unknown) => {
+        setApprovalsLoadError(true)
         showError(caught, t('reporting.message.approvalLoadFailed'))
       })
   }
@@ -265,9 +273,11 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
     setApplicantUserFilter('')
     setDateFromFilter('')
     setDateToFilter('')
+    setApprovalsLoadError(false)
     void listApprovalDocuments({})
       .then(setApprovals)
       .catch((caught: unknown) => {
+        setApprovalsLoadError(true)
         showError(caught, t('reporting.message.approvalLoadFailed'))
       })
   }
@@ -279,9 +289,11 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
     setStatisticsCustomerFilter('')
     setStatisticsSupplierFilter('')
     setStatisticsSalesFilter('')
+    setStatisticsLoadError(false)
     void listReportingStatistics()
       .then(setStatistics)
       .catch((caught: unknown) => {
+        setStatisticsLoadError(true)
         showError(caught, t('reporting.message.statisticsLoadFailed'))
       })
   }
@@ -401,8 +413,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={approvalsLoadError}
                   filtered={approvalFiltered}
                   onClearFilters={clearApprovalFilters}
+                  onRetry={() => void loadApprovals()}
                 />
               ),
             }}
@@ -489,8 +503,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={approvalsLoadError}
                   filtered={approvalFiltered}
                   onClearFilters={clearApprovalFilters}
+                  onRetry={() => void loadApprovals()}
                 />
               ),
             }}
@@ -626,8 +642,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={statisticsLoadError}
                   filtered={statisticsFiltered}
                   onClearFilters={resetStatisticsFilters}
+                  onRetry={() => void loadStatistics()}
                 />
               ),
             }}
@@ -668,8 +686,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
               emptyText: (
                 <ListEmptyState
                   emptyTitle={t('common.empty.noDataTitle')}
+                  error={statisticsLoadError}
                   filtered={statisticsFiltered}
                   onClearFilters={resetStatisticsFilters}
+                  onRetry={() => void loadStatistics()}
                 />
               ),
             }}
@@ -710,8 +730,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                   emptyText: (
                     <ListEmptyState
                       emptyTitle={t('common.empty.noDataTitle')}
+                      error={statisticsLoadError}
                       filtered={statisticsFiltered}
                       onClearFilters={resetStatisticsFilters}
+                      onRetry={() => void loadStatistics()}
                     />
                   ),
                 }}
@@ -742,8 +764,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                   emptyText: (
                     <ListEmptyState
                       emptyTitle={t('common.empty.noDataTitle')}
+                      error={statisticsLoadError}
                       filtered={statisticsFiltered}
                       onClearFilters={resetStatisticsFilters}
+                      onRetry={() => void loadStatistics()}
                     />
                   ),
                 }}
@@ -781,8 +805,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={statisticsLoadError}
                     filtered={statisticsFiltered}
                     onClearFilters={resetStatisticsFilters}
+                    onRetry={() => void loadStatistics()}
                   />
                 ),
               }}
@@ -830,8 +856,10 @@ export function ReportingPage({ onNavigate }: ModuleNavigationProps) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={statisticsLoadError}
                     filtered={statisticsFiltered}
                     onClearFilters={resetStatisticsFilters}
+                    onRetry={() => void loadStatistics()}
                   />
                 ),
               }}

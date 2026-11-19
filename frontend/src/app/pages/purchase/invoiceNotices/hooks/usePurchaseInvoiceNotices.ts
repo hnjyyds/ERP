@@ -58,6 +58,7 @@ export type PurchaseInvoiceNoticesModel = {
   customsFilter: string
   setCustomsFilter: (value: string) => void
   loading: boolean
+  loadError: boolean
   submitting: boolean
   message: string
   customsDeclarationNoError: string
@@ -74,6 +75,13 @@ export type PurchaseInvoiceNoticesModel = {
   setInvoiceActionModal: (value: 'send' | 'receive' | null) => void
   total: number
   pagination: ReturnType<typeof useTablePagination>['pagination']
+  loadNotices: (
+    preferredId?: string,
+    overrideCustomsFilter?: string,
+    pageOverride?: number,
+    pageSizeOverride?: number,
+    filtersOverride?: InvoiceNoticeFilters,
+  ) => Promise<void>
   goToPage: (nextPage: number, nextPageSize: number) => void
   submitSearch: () => void
   clearFilters: () => void
@@ -105,6 +113,7 @@ export function usePurchaseInvoiceNotices({
   const [supplierFilter, setSupplierFilter] = useState(() => urlQuery.params.get('supplier') ?? '')
   const [customsFilter, setCustomsFilter] = useState(() => urlQuery.params.get('customs') ?? '')
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
@@ -184,6 +193,7 @@ export function usePurchaseInvoiceNotices({
     const resolvedPage = pageOverride ?? page
     const resolvedPageSize = pageSizeOverride ?? pageSize
     setLoading(true)
+    setLoadError(false)
     try {
       const [noticeResult, reminderResult] = await Promise.all([
         listPurchaseInvoiceNotices({
@@ -196,7 +206,8 @@ export function usePurchaseInvoiceNotices({
           limit: resolvedPageSize,
           offset: (resolvedPage - 1) * resolvedPageSize,
         }),
-        listPurchaseInvoiceNoticeReminders(),
+        // 提醒只是辅助数据，失败时不影响列表本身的错误态。
+        listPurchaseInvoiceNoticeReminders().catch(() => ({ items: [], total: 0 })),
       ])
       setTotal(noticeResult.total)
       setSummary(noticeResult.summary)
@@ -226,6 +237,7 @@ export function usePurchaseInvoiceNotices({
         null
       setSelectedNoticeId(nextSelectedId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('purchase.invoiceNotice.list.loadFailed'))
     } finally {
       setLoading(false)
@@ -387,6 +399,7 @@ export function usePurchaseInvoiceNotices({
     customsFilter,
     setCustomsFilter,
     loading,
+    loadError,
     submitting,
     message,
     customsDeclarationNoError,
@@ -403,6 +416,7 @@ export function usePurchaseInvoiceNotices({
     setInvoiceActionModal,
     total,
     pagination,
+    loadNotices,
     goToPage,
     submitSearch,
     clearFilters,

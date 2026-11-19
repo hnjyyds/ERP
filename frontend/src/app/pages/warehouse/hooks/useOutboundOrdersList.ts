@@ -69,6 +69,7 @@ export function useOutboundOrdersList({
   const [customerFilter, setCustomerFilter] = useState(initialFilters.customer)
   const [sourceIdFilter, setSourceIdFilter] = useState(initialFilters.sourceId)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const { page, pageSize, total, setTotal, setPage, changePage, pagination } = useTablePagination(
     undefined,
     parsePageParam(urlQuery.params),
@@ -135,6 +136,7 @@ export function useOutboundOrdersList({
     const resolvedCustomer = filtersOverride?.customer ?? customerFilter
     const resolvedSourceId = filtersOverride?.sourceId ?? sourceIdFilter
     setLoading(true)
+    setLoadError(false)
     try {
       const [orderResult, planOptions] = await Promise.all([
         listOutboundOrders({
@@ -146,6 +148,9 @@ export function useOutboundOrdersList({
           source_id: resolvedSourceId.trim() || undefined,
           limit: resolvedPageSize,
           offset: (resolvedPage - 1) * resolvedPageSize,
+        }).catch((caught) => {
+          setLoadError(true)
+          throw caught
         }),
         fetchOutboundPlans(),
       ])
@@ -337,6 +342,7 @@ export function useOutboundOrdersList({
     sourceIdFilter,
     setSourceIdFilter,
     loading,
+    loadError,
     total,
     pagination,
     submitFilters,

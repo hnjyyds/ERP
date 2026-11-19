@@ -143,6 +143,7 @@ export function PurchaseInquiryListPanel({ model, onCreate }: Props) {
               createLabel={t('purchase.inquiry.list.create')}
               emptyDescription={t('purchase.inquiry.list.emptyDescription')}
               emptyTitle={t('purchase.inquiry.list.emptyTitle')}
+              error={model.loadError}
               filtered={
                 Boolean(model.search.trim()) ||
                 Boolean(model.statusFilter) ||
@@ -151,6 +152,7 @@ export function PurchaseInquiryListPanel({ model, onCreate }: Props) {
               }
               onCreate={onCreate}
               onClearFilters={model.clearFilters}
+              onRetry={() => void model.loadInquiries()}
             />
           ),
         }}

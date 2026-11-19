@@ -60,14 +60,18 @@ export function SettlementView({ model, shell }: Props) {
     clearProfitFilters,
     clearSettlementFilters,
     financialSettlements,
+    financialSettlementsLoadError,
     financialSettlementsPagination,
     financialSettlementsTotal,
+    loadFinancialSettlements,
+    loadProfitCalculations,
     loadingFinancialSettlements,
     loadingProfitCalculations,
     manualProfitCostForm,
     profitCalculationSearch,
     profitCalculationShipmentFilter,
     profitCalculations,
+    profitCalculationsLoadError,
     profitCalculationsPagination,
     profitCalculationsTotal,
     selectedFinancialSettlement,
@@ -178,11 +182,13 @@ export function SettlementView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={financialSettlementsLoadError}
                     filtered={
                       Boolean(settlementSearch.trim()) ||
                       Boolean(settlementShipmentFilter.trim())
                     }
                     onClearFilters={() => void clearSettlementFilters()}
+                    onRetry={() => void loadFinancialSettlements()}
                   />
                 ),
               }}
@@ -553,11 +559,13 @@ export function SettlementView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={profitCalculationsLoadError}
                     filtered={
                       Boolean(profitCalculationSearch.trim()) ||
                       Boolean(profitCalculationShipmentFilter.trim())
                     }
                     onClearFilters={() => void clearProfitFilters()}
+                    onRetry={() => void loadProfitCalculations()}
                   />
                 ),
               }}

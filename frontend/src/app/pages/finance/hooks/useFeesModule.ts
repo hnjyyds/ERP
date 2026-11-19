@@ -144,9 +144,15 @@ export function useFeesModule(env: FinanceModuleEnv) {
 
   const [loadingPartnerFeeInvoices, setLoadingPartnerFeeInvoices] = useState(false)
 
+  const [partnerFeeInvoicesLoadError, setPartnerFeeInvoicesLoadError] = useState(false)
+
   const [loadingFeePaymentRequests, setLoadingFeePaymentRequests] = useState(false)
 
+  const [feePaymentRequestsLoadError, setFeePaymentRequestsLoadError] = useState(false)
+
   const [loadingFeePayables, setLoadingFeePayables] = useState(false)
+
+  const [feePayablesLoadError, setFeePayablesLoadError] = useState(false)
 
   const [partnerFeeInvoiceNoError, setPartnerFeeInvoiceNoError] = useState('')
 
@@ -203,6 +209,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     filtersOverride?: FeeInvoiceFilters,
   ) {
     setLoadingPartnerFeeInvoices(true)
+    setPartnerFeeInvoicesLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? feeInvoiceFilters
@@ -231,6 +238,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
         null
       setSelectedPartnerFeeInvoiceId(nextInvoiceId)
     } catch (caught) {
+      setPartnerFeeInvoicesLoadError(true)
       showError(caught, t('finance.fee.message.loadInvoicesFailed'))
     } finally {
       setLoadingPartnerFeeInvoices(false)
@@ -243,6 +251,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     pageSizeOverride?: number,
   ) {
     setLoadingFeePaymentRequests(true)
+    setFeePaymentRequestsLoadError(false)
     setError('')
     try {
       const page = pageOverride ?? feePaymentRequestsPager.page
@@ -264,6 +273,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
         null
       setSelectedFeePaymentRequestId(nextRequestId)
     } catch (caught) {
+      setFeePaymentRequestsLoadError(true)
       showError(caught, t('finance.fee.message.loadPaymentRequestsFailed'))
     } finally {
       setLoadingFeePaymentRequests(false)
@@ -276,6 +286,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     filtersOverride?: FeePayableFilters,
   ) {
     setLoadingFeePayables(true)
+    setFeePayablesLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? feePayableFilters
@@ -294,6 +305,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
       feePayablesPager.setTotal(result.total)
       setFeePayableTotalAmount(result.total_payable_amount)
     } catch (caught) {
+      setFeePayablesLoadError(true)
       showError(caught, t('finance.fee.message.loadPayablesFailed'))
     } finally {
       setLoadingFeePayables(false)
@@ -519,11 +531,13 @@ export function useFeesModule(env: FinanceModuleEnv) {
     feePayableTotalAmount,
     feePayableTypeFilter: feePayableFilters.type,
     feePayables,
+    feePayablesLoadError,
     feePayablesPagination: feePayablesPager.pagination,
     feePayablesTotal: feePayablesPager.total,
     feePaymentApprovalForm,
     feePaymentRequestForm,
     feePaymentRequests,
+    feePaymentRequestsLoadError,
     feePaymentRequestsPagination: feePaymentRequestsPager.pagination,
     feePaymentRequestsTotal: feePaymentRequestsPager.total,
     loadFeePayables,
@@ -535,6 +549,7 @@ export function useFeesModule(env: FinanceModuleEnv) {
     partnerFeeInvoiceForm: feeInvoiceModal.form,
     partnerFeeInvoiceNoError,
     partnerFeeInvoices,
+    partnerFeeInvoicesLoadError,
     partnerFeeInvoicesPagination: partnerFeeInvoicesPager.pagination,
     partnerFeeInvoicesTotal: partnerFeeInvoicesPager.total,
     selectedFeePaymentRequest,

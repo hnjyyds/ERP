@@ -39,6 +39,8 @@ export function TaxView({ model, shell }: Props) {
     clearUsageFilters,
     customsReceiptErrors,
     customsReceiptForm,
+    loadVerificationDocuments,
+    loadVerificationUsage,
     loadingVerificationDocuments,
     loadingVerificationUsage,
     selectedVerificationCanRefund,
@@ -73,6 +75,7 @@ export function TaxView({ model, shell }: Props) {
     taxRefundForm,
     verificationDocumentForm,
     verificationDocuments,
+    verificationDocumentsLoadError,
     verificationDocumentsPagination,
     verificationOwnerFilter,
     verificationRegisterForm,
@@ -81,6 +84,7 @@ export function TaxView({ model, shell }: Props) {
     verificationShipmentFilter,
     verificationStatusFilter,
     verificationUsage,
+    verificationUsageLoadError,
     verificationUsageReminderFilter,
     verificationUsageSearch,
     verificationUsageShipmentFilter,
@@ -188,6 +192,7 @@ export function TaxView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={verificationDocumentsLoadError}
                     filtered={
                       Boolean(verificationSearch.trim()) ||
                       Boolean(verificationStatusFilter) ||
@@ -196,6 +201,7 @@ export function TaxView({ model, shell }: Props) {
                       Boolean(verificationShipmentFilter.trim())
                     }
                     onClearFilters={() => void clearDocumentFilters()}
+                    onRetry={() => void loadVerificationDocuments()}
                   />
                 ),
               }}
@@ -741,6 +747,7 @@ export function TaxView({ model, shell }: Props) {
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={verificationUsageLoadError}
                     filtered={
                       Boolean(verificationUsageSearch.trim()) ||
                       Boolean(verificationUsageStatusFilter) ||
@@ -748,6 +755,7 @@ export function TaxView({ model, shell }: Props) {
                       Boolean(verificationUsageShipmentFilter.trim())
                     }
                     onClearFilters={() => void clearUsageFilters()}
+                    onRetry={() => void loadVerificationUsage()}
                   />
                 ),
               }}

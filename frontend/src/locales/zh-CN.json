@@ -2379,6 +2379,7 @@
       "remarks": "备注",
       "taxId": "税号",
       "owner": "负责人",
+      "ownerUnassigned": "未指定",
       "allTypes": "全部类型",
       "allStatus": "全部状态",
       "notMaintained": "未维护"

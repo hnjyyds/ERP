@@ -153,4 +153,23 @@ describe('InboundPlansPage', () => {
     // Should not have the "计划明细" detail panel in list-only mode
     expect(screen.queryByText('计划明细')).toBeFalsy()
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', '/warehouse/inbound-plans?q=IP-9')
+    const user = userEvent.setup()
+    vi.mocked(listInboundPlans)
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [planFixture], total: 1, summary: summaryFixture })
+
+    render(<InboundPlansPage detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(screen.getByPlaceholderText('计划号 / 采购合同 / 商品')).toHaveValue('IP-9')
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('IP-TEST-001')).toBeTruthy()
+    expect(listInboundPlans).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'IP-9' }))
+  })
 })

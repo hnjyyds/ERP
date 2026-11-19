@@ -724,6 +724,28 @@ describe('InboundOrdersPage', () => {
     expect(await screen.findByText('入库单加载失败（测试）')).toBeInTheDocument()
   })
 
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', '/warehouse/inbound-orders?q=IO-9')
+    vi.mocked(listInboundOrders)
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({
+        items: [inboundOrderFixture()],
+        total: 1,
+        summary: { draft_count: 0, submitted_count: 0, approved_count: 0 },
+      })
+    const user = userEvent.setup()
+    render(<InboundOrdersPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeInTheDocument()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).not.toBeInTheDocument()
+    expect(screen.getByPlaceholderText('入库单 / 采购合同 / 商品')).toHaveValue('IO-9')
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('IO-TEST-001')).toBeInTheDocument()
+    expect(listInboundOrders).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'IO-9' }))
+  })
+
   it('翻页写入 URL，回到第一页时移除 page 参数', async () => {
     vi.mocked(listInboundOrders).mockResolvedValue({
       items: [inboundOrderFixture()],

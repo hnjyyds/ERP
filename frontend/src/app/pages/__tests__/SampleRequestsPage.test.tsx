@@ -363,4 +363,26 @@ describe('SampleRequestsPage', () => {
 
     expect(onNavigate).toHaveBeenCalledWith(sampleRequestPath)
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    const listSpy = vi
+      .spyOn(api, 'listSampleRequests')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue(listResult([request]))
+
+    render(<SampleRequestsPage currentUser={currentUser} detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+
+    const searchInput = screen.getByLabelText('打样搜索')
+    await userEvent.type(searchInput, 'SR-9')
+    expect(searchInput).toHaveValue('SR-9')
+
+    await userEvent.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('SR-001')).toBeTruthy()
+    expect(listSpy).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'SR-9' }))
+    expect(searchInput).toHaveValue('SR-9')
+  })
 })

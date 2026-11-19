@@ -99,7 +99,11 @@ export function useSettlementModule(env: FinanceModuleEnv) {
 
   const [loadingFinancialSettlements, setLoadingFinancialSettlements] = useState(false)
 
+  const [financialSettlementsLoadError, setFinancialSettlementsLoadError] = useState(false)
+
   const [loadingProfitCalculations, setLoadingProfitCalculations] = useState(false)
+
+  const [profitCalculationsLoadError, setProfitCalculationsLoadError] = useState(false)
 
   const [submittingManualProfitCost, setSubmittingManualProfitCost] = useState(false)
 
@@ -131,6 +135,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     filtersOverride?: SettlementFilters,
   ) {
     setLoadingFinancialSettlements(true)
+    setFinancialSettlementsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? settlementFilters
@@ -159,6 +164,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
         null
       setSelectedFinancialSettlementId(nextSettlementId)
     } catch (caught) {
+      setFinancialSettlementsLoadError(true)
       showError(caught, t('finance.settlement.message.loadSettlementsFailed'))
     } finally {
       setLoadingFinancialSettlements(false)
@@ -171,6 +177,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     filtersOverride?: ProfitFilters,
   ) {
     setLoadingProfitCalculations(true)
+    setProfitCalculationsLoadError(false)
     setError('')
     try {
       const filters = filtersOverride ?? profitFilters
@@ -186,6 +193,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
       profitsPager.setTotal(result.total)
       setTotalProfitCalculationGrossProfit(result.total_gross_profit)
     } catch (caught) {
+      setProfitCalculationsLoadError(true)
       showError(caught, t('finance.settlement.message.loadProfitFailed'))
     } finally {
       setLoadingProfitCalculations(false)
@@ -315,6 +323,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     clearProfitFilters,
     clearSettlementFilters,
     financialSettlements,
+    financialSettlementsLoadError,
     financialSettlementsPagination: settlementsPager.pagination,
     financialSettlementsTotal: settlementsPager.total,
     loadFinancialSettlements,
@@ -325,6 +334,7 @@ export function useSettlementModule(env: FinanceModuleEnv) {
     profitCalculationSearch: profitFilters.q,
     profitCalculationShipmentFilter: profitFilters.shipment,
     profitCalculations,
+    profitCalculationsLoadError,
     profitCalculationsPagination: profitsPager.pagination,
     profitCalculationsTotal: profitsPager.total,
     selectedFinancialSettlement,

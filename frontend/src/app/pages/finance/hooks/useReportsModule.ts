@@ -62,6 +62,8 @@ export function useReportsModule(env: FinanceModuleEnv) {
 
   const [loadingReport, setLoadingReport] = useState(false)
 
+  const [reportLoadError, setReportLoadError] = useState(false)
+
   const [exportingReport, setExportingReport] = useState(false)
 
   const [_loadingReportExplanation, setLoadingReportExplanation] = useState(false)
@@ -158,6 +160,7 @@ export function useReportsModule(env: FinanceModuleEnv) {
     },
   ) {
     setLoadingReport(true)
+    setReportLoadError(false)
     setError('')
     setReportDrilldown(null)
     const filters = financeReportFilters(report, overrides)
@@ -176,6 +179,7 @@ export function useReportsModule(env: FinanceModuleEnv) {
         setTaxRefundStatisticsReport(await getTaxRefundStatisticsReport(filters))
       }
     } catch (caught) {
+      setReportLoadError(true)
       showError(caught, t('finance.report.message.loadFailed'))
     } finally {
       setLoadingReport(false)
@@ -248,6 +252,7 @@ export function useReportsModule(env: FinanceModuleEnv) {
     reportDrilldown,
     reportFeeType,
     reportIncludeRegistered,
+    reportLoadError,
     reportOwnerUserId,
     reportPartnerName,
     reportReceiptNo,

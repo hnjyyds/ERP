@@ -419,4 +419,37 @@ describe('FollowupPage', () => {
     expect(screen.getByLabelText('模板名称')).toHaveValue('新模板')
     expect(fieldByLabel('确认样提交日期')).toHaveValue(5)
   })
+
+  it('列表加载失败显示独立错误态并可重试，重试保留筛选条件', async () => {
+    const user = userEvent.setup()
+    vi.spyOn(api, 'listFollowupTemplates').mockResolvedValue({
+      items: [templateFixture],
+      total: 1,
+    })
+    const listSpy = vi
+      .spyOn(api, 'listFollowupPlans')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [followupPlan], total: 1, summary: emptySummary })
+    vi.spyOn(api, 'listFollowupOverdueNodes').mockResolvedValue({ items: [], total: 0 })
+
+    render(<FollowupPage detailId={null} onNavigate={onNavigate} />)
+    await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(1))
+
+    await user.type(fieldByLabel('计划搜索'), 'PC-001')
+    await user.click(screen.getByRole('button', { name: '查询' }))
+    await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(2))
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(fieldByLabel('计划搜索')).toHaveValue('PC-001')
+
+    await user.click(screen.getByRole('button', { name: /重\s*试/ }))
+    await waitFor(() => expect(listSpy).toHaveBeenCalledTimes(3))
+    expect(listSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ q: 'PC-001', offset: 0 }),
+    )
+    expect(await screen.findByText('PC-001')).toBeTruthy()
+    expect(fieldByLabel('计划搜索')).toHaveValue('PC-001')
+  })
 })

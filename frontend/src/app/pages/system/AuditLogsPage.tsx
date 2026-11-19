@@ -88,17 +88,20 @@ export function AuditLogsPage() {
   const [appliedFilters, setAppliedFilters] = useState<AuditFilters>(EMPTY_FILTERS)
   const [items, setItems] = useState<AuditLogItem[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [exporting, setExporting] = useState(false)
   const { page, pageSize, total, setTotal, resetPage, changePage, pagination } =
     useTablePagination()
 
   const load = useCallback(async () => {
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listAuditLogs(toQuery(appliedFilters, page, pageSize))
       setItems(result.items)
       setTotal(result.total)
     } catch (error) {
+      setLoadError(true)
       showError(error, t('auditLogs.message.loadFailed'))
       setItems([])
       setTotal(0)
@@ -268,6 +271,7 @@ export function AuditLogsPage() {
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={loadError}
               filtered={Boolean(
                 appliedFilters.actor?.trim() ||
                   appliedFilters.resourceType ||
@@ -276,6 +280,7 @@ export function AuditLogsPage() {
                   appliedFilters.range,
               )}
               onClearFilters={reset}
+              onRetry={() => void load()}
             />
           ),
         }}

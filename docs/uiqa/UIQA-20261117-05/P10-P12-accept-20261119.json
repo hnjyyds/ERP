@@ -1,0 +1,1272 @@
+[
+  {
+    "id": "P10",
+    "name": "采购询价",
+    "at": "2026-11-19T08:45:35.525Z",
+    "bundle": "http://127.0.0.1:8080/assets/index-nah24HOd.js",
+    "views": {
+      "list1440": {
+        "url": "http://127.0.0.1:8080/purchase/inquiries",
+        "h1": "采购询价",
+        "heads": [
+          "询价单号",
+          "状态",
+          "商品",
+          "询价日",
+          "报价数",
+          "最低价",
+          "入口"
+        ],
+        "rows": [
+          "PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情"
+        ],
+        "rowCount": 1,
+        "tableText": "询价单号 状态 商品 询价日 报价数 最低价 入口 PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 采购询价 5 询价单 1 已发模板 0 已报价 1 供应商报价 1 采购询价列表 询价搜索 询价状态 全部状态 商品标识 供应商标识 查询 新增采购询价 询价单号 状态 商品 询价日 报价数 最低价 入口 PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情 共 1 条 1 50 条/页",
+        "buttons": [
+          "5",
+          "查询",
+          "新增采购询价",
+          "PI-KTPXTU",
+          "查看详情"
+        ]
+      },
+      "searchKnown": {
+        "url": "http://127.0.0.1:8080/purchase/inquiries?q=PI-KTPXTU",
+        "h1": "采购询价",
+        "heads": [
+          "询价单号",
+          "状态",
+          "商品",
+          "询价日",
+          "报价数",
+          "最低价",
+          "入口"
+        ],
+        "rows": [
+          "PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情"
+        ],
+        "rowCount": 1,
+        "tableText": "询价单号 状态 商品 询价日 报价数 最低价 入口 PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 采购询价 5 询价单 1 已发模板 0 已报价 1 供应商报价 1 采购询价列表 询价搜索 询价状态 全部状态 商品标识 供应商标识 查询 新增采购询价 询价单号 状态 商品 询价日 报价数 最低价 入口 PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情 共 1 条 1 50 条/页",
+        "buttons": [
+          "5",
+          "查询",
+          "新增采购询价",
+          "PI-KTPXTU",
+          "查看详情"
+        ]
+      },
+      "searchEmpty": {
+        "url": "http://127.0.0.1:8080/purchase/inquiries?q=ZZZ-NO",
+        "h1": "采购询价",
+        "heads": [
+          "询价单号",
+          "状态",
+          "商品",
+          "询价日",
+          "报价数",
+          "最低价",
+          "入口"
+        ],
+        "rows": [
+          "没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选"
+        ],
+        "rowCount": 1,
+        "tableText": "询价单号 状态 商品 询价日 报价数 最低价 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 采购询价 5 询价单 0 已发模板 0 已报价 0 供应商报价 0 采购询价列表 询价搜索 询价状态 全部状态 商品标识 供应商标识 查询 新增采购询价 询价单号 状态 商品 询价日 报价数 最低价 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+        "buttons": [
+          "5",
+          "查询",
+          "新增采购询价",
+          "清空筛选"
+        ]
+      },
+      "detail": {
+        "url": "http://127.0.0.1:8080/purchase/inquiries/b4d57828-d264-489d-b196-989d07d911d0",
+        "h1": "采购询价",
+        "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 采购询价 5 询价单 1 已发模板 0 已报价 1 供应商报价 1 询价明细 返回列表 状态/询价日 已报价 / 2026-11-12 业务员 未指定 模板 未发送 模板发送日 - 询价备注 QA261112 询价测试 编辑询价 发送询价模板 登记供应商报价 询价商品明细 1 行 商品 规格/型号 数量 单位 QA261112-P01 / QA261112 验收测试围巾 未填 / 未填 5 pcs 供应商报价比较 1 条 供应商 商品 单价 交期 最小起订量 样品 备注 QA261112 测试供应商 QA261112-P01 / QA261112 验收测试围巾 RMB 2.50 未填 未填 有样品 QA261112 报价 供应商样品关联 2 条 样品编号 供应商 商品 收样日期 数量 状态 SM-D45XDB QA261112 测试供应商 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 3 pcs 已登记 SM-ZB334N QA261112 测试供应商 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 3 pcs 已登记 采购参考价 1 条 询价单 商品 供应商 参考价 报价日 PI-KTPXTU QA261112-P01 / QA261112 验收测试围巾 QA261112 测试供应商 RMB 2.50 2026-11-12",
+        "buttons": [
+          "导航",
+          "5",
+          "返回列表",
+          "编辑询价",
+          "发送询价模板",
+          "登记供应商报价"
+        ]
+      },
+      "list1280": {
+        "docW": 1280,
+        "scrollW": 954,
+        "clientW": 954,
+        "create": {
+          "t": "新增采购询价",
+          "r": {
+            "x": 1099.4375,
+            "y": 285.4453125,
+            "width": 137.5625,
+            "height": 36,
+            "top": 285.4453125,
+            "right": 1237,
+            "bottom": 321.4453125,
+            "left": 1099.4375
+          }
+        },
+        "detail": {
+          "t": "查看详情",
+          "r": {
+            "x": 1135,
+            "y": 398.4453125,
+            "width": 67.015625,
+            "height": 28,
+            "top": 398.4453125,
+            "right": 1202.015625,
+            "bottom": 426.4453125,
+            "left": 1135
+          }
+        },
+        "pagination": {
+          "x": 1092.9375,
+          "y": 457.4453125,
+          "width": 24,
+          "height": 24,
+          "top": 457.4453125,
+          "right": 1116.9375,
+          "bottom": 481.4453125,
+          "left": 1092.9375
+        }
+      },
+      "list390": {
+        "docW": 390,
+        "scrollW": 408,
+        "clientW": 324,
+        "create": {
+          "t": "新增采购询价",
+          "r": {
+            "x": 199,
+            "y": 711.2890625,
+            "width": 158,
+            "height": 44,
+            "top": 711.2890625,
+            "right": 357,
+            "bottom": 755.2890625,
+            "left": 199
+          }
+        },
+        "detail": {
+          "t": "查看详情",
+          "r": {
+            "x": 366.3828125,
+            "y": 865.84375,
+            "width": 67.015625,
+            "height": 44,
+            "top": 865.84375,
+            "right": 433.3984375,
+            "bottom": 909.84375,
+            "left": 366.3828125
+          }
+        },
+        "pagination": {
+          "x": 263,
+          "y": 985.0625,
+          "width": 46,
+          "height": 44,
+          "top": 985.0625,
+          "right": 309,
+          "bottom": 1029.0625,
+          "left": 263
+        }
+      }
+    },
+    "modal": {
+      "title": "新增采购询价",
+      "rect": {
+        "x": 230,
+        "y": 70.703125,
+        "width": 980,
+        "height": 758.59375,
+        "top": 70.703125,
+        "right": 1210,
+        "bottom": 829.296875,
+        "left": 230
+      },
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "系统自动生成",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "label": "询价单号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "date",
+          "value": "2026-11-19",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "询价日期"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "label": "业务员"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "label": "商品编号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "商品"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "label": "商品名称"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "规格"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "型号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "number",
+          "value": "1000",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "询价数量"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "pcs",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "单位"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "询价备注"
+        }
+      ],
+      "buttons": [
+        "新增采购询价"
+      ],
+      "stars": 0,
+      "text": "新增采购询价 询价单号 询价日期 业务员 请选择 商品编号 询价商品 商品 搜索商品编号或名称 商品名称 规格 型号 询价数量 单位 询价备注 新增采购询价",
+      "closedByEsc": true
+    },
+    "blockedWrites": [],
+    "code": "PI-KTPXTU",
+    "filters": [
+      [
+        "全部状态",
+        "草稿",
+        "已发模板",
+        "已报价",
+        "已关闭"
+      ],
+      [
+        "20 条/页",
+        "50 条/页",
+        "100 条/页"
+      ]
+    ],
+    "restored": {
+      "url": "http://127.0.0.1:8080/purchase/inquiries",
+      "h1": "采购询价",
+      "heads": [
+        "询价单号",
+        "状态",
+        "商品",
+        "询价日",
+        "报价数",
+        "最低价",
+        "入口"
+      ],
+      "rows": [
+        "PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情"
+      ],
+      "rowCount": 1,
+      "tableText": "询价单号 状态 商品 询价日 报价数 最低价 入口 PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情",
+      "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 采购询价 5 询价单 1 已发模板 0 已报价 1 供应商报价 1 采购询价列表 询价搜索 询价状态 全部状态 商品标识 供应商标识 查询 新增采购询价 询价单号 状态 商品 询价日 报价数 最低价 入口 PI-KTPXTU 已报价 QA261112-P01 / QA261112 验收测试围巾 2026-11-12 1 RMB 2.50 查看详情 共 1 条 1 50 条/页",
+      "buttons": [
+        "5",
+        "查询",
+        "新增采购询价",
+        "PI-KTPXTU",
+        "查看详情"
+      ]
+    }
+  },
+  {
+    "id": "P11",
+    "name": "采购开票通知",
+    "at": "2026-11-19T08:45:49.944Z",
+    "bundle": "http://127.0.0.1:8080/assets/index-nah24HOd.js",
+    "views": {
+      "list1440": {
+        "url": "http://127.0.0.1:8080/purchase/invoice-notices",
+        "h1": "开票通知",
+        "heads": [
+          "开票通知",
+          "状态",
+          "供应商",
+          "报关单",
+          "金额",
+          "提醒",
+          "入口"
+        ],
+        "rows": [
+          "PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情",
+          "PIN-UIQA-20261117-02-02 草稿 UIQA-20261117-02 测试供应商B UIQA-20261117-02 CNY 0.00 0 个 查看详情",
+          "PIN-UIQA-20261117-04-01 已收票 QA261112 测试供应商 UIQA-20261117-04 CNY 0.01 0 个 查看详情"
+        ],
+        "rowCount": 3,
+        "tableText": "开票通知 状态 供应商 报关单 金额 提醒 入口 PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-02-02 草稿 UIQA-20261117-02 测试供应商B UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-04-01 已收票 QA261112 测试供应商 UIQA-20261117-04 CNY 0.01 0 个 查看详情",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 开票通知 5 开票通知 3 已发送 0 已收票 1 通知金额 CNY 0.01 待催收 0 开票通知列表 通知搜索 通知状态 全部状态 供应商标识 报关单证 ID 查询 生成开票通知 开票通知 状态 供应商 报关单 金额 提醒 入口 PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-02-02 草稿 UIQA-20261117-02 测试供应商B UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-04-01 已收票 QA261112 测试供应商 UIQA-20261117-04 CNY 0.01 0 个 查看详情 共 3 条 1 50 条/页",
+        "buttons": [
+          "5",
+          "查询",
+          "生成开票通知",
+          "PIN-UIQA-20261117-02-01",
+          "查看详情",
+          "PIN-UIQA-20261117-02-02",
+          "查看详情",
+          "PIN-UIQA-20261117-04-01",
+          "查看详情"
+        ]
+      },
+      "searchKnown": {
+        "url": "http://127.0.0.1:8080/purchase/invoice-notices?q=PIN-UIQA-20261117-02-01",
+        "h1": "开票通知",
+        "heads": [
+          "开票通知",
+          "状态",
+          "供应商",
+          "报关单",
+          "金额",
+          "提醒",
+          "入口"
+        ],
+        "rows": [
+          "PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情"
+        ],
+        "rowCount": 1,
+        "tableText": "开票通知 状态 供应商 报关单 金额 提醒 入口 PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 开票通知 5 开票通知 1 已发送 0 已收票 0 通知金额 CNY 0.00 待催收 0 开票通知列表 通知搜索 通知状态 全部状态 供应商标识 报关单证 ID 查询 生成开票通知 开票通知 状态 供应商 报关单 金额 提醒 入口 PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情 共 1 条 1 50 条/页",
+        "buttons": [
+          "5",
+          "查询",
+          "生成开票通知",
+          "PIN-UIQA-20261117-02-01",
+          "查看详情"
+        ]
+      },
+      "searchEmpty": {
+        "url": "http://127.0.0.1:8080/purchase/invoice-notices?q=ZZZ-NO",
+        "h1": "开票通知",
+        "heads": [
+          "开票通知",
+          "状态",
+          "供应商",
+          "报关单",
+          "金额",
+          "提醒",
+          "入口"
+        ],
+        "rows": [
+          "没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选"
+        ],
+        "rowCount": 1,
+        "tableText": "开票通知 状态 供应商 报关单 金额 提醒 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 开票通知 5 开票通知 0 已发送 0 已收票 0 通知金额 CNY 0.00 待催收 0 开票通知列表 通知搜索 通知状态 全部状态 供应商标识 报关单证 ID 查询 生成开票通知 开票通知 状态 供应商 报关单 金额 提醒 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+        "buttons": [
+          "5",
+          "查询",
+          "生成开票通知",
+          "清空筛选"
+        ]
+      },
+      "detail": {
+        "url": "http://127.0.0.1:8080/purchase/invoice-notices/013f0a7e-f0ad-4d1f-93f4-4f0fd2774dc0",
+        "h1": "开票通知",
+        "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 开票通知 5 开票通知 3 已发送 0 已收票 1 通知金额 CNY 0.01 待催收 0 开票通知明细 返回列表 状态/通知日 草稿 / 2026-11-17 供应商 UIQA-20261117-02 测试供应商A 报关单号 UIQA-20261117-02 报关日期 2026-11-17 开票数量 1 通知金额 CNY 0.00 发送人 未发送 税票号 未收票 开票通知备注 UIQA-20261117-02 测试样本，仅验证开票通知选择回填；零金额草稿，不发送、不收票。 发送开票通知 登记税票 开票品名和数量 1 行 采购合同 报关品名 开票品名 数量 金额 未关联 UIQA测试品名A UIQA测试开票品名A 1 pcs CNY 0.00 税票催收提醒 0 条 标题 到期日 状态 发送后自动生成税票催收提醒 全局税票催收 0 条 标题 到期日 状态 暂无税票催收提醒",
+        "buttons": [
+          "导航",
+          "5",
+          "返回列表",
+          "发送开票通知",
+          "登记税票"
+        ]
+      },
+      "list1280": {
+        "docW": 1280,
+        "scrollW": 954,
+        "clientW": 954,
+        "detail": {
+          "t": "查看详情",
+          "r": {
+            "x": 1135,
+            "y": 398.4453125,
+            "width": 67.015625,
+            "height": 28,
+            "top": 398.4453125,
+            "right": 1202.015625,
+            "bottom": 426.4453125,
+            "left": 1135
+          }
+        },
+        "pagination": {
+          "x": 1092.9375,
+          "y": 547.4453125,
+          "width": 24,
+          "height": 24,
+          "top": 547.4453125,
+          "right": 1116.9375,
+          "bottom": 571.4453125,
+          "left": 1092.9375
+        }
+      },
+      "list390": {
+        "docW": 390,
+        "scrollW": 533,
+        "clientW": 324,
+        "detail": {
+          "t": "查看详情",
+          "r": {
+            "x": 491.3125,
+            "y": 921.7890625,
+            "width": 67.015625,
+            "height": 44,
+            "top": 921.7890625,
+            "right": 558.328125,
+            "bottom": 965.7890625,
+            "left": 491.3125
+          }
+        },
+        "pagination": {
+          "x": 263,
+          "y": 1188.0703125,
+          "width": 46,
+          "height": 44,
+          "top": 1188.0703125,
+          "right": 309,
+          "bottom": 1232.0703125,
+          "left": 263
+        }
+      }
+    },
+    "modal": {
+      "title": "从报关单证生成开票通知",
+      "rect": {
+        "x": 205.90625,
+        "y": 39.497406005859375,
+        "width": 1028.1875,
+        "height": 821.012939453125,
+        "top": 39.497406005859375,
+        "right": 1234.09375,
+        "bottom": 860.5103454589844,
+        "left": 205.90625
+      },
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "43c3df4a-4c7a-43ff-8bfd-9bcbe0ac25e2",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "报关单证 ID"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "报关单号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "date",
+          "value": "2026-11-19",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "报关日期"
+        },
+        {
+          "tag": "INPUT",
+          "type": "date",
+          "value": "2026-11-19",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "通知日期"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "CNY",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "币种"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "生成备注"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "供应商"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "采购合同号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "商品"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "报关品名"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "开票品名"
+        },
+        {
+          "tag": "INPUT",
+          "type": "number",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "开票数量"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "pcs",
+          "placeholder": "",
+          "readOnly": false,
+          "required": true,
+          "ariaRequired": null,
+          "label": "单位"
+        },
+        {
+          "tag": "INPUT",
+          "type": "number",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "金额"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "行备注"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "供应商"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "采购合同号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "商品"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "报关品名"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "开票品名"
+        },
+        {
+          "tag": "INPUT",
+          "type": "number",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "开票数量"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "pcs",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "单位"
+        },
+        {
+          "tag": "INPUT",
+          "type": "number",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "金额"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "label": "行备注"
+        }
+      ],
+      "buttons": [
+        "生成开票通知"
+      ],
+      "stars": 0,
+      "text": "从报关单证生成开票通知 从报关单证生成 报关单证 ID 报关单号 报关日期 通知日期 币种 生成备注 供应商 A 开票要求 供应商 按供应商编号或名称搜索 采购合同号 按合同号或供应商搜索 商品 按商品编号或名称搜索 报关品名 开票品名 开票数量 单位 金额 行备注 供应商 B 开票要求 供应商 按供应商编号或名称搜索 采购合同号 按合同号或供应商搜索 商品 按商品编号或名称搜索 报关品名 开票品名 开票数量 单位 金额 行备注 生成开票通知",
+      "closedByEsc": true
+    },
+    "blockedWrites": [],
+    "code": "PIN-UIQA-20261117-02-01",
+    "filters": [
+      [
+        "全部状态",
+        "草稿",
+        "已发送",
+        "已收票"
+      ],
+      [
+        "20 条/页",
+        "50 条/页",
+        "100 条/页"
+      ]
+    ],
+    "restored": {
+      "url": "http://127.0.0.1:8080/purchase/invoice-notices",
+      "h1": "开票通知",
+      "heads": [
+        "开票通知",
+        "状态",
+        "供应商",
+        "报关单",
+        "金额",
+        "提醒",
+        "入口"
+      ],
+      "rows": [
+        "PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情",
+        "PIN-UIQA-20261117-02-02 草稿 UIQA-20261117-02 测试供应商B UIQA-20261117-02 CNY 0.00 0 个 查看详情",
+        "PIN-UIQA-20261117-04-01 已收票 QA261112 测试供应商 UIQA-20261117-04 CNY 0.01 0 个 查看详情"
+      ],
+      "rowCount": 3,
+      "tableText": "开票通知 状态 供应商 报关单 金额 提醒 入口 PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-02-02 草稿 UIQA-20261117-02 测试供应商B UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-04-01 已收票 QA261112 测试供应商 UIQA-20261117-04 CNY 0.01 0 个 查看详情",
+      "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 仓库 财务经营 系统设置 采购单据 采购询价 开票通知 业务模块 开票通知 5 开票通知 3 已发送 0 已收票 1 通知金额 CNY 0.01 待催收 0 开票通知列表 通知搜索 通知状态 全部状态 供应商标识 报关单证 ID 查询 生成开票通知 开票通知 状态 供应商 报关单 金额 提醒 入口 PIN-UIQA-20261117-02-01 草稿 UIQA-20261117-02 测试供应商A UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-02-02 草稿 UIQA-20261117-02 测试供应商B UIQA-20261117-02 CNY 0.00 0 个 查看详情 PIN-UIQA-20261117-04-01 已收票 QA261112 测试供应商 UIQA-20261117-04 CNY 0.01 0 个 查看详情 共 3 条 1 50 条/页",
+      "buttons": [
+        "5",
+        "查询",
+        "生成开票通知",
+        "PIN-UIQA-20261117-02-01",
+        "查看详情",
+        "PIN-UIQA-20261117-02-02",
+        "查看详情",
+        "PIN-UIQA-20261117-04-01",
+        "查看详情"
+      ]
+    }
+  },
+  {
+    "id": "P12",
+    "name": "样品登记",
+    "at": "2026-11-19T08:46:03.091Z",
+    "bundle": "http://127.0.0.1:8080/assets/index-nah24HOd.js",
+    "views": {
+      "list1440": {
+        "url": "http://127.0.0.1:8080/sample/records",
+        "h1": "样品登记",
+        "heads": [
+          "样品编号",
+          "分类",
+          "来源类型",
+          "来源单号",
+          "产品",
+          "客户货号",
+          "供应商货号",
+          "数量",
+          "入口"
+        ],
+        "rows": [
+          "SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情",
+          "SM-ZB334N 来样 - QA261112 验收测试围巾 - - 3 查看详情"
+        ],
+        "rowCount": 2,
+        "tableText": "样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情 SM-ZB334N 来样 - QA261112 验收测试围巾 - - 3 查看详情",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 QC 中心 我的 QC 任务 跟单中心 样品登记 打样管理 寄样管理 仓库 财务经营 系统设置 采购单据 业务模块 样品登记 5 样品 2 确认样 1 图片（当前列表） 1 留样（当前列表，按单位分列） 5 pcs 样品列表 样品搜索 样品分类筛选 全部分类 样品客户筛选 采购合同筛选 查询 导出台账 新增样品 样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情 SM-ZB334N 来样 - QA261112 验收测试围巾 - - 3 查看详情 共 2 条 1 50 条/页",
+        "buttons": [
+          "5",
+          "查询",
+          "导出台账",
+          "新增样品",
+          "SM-D45XDB",
+          "查看详情",
+          "SM-ZB334N",
+          "查看详情"
+        ]
+      },
+      "searchKnown": {
+        "url": "http://127.0.0.1:8080/sample/records?q=SM-D45XDB",
+        "h1": "样品登记",
+        "heads": [
+          "样品编号",
+          "分类",
+          "来源类型",
+          "来源单号",
+          "产品",
+          "客户货号",
+          "供应商货号",
+          "数量",
+          "入口"
+        ],
+        "rows": [
+          "SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情"
+        ],
+        "rowCount": 1,
+        "tableText": "样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 QC 中心 我的 QC 任务 跟单中心 样品登记 打样管理 寄样管理 仓库 财务经营 系统设置 采购单据 业务模块 样品登记 5 样品 1 确认样 1 图片（当前列表） 0 留样（当前列表，按单位分列） 3 pcs 样品列表 样品搜索 样品分类筛选 全部分类 样品客户筛选 采购合同筛选 查询 导出台账 新增样品 样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情 共 1 条 1 50 条/页",
+        "buttons": [
+          "5",
+          "查询",
+          "导出台账",
+          "新增样品",
+          "SM-D45XDB",
+          "查看详情"
+        ]
+      },
+      "searchEmpty": {
+        "url": "http://127.0.0.1:8080/sample/records?q=ZZZ-NO",
+        "h1": "样品登记",
+        "heads": [
+          "样品编号",
+          "分类",
+          "来源类型",
+          "来源单号",
+          "产品",
+          "客户货号",
+          "供应商货号",
+          "数量",
+          "入口"
+        ],
+        "rows": [
+          "没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选"
+        ],
+        "rowCount": 1,
+        "tableText": "样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+        "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 QC 中心 我的 QC 任务 跟单中心 样品登记 打样管理 寄样管理 仓库 财务经营 系统设置 采购单据 业务模块 样品登记 5 样品 0 确认样 0 图片（当前列表） 0 留样（当前列表，按单位分列） 0 样品列表 样品搜索 样品分类筛选 全部分类 样品客户筛选 采购合同筛选 查询 导出台账 新增样品 样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 没有匹配的结果 请调整关键词或筛选条件后再试 清空筛选",
+        "buttons": [
+          "5",
+          "查询",
+          "导出台账",
+          "新增样品",
+          "清空筛选"
+        ]
+      },
+      "detail": {
+        "url": "http://127.0.0.1:8080/sample/records/dbb51664-8f59-4075-af85-782117615fb7",
+        "h1": "样品登记",
+        "text": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 QC 中心 我的 QC 任务 跟单中心 样品登记 打样管理 寄样管理 仓库 财务经营 系统设置 采购单据 业务模块 样品登记 5 样品 2 确认样 1 图片（当前列表） 1 留样（当前列表，按单位分列） 5 pcs 样品明细 返回列表 样品编号 SM-D45XDB 分类/状态 确认样 / 已登记 产品 QA261112-P01 / QA261112 验收测试围巾 客户/供应商 QA261112 测试客户 / QA261112 测试供应商 客户货号 - 供应商货号 - 采购合同 - 样品来源 打样单 来源单号 SR-W3C3DV 收样/提交 2026-11-12 / - 收样数 寄样数 公司留样 单位 3 0 3 pcs 图片预览 图片文件 说明 主图 暂无样品图片 跟单节点 实际日期 采购合同 事件 暂无跟单节点事件 追加图片 样品图片 上传图片 尚未上传样品图片 图片说明 追加样品图片 数量事件 事件类型 寄样 数量 日期 单位 寄样单号 接收方 事件备注 登记样品数量 事件类型 数量 单位 日期 寄样单号 接收方 说明 收样 3 pcs 2026-11-12 - QA261112 测试供应商 打样单 SR-W3C3DV 转样品登记",
+        "buttons": [
+          "导航",
+          "5",
+          "返回列表",
+          "上传图片",
+          "追加样品图片",
+          "登记样品数量"
+        ]
+      },
+      "list1280": {
+        "docW": 1280,
+        "scrollW": 954,
+        "clientW": 954,
+        "create": {
+          "t": "新增样品",
+          "r": {
+            "x": 1125.953125,
+            "y": 305.4453125,
+            "width": 111.046875,
+            "height": 36,
+            "top": 305.4453125,
+            "right": 1237,
+            "bottom": 341.4453125,
+            "left": 1125.953125
+          }
+        },
+        "detail": {
+          "t": "查看详情",
+          "r": {
+            "x": 1135,
+            "y": 418.4453125,
+            "width": 67.015625,
+            "height": 28,
+            "top": 418.4453125,
+            "right": 1202.015625,
+            "bottom": 446.4453125,
+            "left": 1135
+          }
+        },
+        "pagination": {
+          "x": 1092.9375,
+          "y": 522.4453125,
+          "width": 24,
+          "height": 24,
+          "top": 522.4453125,
+          "right": 1116.9375,
+          "bottom": 546.4453125,
+          "left": 1092.9375
+        }
+      },
+      "list390": {
+        "docW": 390,
+        "scrollW": 520,
+        "clientW": 324,
+        "create": {
+          "t": "新增样品",
+          "r": {
+            "x": 254.3359375,
+            "y": 619.0859375,
+            "width": 102.6640625,
+            "height": 44,
+            "top": 619.0859375,
+            "right": 357,
+            "bottom": 663.0859375,
+            "left": 254.3359375
+          }
+        },
+        "detail": {
+          "t": "查看详情",
+          "r": {
+            "x": 461.03125,
+            "y": 811.34375,
+            "width": 67.015625,
+            "height": 44,
+            "top": 811.34375,
+            "right": 528.046875,
+            "bottom": 855.34375,
+            "left": 461.03125
+          }
+        },
+        "pagination": {
+          "x": 263,
+          "y": 966.40625,
+          "width": 46,
+          "height": 44,
+          "top": 966.40625,
+          "right": 309,
+          "bottom": 1010.40625,
+          "left": 263
+        }
+      }
+    },
+    "modal": {
+      "title": "新增样品",
+      "rect": {
+        "x": 200,
+        "y": 34.78125,
+        "width": 1040,
+        "height": 830.4453125,
+        "top": 34.78125,
+        "right": 1240,
+        "bottom": 865.2265625,
+        "left": 200
+      },
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "系统自动生成",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "样品编号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "样品分类"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "样品状态"
+        },
+        {
+          "tag": "INPUT",
+          "type": "number",
+          "value": "1",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "收样数量"
+        },
+        {
+          "tag": "INPUT",
+          "type": "date",
+          "value": "2026-11-19",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "收样日期"
+        },
+        {
+          "tag": "INPUT",
+          "type": "date",
+          "value": "2026-11-19",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "提交日期"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "产品"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "客户货号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "供应商货号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "客户"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "供应商"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "采购合同号"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "pcs",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "单位"
+        },
+        {
+          "tag": "INPUT",
+          "type": "search",
+          "value": "",
+          "placeholder": "",
+          "readOnly": true,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "样品来源"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "来源单号"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "样品说明"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "",
+          "readOnly": false,
+          "required": false,
+          "ariaRequired": null,
+          "invalid": null,
+          "label": "图片说明"
+        }
+      ],
+      "buttons": [
+        "上传图片",
+        "取消",
+        "按当前表单导入",
+        "新增样品"
+      ],
+      "stars": 0
+    },
+    "blockedWrites": [],
+    "code": "SM-D45XDB",
+    "filters": [
+      [
+        "全部分类",
+        "来样",
+        "确认样",
+        "大货样",
+        "留样"
+      ],
+      [
+        "20 条/页",
+        "50 条/页",
+        "100 条/页"
+      ]
+    ],
+    "modalClosedByEsc": true,
+    "restored": {
+      "url": "http://127.0.0.1:8080/sample/records",
+      "h1": "样品登记",
+      "heads": [
+        "样品编号",
+        "分类",
+        "来源类型",
+        "来源单号",
+        "产品",
+        "客户货号",
+        "供应商货号",
+        "数量",
+        "入口"
+      ],
+      "rows": [
+        "SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情",
+        "SM-ZB334N 来样 - QA261112 验收测试围巾 - - 3 查看详情"
+      ],
+      "rowCount": 2,
+      "tableText": "样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情 SM-ZB334N 来样 - QA261112 验收测试围巾 - - 3 查看详情",
+      "bodyText": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 QC / 跟单 QC 中心 我的 QC 任务 跟单中心 样品登记 打样管理 寄样管理 仓库 财务经营 系统设置 采购单据 业务模块 样品登记 5 样品 2 确认样 1 图片（当前列表） 1 留样（当前列表，按单位分列） 5 pcs 样品列表 样品搜索 样品分类筛选 全部分类 样品客户筛选 采购合同筛选 查询 导出台账 新增样品 样品编号 分类 来源类型 来源单号 产品 客户货号 供应商货号 数量 入口 SM-D45XDB 确认样 打样单 SR-W3C3DV QA261112 验收测试围巾 - - 3 查看详情 SM-ZB334N 来样 - QA261112 验收测试围巾 - - 3 查看详情 共 2 条 1 50 条/页",
+      "buttons": [
+        "5",
+        "查询",
+        "导出台账",
+        "新增样品",
+        "SM-D45XDB",
+        "查看详情",
+        "SM-ZB334N",
+        "查看详情"
+      ]
+    }
+  }
+]

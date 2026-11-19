@@ -364,4 +364,23 @@ describe('SampleRecordsPage', () => {
     expect(await screen.findByText('来源单号')).toBeTruthy()
     expect(screen.getAllByText('SR-001').length).toBeGreaterThan(0)
   })
+
+  it('列表加载失败显示独立错误态并可重试且保留筛选', async () => {
+    window.history.replaceState({}, '', '/sample/records?q=SP-9')
+    const listSpy = vi
+      .spyOn(api, 'listSampleRecords')
+      .mockRejectedValueOnce(new Error('Failed to fetch'))
+      .mockResolvedValue({ items: [record], total: 1 })
+
+    render(<SampleRecordsPage detailId={null} onNavigate={onNavigate} />)
+
+    expect(await screen.findByText('加载失败')).toBeTruthy()
+    expect(screen.queryByText('完成首次录入后，这里会显示对应记录')).toBeNull()
+    expect(screen.getByLabelText('样品搜索')).toHaveValue('SP-9')
+
+    await userEvent.click(screen.getByRole('button', { name: /重\s*试/ }))
+
+    expect(await screen.findByText('SP-001')).toBeTruthy()
+    expect(listSpy).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'SP-9' }))
+  })
 })

@@ -194,6 +194,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     runSubmit: runScheduleSubmit,
   } = useFormModal(initialInboundPlanScheduleForm)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [message, setMessage] = useState('')
 
   const fetchPurchaseContractOptions = useCallback(async (query: string) => {
@@ -302,6 +303,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
     const resolvedSupplier = filtersOverride?.supplier ?? supplierFilter
     const resolvedContract = filtersOverride?.contract ?? contractFilter
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await listInboundPlans({
         q: resolvedQ.trim() || undefined,
@@ -331,6 +333,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
         null
       setSelectedPlanId(nextId)
     } catch (caught) {
+      setLoadError(true)
       showError(caught, t('warehouse.inboundPlan.list.loadFailed'))
     } finally {
       setLoading(false)
@@ -552,6 +555,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                 emptyText: (
                   <ListEmptyState
                     emptyTitle={t('common.empty.noDataTitle')}
+                    error={loadError}
                     filtered={
                       Boolean(search.trim()) ||
                       Boolean(statusFilter) ||
@@ -560,6 +564,7 @@ export function InboundPlansPage({ detailId, onNavigate }: RoutedDetailPageProps
                       Boolean(contractFilter.trim())
                     }
                     onClearFilters={clearFilters}
+                    onRetry={() => void loadInboundPlans()}
                   />
                 ),
               }}

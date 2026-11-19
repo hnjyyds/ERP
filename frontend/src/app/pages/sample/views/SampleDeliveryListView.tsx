@@ -13,6 +13,7 @@ import { sampleDeliveryStatusLabel } from '../sampleDeliveryHelpers'
 type Props = {
   deliveries: SampleDelivery[]
   loading: boolean
+  loadError: boolean
   selectedId?: string
   submitting: boolean
   search: string
@@ -23,6 +24,7 @@ type Props = {
   dateToFilter: string
   filtered: boolean
   onClearFilters: () => void
+  onRetry: () => void
   onSearchChange: (value: string) => void
   onStatusChange: (value: string) => void
   onCustomerChange: (value: string) => void
@@ -42,6 +44,7 @@ type Props = {
 export function SampleDeliveryListView({
   deliveries,
   loading,
+  loadError,
   selectedId,
   submitting,
   search,
@@ -52,6 +55,7 @@ export function SampleDeliveryListView({
   dateToFilter,
   filtered,
   onClearFilters,
+  onRetry,
   onSearchChange,
   onStatusChange,
   onCustomerChange,
@@ -156,8 +160,10 @@ export function SampleDeliveryListView({
           emptyText: (
             <ListEmptyState
               emptyTitle={t('common.empty.noDataTitle')}
+              error={loadError}
               filtered={filtered}
               onClearFilters={onClearFilters}
+              onRetry={onRetry}
             />
           ),
         }}
