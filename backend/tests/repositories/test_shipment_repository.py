@@ -100,10 +100,11 @@ async def test_shipment_repository_lists_multi_contract_plan_finance_and_reminde
     assert reminders[0].reminder_date == date(2026, 8, 13)
 
 
-async def test_refresh_finance_rebases_profit_with_tax_refunds(
+async def test_refresh_finance_rebases_profit_with_refunds_and_misc_fees(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
-    """利润必须按应收−应付+已登记退税整体重算，修复历史漂移而不是在旧值上累加。"""
+    """利润按应收−应付+退税−杂费整体重算；重复重算与写入顺序不改变结果。"""
+    from app.modules.finance.misc_fees.models import MiscFeeAllocation, MiscFeeItem
     from app.modules.finance.tax_refunds.models import (
         VerificationDocument,
         VerificationTaxRefund,
@@ -146,6 +147,43 @@ async def test_refresh_finance_rebases_profit_with_tax_refunds(
             amount="100.00",
             planned_ship_date=date(2026, 8, 10),
         )
+        fee_item = MiscFeeItem(
+            code="FEE-REPO",
+            name="测试杂费",
+            category="logistics",
+            default_allocation_method="manual",
+            is_active=True,
+            created_by_user_id="u-001",
+            created_by_user_name="测试",
+        )
+        session.add(fee_item)
+        await session.flush()
+        # 先记杂费并重算一次，再加退税，验证顺序变化不影响最终结果。
+        session.add(
+            MiscFeeAllocation(
+                allocation_no="MFA-REPO-1",
+                item_id=fee_item.id,
+                item_code=fee_item.code,
+                item_name=fee_item.name,
+                item_category=fee_item.category,
+                shipment_plan_id=plan.id,
+                shipment_no=plan.code,
+                customer_name="客户 A",
+                allocated_at=date(2026, 8, 2),
+                amount="5.00",
+                currency="USD",
+                allocation_method="manual",
+                status="allocated",
+                created_by_user_id="u-001",
+                created_by_user_name="测试",
+            )
+        )
+        await session.flush()
+        first = await repository.refresh_finance(plan.id)
+        assert first is not None
+        # 100 - 40 - 5 = 55，此时尚无退税。
+        assert first.profit_amount == "55.00"
+
         document = VerificationDocument(
             document_no="VD-REPO-REFUND",
             received_at=date(2026, 8, 1),
@@ -182,7 +220,11 @@ async def test_refresh_finance_rebases_profit_with_tax_refunds(
         refreshed = await repository.refresh_finance(plan.id)
         assert refreshed is not None
         assert refreshed.receivable_amount == "100.00"
-        assert refreshed.profit_amount == "70.00"
-        # 利润率分母为“应收100+退税10”，70/110=63.64。
-        assert refreshed.profit_rate == "63.64"
+        # 100 - 40 + 10 - 5 = 65；利润率分母统一为应收 100。
+        assert refreshed.profit_amount == "65.00"
+        assert refreshed.profit_rate == "65.00"
+        again = await repository.refresh_finance(plan.id)
+        assert again is not None
+        assert again.profit_amount == "65.00"
+        assert again.profit_rate == "65.00"
 

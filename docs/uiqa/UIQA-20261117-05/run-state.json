@@ -2,10 +2,10 @@
   "task_space": 36,
   "page": "p1",
   "bundle": "index-jJamVJA9.js",
-  "phase": "本批4项修复完成并三档复验关闭",
+  "phase": "本批4项修复完成并三档复验关闭；Q05-33经0023修正后关闭",
   "status": "in_progress",
   "main_pages_completed": [],
-  "next": "部署index-jJamVJA9.js：Q05-33利润重算+迁移0022、Q05-32网络文案、Q05-30手机点击区域、Q05-07大图预览文件名均已复验关闭；32项全部关闭；P01/P09/P24仍0页签收；下一批其余39页",
+  "next": "前端index-jJamVJA9.js + 后端0023_shipment_finance_misc_fees：Q05-33（应收-应付+同币种退税-同币种杂费，利润率分母统一应收）、Q05-32网络文案、Q05-30手机点击区域、Q05-07大图预览文件名均已复验关闭；32项全部关闭；P01/P09/P24仍0页签收；下一批其余39页",
   "authorizations": [
     "全站只读",
     "补充UIQA测试资料",
@@ -32,8 +32,9 @@
     "经UI导入P18–P47普通商品30条：新增30/更新0/失败0；启用列表21→51。本轮P01–P47共47条，P02已停用；没有新增图片或业务交易",
     "整页验收误触发保存，新增测试商品 UIQA-ACC-01 / e23bd3ea-b89a-46d1-baa1-620af8d509ae（单位pcs、0图片、0配件），未在APP UI删除",
     "UIQA-20261117-05-P01图片经追加B、移除次图、A替换首图、移除首图、追加C并保存，最终顺序UIQA-B.png/UIQA-C.png，B为主图",
-    "迁移0022按应收-应付+已登记退税重算全部出货单，并修复SP-DAEPEG利润漂移",
-    "迁移0022重算全部出货单派生金额；SP-DAEPEG利润210→215、利润率102.44%→100.00%"
+    "迁移0022按应收-应付+已登记退税重算全部出货单；因漏计同币种杂费且把利润率分母改为应收+退税，SP-DAEPEG被错误改为215.00/100.00%，Q05-33随之重开，该迁移保留为变更前对账",
+    "迁移0023按应收-应付+同币种退税-同币种杂费重算全部存量出货单，利润率分母统一为应收；SP-DAEPEG恢复210.00/102.44%",
+    "退税登记与杂费分摊写入均改为调用ShipmentPlanRepository.refresh_finance整体重算，不再增量加减利润"
   ],
   "helpers": [
     "/tmp/full-harness.mjs",
@@ -67,7 +68,8 @@
     "整页验收证据在page-acceptance/，矩阵新增42页48项验收矩阵-index-Bpsh7zKB-整页验收.csv；截图仅跟踪被引用文件",
     "部署样式实际为index-aRStlGe6.css，deployment.json与ledger-summary已更正",
     "Q05-31已合并至Q05-07，Q05-31编号保留不单独计数；去重后32项",
-    "Q05-31已合并至Q05-07，编号保留；去重后32项且全部关闭"
+    "Q05-33曾重开为31关闭/1开放，0023修正杂费来源与利润率分母后关闭；0022已部署记录保留，不删除",
+    "利润率统一以应收为分母，与经营总览一致；不按页面改定义，也不做100%截断"
   ],
   "spreadsheet_authoring": {
     "skill": "spreadsheets已完整读取",
@@ -108,5 +110,5 @@
   },
   "offline_ledger_summary": "ledger-summary.json",
   "offline_integrity": "ledger-integrity-check.json",
-  "updated_at": "2026-11-19T03:20:00+00:00"
+  "updated_at": "2026-11-19T04:10:00+00:00"
 }

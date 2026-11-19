@@ -1,7 +1,11 @@
 {
   "页面ID": "PAGE-24",
   "页面": "付款管理",
-  "部署标识": "index-Bpsh7zKB.js（基线）",
+  "部署标识": "index-Bpsh7zKB.js",
+  "基线部署标识": "index-Bpsh7zKB.js",
+  "复验部署": "index-jJamVJA9.js",
+  "后端迁移": "0023_shipment_finance_misc_fees",
+  "复验说明": "缺陷原路径复验不改变本页整页签收；部分通过/未测仍按整项未通过统计",
   "提交": "449aaa0a",
   "签收": false,
   "计数": {
@@ -635,6 +639,5 @@
       "证据": "",
       "部署标识": "index-Bpsh7zKB.js"
     }
-  ],
-  "复验部署": "index-jJamVJA9.js"
+  ]
 }

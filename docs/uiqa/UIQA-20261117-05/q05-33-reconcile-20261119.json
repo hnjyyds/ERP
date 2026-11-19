@@ -1,0 +1,61 @@
+{
+  "object": "SP-DAEPEG",
+  "shipment_id": "d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+  "currency": "USD",
+  "source_components": {
+    "shipment_lines": [
+      {
+        "quantity": 20,
+        "unit_price": 10.25,
+        "amount": 205.0
+      }
+    ],
+    "receivable_from_lines": 205.0,
+    "payable_amount": 0.0,
+    "tax_refunds_same_currency": [
+      {
+        "amount": 10.0,
+        "currency": "USD"
+      }
+    ],
+    "misc_fees_same_currency": [
+      {
+        "allocation_no": "MFA-SN2JDU",
+        "amount": 5.0,
+        "currency": "USD"
+      }
+    ],
+    "formula": "应收 205.00 - 应付 0.00 + 退税 10.00 - 杂费 5.00 = 210.00"
+  },
+  "before_0023_after_0022_deploy": {
+    "receivable_amount": 205.0,
+    "payable_amount": 0.0,
+    "profit_amount": 215.0,
+    "profit_rate": 100.0,
+    "note": "0022 只含退税未扣杂费，错误地抹掉了 USD5.00 杂费影响"
+  },
+  "after_0023_deploy": {
+    "receivable_amount": 205.0,
+    "payable_amount": 0.0,
+    "profit_amount": 210.0,
+    "profit_rate": 102.4390243902439,
+    "note": "与经营总览、出货详情同口径：利润率分母统一为应收"
+  },
+  "ui_reverify_20261119": {
+    "list": "应收 USD 205.00，预计利润 USD 210.00",
+    "detail": "应收 USD 205.00，应付 USD 0.00，利润 USD 210.00，利润率 102.44%",
+    "finance_overview": "利润 USD 210.00，利润率 102.4%（同一分母）"
+  },
+  "evidence": [
+    "screenshots/P09-profit-fees-fixed-1440.png",
+    "screenshots/P09-profit-fees-fixed-detail-1440.png",
+    "screenshots/finance-overview-rate-20261119.png",
+    "P27-list-inventory.json"
+  ],
+  "migration": "0023_shipment_finance_misc_fees",
+  "automated_tests": [
+    "含退税10+杂费5：利润65.00、利润率65.00（应收100）",
+    "同一数据重复 refresh 两次结果不变",
+    "先记杂费后加退税与最终统一重算结果一致"
+  ]
+}

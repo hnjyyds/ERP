@@ -79,6 +79,37 @@
       "Q05-07/Q05-31 大图预览文件名"
     ],
     "evidence": "batch-fix-reverify-20261119.json",
-    "page_acceptance": "page-acceptance/summary-20261118.json"
+    "page_acceptance": "page-acceptance/summary-20261118.json",
+    "superseded_by": "下一条 2026-11-19 0023 记录",
+    "superseded_note": "0022 重算只含应收、应付、退税，漏计同币种杂费，并把利润率分母改为应收+退税；Q05-33 因此重开。该记录保留为变更前对账依据，不删除。"
+  },
+  {
+    "deployed_at": "2026-11-19",
+    "base_commit": "449aaa0a",
+    "working_tree_patch": true,
+    "frontend_asset": "assets/index-jJamVJA9.js",
+    "frontend_css": "assets/index-XnLQlyxz.css",
+    "frontend_image_id": "sha256:4a28390e3ff533fb946fc66e483fe3618e7ee896401487ba1446a39383a6b17c",
+    "backend_image_id": "sha256:9bcad31dd557819aea433a40bc15434771c627aec38825d0316a88d2861fa060",
+    "alembic_head": "0023_shipment_finance_misc_fees",
+    "scope": [
+      "Q05-33 修正：补齐同币种杂费来源，利润统一按 应收-应付+退税-杂费 整体重算",
+      "退税登记与杂费分摊写入均委托 refresh_finance，取消增量加减",
+      "利润率分母统一为应收，与经营总览一致",
+      "迁移 0023 回填全部存量出货单"
+    ],
+    "q05_33_lifecycle": {
+      "reopened_at": "2026-11-19",
+      "reopen_reason": "0022 漏计 SP-DAEPEG USD5.00 杂费，215.00 不可判为正确；利润率分母与经营总览不一致",
+      "closed_after_fix": true,
+      "reconcile": "q05-33-reconcile-20261119.json"
+    },
+    "evidence": "q05-33-reconcile-20261119.json",
+    "page_acceptance": "page-acceptance/summary-20261118.json",
+    "page_acceptance_meta": {
+      "baseline_bundle": "assets/index-Bpsh7zKB.js",
+      "reverify_bundle": "assets/index-jJamVJA9.js",
+      "backend_migration": "0023_shipment_finance_misc_fees"
+    }
   }
 ]

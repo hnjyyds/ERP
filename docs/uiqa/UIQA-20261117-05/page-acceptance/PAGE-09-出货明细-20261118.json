@@ -1,7 +1,11 @@
 {
   "页面ID": "PAGE-09",
   "页面": "出货明细",
-  "部署标识": "index-Bpsh7zKB.js（基线）",
+  "部署标识": "index-Bpsh7zKB.js",
+  "基线部署标识": "index-Bpsh7zKB.js",
+  "复验部署": "index-jJamVJA9.js",
+  "后端迁移": "0023_shipment_finance_misc_fees",
+  "复验说明": "缺陷原路径复验不改变本页整页签收；部分通过/未测仍按整项未通过统计",
   "提交": "449aaa0a",
   "签收": false,
   "计数": {
@@ -526,9 +530,9 @@
       "规范操作": "对照汇总与明细",
       "规范通过条件": "件数、剩余数量、余额、图片数口径一致；已完成任务不误计为待处理，筛选范围明确",
       "结论": "通过",
-      "缺陷": "Q05-33（已关闭）",
+      "缺陷": "Q05-33（修正后关闭）",
       "缺口": "",
-      "证据": "P09-acc-profit-fixed-1440.png;P09-acc-profit-fixed-detail-1440.png",
+      "证据": "P09-profit-fees-fixed-1440.png;P09-profit-fees-fixed-detail-1440.png;q05-33-reconcile-20261119.json",
       "部署标识": "index-Bpsh7zKB.js"
     },
     {
@@ -539,9 +543,9 @@
       "规范操作": "用页面现有金额核算比例、单位和舍入",
       "规范通过条件": "比例只转换一次；百分号、币种和小数位正确；不同币种不无说明相加",
       "结论": "通过",
-      "缺陷": "Q05-33（已关闭）",
+      "缺陷": "Q05-33（修正后关闭）",
       "缺口": "",
-      "证据": "P09-acc-profit-fixed-detail-1440.png;batch-fix-reverify-20261119.json",
+      "证据": "P09-profit-fees-fixed-detail-1440.png;q05-33-reconcile-20261119.json",
       "部署标识": "index-Bpsh7zKB.js"
     },
     {
@@ -635,6 +639,5 @@
       "证据": "",
       "部署标识": "index-Bpsh7zKB.js"
     }
-  ],
-  "复验部署": "index-jJamVJA9.js"
+  ]
 }

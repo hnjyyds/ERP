@@ -8,7 +8,6 @@ from sqlalchemy.sql.elements import ColumnElement
 
 from app.core.pagination import resolve_limit, resolve_offset
 from app.modules.finance.misc_fees.models import MiscFeeAllocation, MiscFeeItem
-from app.modules.sales.shipments.models import ShipmentPlan
 
 
 @dataclass(frozen=True)
@@ -229,17 +228,10 @@ class MiscFeeRepository:
         shipment_plan_id: str,
         amount: Decimal | str,
     ) -> None:
-        shipment = await self.session.get(ShipmentPlan, shipment_plan_id)
-        if shipment is None:
-            return
-        shipment.profit_amount -= Decimal(str(amount))
-        if shipment.receivable_amount == 0:
-            shipment.profit_rate = Decimal("0")
-        else:
-            shipment.profit_rate = (shipment.profit_amount / shipment.receivable_amount) * Decimal(
-                "100"
-            )
-        await self.session.flush()
+        # 杂费新增后整体重算；不在旧利润上直接扣减，避免重复计算与顺序依赖。
+        from app.modules.sales.shipments.repositories import ShipmentPlanRepository
+
+        await ShipmentPlanRepository(self.session).refresh_finance(shipment_plan_id)
 
     def _item_conditions(
         self,
