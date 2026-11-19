@@ -1,0 +1,250 @@
+{
+  "space": 40,
+  "bundle": "http://127.0.0.1:8080/assets/index-jJamVJA9.js",
+  "q33list": {
+    "body": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出货明细 5 出货单 1 待审批 0 已审批 1 应收金额 USD 205.00 预计利润 USD 215.00 出货计划列表 出货搜索 审批状态 全部状态 客户编号 输入客户编号 出口合同编号 查询 生成出货明细 出货单号 状态 客户 出货日期 计划出运日 应收 入口 SP-DAEPEG 已审批 QA261112 测试客户 2026-11-12 2026-11-25 USD 205.00 查看详情 共 1 条 1 50 条/页"
+  },
+  "q33detail": {
+    "url": "http://127.0.0.1:8080/sales/shipments/d6fc976b-09f5-41e4-a3b3-7aba1f636621",
+    "body": "D-DUTCH 新裴贸易 业务管理系统 工作台 基础资料 订单流程 出口合同 采购合同 出口报价 出货明细 QC / 跟单 仓库 财务经营 系统设置 采购单据 业务模块 出货明细 5 出货单 1 待审批 0 已审批 1 应收金额 USD 205.00 预计利润 USD 215.00 出货明细 返回列表 状态/日期 已审批 / 2026-11-12 客户 QA261112 测试客户 运输方式 海运 出运港口 Ningbo -> Hamburg 船名/箱号 未填 / 未填 订舱号 未填 单证负责人 未填 审批人 演示业务主管 收付款和利润概览 应收金额 USD 205.00 预计付款 USD 0.00 预计利润 USD 215.00 利润率 100.00% 提交审批 出货审批 审批人 审批日期 审批通过 出货提醒 SP-DAEPEG 计划于 2026-11-25 出运 提醒日期 出货单 状态 提醒内容 2026-11-18 SP-DAEPEG 已处理 SP-DAEPEG 计划于 2026-11-25 出运 出货商品明细 1 条 合同号 商品编号 商品名称 规格 型号 出货数量 金额 计划出运日 EC-F8D7RX QA261112-P01 QA261112 验收测试围巾 - - 20 pcs USD 205.00 2026-11-25 出口合同出货情况 1 条 合同号 商品编号 商品名称 合同数量 已出货 未出货 未出货金额 状态 EC-F8D7RX QA261112-P01 QA261112 验收测试围巾 50 20 30 USD 307.50 部分完成 出口合同采购情况 1 条 合同号 商品编号 商品名称 合同数量 已采购 未采购 状态 EC-F8D7RX QA261112-P01 QA261112 验收测试围巾 50 0 50 未开始 出货提醒列表 1 条 提醒日期 出货单 状态 提醒内容 2026-11-18 SP-DAEPEG 已处理 SP-DAEPEG 计划于 2026-11-25 出运"
+  },
+  "q07preview": {
+    "alt": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 图片 第 1 张 UIQA-B.png",
+    "caption": "UIQA-B.png",
+    "rect": {
+      "x": 343.33203125,
+      "y": 239.92578125,
+      "width": 0,
+      "height": 0,
+      "top": 239.92578125,
+      "right": 343.33203125,
+      "bottom": 239.92578125,
+      "left": 343.33203125
+    }
+  },
+  "q07preview390": {
+    "alt": "UIQA全量验收专用长名称商品｜棉麻收纳袋与图片生命周期测试样本 图片 第 1 张 UIQA-B.png",
+    "caption": "UIQA-B.png",
+    "capRect": {
+      "x": 117,
+      "y": 402.8359375,
+      "width": 0,
+      "height": 0,
+      "top": 402.8359375,
+      "right": 117,
+      "bottom": 402.8359375,
+      "left": 117
+    },
+    "vw": 390
+  },
+  "q30": {
+    "products": {
+      "pagination": [
+        {
+          "cls": "ant-pagination-prev ant-pagination-disabled",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-item ant-pagination-item-1 ant-pagination-item-active",
+          "w": 46,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-item ant-pagination-item-2",
+          "w": 46,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-next",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        }
+      ],
+      "rowButtons": [
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        },
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        },
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        },
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        },
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        },
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        },
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        },
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        }
+      ],
+      "docW": 390
+    },
+    "shipments": {
+      "pagination": [
+        {
+          "cls": "ant-pagination-prev ant-pagination-disabled",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-item ant-pagination-item-1 ant-pagination-item-active",
+          "w": 46,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-next ant-pagination-disabled",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        }
+      ],
+      "rowButtons": [
+        {
+          "t": "查看详情",
+          "w": 67,
+          "h": 44
+        }
+      ],
+      "docW": 390
+    },
+    "payments": {
+      "pagination": [
+        {
+          "cls": "ant-pagination-prev ant-pagination-disabled",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-item ant-pagination-item-1 ant-pagination-item-active",
+          "w": 46,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-next ant-pagination-disabled",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-prev ant-pagination-disabled",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-item ant-pagination-item-1 ant-pagination-item-active",
+          "w": 46,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        },
+        {
+          "cls": "ant-pagination-next ant-pagination-disabled",
+          "w": 44,
+          "h": 44,
+          "inner": [
+            44,
+            44
+          ]
+        }
+      ],
+      "rowButtons": [],
+      "docW": 390
+    }
+  },
+  "q32fail": {
+    "toast": [
+      "网络连接异常，请检查网络后重试"
+    ],
+    "dialogOpen": true,
+    "saveBtn": {
+      "disabled": false,
+      "aria": null
+    }
+  },
+  "q32retry": {
+    "dialogOpen": false,
+    "toast": [],
+    "url": "http://127.0.0.1:8080/masterdata/products/ec46eab8-76f1-4ba7-931c-da30a5b80d9b",
+    "title": "商品资料"
+  },
+  "shots": [
+    "P09-acc-profit-fixed-1440",
+    "P09-acc-profit-fixed-detail-1440",
+    "P01-preview-filename-fixed-1440",
+    "P01-preview-filename-fixed-390",
+    "P01-tap-targets-390",
+    "P24-tap-targets-390",
+    "P01-save-failed-localized-1440",
+    "P01-save-retry-recovered-1440"
+  ]
+}

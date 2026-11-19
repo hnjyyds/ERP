@@ -458,6 +458,30 @@
   cursor: zoom-in;
 }
 
+/* 大图预览：保留文件名，避免多图时只能凭图片内容辨认。 */
+.product-preview-figure {
+  display: inline-block;
+  position: relative;
+  margin: 0;
+}
+
+.product-preview-name {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  max-width: min(80vw, 520px);
+  padding: 6px 14px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.72);
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .product-gallery-empty {
   display: grid;
   min-height: 140px;

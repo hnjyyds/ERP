@@ -6,6 +6,7 @@ from sqlalchemy import Select, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pagination import resolve_limit, resolve_offset
+from app.modules.finance.tax_refunds.models import VerificationDocument, VerificationTaxRefund
 from app.modules.sales.shipments.models import ShipmentLine, ShipmentPlan
 from app.modules.warehouse.outbound_plans.models import OutboundPlan
 
@@ -170,12 +171,25 @@ class ShipmentPlanRepository:
         receivable_amount = await self.session.scalar(
             select(func.sum(ShipmentLine.amount)).where(ShipmentLine.shipment_id == shipment_id)
         )
+        # 已登记退税也是利润的一部分；必须每次整体重算，避免在旧值上累加造成漂移。
+        refund_amount = await self.session.scalar(
+            select(func.coalesce(func.sum(VerificationTaxRefund.amount), 0))
+            .select_from(VerificationTaxRefund)
+            .join(
+                VerificationDocument,
+                VerificationDocument.id == VerificationTaxRefund.verification_document_id,
+            )
+            .where(VerificationDocument.shipment_plan_id == shipment_id)
+        )
         plan.receivable_amount = Decimal(str(receivable_amount or 0))
-        plan.profit_amount = plan.receivable_amount - plan.payable_amount
-        if plan.receivable_amount == 0:
+        refund_total = Decimal(str(refund_amount or 0))
+        plan.profit_amount = plan.receivable_amount - plan.payable_amount + refund_total
+        # 退税也是收入，利润率按“应收+退税”作为分母，避免零成本时出现 >100% 的失真。
+        income_base = plan.receivable_amount + refund_total
+        if income_base == 0:
             plan.profit_rate = Decimal("0")
         else:
-            plan.profit_rate = (plan.profit_amount / plan.receivable_amount) * Decimal("100")
+            plan.profit_rate = (plan.profit_amount / income_base) * Decimal("100")
         await self.session.flush()
         return self._map_plan(plan)
 

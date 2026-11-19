@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import type { Product } from '@/api'
 import { formatRatePercent } from '@/app/pages/masterdata/products/formatters'
@@ -70,5 +70,36 @@ describe('ProductDetailView 税率展示', () => {
     renderDetail(makeProduct({ tax_rate: undefined, rebate_rate: undefined }))
 
     expect(screen.getAllByText('未填 / 未填').length).toBeGreaterThan(0)
+  })
+})
+
+describe('ProductDetailView 图片预览', () => {
+  const productWithImages = makeProduct({
+    image_urls: ['https://cdn.example.com/c.png', 'https://cdn.example.com/a.png'],
+    image_names: ['UIQA-C.png', 'UIQA-A.png'],
+  })
+
+  it('缩略图展示文件名，可访问名称包含序号与文件名', () => {
+    renderDetail(productWithImages)
+
+    expect(screen.getAllByText('UIQA-C.png').length).toBeGreaterThan(0)
+    expect(
+      screen.getByAltText('纸袋 图片 第 1 张 UIQA-C.png'),
+    ).toBeTruthy()
+    expect(
+      screen.getByAltText('纸袋 图片 第 2 张 UIQA-A.png'),
+    ).toBeTruthy()
+  })
+
+  it('打开大图预览后仍显示文件名并设置可访问名称', async () => {
+    renderDetail(productWithImages)
+
+    fireEvent.click(screen.getAllByAltText('纸袋 图片 第 1 张 UIQA-C.png')[0])
+
+    await waitFor(() => {
+      const previewImage = document.querySelector('.ant-image-preview-img')
+      expect(previewImage?.getAttribute('alt')).toContain('UIQA-C.png')
+      expect(document.querySelector('.product-preview-name')?.textContent).toBe('UIQA-C.png')
+    })
   })
 })

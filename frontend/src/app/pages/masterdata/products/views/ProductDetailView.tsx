@@ -1,6 +1,7 @@
 // 商品资料：独立详情页（图片、基础信息、配件、关联客户、业务记录）
 
 import { Button, Image, Table } from 'antd'
+import { cloneElement, type ReactElement } from 'react'
 import { ArrowLeft, FilePenLine, LayoutDashboard, Plus, Trash2, Users } from 'lucide-react'
 
 import type {
@@ -73,7 +74,27 @@ export function ProductDetailView({
                 </span>
               </div>
               {images.length > 0 ? (
-                <Image.PreviewGroup>
+                <Image.PreviewGroup
+                  preview={{
+                    // 大图预览同样保留文件名与可访问名称，避免多图时只能看到图片本身。
+                    imageRender: (originalNode, { current }) => {
+                      const fileName =
+                        imageNames[current] ||
+                        t('masterdata.product.imageFallbackName', { index: current + 1 })
+                      const alt = t('masterdata.product.imageAccessibleName', {
+                        name: product.cn_name,
+                        index: current + 1,
+                        fileName,
+                      })
+                      return (
+                        <figure className="product-preview-figure">
+                          {cloneElement(originalNode as ReactElement<{ alt?: string }>, { alt })}
+                          <figcaption className="product-preview-name">{fileName}</figcaption>
+                        </figure>
+                      )
+                    },
+                  }}
+                >
                   <div className="product-gallery-grid">
                     {images.map((url, index) => (
                       <div

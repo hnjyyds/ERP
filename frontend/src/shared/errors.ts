@@ -62,6 +62,9 @@ function tr(key: TranslationKey) {
 /** 这些错误码的后端 message 通常是友好的业务文案，优先透传 */
 const PREFER_BACKEND_MESSAGE = new Set(['BUSINESS_ERROR', 'CONFLICT'])
 
+/** 浏览器/网络层原始异常，不透传给业务用户 */
+const NETWORK_ERROR_MESSAGE = /^(failed to fetch|networkerror|load failed|network request failed)$/i
+
 /** 根据错误码与后端原始 message，解析出最终展示给用户的友好文案 */
 export function friendlyMessageFor(code: string, backendMessage: string): string {
   const trimmed = backendMessage?.trim() ?? ''
@@ -74,7 +77,11 @@ export function friendlyMessageFor(code: string, backendMessage: string): string
 /** 从任意捕获到的异常中取出可展示的友好文案 */
 function resolveContent(error: unknown, fallback: string): string {
   if (error instanceof ApiError) return error.friendlyMessage || fallback
-  if (error instanceof Error) return error.message || fallback
+  if (error instanceof Error) {
+    // fetch 失败时浏览器只给出 Failed to fetch 等技术文案，需替换为可读的中文提示。
+    if (NETWORK_ERROR_MESSAGE.test(error.message.trim())) return tr('common.error.network')
+    return error.message || fallback
+  }
   return fallback
 }
 

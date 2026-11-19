@@ -15,7 +15,7 @@
     "未测": 47
   },
   "pages": 42,
-  "defects": 33,
+  "defects": 32,
   "normative_rows": 2016,
   "normative_results": {
     "未测": 1870,
@@ -39,20 +39,21 @@
     "通过（仅限手动输入/显示）": 2
   },
   "whole_pages_passed": 0,
-  "status": "整页验收P01/P09/P24已逐项给出结论：均未签收；新登记Q05-30/31/32/33；缺陷29关闭+4开放；0页签收；矩阵未测项与缺陷关闭分开保留",
+  "status": "P01/P09/P24仍0页签收（部分通过/未测保留）；本批Q05-33/32/30/Q05-07修复复验关闭，32项全部关闭；部署index-jJamVJA9.js",
   "defect_status": {
-    "closed": 29,
+    "closed": 32,
     "pending_reverify": 0,
-    "open": 4,
-    "total": 33
+    "open": 0,
+    "total": 32,
+    "note": "Q05-31已合并至Q05-07不单独计数；本批4项修复并复验关闭"
   },
   "deployment": {
     "frontend_commit": "449aaa0a",
     "backend_commit": "449aaa0a",
-    "frontend_asset": "assets/index-Bpsh7zKB.js",
-    "frontend_css": "assets/index-aRStlGe6.css",
+    "frontend_asset": "assets/index-jJamVJA9.js",
+    "frontend_css": "assets/index-XnLQlyxz.css",
     "frontend_css_note": "容器内实际样式文件；原记index-C-HlQaba.css已更正，入口JS不变",
-    "previous_asset": "assets/index-BawyFJj7.js",
+    "previous_asset": "assets/index-Bpsh7zKB.js",
     "base_url": "http://127.0.0.1:8080",
     "reverify_evidence": [
       "first-batch-reverify-20261118.json",
@@ -142,44 +143,48 @@
     }
   ],
   "page_acceptance": {
-    "bundle": "index-Bpsh7zKB.js",
+    "bundle": "index-jJamVJA9.js",
     "commit": "449aaa0a",
     "report": "page-acceptance/summary-20261118.json",
     "pages": {
       "PAGE-01": {
         "name": "商品资料",
-        "pass": 26,
+        "pass": 30,
         "na": 3,
         "partial": 12,
-        "fail": 4,
+        "fail": 0,
         "untested": 3,
         "signed": false
       },
       "PAGE-09": {
         "name": "出货明细",
-        "pass": 6,
+        "pass": 9,
         "na": 7,
         "partial": 20,
-        "fail": 3,
+        "fail": 0,
         "untested": 12,
         "signed": false
       },
       "PAGE-24": {
         "name": "付款管理",
-        "pass": 10,
+        "pass": 11,
         "na": 7,
         "partial": 17,
-        "fail": 1,
+        "fail": 0,
         "untested": 13,
         "signed": false
       }
     },
     "new_defects": [
+      "Q05-07",
       "Q05-30",
-      "Q05-31",
       "Q05-32",
       "Q05-33"
     ],
-    "matrix": "42页48项验收矩阵-index-Bpsh7zKB-整页验收.csv"
+    "matrix": "42页48项验收矩阵-index-Bpsh7zKB-整页验收.csv",
+    "merged_records": {
+      "Q05-31": "Q05-07"
+    },
+    "baseline_bundle": "index-Bpsh7zKB.js"
   }
 }

@@ -24,14 +24,19 @@ screenshots/*
 !screenshots/P01-new-detail.png
 !screenshots/P01-new-success.png
 !screenshots/P01-page2.png
+!screenshots/P01-preview-filename-fixed-1440.png
+!screenshots/P01-preview-filename-fixed-390.png
 !screenshots/P01-preview-stable-1440.png
 !screenshots/P01-preview-stable-next-1440.png
 !screenshots/P01-preview-stable-next-390.png
 !screenshots/P01-remove-mobile-reload.png
+!screenshots/P01-save-failed-localized-1440.png
+!screenshots/P01-save-retry-recovered-1440.png
 !screenshots/P01-search-focus-default-1440.png
 !screenshots/P01-search-focus-keyboard-1440.png
 !screenshots/P01-search-focus-keyboard-typed-1440.png
 !screenshots/P01-status-search-inactive.png
+!screenshots/P01-tap-targets-390.png
 !screenshots/P02-active-records-1280.png
 !screenshots/P02-contact-checkbox-390.png
 !screenshots/P02-list-1280.png
@@ -104,6 +109,8 @@ screenshots/*
 !screenshots/P09-390-customer-dropdown.png
 !screenshots/P09-acc-detail-1440.png
 !screenshots/P09-acc-list-390.png
+!screenshots/P09-acc-profit-fixed-1440.png
+!screenshots/P09-acc-profit-fixed-detail-1440.png
 !screenshots/P09-contract-no-empty.png
 !screenshots/P09-contract-no-restored.png
 !screenshots/P09-customer-select-after-keyboard.png
@@ -274,6 +281,7 @@ screenshots/*
 !screenshots/P24-request-reloaded.png
 !screenshots/P24-reverse-cross-invoice-1440.png
 !screenshots/P24-row-switch-approval-1440.png
+!screenshots/P24-tap-targets-390.png
 !screenshots/P25-list-1280.png
 !screenshots/P25-list-1440.png
 !screenshots/P25-list-390.png

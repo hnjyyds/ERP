@@ -53,11 +53,32 @@
         "PAGE-24": "10/7/17/1/13/未签收"
       },
       "new_defects": [
+        "Q05-07",
         "Q05-30",
-        "Q05-31",
         "Q05-32",
         "Q05-33"
-      ]
+      ],
+      "merged_records": {
+        "Q05-31": "Q05-07"
+      }
     }
+  },
+  {
+    "deployed_at": "2026-11-19",
+    "base_commit": "449aaa0a",
+    "working_tree_patch": true,
+    "frontend_asset": "assets/index-jJamVJA9.js",
+    "frontend_css": "assets/index-XnLQlyxz.css",
+    "frontend_image_id": "sha256:4a28390e3ff533fb946fc66e483fe3618e7ee896401487ba1446a39383a6b17c",
+    "backend_image_id": "sha256:8795c547acf743342fbd2f8009fd8b340ebd568a9176adec42ab715e2fd97c77",
+    "alembic_head": "0022_recalc_shipment_finance",
+    "scope": [
+      "Q05-33 出货利润重算与迁移0022",
+      "Q05-32 网络异常文案",
+      "Q05-30 手机触摸区域",
+      "Q05-07/Q05-31 大图预览文件名"
+    ],
+    "evidence": "batch-fix-reverify-20261119.json",
+    "page_acceptance": "page-acceptance/summary-20261118.json"
   }
 ]

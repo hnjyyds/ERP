@@ -11,7 +11,6 @@ from app.modules.finance.tax_refunds.models import (
     VerificationDocument,
     VerificationTaxRefund,
 )
-from app.modules.sales.shipments.models import ShipmentPlan
 
 
 @dataclass(frozen=True)
@@ -261,17 +260,10 @@ class TaxRefundRepository:
         shipment_plan_id: str,
         amount: Decimal | str,
     ) -> None:
-        shipment = await self.session.get(ShipmentPlan, shipment_plan_id)
-        if shipment is None:
-            return
-        shipment.profit_amount += Decimal(str(amount))
-        if shipment.receivable_amount == 0:
-            shipment.profit_rate = Decimal("0")
-        else:
-            shipment.profit_rate = (shipment.profit_amount / shipment.receivable_amount) * Decimal(
-                "100"
-            )
-        await self.session.flush()
+        # 退税新增后整体重算，而不是在旧利润上累加；避免金额调整/重复登记造成漂移。
+        from app.modules.sales.shipments.repositories import ShipmentPlanRepository
+
+        await ShipmentPlanRepository(self.session).refresh_finance(shipment_plan_id)
 
     async def list_refunds(self, document_id: str) -> list[VerificationTaxRefundRow]:
         rows = await self.session.scalars(
